@@ -41,6 +41,9 @@ sap.ui.define([
 				VBelnIni: "",
 				VBelnFim: "",
 				RepreIni: "",
+				RepreFim: "",
+				MatnrIni: "",
+				MatnrFim: "",
 				Periodo: ""
 			};
 
@@ -79,12 +82,14 @@ sap.ui.define([
 					var vetorBandeira = [];
 					//var vetorOrdens = [];
 					var vetorRepres = [];
+					var vetorMaterial = [];
 
 					for (var i = 0; i < vetorClientes.length; i++) {
 						var vAchouRede = false;
 						var vAchouBandeira = false;
 						//var vAchouOrdem = false;
 						var vAchouRepres = false;
+						var vAchouMaterial = false;
 
 						for (var j = 0; j < vetorRede.length; j++) {
 
@@ -121,6 +126,16 @@ sap.ui.define([
 								break;
 							}
 						}
+						
+						for (var n = 0; n < vetorMaterial.length; n++) {
+
+							if ((vetorClientes[i].Matnr == vetorMaterial[n].Matnr) || vetorClientes[i].Matnr == "") {
+								vAchouMaterial = true;
+
+								break;
+							}
+						}
+						
 						if (vAchouRede == false) {
 							vetorRede.push(vetorClientes[i]);
 						}
@@ -132,6 +147,9 @@ sap.ui.define([
 						// }
 						if (vAchouRepres == false) {
 							vetorRepres.push(vetorClientes[i]);
+						}
+						if (vAchouMaterial == false) {
+							vetorMaterial.push(vetorClientes[i]);
 						}
 					}
 
@@ -149,6 +167,9 @@ sap.ui.define([
 					
 					var oModelRepres = new JSONModel(vetorRepres);
 					that.setModel(oModelRepres, "modelRepres");
+					
+					var oModelMaterial = new JSONModel(vetorMaterial);
+					that.setModel(oModelMaterial, "modelMaterial");
 				},
 				error: function (error) {
 					that.onMensagemErroODATA(error);
@@ -192,63 +213,77 @@ sap.ui.define([
 			});
 
 			aCols.push({
-				label: "Cliente",
-				property: "Kunnr",
+				label: "Material",
+				property: "Matnr",
 				type: EdmType.String
 			});
 
 			aCols.push({
-				label: "Razão Social",
-				property: "Name1Cli",
+				label: "Descrição Material",
+				property: "Maktx",
 				type: EdmType.String
 			});
 
 			aCols.push({
-				label: "CNPJ",
-				property: "Stcd1",
+				label: "UM",
+				property: "Meins",
 				type: EdmType.String
 			});
 			
 			aCols.push({
-				label: "CPF",
-				property: "Stcd2",
+				label: "Categoria",
+				property: "Mvgr1",
 				type: EdmType.String
 			});
 
 			aCols.push({
-				label: "Rede",
-				property: "Kvgr4",
+				label: "Descrição Categoria",
+				property: "Mvgr1Text",
+				type: EdmType.String
+			});
+			
+			aCols.push({
+				label: "SubCategoria",
+				property: "Mvgr2",
 				type: EdmType.String
 			});
 
 			aCols.push({
-				label: "Descrição Rede",
-				property: "Kvgr4Text",
+				label: "Descrição SubCategoria",
+				property: "Mvgr2Text",
+				type: EdmType.String
+			});
+			
+			aCols.push({
+				label: "Família",
+				property: "Mvgr3",
 				type: EdmType.String
 			});
 
 			aCols.push({
-				label: "Bandeira",
-				property: "Kvgr5",
+				label: "Descrição Família",
+				property: "Mvgr3Text",
+				type: EdmType.String
+			});
+			
+			aCols.push({
+				label: "Marca",
+				property: "Mvgr5",
 				type: EdmType.String
 			});
 
 			aCols.push({
-				label: "Descrição Bandeira",
-				property: "Kvgr5Text",
+				label: "Descrição Marca",
+				property: "Mvgr5Text",
 				type: EdmType.String
 			});
-
+			
 			aCols.push({
-				label: "UF",
-				property: "Region",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Cidade",
-				property: "City1",
-				type: EdmType.String
+				label: "Qtd Faturada",
+				property: "QtdFaturada",
+				type: EdmType.Number,
+				scale: 2,
+				delimiter: true
 			});
 
 			aCols.push({
@@ -277,6 +312,20 @@ sap.ui.define([
 
 			aCols.push({
 				property: "PctRentab",
+				type: EdmType.Number,
+				scale: 2,
+				delimiter: true
+			});
+			
+			aCols.push({
+				property: "UltPreco",
+				type: EdmType.Number,
+				scale: 2,
+				delimiter: true
+			});
+			
+			aCols.push({
+				property: "MedPreco",
 				type: EdmType.Number,
 				scale: 2,
 				delimiter: true
@@ -346,6 +395,8 @@ sap.ui.define([
 			var VbelnFim = "";
 			var RepreIni = that.getModel("modelParametros").getProperty("/LifnrIni");
 			var RepreFim = that.getModel("modelParametros").getProperty("/LifnrFim");
+			var MatnrIni = that.getModel("modelParametros").getProperty("/MatnrIni");
+			var MatnrFim = that.getModel("modelParametros").getProperty("/MatnrFim");
 			var PerioAux = that.getModel("modelParametros").getProperty("/Periodo");
 			var PerioSplit = PerioAux.split(" - ");
 			var PerioIni = PerioSplit[0];
@@ -367,6 +418,8 @@ sap.ui.define([
 						"' and VbelnFim eq '" + VbelnFim +
 						"' and RepreIni eq '" + RepreIni +
 						"' and RepreFim eq '" + RepreFim +
+						"' and MatnrIni eq '" + MatnrIni +
+						"' and MatnrFim eq '" + MatnrFim +
 						"' and PerioIni eq '" + PerioIni +
 						"' and PerioFim eq '" + PerioFim + "'"
 				},
@@ -606,6 +659,38 @@ sap.ui.define([
 			this.byId("idRepreFim").getBinding("suggestionItems").filter(aFilters);
 
 			this.byId("idRepreFim").suggest();
+		},
+		
+		onSuggestMaterialIni: function (evt) {
+
+			var sValue = evt.getSource().getValue();
+			var aFilters = [];
+			var oFilter = [new sap.ui.model.Filter("Matnr", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Maktx", sap.ui.model.FilterOperator.Contains, sValue)
+			];
+
+			var allFilters = new sap.ui.model.Filter(oFilter, false);
+
+			aFilters.push(allFilters);
+			this.byId("idMaterialIni").getBinding("suggestionItems").filter(aFilters);
+
+			this.byId("idMaterialIni").suggest();
+		},
+		
+		onSuggestMaterialFim: function (evt) {
+
+			var sValue = evt.getSource().getValue();
+			var aFilters = [];
+			var oFilter = [new sap.ui.model.Filter("Matnr", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Maktx", sap.ui.model.FilterOperator.Contains, sValue)
+			];
+
+			var allFilters = new sap.ui.model.Filter(oFilter, false);
+
+			aFilters.push(allFilters);
+			this.byId("idMaterialFim").getBinding("suggestionItems").filter(aFilters);
+
+			this.byId("idMaterialFim").suggest();
 		},
 	});
 });
