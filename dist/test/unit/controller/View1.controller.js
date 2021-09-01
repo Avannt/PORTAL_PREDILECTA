@@ -1,0 +1,1 @@
+sap.ui.define(["application/PortalPredilecta/controller/View1.controller"],function(t){"use strict";QUnit.module("View1 Controller");QUnit.test("I should test the View1 controller",function(e){var o=new t;o.onInit();e.ok(o)})});
