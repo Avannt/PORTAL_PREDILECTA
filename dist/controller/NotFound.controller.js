@@ -1,1 +1,0 @@
-sap.ui.define(["application/controller/BaseController","sap/ui/core/routing/History"],function(n,t){"use strict";return n.extend("application.controller.NotFound",{onInit:function(){},onNavBack:function(){var n,o;n=t.getInstance();o=n.getPreviousHash();if(o!==undefined){window.history.go(-1)}else{this.getRouter().navTo("clienteConsultas",{},true)}}})});
