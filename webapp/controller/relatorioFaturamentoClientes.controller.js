@@ -64,13 +64,11 @@ sap.ui.define([
 				var vetorClientes = retorno;
 				var vetorRede = [];
 				var vetorBandeira = [];
-				//var vetorOrdens = [];
 				var vetorRepres = [];
 
 				for (var i = 0; i < vetorClientes.length; i++) {
 					var vAchouRede = false;
 					var vAchouBandeira = false;
-					//var vAchouOrdem = false;
 					var vAchouRepres = false;
 
 					for (var j = 0; j < vetorRede.length; j++) {
@@ -91,15 +89,6 @@ sap.ui.define([
 						}
 					}
 
-					// for (var l = 0; l < vetorOrdens.length; l++) {
-
-					// 	if ((vetorClientes[i].Vbeln == vetorOrdens[l].Vbeln) || vetorClientes[i].Vbeln == "") {
-					// 		vAchouOrdem = true;
-
-					// 		break;
-					// 	}
-					// }
-
 					for (var m = 0; m < vetorRepres.length; m++) {
 
 						if ((vetorClientes[i].Lifnr == vetorRepres[m].Lifnr) || vetorClientes[i].Lifnr == "") {
@@ -114,9 +103,6 @@ sap.ui.define([
 					if (vAchouBandeira == false) {
 						vetorBandeira.push(vetorClientes[i]);
 					}
-					// if (vAchouOrdem == false) {
-					// 	vetorOrdens.push(vetorClientes[i]);
-					// }
 					if (vAchouRepres == false) {
 						vetorRepres.push(vetorClientes[i]);
 					}
@@ -130,9 +116,6 @@ sap.ui.define([
 
 				var oModelBandeira = new JSONModel(vetorBandeira);
 				that.setModel(oModelBandeira, "modelBandeiras");
-
-				// var oModelOrdens = new JSONModel(vetorOrdens);
-				// that.setModel(oModelOrdens, "modelOrdens");
 
 				var oModelRepres = new JSONModel(vetorRepres);
 				that.setModel(oModelRepres, "modelRepres");
@@ -544,38 +527,6 @@ sap.ui.define([
 
 			this.byId("idBandeiraFim").suggest();
 		},
-
-		// onSuggestOrdemIni: function (evt) {
-
-		// 	var sValue = evt.getSource().getValue();
-		// 	var aFilters = [];
-		// 	var oFilter = [new sap.ui.model.Filter("Vbeln", sap.ui.model.FilterOperator.Contains, sValue),
-		// 		new sap.ui.model.Filter("Vbeln", sap.ui.model.FilterOperator.Contains, sValue)
-		// 	];
-
-		// 	var allFilters = new sap.ui.model.Filter(oFilter, false);
-
-		// 	aFilters.push(allFilters);
-		// 	this.byId("idOrdemIni").getBinding("suggestionItems").filter(aFilters);
-
-		// 	this.byId("idOrdemIni").suggest();
-		// },
-
-		// onSuggestOrdemFim: function (evt) {
-
-		// 	var sValue = evt.getSource().getValue();
-		// 	var aFilters = [];
-		// 	var oFilter = [new sap.ui.model.Filter("Vbeln", sap.ui.model.FilterOperator.Contains, sValue),
-		// 		new sap.ui.model.Filter("Vbeln", sap.ui.model.FilterOperator.Contains, sValue)
-		// 	];
-
-		// 	var allFilters = new sap.ui.model.Filter(oFilter, false);
-
-		// 	aFilters.push(allFilters);
-		// 	this.byId("idOrdemFim").getBinding("suggestionItems").filter(aFilters);
-
-		// 	this.byId("idOrdemFim").suggest();
-		// },
 
 		onSuggestRepresIni: function (evt) {
 
