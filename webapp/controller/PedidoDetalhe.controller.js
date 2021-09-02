@@ -57,7 +57,7 @@ sap.ui.define([
 							that.getModelGlobal("modelItensPedidoGrid").setData(that.vetorItensPedido);
 							that.getModelGlobal("modelItensPedidoGrid").refresh();
 							that.getModelGlobal("modelAux").setProperty("/ItensPedidoTab", that.vetorItensPedido.length);
-							
+
 							that.byId("table_pedidos").setBusy(false);
 							that.onBloquearPedido(dataPed.IdStatusPedido);
 
@@ -66,7 +66,7 @@ sap.ui.define([
 							that.byId("table_pedidos").setBusy(false);
 							that.onMensagemErroODATA(error);
 						});
-						
+
 					}).catch(function (error) {
 
 						that.byId("idPedidoDetalhe").setBusy(false);
@@ -638,7 +638,7 @@ sap.ui.define([
 
 		},
 
-		onLiberarItensPedido: function (Finalizar) {
+		onLiberarItensPedido: function () {
 
 			var that = this;
 
@@ -843,22 +843,14 @@ sap.ui.define([
 
 							that.onLimparValueState("None");
 
-							if (Finalizar == true) {
-
-								Pedido.Completo = Finalizar;
-
-							} else {
-
-								Pedido.Completo = false;
-							}
-
+							Pedido.Completo = false;
 							that.byId("idPedidoDetalhe").setBusy(true);
 
 							Pedido = that.onFormatNumberPedido(Pedido);
 
 							delete Pedido.__metadata;
 
-							that.oModel.create("/InserirPedidos", Pedido, {
+							that.oModel.create("/P_PedidoPR", Pedido, {
 								method: "POST",
 								success: function (data) {
 
@@ -1371,13 +1363,19 @@ sap.ui.define([
 		},
 
 		onChangeTipoTransporte: function (evt) {
-			
+
 			this.getModelGlobal("modelAux").setProperty("/ObrigaSalvar", false);
 		},
 
 		onChangeDataPedido: function () {
-			
+
 			this.getModelGlobal("modelAux").setProperty("/ObrigaSalvar", false);
+		},
+
+		onResetarDadosPedido: function () {
+
+			this.getModelGlobal("modelAux").setProperty("/NrPedido", "");
+			this.getModelGlobal("modelAux").setProperty("/ItensPedidoTab", 0);
 		},
 
 		onDeletarItem: function (oEvent) {
@@ -1426,11 +1424,11 @@ sap.ui.define([
 									that.vetorItensPedido = dataItens;
 									that.getModelGlobal("modelItensPedidoGrid").setData(that.vetorItensPedido);
 									that.getModelGlobal("modelItensPedidoGrid").refresh();
-									
+
 									if (that.vetorItensPedido.length == 0) {
 										that.onBloquearCabecalho(true);
 									}
-									
+
 									that.getModelGlobal("modelAux").setProperty("/ItensPedidoTab", that.vetorItensPedido.length);
 									that.byId("table_pedidos").setBusy(false);
 
@@ -1892,12 +1890,12 @@ sap.ui.define([
 
 			}
 		},
-		
+
 		onFinalizarPedido: function () {
-			
+
 			var that = this;
 
-			var dadosPedido = this.getModel("modelPedido").getData();
+			var Pedido = this.getModel("modelPedido").getData();
 
 			var totalItens = that.getModel("modelItensPedidoGrid").getData().length;
 
@@ -1909,15 +1907,15 @@ sap.ui.define([
 					actions: [MessageBox.Action.OK]
 				});
 
-			} else if (dadosPedido.TipoPedido !== "Proposta" && dadosPedido.ValMinPed > dadosPedido.ValorTotal) {
+			} else if (Pedido.TipoPedido !== "Proposta" && Pedido.ValMinPed > Pedido.ValorTotal) {
 
-				sap.m.MessageBox.show("Pedido não atingiu o valor mínimo estipulado pela empresa de R$: " + parseFloat(dadosPedido.ValMinPed), {
+				sap.m.MessageBox.show("Pedido não atingiu o valor mínimo estipulado pela empresa de R$: " + parseFloat(Pedido.ValMinPed), {
 					icon: sap.m.MessageBox.Icon.ERROR,
 					title: "Falha ao Completar Pedido",
 					actions: [MessageBox.Action.OK]
 				});
 
-			} else if (dadosPedido.IdStatusPedido == 3) {
+			} else if (Pedido.IdStatusPedido == 3) {
 
 				sap.m.MessageBox.show("Este pedido não pode mais ser alterado", {
 					icon: sap.m.MessageBox.Icon.WARNING,
@@ -1927,74 +1925,100 @@ sap.ui.define([
 
 			} else {
 
+				that.byId("idPedidoDetalhe").setBusy(true);
+
 				var data = this.onDataHora();
 
-				dadosPedido.SituacaoPedido = "PEN";
-				dadosPedido.IdStatusPedido = 2;
-				dadosPedido.DataFim = data[0];
-				dadosPedido.HoraFim = data[1];
+				Pedido.SituacaoPedido = "PEND";
+				Pedido.IdStatusPedido = 2;
+				Pedido.DataFim = data[0];
+				Pedido.HoraFim = data[1];
+				Pedido.Completo = true;
 
-				var open = indexedDB.open("PRED");
+				that.onLimparValueState("None");
 
-				open.onerror = function () {
-					sap.m.MessageBox.show(open.error.mensage, {
-						icon: sap.m.MessageBox.Icon.ERROR,
-						title: "Falha ao abrir o banco para inserir os dados do pedido!",
-						actions: [MessageBox.Action.OK]
-					});
-				};
+				Pedido = that.onFormatNumberPedido(Pedido);
 
-				open.onsuccess = function () {
-					var db = open.result;
+				delete Pedido.__metadata;
 
-					var store1 = db.transaction("PrePedidos", "readwrite");
-					var objPedido = store1.objectStore("PrePedidos");
+				that.byId("idPedidoDetalhe").setBusy(true);
 
-					var request = objPedido.put(dadosPedido);
+				new Promise(function (res, rej) {
 
-					request.onsuccess = function () {
+					that.onInserirPedido(Pedido, res, rej, that);
 
-						new Promise(function (resolve, reject) {
+				}).then(function (dataPed) {
 
-							that.onAtualizaMovtoVerba(db, resolve, reject);
+					if (dataPed.TipoErro == "E") {
 
-						}).then(function () {
-
-							new Promise(function (res, rej) {
-
-								that.setaCompleto(db, true, res, rej);
-
-							}).then(function () {
-
-								sap.m.MessageBox.show("Pedido salvo com sucesso !! \n\n Deseja enviar o pedido agora ?", {
-									icon: sap.m.MessageBox.Icon.SUCCESS,
-									title: "Sucesso!",
-									actions: [sap.m.MessageBox.Action.YES, sap.m.MessageBox.Action.NO],
-									onClose: function (oAction) {
-
-										if (oAction == sap.m.MessageBox.Action.YES) {
-
-											that.onResetarDadosPedido();
-											sap.ui.core.UIComponent.getRouterFor(that).navTo("enviarPedidos");
-
-										}
-										if (oAction == sap.m.MessageBox.Action.NO) {
-
-											that.onResetarDadosPedido();
-											sap.ui.core.UIComponent.getRouterFor(that).navTo("pedido");
-
-										}
-									}
-								});
-							});
+						sap.m.MessageBox.show(dataPed.MsgErro, {
+							icon: sap.m.MessageBox.Icon.ERROR,
+							title: "Não Permitido",
+							actions: [MessageBox.Action.OK]
 						});
 
-					};
+					} else {
 
-					request.onerror = function () {
-						console.log("Pedido não foi Inserido!");
-					};
-				};
+						sap.m.MessageBox.show("Pedido salvo com sucesso !! \n\n Deseja enviar o pedido agora ?", {
+							icon: sap.m.MessageBox.Icon.SUCCESS,
+							title: "Sucesso!",
+							actions: [sap.m.MessageBox.Action.YES, sap.m.MessageBox.Action.NO],
+							onClose: function (oAction) {
+
+								if (oAction == sap.m.MessageBox.Action.YES) {
+
+									that.onResetarDadosPedido();
+									sap.ui.core.UIComponent.getRouterFor(that).navTo("enviarPedidos");
+									
+								} else if (oAction == sap.m.MessageBox.Action.NO) {
+
+									that.onResetarDadosPedido();
+
+									new Promise(function (res, rej) {
+
+										that.onInserirPedido(Pedido, res, rej, that);
+
+									}).then(function (dataPedSalvo) {
+
+										if (dataPedSalvo.TipoErro == "E") {
+
+											sap.m.MessageBox.show(dataPedSalvo.MsgErro, {
+												icon: sap.m.MessageBox.Icon.ERROR,
+												title: "Não Permitido",
+												actions: [MessageBox.Action.OK]
+											});
+
+										} else {
+
+											sap.m.MessageBox.show("Pedido enviado com sucesso !!", {
+												icon: sap.m.MessageBox.Icon.SUCCESS,
+												title: "Sucesso!",
+												actions: [sap.m.MessageBox.Action.YES, sap.m.MessageBox.Action.NO],
+												onClose: function (oAction) {
+													
+													sap.ui.core.UIComponent.getRouterFor(that).navTo("pedido");
+												},
+											});
+										}
+										
+									}).catch(function (error) {
+
+										that.byId("idPedidoDetalhe").setBusy(false);
+										that.onMensagemErroODATA(error);
+									});
+								}
+
+								that.byId("idPedidoDetalhe").setBusy(false);
+								that.onLiberarAbas();
+							}
+						});
+					}
+
+				}).catch(function (error) {
+
+					that.byId("idPedidoDetalhe").setBusy(false);
+					that.onMensagemErroODATA(error);
+				});
 			}
 		}
 	});

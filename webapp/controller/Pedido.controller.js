@@ -24,16 +24,20 @@ sap.ui.define([
 			this.vetorClientes = [];
 			this.oPrePedidos = [];
 			this.oVetorTitulos = [];
+			var CodRepres = this.getModelGlobal("modelAux").getProperty("/CodRepres");
 
 			this.onInicializaModels();
 
 			new Promise(function (res, rej) {
 
-				that.onBuscarClientes(res, rej);
+				that.onBuscarClientes(CodRepres, res, rej, that);
 
-			}).then(function () {
+			}).then(function (dado) {
 
-				//
+				var oModelClientes = new JSONModel(dado);
+				that.setModel(oModelClientes, "Clientes");
+
+				that.byId("master").setBusy(false);
 
 			}).catch(function (error) {
 
@@ -50,7 +54,6 @@ sap.ui.define([
 					}
 				);
 			});
-
 		},
 
 		onEditarPress: function (e) {
@@ -179,13 +182,11 @@ sap.ui.define([
 					that.getView().setModel(oModel, "Pedidos");
 
 					that.byId("table_pedidos").setBusy(false);
-
 				},
 				error: function (error) {
 
 					that.byId("table_pedidos").setBusy(false);
 					that.onMensagemErroODATA(error);
-
 				}
 			});
 
@@ -329,41 +330,41 @@ sap.ui.define([
 					onClose: function (oAction) {
 
 						if (oAction == sap.m.MessageBox.Action.YES) {
-							
-							that.byId("table_pedidos").setBusy(true);	
-							
-							that.oModel.remove("/P_PedidoD(IvNrPedido='" + NrPedido + "')", {
-								// urlParameters: {
-								// 	"$filter": "IvUsuario eq '" + this.getModelGlobal("modelAux").getProperty("/CodRepres") + "'"
-								// },
-								success: function (result) {
 
-									var Cliente = that.getModelGlobal("Cliente_G").getData();
+							that.byId("table_pedidos").setBusy(true);
 
-									that.oModel.read("/P_PedidoQ", {
-										urlParameters: {
-											"$filter": "IvUsuario eq '" + that.getModelGlobal("modelAux").getProperty("/CodRepres") + "' and IvKunnr eq '" +
-												Cliente.Kunnr + "'"
-										},
-										success: function (result) {
+							new Promise(function (res, rej) {
 
-											that.vetorPedidos = result.results;
+								that.onExcluirPed(NrPedido, res, rej);
 
-											var oModel = new JSONModel(that.vetorPedidos);
-											that.getView().setModel(oModel, "Pedidos");
+							}).then(function () {
 
-											that.byId("table_pedidos").setBusy(false);
-										},
-										error: function (error) {
-											that.byId("table_pedidos").setBusy(false);
-											that.onMensagemErroODATA(error);
-										}
-									});
-								},
-								error: function (error) {
-									console.log(error);
+								var Cliente = that.getModelGlobal("Cliente_G").getData();
+								var CodRepres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
+								var Envio = false;
+
+								new Promise(function (res, rej) {
+
+									that.onBuscarPedidos(Cliente.Kunnr, CodRepres, Envio, res, rej, that);
+
+								}).then(function (result) {
+
+									that.vetorPedidos = result.results;
+
+									var oModel = new JSONModel(that.vetorPedidos);
+									that.getView().setModel(oModel, "Pedidos");
+
+									that.byId("table_pedidos").setBusy(false);
+
+								}).catch(function (error) {
+
+									that.byId("table_pedidos").setBusy(false);
 									that.onMensagemErroODATA(error);
-								}
+								});
+							}).catch(function (error) {
+
+								that.byId("table_pedidos").setBusy(false);
+								that.onMensagemErroODATA(error);
 							});
 						}
 					}
@@ -372,6 +373,7 @@ sap.ui.define([
 		},
 
 		handleLinkPress: function () {
+
 			var cliente = this.getOwnerComponent().getModel("modelAux").getProperty("/CodCliente");
 			this.getOwnerComponent().getModel("modelAux").setProperty("/telaPedido", true);
 			sap.ui.core.UIComponent.getRouterFor(this).navTo("relatorioTitulos");

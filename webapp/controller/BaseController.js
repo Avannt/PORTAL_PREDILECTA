@@ -53,7 +53,6 @@ sap.ui.define([
 			} else {
 				this.getRouter().navTo("NotFound", {}, true);
 			}
-
 		},
 
 		formatPeriodo: function (value) {
@@ -139,13 +138,45 @@ sap.ui.define([
 			return Obj;
 		},
 
-		onBuscarPedido: function (res, rej, NrPedido) {
+		onBuscarPedidos: function (Cliente, CodRepres, Envio, res, rej, that) {
+
+			that.oModel.read("/P_PedidoQ", {
+				urlParameters: {
+					"$filter": "IvUsuario eq '" + CodRepres + "' and IvKunnr eq '" + Cliente + "' and IvEnvio eq " + Envio
+				},
+				success: function (result) {
+
+					res(result);
+				},
+				error: function (error) {
+
+					rej(error);
+				}
+			});
+		},
+
+		onBuscarPedido: function (NrPedido, res, rej) {
 
 			var that = this;
 
 			that.oModel.read("/P_PedidoPR(NrPedido='" + NrPedido + "')", {
 				success: function (data) {
 
+					res(data);
+				},
+				error: function (error) {
+
+					rej(error);
+				}
+			});
+		},
+
+		onInserirPedido: function (Pedido, res, rej, that) {
+			
+			that.oModel.create("/P_PedidoPR", Pedido, {
+				method: "POST",
+				success: function (data) {
+					
 					res(data);
 				},
 				error: function (error) {
@@ -164,7 +195,7 @@ sap.ui.define([
 					"$filter": "IvNrPedido eq '" + NrPedido + "'"
 				},
 				success: function (dataItens) {
-					
+
 					res(dataItens.results);
 				},
 				error: function (error) {
@@ -180,7 +211,7 @@ sap.ui.define([
 
 			that.oModel.remove("/P_ItensPedidoD(IvNrPedido='" + NrPedido + "',IvMatnr='" + Matnr + "')", {
 				success: function (result) {
-					
+
 					res("OK");
 				},
 				error: function (error) {
@@ -190,25 +221,18 @@ sap.ui.define([
 			});
 		},
 
-		onBuscarClientes: function (resPromise, rejPromise) {
+		onBuscarClientes: function (CodRepres, res, rej, that) {
 
-			var that = this;
-
-			this.oModel.read("/ClienteQ", {
+			that.oModel.read("/ClienteQ", {
 				urlParameters: {
-					"$filter": "IvUsuario eq '" + this.getModelGlobal("modelAux").getProperty("/CodRepres") + "'"
+					"$filter": "IvUsuario eq '" + CodRepres + "'"
 				},
 				success: function (retorno) {
 
-					var oModelClientes = new JSONModel(retorno.results);
-					that.setModel(oModelClientes, "Clientes");
-
-					that.byId("master").setBusy(false);
-
-					resPromise();
+					res(retorno.results);
 				},
-				error: function (errorLog) {
-					rejPromise(errorLog);
+				error: function (error) {
+					rej(error);
 				}
 			});
 		},
@@ -321,32 +345,18 @@ sap.ui.define([
 			}
 		},
 
-		setaCompleto: function (db, Completo, NrPedido) {
+		onExcluirPed: function (NrPedido, res, rej) {
+
 			var that = this;
-			var obj = [];
 
-			var tx = db.transaction("PrePedidos", "readwrite");
-			var objPrePedido = tx.objectStore("PrePedidos");
-
-			var request = objPrePedido.get(NrPedido);
-
-			request.onsuccess = function (e) {
-				var result = e.target.result;
-				obj = result;
-				obj.Completo = Completo;
-
-				var store = db.transaction("PrePedidos", "readwrite");
-				var objPedido = store.objectStore("PrePedidos");
-				var request1 = objPedido.put(obj);
-
-				request1.onsuccess = function () {
-					console.log("O campo completo foi atualizado para > " + Completo);
-				};
-
-				request1.onerror = function () {
-					console.log("Erro ao abrir o Pedido > " + NrPedido);
-				};
-			};
+			that.oModel.remove("/P_PedidoD(IvNrPedido='" + NrPedido + "')", {
+				success: function (result) {
+					res();
+				},
+				error: function (error) {
+					rej(error);
+				}
+			});
 		},
 
 		onCheckOnline: function (res, rej, RetiraAtual) {
@@ -486,32 +496,6 @@ sap.ui.define([
 					}
 				}
 			);
-		},
-
-		onReturnDropTables: function (tipo) {
-
-			switch (tipo) {
-			case "Login":
-
-				return [
-					"Clientes", "Fretes", "LocaisEntregas", "Produtos", "Centros", "LeadTime",
-					"MsgPedido", "PrecoItens", "SaldoVerbas", "TabPrecos", "TipoPedidos", "TabelaMovimentacao", "ItemExc", "Rentabilidade",
-					"TitulosAbertos", "Vencimentos", "DescCanal", "DescPromo", "DescFlex", "Contratos", "MotvCamp", "TipoIntegraBol", "DescCamp",
-					"SaldoVerbas", "SeqAcessoTab"
-				];
-
-			case "Reset":
-
-				return [
-					"Clientes", "Fretes", "LocaisEntregas", "Produtos", "DescCanal", "DescPromo", "LeadTime",
-					"DescFlex", "TabelaMovimentacao", "ItemExc", "Rentabilidade", "Centros", "MsgPedido", "PrecoItens", "SaldoVerbas",
-					"TabPrecos", "TipoPedidos", "Contratos", "MotvCamp", "TipoIntegraBol", "DescCamp", "SaldoVerbas", "SeqAcessoTab",
-					"TitulosAbertos", "Vencimentos", "ItensPedido", "PrePedidos", "Aux", "Menu"
-				];
-
-			default:
-
-			}
 		},
 
 		setLog: function (sLog, sClasse) {
