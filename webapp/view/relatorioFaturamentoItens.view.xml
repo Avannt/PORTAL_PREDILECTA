@@ -70,7 +70,7 @@
 												<SuggestionItem text="{modelMaterial>Matnr}" description="{modelMaterial>Maktx}" key="{modelMaterial>Matnr}"/>
 											</suggestionItems>
 										</SearchField>
-										<SearchField id="idMaterialFim" placeholder="Digite Código ou Descrição do Material" enableSuggestions="true" value="{modelParametros>/MatnrFim}" suggest="onSuggestMaterialFim" suggestionItems="{ path: 'modelMaterial/', sorter: { path: 'Matnr', ascending: true }}">
+										<SearchField id="idMaterialFim" placeholder="Digite Código ou Descrição do Material" enableSuggestions="true" value="{modelParametros>/MatnrFim}" suggest="onSuggestMaterialFim" suggestionItems="{ path: 'modelMaterial>/', sorter: { path: 'Matnr', ascending: true }}">
 											<suggestionItems>
 												<SuggestionItem text="{modelMaterial>Matnr}" description="{modelMaterial>Maktx}" key="{modelMaterial>Matnr}"/>
 											</suggestionItems>
@@ -79,12 +79,24 @@
 										<Label text="Categoria"/>
 										<SearchField id="idCategoriaIni" placeholder="Digite Código ou Descrição da Categoria" enableSuggestions="true" value="{modelParametros>/Mvgr1Ini}" suggest="onSuggestCategoriaIni" suggestionItems="{ path: 'modelCategoria>/', sorter: { path: 'Mvgr1', ascending: true }}">
 											<suggestionItems>
-												<SuggestionItem text="{modelCategoria>Mvgr1}" description="{modelCategoria>Mvgr1Text}" key="{modelCategoria>Mvgr1}"/>
+												<SuggestionItem text="{modelCategoria>Mvgr1}" description="{modelCategoria>DescMvgr1}" key="{modelCategoria>Mvgr1}"/>
 											</suggestionItems>
 										</SearchField>
-										<SearchField id="idCategoriaFim" placeholder="Digite Código ou Descrição da Categoria" enableSuggestions="true" value="{modelParametros>/Mvgr1Fim}" suggest="onSuggestCategoriaFim" suggestionItems="{ path: 'modelCategoria/', sorter: { path: 'Mvgr1', ascending: true }}">
+										<SearchField id="idCategoriaFim" placeholder="Digite Código ou Descrição da Categoria" enableSuggestions="true" value="{modelParametros>/Mvgr1Fim}" suggest="onSuggestCategoriaFim" suggestionItems="{ path: 'modelCategoria>/', sorter: { path: 'Mvgr1', ascending: true }}">
 											<suggestionItems>
-												<SuggestionItem text="{modelCategoria>Mvgr1}" description="{modelCategoria>Mvgr1Text}" key="{modelCategoria>Mvgr1}"/>
+												<SuggestionItem text="{modelCategoria>Mvgr1}" description="{modelCategoria>DescMvgr1}" key="{modelCategoria>Mvgr1}"/>
+											</suggestionItems>
+										</SearchField>
+										
+										<Label text="SubCategoria"/>
+										<SearchField id="idSubCategoriaIni" placeholder="Digite Código ou Descrição da SubCategoria" enableSuggestions="true" value="{modelParametros>/Mvgr2Ini}" suggest="onSuggestSubCategoriaIni" suggestionItems="{ path: 'modelSubCategoria>/', sorter: { path: 'Mvgr2', ascending: true }}">
+											<suggestionItems>
+												<SuggestionItem text="{modelSubCategoria>Mvgr2}" description="{modelSubCategoria>DescMvgr2}" key="{modelSubCategoria>Mvgr2}"/>
+											</suggestionItems>
+										</SearchField>
+										<SearchField id="idSubCategoriaFim" placeholder="Digite Código ou Descrição da SubCategoria" enableSuggestions="true" value="{modelParametros>/Mvgr2Fim}" suggest="onSuggestSubCategoriaFim" suggestionItems="{ path: 'modelSubCategoria>/', sorter: { path: 'Mvgr2', ascending: true }}">
+											<suggestionItems>
+												<SuggestionItem text="{modelSubCategoria>Mvgr2}" description="{modelSubCategoria>DescMvgr2}" key="{modelSubCategoria>Mvgr2}"/>
 											</suggestionItems>
 										</SearchField>
 										

@@ -55,6 +55,93 @@ sap.ui.define([
 			var oModelResumoEmpresa = new JSONModel(that.vetorResumoEmpresa);
 			that.setModel(oModelResumoEmpresa, "modelResumoEmpresa");
 
+			new Promise(function (res, rej) {
+
+				that.onBuscarClientes(repres, res, rej, that);
+
+			}).then(function (retorno) {
+
+				var vetorClientes = retorno;
+				var vetorRede = [];
+				var vetorBandeira = [];
+				//var vetorOrdens = [];
+				var vetorRepres = [];
+
+				for (var i = 0; i < vetorClientes.length; i++) {
+					var vAchouRede = false;
+					var vAchouBandeira = false;
+					//var vAchouOrdem = false;
+					var vAchouRepres = false;
+
+					for (var j = 0; j < vetorRede.length; j++) {
+
+						if ((vetorClientes[i].Kvgr4 == vetorRede[j].Kvgr4) || vetorClientes[i].Kvgr4 == "") {
+							vAchouRede = true;
+
+							break;
+						}
+					}
+
+					for (var k = 0; k < vetorBandeira.length; k++) {
+
+						if ((vetorClientes[i].Kvgr5 == vetorBandeira[k].Kvgr5) || vetorClientes[i].Kvgr5 == "") {
+							vAchouBandeira = true;
+
+							break;
+						}
+					}
+
+					// for (var l = 0; l < vetorOrdens.length; l++) {
+
+					// 	if ((vetorClientes[i].Vbeln == vetorOrdens[l].Vbeln) || vetorClientes[i].Vbeln == "") {
+					// 		vAchouOrdem = true;
+
+					// 		break;
+					// 	}
+					// }
+
+					for (var m = 0; m < vetorRepres.length; m++) {
+
+						if ((vetorClientes[i].Lifnr == vetorRepres[m].Lifnr) || vetorClientes[i].Lifnr == "") {
+							vAchouRepres = true;
+
+							break;
+						}
+					}
+					if (vAchouRede == false) {
+						vetorRede.push(vetorClientes[i]);
+					}
+					if (vAchouBandeira == false) {
+						vetorBandeira.push(vetorClientes[i]);
+					}
+					// if (vAchouOrdem == false) {
+					// 	vetorOrdens.push(vetorClientes[i]);
+					// }
+					if (vAchouRepres == false) {
+						vetorRepres.push(vetorClientes[i]);
+					}
+				}
+
+				var oModelClientes = new JSONModel(vetorClientes);
+				that.setModel(oModelClientes, "modelClientes");
+
+				var oModelRede = new JSONModel(vetorRede);
+				that.setModel(oModelRede, "modelRedes");
+
+				var oModelBandeira = new JSONModel(vetorBandeira);
+				that.setModel(oModelBandeira, "modelBandeiras");
+
+				// var oModelOrdens = new JSONModel(vetorOrdens);
+				// that.setModel(oModelOrdens, "modelOrdens");
+
+				var oModelRepres = new JSONModel(vetorRepres);
+				that.setModel(oModelRepres, "modelRepres");
+
+			}).catch(function (error) {
+
+				that.onMensagemErroODATA(error);
+			});
+
 			that.oModel.read("/Centros", {
 				urlParameters: {
 					"$filter": "IvUsuario eq '" + repres + "'"
@@ -63,92 +150,6 @@ sap.ui.define([
 					var vetorCentros = retorno.results;
 					var oModelCentros = new JSONModel(vetorCentros);
 					that.setModel(oModelCentros, "modelCentros");
-				},
-				error: function (error) {
-					that.onMensagemErroODATA(error);
-				}
-			});
-
-			that.oModel.read("/ClienteQ", {
-				urlParameters: {
-					"$filter": "IvUsuario eq '" + repres + "'"
-				},
-				success: function (retorno) {
-					var vetorClientes = retorno.results;
-					var vetorRede = [];
-					var vetorBandeira = [];
-					//var vetorOrdens = [];
-					var vetorRepres = [];
-
-					for (var i = 0; i < vetorClientes.length; i++) {
-						var vAchouRede = false;
-						var vAchouBandeira = false;
-						//var vAchouOrdem = false;
-						var vAchouRepres = false;
-
-						for (var j = 0; j < vetorRede.length; j++) {
-
-							if ((vetorClientes[i].Kvgr4 == vetorRede[j].Kvgr4) || vetorClientes[i].Kvgr4 == "") {
-								vAchouRede = true;
-
-								break;
-							}
-						}
-
-						for (var k = 0; k < vetorBandeira.length; k++) {
-
-							if ((vetorClientes[i].Kvgr5 == vetorBandeira[k].Kvgr5) || vetorClientes[i].Kvgr5 == "") {
-								vAchouBandeira = true;
-
-								break;
-							}
-						}
-						
-						// for (var l = 0; l < vetorOrdens.length; l++) {
-
-						// 	if ((vetorClientes[i].Vbeln == vetorOrdens[l].Vbeln) || vetorClientes[i].Vbeln == "") {
-						// 		vAchouOrdem = true;
-
-						// 		break;
-						// 	}
-						// }
-						
-						for (var m = 0; m < vetorRepres.length; m++) {
-
-							if ((vetorClientes[i].Lifnr == vetorRepres[m].Lifnr) || vetorClientes[i].Lifnr == "") {
-								vAchouRepres = true;
-
-								break;
-							}
-						}
-						if (vAchouRede == false) {
-							vetorRede.push(vetorClientes[i]);
-						}
-						if (vAchouBandeira == false) {
-							vetorBandeira.push(vetorClientes[i]);
-						}
-						// if (vAchouOrdem == false) {
-						// 	vetorOrdens.push(vetorClientes[i]);
-						// }
-						if (vAchouRepres == false) {
-							vetorRepres.push(vetorClientes[i]);
-						}
-					}
-
-					var oModelClientes = new JSONModel(vetorClientes);
-					that.setModel(oModelClientes, "modelClientes");
-
-					var oModelRede = new JSONModel(vetorRede);
-					that.setModel(oModelRede, "modelRedes");
-
-					var oModelBandeira = new JSONModel(vetorBandeira);
-					that.setModel(oModelBandeira, "modelBandeiras");
-					
-					// var oModelOrdens = new JSONModel(vetorOrdens);
-					// that.setModel(oModelOrdens, "modelOrdens");
-					
-					var oModelRepres = new JSONModel(vetorRepres);
-					that.setModel(oModelRepres, "modelRepres");
 				},
 				error: function (error) {
 					that.onMensagemErroODATA(error);
@@ -172,19 +173,19 @@ sap.ui.define([
 				property: "Lifnr",
 				type: EdmType.Number
 			});
-			
+
 			aCols.push({
 				label: "Nome Repres",
 				property: "Name1Rep",
 				type: EdmType.String
 			});
-			
+
 			aCols.push({
 				label: "Empresa",
 				property: "Bukrs",
 				type: EdmType.String
 			});
-			
+
 			aCols.push({
 				label: "Nome Empresa",
 				property: "Butxt",
@@ -208,7 +209,7 @@ sap.ui.define([
 				property: "Stcd1",
 				type: EdmType.String
 			});
-			
+
 			aCols.push({
 				label: "CPF",
 				property: "Stcd2",
@@ -543,7 +544,7 @@ sap.ui.define([
 
 			this.byId("idBandeiraFim").suggest();
 		},
-		
+
 		// onSuggestOrdemIni: function (evt) {
 
 		// 	var sValue = evt.getSource().getValue();
@@ -559,7 +560,7 @@ sap.ui.define([
 
 		// 	this.byId("idOrdemIni").suggest();
 		// },
-		
+
 		// onSuggestOrdemFim: function (evt) {
 
 		// 	var sValue = evt.getSource().getValue();
@@ -575,7 +576,7 @@ sap.ui.define([
 
 		// 	this.byId("idOrdemFim").suggest();
 		// },
-		
+
 		onSuggestRepresIni: function (evt) {
 
 			var sValue = evt.getSource().getValue();
@@ -591,7 +592,7 @@ sap.ui.define([
 
 			this.byId("idRepreIni").suggest();
 		},
-		
+
 		onSuggestRepresFim: function (evt) {
 
 			var sValue = evt.getSource().getValue();
