@@ -5,51 +5,83 @@ sap.ui.define([
 	"application/controller/BaseController",
 	"sap/ui/model/Filter",
 	"sap/ui/model/FilterOperator",
-	"sap/m/MessageBox"
-], function(BaseController, Filter, FilterOperator, MessageBox) {
+	"sap/m/MessageBox",
+	"sap/ui/model/json/JSONModel"
+], function (BaseController, Filter, FilterOperator, MessageBox, JSONModel) {
 	"use strict";
+
 	var oPedidosEnviar = [];
 	var oItensPedidoGrid = [];
 	var oPedidoGrid = [];
 	var oItensPedidoEnviar = [];
 	var oItensPedidoGridEnviar = [];
-	var deletarMovimentos = [];
-	var ajaxCall;
 	var envioPedidos;
 
 	return BaseController.extend("application.controller.enviarPedidos", {
 
-		onInit: function() {
+		onInit: function () {
 			this.getRouter().getRoute("enviarPedidos").attachPatternMatched(this._onLoadFields, this);
 		},
 
-		_onLoadFields: function() {
+		_onLoadFields: function () {
+
 			var that = this;
+
+			that.oModel = that.getModel();
+
 			oPedidosEnviar = [];
 			oItensPedidoGrid = [];
 			oPedidoGrid = [];
 			oItensPedidoEnviar = [];
 			oItensPedidoGridEnviar = [];
+
 			//Se for true mostrar a grid de envio de pedidos, senão mostrar a grid de entrega futura.
 			envioPedidos = that.getOwnerComponent().getModel("modelAux").getProperty("/bEnviarPedido");
 
-			that.byId("table_pedidos").setVisible(envioPedidos);
-			that.byId("table_entregas").setVisible(!envioPedidos);
-			that.byId("btnEnviarPedido").setVisible(envioPedidos);
-			that.byId("btnEnviarEntrega").setVisible(!envioPedidos);
-			that.byId("btnExcluir").setVisible(!envioPedidos);
-			that.byId("btnExcluirPedido").setVisible(envioPedidos);
+			that.byId("table_pedidos").setBusy(true);
 
-			if (envioPedidos) {
+			new Promise(function (res, rej) {
 
-				this.onLoadPedidos();
-			} else {
+				var Cliente = "";
+				var CodRepres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
+				var Envio = true;
 
-				this.onLoadEntregas();
-			}
+				that.onBuscarPedidos(Cliente, CodRepres, Envio, res, rej, that);
+
+			}).then(function (result) {
+
+				that.vetorPedidos = result.results;
+				var oModel = new JSONModel(that.vetorPedidos);
+				that.setModel(oModel, "Pedidos");
+
+				that.byId("table_pedidos").setBusy(false);
+
+				new Promise(function (resC, rejC) {
+
+					var CodRepres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
+					that.onBuscarClientes(CodRepres, resC, rejC, that);
+
+				}).then(function (dado) {
+
+					var oModelClientes = new JSONModel(dado);
+					that.setModel(oModelClientes, "Clientes");
+					
+					that.byId("table_pedidos").setBusy(false);
+
+				}).catch(function (error) {
+
+					that.byId("table_pedidos").setBusy(false);
+					that.onMensagemErroODATA(error);
+				});
+			}).catch(function (error) {
+
+				that.byId("table_pedidos").setBusy(false);
+				that.onMensagemErroODATA(error);
+			});
 		},
 
-		onItemPressEF: function(oEvent) {
+		onItemPressEF: function (oEvent) {
+
 			var that = this;
 			var oEvItemPressed = oEvent;
 			var oBd = oEvItemPressed.getParameter("listItem") || oEvent.getSource();
@@ -59,8 +91,10 @@ sap.ui.define([
 				icon: MessageBox.Icon.WARNING,
 				title: "Editar",
 				actions: ["Sim", "Cancelar"],
-				onClose: function(oAction) {
+				onClose: function (oAction) {
+
 					if (oAction == "Sim") {
+
 						/* Gravo no ModelAux a propriedade Kunrg (Cod cliente) para receber lá na tela de entrega futura e 
 						selecionar o cliente automaticamente. */
 						that.getOwnerComponent().getModel("modelAux").setProperty("/KunrgEntrega", sKunrg);
@@ -70,11 +104,12 @@ sap.ui.define([
 			});
 		},
 
-		onLoadPedidos: function() {
+		onLoadPedidos: function () {
+
 			var open = indexedDB.open("VB_DataBase");
 			var that = this;
 
-			open.onerror = function() {
+			open.onerror = function () {
 				MessageBox.show(open.error.mensage, {
 					icon: MessageBox.Icon.ERROR,
 					title: "Banco não encontrado!",
@@ -82,7 +117,7 @@ sap.ui.define([
 				});
 			};
 
-			open.onsuccess = function() {
+			open.onsuccess = function () {
 				var db = open.result;
 
 				var store = db.transaction("PrePedidos").objectStore("PrePedidos");
@@ -90,7 +125,7 @@ sap.ui.define([
 
 				var request = indiceStatusPed.getAll(2);
 
-				request.onsuccess = function(event) {
+				request.onsuccess = function (event) {
 					oPedidoGrid = event.target.result;
 
 					var vetorPromise = [];
@@ -100,7 +135,7 @@ sap.ui.define([
 					indiceStatusPed = store.index("idStatusPedido");
 
 					request = indiceStatusPed.getAll(9);
-					request.onsuccess = function(event) {
+					request.onsuccess = function (event) {
 						var oPedidoGrid2 = event.target.result;
 
 						/* Verifico se já existem registros de pedidos de representante (status=2) */
@@ -123,13 +158,13 @@ sap.ui.define([
 
 						for (var j = 0; j < oPedidoGrid.length; j++) {
 
-							vetorPromise.push(new Promise(function(resolve, reject) {
+							vetorPromise.push(new Promise(function (resolve, reject) {
 								var storeItensPed = db.transaction("ItensPedido").objectStore("ItensPedido");
 								var indiceNrPed = storeItensPed.index("nrPedCli");
 
 								request = indiceNrPed.getAll(oPedidoGrid[j].nrPedCli);
 
-								request.onsuccess = function(event) {
+								request.onsuccess = function (event) {
 
 									for (var i = 0; i < event.target.result.length; i++) {
 										var aux = event.target.result[i];
@@ -141,7 +176,7 @@ sap.ui.define([
 									resolve();
 								};
 
-								request.onerror = function(event) {
+								request.onerror = function (event) {
 									console.error(event.error.mensage);
 									reject();
 								};
@@ -149,7 +184,7 @@ sap.ui.define([
 						}
 					};
 
-					Promise.all(vetorPromise).then(function(values) {
+					Promise.all(vetorPromise).then(function (values) {
 						console.log("Itens Pedido: ");
 						console.log(oItensPedidoGrid);
 					});
@@ -159,48 +194,7 @@ sap.ui.define([
 
 		},
 
-		onLoadEntregas: function() {
-			this.byId("table_entregas").setBusy(true);
-
-			var that = this;
-			var oModel = new sap.ui.model.json.JSONModel();
-			var open = indexedDB.open("VB_DataBase");
-
-			open.onerror = function() {
-				MessageBox.show(open.error.mensage, {
-					icon: MessageBox.Icon.ERROR,
-					title: "Banco não encontrado!",
-					actions: [MessageBox.Action.OK]
-				});
-			};
-
-			open.onsuccess = function() {
-				var db = open.result;
-
-				var store = db.transaction("EntregaFutura2").objectStore("EntregaFutura2");
-				var ixEF2 = store.index("Vbeln");
-				var request = ixEF2.openCursor(undefined, "nextunique");
-
-				var oPedidosGrid = [];
-
-				request.onsuccess = function(event) {
-					oPedidoGrid = event.target.result;
-
-					if (oPedidoGrid) {
-						oPedidosGrid.push(oPedidoGrid.value);
-
-						oPedidoGrid.continue();
-					} else {
-						oModel = new sap.ui.model.json.JSONModel(oPedidosGrid);
-						that.getOwnerComponent().setModel(oModel, "EntregasEnviar");
-
-						that.byId("table_entregas").setBusy(false);
-					}
-				};
-			};
-		},
-
-		onItemChange: function(oEvent) {
+		onItemChange: function (oEvent) {
 
 			var sValue = oEvent.getSource().getValue();
 			var aFilters = [];
@@ -218,11 +212,7 @@ sap.ui.define([
 
 		},
 
-		onNavBack: function() {
-			sap.ui.core.UIComponent.getRouterFor(this).navTo("login");
-		},
-
-		myFormatterDataImp: function(value) {
+		myFormatterDataImp: function (value) {
 			if (value !== undefined && value !== null && value !== "" && value !== 0) {
 				var data = value.split("-");
 
@@ -235,7 +225,7 @@ sap.ui.define([
 			}
 		},
 
-		onItemPress: function(oEvent) {
+		onItemPress: function (oEvent) {
 			var that = this;
 			var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
 			var nrPedCli = oItem.getBindingContext("PedidosEnviar").getProperty("nrPedCli");
@@ -247,29 +237,29 @@ sap.ui.define([
 				icon: MessageBox.Icon.WARNING,
 				title: "Detalhamento Solicitado",
 				actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
-				onClose: function(oAction) {
+				onClose: function (oAction) {
 					if (oAction == sap.m.MessageBox.Action.YES) {
 						var open = indexedDB.open("VB_DataBase");
 
-						open.onerror = function() {
+						open.onerror = function () {
 							console.log("não foi possivel encontrar e/ou carregar a base de clientes");
 						};
 
-						open.onsuccess = function(e) {
+						open.onsuccess = function (e) {
 							var db = e.target.result;
 
-							var promise = new Promise(function(resolve, reject) {
+							var promise = new Promise(function (resolve, reject) {
 								that.carregaModelCliente(db, resolve, reject);
 							});
 
-							promise.then(function() {
+							promise.then(function () {
 								/* Reabro o pedido */
-								new Promise(function(resAP, rejAP) {
+								new Promise(function (resAP, rejAP) {
 									var store1 = db.transaction("PrePedidos", "readwrite");
 									var objPedido = store1.objectStore("PrePedidos");
 									var req = objPedido.get(nrPedCli);
 
-									req.onsuccess = function(ret) {
+									req.onsuccess = function (ret) {
 										var result = ret.target.result;
 										var oPed = result;
 										oPed.idStatusPedido = 1; // Em digitação
@@ -279,19 +269,19 @@ sap.ui.define([
 										objPedido = store1.objectStore("PrePedidos");
 										req = objPedido.put(oPed);
 
-										req.onsuccess = function() {
+										req.onsuccess = function () {
 											/* Pedido reaberto */
 											resAP();
 											console.log("O pedido foi reaberto.");
 										};
 
-										req.onerror = function() {
+										req.onerror = function () {
 											/* Erro ao reabir pedido */
 											rejAP("Erro ao reabrir pedido!");
 											console.log("Erro ao abrir o Pedido > " + nrPedCli);
 										};
 									};
-								}).then(function() {
+								}).then(function () {
 									sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
 								});
 							});
@@ -301,7 +291,7 @@ sap.ui.define([
 			});
 		},
 
-		carregaModelCliente: function(db, resolve, reject) {
+		carregaModelCliente: function (db, resolve, reject) {
 			var that = this;
 
 			var codCliente = that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
@@ -311,7 +301,7 @@ sap.ui.define([
 
 			var request = objUsuarios.get(codCliente);
 
-			request.onsuccess = function(e1) {
+			request.onsuccess = function (e1) {
 
 				var result = e1.target.result;
 
@@ -339,7 +329,7 @@ sap.ui.define([
 			};
 		},
 
-		onSelectionChange: function(oEvent) {
+		onSelectionChange: function (oEvent) {
 			oPedidosEnviar = [];
 			oItensPedidoGridEnviar = [];
 			oItensPedidoEnviar = [];
@@ -365,7 +355,7 @@ sap.ui.define([
 			}
 		},
 
-		onEnviarPedido: function(oEvent) {
+		onEnviarPedido: function (oEvent) {
 			var that = this;
 
 			if (oPedidosEnviar.length == 0) {
@@ -380,7 +370,7 @@ sap.ui.define([
 
 				var open = indexedDB.open("VB_DataBase");
 
-				open.onerror = function() {
+				open.onerror = function () {
 					MessageBox.show(open.error.mensage, {
 						icon: MessageBox.Icon.ERROR,
 						title: "Banco não encontrado!",
@@ -388,22 +378,22 @@ sap.ui.define([
 					});
 				};
 
-				open.onsuccess = function() {
+				open.onsuccess = function () {
 					var db = open.result;
 
 					MessageBox.show("Deseja enviar os itens selecionados?", {
 						icon: MessageBox.Icon.WARNING,
 						title: "Envio de itens",
 						actions: ["Enviar", "Cancelar"],
-						onClose: function(oAction) {
+						onClose: function (oAction) {
 
 							if (oAction == "Enviar") {
 
-								new Promise(function(p1res, p1rej) {
+								new Promise(function (p1res, p1rej) {
 
 									that.onVerificarAprovadorUsuario(p1res, p1rej);
 
-								}).then(function() {
+								}).then(function () {
 									var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel");
 
 									oModel.setUseBatch(true);
@@ -425,7 +415,7 @@ sap.ui.define([
 												icon: MessageBox.Icon.ERROR,
 												title: "Erro",
 												actions: [MessageBox.Action.OK],
-												onClose: function() {
+												onClose: function () {
 													that.byId("table_pedidos").setBusy(false);
 												}
 											});
@@ -493,7 +483,7 @@ sap.ui.define([
 
 										oModel.create("/InserirLinhaOV", objItensPedido, {
 											method: "POST",
-											success: function(data) {
+											success: function (data) {
 												/* Se for item do tipo Amostra (YAMO), diminui o saldo do item oItensPedidoGridEnviar */
 												if (data.Mtpos == "YAMO") {
 													/* Não é necessário mais reduzir o saldo no momento do envio, pois os pedidos
@@ -505,7 +495,7 @@ sap.ui.define([
 												console.info("Itens Inserido");
 												that.byId("table_pedidos").setBusy(false);
 											},
-											error: function(error) {
+											error: function (error) {
 												that.byId("table_pedidos").setBusy(false);
 												that.onMensagemErroODATA(error.statusCode);
 											}
@@ -604,14 +594,14 @@ sap.ui.define([
 
 										oModel.create("/InserirOV", objPedido, {
 											method: "POST",
-											success: function(data) {
+											success: function (data) {
 
 												var tx = db.transaction("PrePedidos", "readwrite");
 												var objPedido = tx.objectStore("PrePedidos");
 
 												var requestPrePedidos = objPedido.get(data.Nrpedcli);
 
-												requestPrePedidos.onsuccess = function(e) {
+												requestPrePedidos.onsuccess = function (e) {
 													var oPrePedido = e.target.result;
 
 													oPrePedido.idStatusPedido = 3;
@@ -619,12 +609,12 @@ sap.ui.define([
 
 													var requestPutItens = objPedido.put(oPrePedido);
 
-													requestPutItens.onsuccess = function() {
+													requestPutItens.onsuccess = function () {
 														MessageBox.show("Pedido: " + data.Nrpedcli + " Enviado!", {
 															icon: MessageBox.Icon.SUCCESS,
 															title: "Pedido enviado!",
 															actions: [MessageBox.Action.OK],
-															onClose: function() {
+															onClose: function () {
 
 																for (var o = 0; o < oPedidoGrid.length; o++) {
 																	if (oPedidoGrid[o].nrPedCli == data.Nrpedcli) {
@@ -651,7 +641,7 @@ sap.ui.define([
 													};
 												};
 											},
-											error: function(error) {
+											error: function (error) {
 												that.byId("table_pedidos").setBusy(false);
 												that.onMensagemErroODATA(error.statusCode);
 											}
@@ -660,12 +650,12 @@ sap.ui.define([
 
 									oModel.submitChanges();
 
-								}).catch(function(sErro) {
+								}).catch(function (sErro) {
 
 									MessageBox.error(sErro, {
 										title: "Envio de itens",
 										actions: ["Ok"],
-										onClose: function() {
+										onClose: function () {
 											return;
 										}
 									});
@@ -677,7 +667,7 @@ sap.ui.define([
 			}
 		},
 
-		setaEfetuouCompraCliente: function(db, sCodCliente) {
+		setaEfetuouCompraCliente: function (db, sCodCliente) {
 			var that = this;
 			var objCliente = [];
 
@@ -686,7 +676,7 @@ sap.ui.define([
 
 			var request = objPrePedido.get(sCodCliente);
 
-			request.onsuccess = function(e) {
+			request.onsuccess = function (e) {
 				var result = e.target.result;
 				objCliente = result;
 				objCliente.efetuoucompra = "true";
@@ -695,22 +685,22 @@ sap.ui.define([
 				var objPedido = store1.objectStore("Clientes");
 				var request1 = objPedido.put(objCliente);
 
-				request1.onsuccess = function() {
+				request1.onsuccess = function () {
 					console.log("O campo 'ultimacompra' do cliente foi atualizado para > 'true'");
 				};
-				request1.onerror = function() {
+				request1.onerror = function () {
 					console.log("Erro ao abrir o cliente > " + sCodCliente);
 				};
 			};
 		},
 
-		onAtulizaSaldoAmostra: function(db, oItem) {
+		onAtulizaSaldoAmostra: function (db, oItem) {
 			var txControleAmostras = db.transaction("ControleAmostra", "readwrite");
 			var objControleAmostras = txControleAmostras.objectStore("ControleAmostra");
 
 			var requestGetControleAmostras = objControleAmostras.get(0);
 
-			requestGetControleAmostras.onsuccess = function(event) {
+			requestGetControleAmostras.onsuccess = function (event) {
 				var objBancoControleAmostras = event.target.result;
 
 				objBancoControleAmostras.quantidadeTotal = String(parseInt(objBancoControleAmostras.quantidadeTotal) - oItem.Zzqnt);
@@ -720,22 +710,22 @@ sap.ui.define([
 
 				var requestPutControleAmostras = objControleAmostras.put(objBancoControleAmostras);
 
-				requestPutControleAmostras.onsuccess = function(e) {
+				requestPutControleAmostras.onsuccess = function (e) {
 					console.log("Dados Controle Amostras atualizados. " + event);
 				};
 
-				requestPutControleAmostras.onerror = function(e) {
+				requestPutControleAmostras.onerror = function (e) {
 					console.log("Dados Controle Amostras não foram atualizados. " + event);
 				};
 
 			};
 
-			requestGetControleAmostras.onerror = function(event) {
+			requestGetControleAmostras.onerror = function (event) {
 				console.log("Dados ControleAmostras não foram atualizados :" + event);
 			};
 		},
 
-		onEnviarEntrega: function(oEvent) {
+		onEnviarEntrega: function (oEvent) {
 
 			var that = this;
 			var aIndices = this.byId("table_entregas").getSelectedContextPaths();
@@ -751,18 +741,18 @@ sap.ui.define([
 			}
 			that.byId("table_entregas").setBusy(true);
 			that.byId("btnEnviarEntrega").setBusy(true);
-			
+
 			MessageBox.show("Deseja enviar os itens selecionados?", {
 				icon: MessageBox.Icon.WARNING,
 				title: "Envio de itens",
 				actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
-				onClose: function(oAction) {
+				onClose: function (oAction) {
 
 					if (oAction == sap.m.MessageBox.Action.YES) {
-						
-						new Promise(function(p1res, p1rej) {
+
+						new Promise(function (p1res, p1rej) {
 							that.onVerificarAprovadorUsuario(p1res, p1rej);
-						}).then(function() {
+						}).then(function () {
 							var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel");
 
 							oModel.setUseBatch(true);
@@ -770,7 +760,7 @@ sap.ui.define([
 
 							var open = indexedDB.open("VB_DataBase");
 
-							open.onerror = function() {
+							open.onerror = function () {
 								MessageBox.show(open.error.mensage, {
 									icon: MessageBox.Icon.ERROR,
 									title: "Banco não encontrado!",
@@ -778,7 +768,7 @@ sap.ui.define([
 								});
 							};
 
-							open.onsuccess = function() {
+							open.onsuccess = function () {
 								var db = open.result;
 
 								var oModelEntregas = that.getView().getModel("EntregasEnviar").getData();
@@ -793,7 +783,7 @@ sap.ui.define([
 									vEntregasEnviar.push(oModelEntregas[iIndex]);
 								}
 
-								var p1 = new Promise(function(resolv1, reject) {
+								var p1 = new Promise(function (resolv1, reject) {
 									var tx = db.transaction("EntregaFutura2", "readwrite");
 									var objItensEntrega = tx.objectStore("EntregaFutura2");
 									var ixEF2 = objItensEntrega.index("Vbeln");
@@ -802,7 +792,7 @@ sap.ui.define([
 
 									/* Recupero todas as linhas escolhidas para envio futuro */
 									var req = ixEF2.getAll();
-									req.onsuccess = function(event) {
+									req.onsuccess = function (event) {
 										tempItemEntregar = event.target.result;
 
 										var vPromise = [];
@@ -825,7 +815,7 @@ sap.ui.define([
 									};
 								});
 
-								p1.then(function(vPromise) {
+								p1.then(function (vPromise) {
 									vItensEntregar = vPromise;
 
 									// É necessário identificar o último item de cada pedido a ser enviado para fechar um doc
@@ -851,7 +841,7 @@ sap.ui.define([
 
 									/* Percorro o vetor para enviar ao Sap */
 									for (var i = 0; i < vItensEntregar.length; i++) {
-										vetorPromise.push(new Promise(function(resolve, reject) {
+										vetorPromise.push(new Promise(function (resolve, reject) {
 
 											var horario = that.onDataAtualizacao();
 											var data = horario[0];
@@ -894,7 +884,7 @@ sap.ui.define([
 
 											oModel.create("/EntregaFuturaGravar", tmpItem, {
 												method: "POST",
-												success: function(data) {
+												success: function (data) {
 													var oModelAux = that.getOwnerComponent().getModel("modelAux");
 													var sTipoUsuario = oModelAux.getProperty("/Tipousuario");
 
@@ -905,13 +895,13 @@ sap.ui.define([
 															icon: sap.m.MessageBox.Icon.SUCCESS,
 															title: "Sucesso",
 															actions: [sap.m.MessageBox.Action.OK],
-															onClose: function() {
+															onClose: function () {
 																var txEF3 = db.transaction("EntregaFutura3", "readwrite");
 																var objItensEntrega3 = txEF3.objectStore("EntregaFutura3");
 
 																var rEF3 = objItensEntrega3.put(oItemEntregar);
 
-																rEF3.onsuccess = function(e) {
+																rEF3.onsuccess = function (e) {
 																	console.log("Salvo na tabela de histórico.");
 																};
 															}
@@ -922,7 +912,7 @@ sap.ui.define([
 													var objItensEntrega2 = txEF2.objectStore("EntregaFutura2");
 													var requestDelEntrega2 = objItensEntrega2.delete(oItemEntregar.idEntregaFutura);
 
-													requestDelEntrega2.onsuccess = function(e) {
+													requestDelEntrega2.onsuccess = function (e) {
 														that.byId("table_entregas").setBusy(false);
 														that.byId("btnEnviarEntrega").setBusy(false);
 														console.info("item ef excluido");
@@ -937,7 +927,7 @@ sap.ui.define([
 
 															oModel.create("/EntregaFuturaGerar", sPostValue, {
 																method: "POST",
-																success: function(data) {
+																success: function (data) {
 																	console.log("Encerrou o pedido e enviou a ordem de geração da entrega. ");
 																}
 															});
@@ -954,17 +944,17 @@ sap.ui.define([
 															var txEF = db.transaction("EntregaFutura", "readwrite");
 															var objItensEntrega = txEF.objectStore("EntregaFutura");
 
-															var pGetItem = new Promise(function(rsGetItem, rjGetItem) {
+															var pGetItem = new Promise(function (rsGetItem, rjGetItem) {
 																var requestDelEntrega = objItensEntrega.get(oItemEntregar.Vbeln + oItemEntregar.Matnr);
 
-																requestDelEntrega.onsuccess = function(retorno) {
+																requestDelEntrega.onsuccess = function (retorno) {
 																	var oItem = retorno.target.result;
 
 																	rsGetItem(oItem);
 																};
 															});
 
-															pGetItem.then(function(oItem) {
+															pGetItem.then(function (oItem) {
 																/* Somo a quantidade digitada com a quantidade que o usuário tá enviando nesse
 																momento. */
 																oItem.Slddia = parseInt(oItem.Slddia) + parseInt(oItemEntregar.Fkimg2);
@@ -972,16 +962,16 @@ sap.ui.define([
 																var txEF = db.transaction("EntregaFutura", "readwrite");
 																var objItensEntrega = txEF.objectStore("EntregaFutura");
 
-																var pSetItem = new Promise(function(rsSetItem) {
+																var pSetItem = new Promise(function (rsSetItem) {
 																	var requestDelEntrega = objItensEntrega.put(oItem);
 
-																	requestDelEntrega.onsuccess = function(e) {
+																	requestDelEntrega.onsuccess = function (e) {
 																		console.log("[Promise] saldo do dia acumulado!");
 																		rsSetItem();
 																	};
 																});
 
-																pSetItem.then(function() {
+																pSetItem.then(function () {
 																	console.log("[Efetivada] saldo do dia acumulado!");
 
 																	resolve();
@@ -993,14 +983,14 @@ sap.ui.define([
 
 													};
 
-													requestDelEntrega2.onerror = function(e) {
+													requestDelEntrega2.onerror = function (e) {
 														that.byId("table_entregas").setBusy(false);
 														that.byId("btnEnviarEntrega").setBusy(false);
 														console.info(e);
 														reject();
 													};
 												},
-												error: function(error) {
+												error: function (error) {
 													that.onMensagemErroODATA(error.statusCode);
 												}
 											});
@@ -1008,7 +998,7 @@ sap.ui.define([
 										})); /*vetorPromise*/
 									}
 
-									Promise.all(vetorPromise).then(function(values) {
+									Promise.all(vetorPromise).then(function (values) {
 										that.byId("table_entregas").setBusy(false);
 										that.byId("btnEnviarEntrega").setBusy(false);
 
@@ -1019,32 +1009,31 @@ sap.ui.define([
 									});
 								});
 							};
-						}).catch(function(sErro) {
+						}).catch(function (sErro) {
 							that.byId("table_entregas").setBusy(false);
 							that.byId("btnEnviarEntrega").setBusy(false);
 
 							MessageBox.error(sErro, {
 								title: "Envio de itens",
 								actions: ["Ok"],
-								onClose: function() {
+								onClose: function () {
 									return;
 								}
 							});
 
 						});
 
-					}
-					else{
+					} else {
 						that.byId("table_entregas").setBusy(false);
 						that.byId("btnEnviarEntrega").setBusy(false);
 					}
-					
+
 				}
 			});
 		},
 		/*FIM onEnviarEntrega*/
 
-		onDataAtualizacao: function() {
+		onDataAtualizacao: function () {
 			var date = new Date();
 			var dia = String(date.getDate());
 			var mes = String(date.getMonth() + 1);
@@ -1075,7 +1064,7 @@ sap.ui.define([
 			return [data, horario];
 		},
 
-		onDeletarPedido: function(oEvent) {
+		onDeletarPedido: function (oEvent) {
 			var that = this;
 			var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel");
 
@@ -1100,7 +1089,7 @@ sap.ui.define([
 
 				var open = indexedDB.open("VB_DataBase");
 
-				open.onerror = function() {
+				open.onerror = function () {
 					MessageBox.show(open.error.mensage, {
 						icon: MessageBox.Icon.ERROR,
 						title: "Banco não encontrado!",
@@ -1108,7 +1097,7 @@ sap.ui.define([
 					});
 				};
 
-				open.onsuccess = function() {
+				open.onsuccess = function () {
 					var db = open.result;
 
 					that.byId("table_pedidos").setBusy(true);
@@ -1126,7 +1115,7 @@ sap.ui.define([
 							};
 
 							oModel.remove("/DelPrepostos(IvAprovado='" + aux.Reprov + "',IvNrpedcli='" + aux.Nrpedcli + "')", {
-								success: function(retorno) {
+								success: function (retorno) {
 
 									var mensagem = "Pedido" + aux.Nrpedcli + " deletado com sucesso!";
 
@@ -1135,7 +1124,7 @@ sap.ui.define([
 											icon: sap.m.MessageBox.Icon.SUCCESS,
 											title: "Sucesso!",
 											actions: [sap.m.MessageBox.Action.OK],
-											onClose: function(oAction) {
+											onClose: function (oAction) {
 												that.byId("table_pedidos").setBusy(false);
 
 												var store1 = db.transaction("PrePedidos", "readwrite");
@@ -1143,18 +1132,18 @@ sap.ui.define([
 
 												var request = objPedido.delete(aux.Nrpedcli);
 
-												request.onsuccess = function() {
+												request.onsuccess = function () {
 
 													mensagem = "Pedido Preposto " + aux.Nrpedcli + " deletado com sucesso!";
 													console.log(mensagem);
 
 												};
-												request.onerror = function() {
+												request.onerror = function () {
 													console.log("Pedido não foi deletado!");
 												};
 
 												var store = db.transaction("ItensPedido", "readwrite").objectStore("ItensPedido");
-												store.openCursor().onsuccess = function(event) {
+												store.openCursor().onsuccess = function (event) {
 													// consulta resultado do event
 													var cursor = event.target.result;
 													if (cursor) {
@@ -1164,10 +1153,10 @@ sap.ui.define([
 															var objItemPedido = store2.objectStore("ItensPedido");
 
 															request = objItemPedido.delete(cursor.key);
-															request.onsuccess = function() {
+															request.onsuccess = function () {
 																console.log("Itens Pedido deletado(s)!");
 															};
-															request.onerror = function() {
+															request.onerror = function () {
 																console.log("Itens Pedido não foi deletado(s)!");
 															};
 														}
@@ -1180,7 +1169,7 @@ sap.ui.define([
 										}
 									);
 								},
-								error: function(error) {
+								error: function (error) {
 									console.log(error);
 									that.byId("table_pedidos").setBusy(false);
 									that.onMensagemErroODATA(error.statusCode);
@@ -1193,7 +1182,7 @@ sap.ui.define([
 
 							var request = objPedido.delete(nrPed);
 
-							request.onsuccess = function() {
+							request.onsuccess = function () {
 
 								var mensagem = "Pedido" + nrPed + " deletado com sucesso!";
 
@@ -1202,19 +1191,19 @@ sap.ui.define([
 										icon: sap.m.MessageBox.Icon.SUCCESS,
 										title: "Sucesso!",
 										actions: [sap.m.MessageBox.Action.OK],
-										onClose: function(oAction) {
+										onClose: function (oAction) {
 											that.byId("table_pedidos").setBusy(false);
 										}
 									}
 								);
 							};
-							request.onerror = function() {
+							request.onerror = function () {
 								that.byId("table_pedidos").setBusy(true);
 								console.log("Pedido não foi deletado!");
 							};
 
 							var store = db.transaction("ItensPedido", "readwrite").objectStore("ItensPedido");
-							store.openCursor().onsuccess = function(event) {
+							store.openCursor().onsuccess = function (event) {
 								// consulta resultado do event
 								var cursor = event.target.result;
 								if (cursor) {
@@ -1224,10 +1213,10 @@ sap.ui.define([
 										var objItemPedido = store2.objectStore("ItensPedido");
 
 										request = objItemPedido.delete(cursor.key);
-										request.onsuccess = function() {
+										request.onsuccess = function () {
 											console.log("Itens Pedido deletado(s)!");
 										};
-										request.onerror = function() {
+										request.onerror = function () {
 											console.log("Itens Pedido não foi deletado(s)!");
 										};
 									}
@@ -1244,7 +1233,7 @@ sap.ui.define([
 			}
 		},
 
-		onExcluirEntregas: function(oEvent) {
+		onExcluirEntregas: function (oEvent) {
 			var that = this;
 			var aIndices = this.byId("table_entregas").getSelectedContextPaths();
 
@@ -1262,7 +1251,7 @@ sap.ui.define([
 				icon: MessageBox.Icon.WARNING,
 				title: "Exclusão de itens",
 				actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
-				onClose: function(oAction) {
+				onClose: function (oAction) {
 
 					if (oAction == sap.m.MessageBox.Action.YES) {
 
@@ -1279,7 +1268,7 @@ sap.ui.define([
 
 						var open = indexedDB.open("VB_DataBase");
 
-						open.onerror = function() {
+						open.onerror = function () {
 							MessageBox.show(open.error.mensage, {
 								icon: MessageBox.Icon.ERROR,
 								title: "Banco não encontrado!",
@@ -1287,7 +1276,7 @@ sap.ui.define([
 							});
 						};
 
-						open.onsuccess = function() {
+						open.onsuccess = function () {
 							var db = open.result;
 
 							var oModelEntregas = that.getView().getModel("EntregasEnviar").getData();
@@ -1301,7 +1290,7 @@ sap.ui.define([
 								vEntregasExcluir.push(oModelEntregas[iIndex]);
 							}
 
-							var p1 = new Promise(function(resolv1, reject) {
+							var p1 = new Promise(function (resolv1, reject) {
 
 								var tx = db.transaction("EntregaFutura2", "readwrite");
 								var objItensEntrega = tx.objectStore("EntregaFutura2");
@@ -1312,7 +1301,7 @@ sap.ui.define([
 								/* Recupero todas as linhas escolhidas para envio futuro */
 								var req = ixEF2.getAll();
 
-								req.onsuccess = function(event) {
+								req.onsuccess = function (event) {
 									tempItemEntregar = event.target.result;
 
 									var vPromise = [];
@@ -1332,7 +1321,7 @@ sap.ui.define([
 								};
 							});
 
-							p1.then(function(vPromisse) {
+							p1.then(function (vPromisse) {
 								vEntregasExcluir = vPromisse;
 
 								for (var i = 0; i < vEntregasExcluir.length; i++) {
@@ -1343,7 +1332,7 @@ sap.ui.define([
 									var oModelAux = that.getOwnerComponent().getModel("modelAux");
 									var sTipoUsuario = oModelAux.getProperty("/Tipousuario");
 
-									requestDelEntrega2.onsuccess = function(e) {
+									requestDelEntrega2.onsuccess = function (e) {
 										that.byId("table_entregas").setBusy(false);
 										console.info("item ef excluido do banco local.");
 									};
@@ -1358,7 +1347,7 @@ sap.ui.define([
 
 										oModel.create("/EntregaFuturaExcluir", sPostValue, {
 											method: "POST",
-											success: function(data) {
+											success: function (data) {
 												that.onLoadEntregas();
 												console.log("Excluiu o PV no SAP.");
 											}
@@ -1377,17 +1366,17 @@ sap.ui.define([
 		},
 		/*FIM onExcluirEntregas*/
 
-		onMontarCabecalho: function(that, idPedido, dadosPedidoCab) {
+		onMontarCabecalho: function (that, idPedido, dadosPedidoCab) {
 
 		},
 		/*FIM onMontarCabecalho*/
 
-		onMontarLinha: function() {
+		onMontarLinha: function () {
 
 		},
 		/*FIM onMontarLinha*/
 
-		onMensagemErroODATA: function(codigoErro) {
+		onMensagemErroODATA: function (codigoErro) {
 
 			if (codigoErro == 0) {
 				sap.m.MessageBox.show(
@@ -1395,7 +1384,7 @@ sap.ui.define([
 						icon: sap.m.MessageBox.Icon.WARNING,
 						title: "Falha na Conexão!",
 						actions: [sap.m.MessageBox.Action.OK],
-						onClose: function(oAction) {
+						onClose: function (oAction) {
 
 						}
 					}
@@ -1406,7 +1395,7 @@ sap.ui.define([
 						icon: sap.m.MessageBox.Icon.WARNING,
 						title: "Erro no programa Fiori!",
 						actions: [sap.m.MessageBox.Action.OK],
-						onClose: function(oAction) {
+						onClose: function (oAction) {
 
 						}
 					}
@@ -1417,7 +1406,7 @@ sap.ui.define([
 						icon: sap.m.MessageBox.Icon.WARNING,
 						title: "Erro no programa Abap!",
 						actions: [sap.m.MessageBox.Action.OK],
-						onClose: function(oAction) {
+						onClose: function (oAction) {
 
 						}
 					}
@@ -1428,7 +1417,7 @@ sap.ui.define([
 						icon: sap.m.MessageBox.Icon.WARNING,
 						title: "Erro no programa Abap!",
 						actions: [sap.m.MessageBox.Action.OK],
-						onClose: function(oAction) {
+						onClose: function (oAction) {
 
 						}
 					}
@@ -1439,7 +1428,7 @@ sap.ui.define([
 						icon: sap.m.MessageBox.Icon.WARNING,
 						title: "Erro no programa Abap!",
 						actions: [sap.m.MessageBox.Action.OK],
-						onClose: function(oAction) {
+						onClose: function (oAction) {
 
 						}
 					}
@@ -1450,7 +1439,7 @@ sap.ui.define([
 						icon: sap.m.MessageBox.Icon.WARNING,
 						title: "Erro no programa Abap!",
 						actions: [sap.m.MessageBox.Action.OK],
-						onClose: function(oAction) {
+						onClose: function (oAction) {
 
 						}
 					}
@@ -1459,12 +1448,12 @@ sap.ui.define([
 		},
 		/*FIM onMensagemErroODATA*/
 
-		onVerificarAprovadorUsuario: function(p1res, p1rej) {
+		onVerificarAprovadorUsuario: function (p1res, p1rej) {
 				var oModel = this.getOwnerComponent().getModel("modelAux").getProperty("/DBModel");
 				var CodRepres = this.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 
 				oModel.read("/FluxoAprovacao('" + CodRepres + "')", {
-					success: function(retorno) {
+					success: function (retorno) {
 						var bExisteAprovadores = retorno.ERetorno == "S";
 
 						if (bExisteAprovadores) {
@@ -1473,7 +1462,7 @@ sap.ui.define([
 							p1rej("Usuário atual não possui aprovadores cadastrados, favor entrar em contato com a administração do sistema.");
 						}
 					},
-					error: function(error) {
+					error: function (error) {
 						console.log(error);
 						p1rej("Erro ao verificar aprovadores.");
 					}

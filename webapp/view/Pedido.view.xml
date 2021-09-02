@@ -21,62 +21,6 @@
 					</Toolbar>
 				</content>
 				<content>
-					<!--<Table id="table_pedidos" width="100%" backgroundDesign="Translucent"-->
-					<!--	items="{ path:'Pedidos>/', sorter: { path: 'IdStatusPedido', descending: false}}" mode="Delete" delete="onExcluirPedido"-->
-					<!--	itemPress="onItemPress" growingThreshold="10" growingTriggerText="Proximos Pedidos >>>" growing="true"-->
-					<!--	noDataText="Nenhum pedido cadastrado para o cliente" busyIndicatorDelay="0" fixedLayout="false">-->
-					<!--	<headerToolbar>-->
-					<!--		<Toolbar id="lineItemsToolbar">-->
-					<!--			<Title id="lineItemsHeader" text="Pedidos"/>-->
-					<!--			<ToolbarSpacer/>-->
-					<!--			<Label text="Digitar Pedido"/>-->
-					<!--			<Button id="idAddPedido" icon="sap-icon://add" press="onAddPedido"/>-->
-					<!--		</Toolbar>-->
-					<!--	</headerToolbar>-->
-					<!--	<columns>-->
-					<!--		<Column minScreenWidth="320px" hAlign="Left" width="auto" popinDisplay="Inline">-->
-					<!--			<Text text="Data"/>-->
-					<!--		</Column>-->
-					<!--		<Column minScreenWidth="550px" demandPopin="true" popinDisplay="Inline">-->
-					<!--			<Text text="Valor total"/>-->
-					<!--		</Column>-->
-					<!--		<Column minScreenWidth="550px" demandPopin="true" popinDisplay="Inline" hAlign="Left">-->
-					<!--			<Text text="N°Ped"/>-->
-					<!--		</Column>-->
-					<!--		<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline">-->
-					<!--			<Text text="Total Itens"/>-->
-					<!--		</Column>-->
-					<!--		<Column minScreenWidth="600px" demandPopin="true" popinDisplay="Inline">-->
-					<!--			<Text text="Valor verba"/>-->
-					<!--		</Column>-->
-					<!--		<Column minScreenWidth="505px" demandPopin="true" popinDisplay="Inline">-->
-					<!--			<Text text="Rentab. %"/>-->
-					<!--		</Column>-->
-					<!--		<Column minScreenWidth="900px" demandPopin="true" popinDisplay="Inline">-->
-					<!--			<Text text="Rentab"/>-->
-					<!--		</Column>-->
-					<!--		<Column minScreenWidth="320px" hAlign="Left" width="100px" popinDisplay="Inline">-->
-					<!--			<Text text="Status"/>-->
-					<!--		</Column>-->
-					<!--	</columns>-->
-					<!--	<items>-->
-					<!--		<ColumnListItem type="DetailAndActive" detailPress="onEditarPress">-->
-					<!--			<cells>-->
-					<!--				<Text text="{path : 'Pedidos>DataFim', formatter:'.myFormatterData'} - {path : 'Pedidos>HoraFim', formatter:'.myFormatterHora'}"/>-->
-					<!--				<Text-->
-					<!--					text="R$: {path : 'Pedidos>ValorTotal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>-->
-					<!--				<Text text="{path : 'Pedidos>NrPedido'}"/>-->
-					<!--				<Text text="{path : 'Pedidos>TotalItens'}"/>-->
-					<!--				<Text-->
-					<!--					text="R$: {path :'Pedidos>TotalVerba', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>-->
-					<!--				<ObjectListItem number="{path: 'Pedidos>RentTotal', formatter: '.formatRentabilidade'} %"-->
-					<!--					numberState="{= ${Pedidos>RentTotal} &gt;= 0 ? 'Success' : 'Error' }"/>-->
-					<!--				<Image id="idRentabilidadePedidoImg" src="{path : 'Pedidos>RentTotalImg'}" width="15%"/>-->
-					<!--				<Text text="{path :'Pedidos>SituacaoPedido'}"/>-->
-					<!--			</cells>-->
-					<!--		</ColumnListItem>-->
-					<!--	</items>-->
-					<!--</Table>-->
 					<Table id="table_pedidos" width="100%" backgroundDesign="Translucent" items="{ path:'Pedidos>/', sorter: { path: 'NrPedido' }}" mode="Delete" delete="onExcluirPedido" itemPress="onItemPress"
 						growingThreshold="12" growingTriggerText="Proximos Pedidos >>" growing="true" noDataText="Nenhum pedido cadastrado para o cliente" busyIndicatorDelay="0" fixedLayout="false">
 						<headerToolbar>
