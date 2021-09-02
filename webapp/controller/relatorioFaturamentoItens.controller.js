@@ -44,6 +44,8 @@ sap.ui.define([
 				RepreFim: "",
 				MatnrIni: "",
 				MatnrFim: "",
+				Mvgr1Ini: "",
+				Mvgr1Fim: "",
 				Periodo: ""
 			};
 
@@ -57,6 +59,17 @@ sap.ui.define([
 			that.vetorResumoEmpresa = [];
 			var oModelResumoEmpresa = new JSONModel(that.vetorResumoEmpresa);
 			that.setModel(oModelResumoEmpresa, "modelResumoEmpresa");
+			
+			new Promise(function(res,rej) {
+				
+				that.onBuscarClientes(repres, res, rej, that);
+				
+				
+			}).then(function(retorno){
+				
+			}).catch(function(error){
+				
+			});
 
 			that.oModel.read("/Centros", {
 				urlParameters: {
@@ -83,6 +96,7 @@ sap.ui.define([
 					//var vetorOrdens = [];
 					var vetorRepres = [];
 					var vetorMaterial = [];
+					var vetorCategoria = [];
 
 					for (var i = 0; i < vetorClientes.length; i++) {
 						var vAchouRede = false;
@@ -90,6 +104,7 @@ sap.ui.define([
 						//var vAchouOrdem = false;
 						var vAchouRepres = false;
 						var vAchouMaterial = false;
+						var vAchouCategoria = false;
 
 						for (var j = 0; j < vetorRede.length; j++) {
 
@@ -136,6 +151,15 @@ sap.ui.define([
 							}
 						}
 						
+						for (var o = 0; o < vetorCategoria.length; o++) {
+
+							if ((vetorClientes[i].Mvgr1 == vetorCategoria[o].Mvgr1) || vetorClientes[i].Mvgr1 == "") {
+								vAchouCategoria = true;
+
+								break;
+							}
+						}
+						
 						if (vAchouRede == false) {
 							vetorRede.push(vetorClientes[i]);
 						}
@@ -150,6 +174,9 @@ sap.ui.define([
 						}
 						if (vAchouMaterial == false) {
 							vetorMaterial.push(vetorClientes[i]);
+						}
+						if (vAchouCategoria == false) {
+							vetorCategoria.push(vetorClientes[i]);
 						}
 					}
 
@@ -170,6 +197,9 @@ sap.ui.define([
 					
 					var oModelMaterial = new JSONModel(vetorMaterial);
 					that.setModel(oModelMaterial, "modelMaterial");
+					
+					var oModelCategoria = new JSONModel(vetorCategoria);
+					that.setModel(oModelCategoria, "modelCategoria");
 				},
 				error: function (error) {
 					that.onMensagemErroODATA(error);
@@ -397,6 +427,8 @@ sap.ui.define([
 			var RepreFim = that.getModel("modelParametros").getProperty("/LifnrFim");
 			var MatnrIni = that.getModel("modelParametros").getProperty("/MatnrIni");
 			var MatnrFim = that.getModel("modelParametros").getProperty("/MatnrFim");
+			var Mvgr1Ini = that.getModel("modelParametros").getProperty("/Mvgr1Ini");
+			var Mvgr1Fim = that.getModel("modelParametros").getProperty("/Mvgr1Fim");
 			var PerioAux = that.getModel("modelParametros").getProperty("/Periodo");
 			var PerioSplit = PerioAux.split(" - ");
 			var PerioIni = PerioSplit[0];
@@ -420,6 +452,8 @@ sap.ui.define([
 						"' and RepreFim eq '" + RepreFim +
 						"' and MatnrIni eq '" + MatnrIni +
 						"' and MatnrFim eq '" + MatnrFim +
+						"' and Mvgr1Ini eq '" + Mvgr1Ini +
+						"' and Mvgr1Fim eq '" + Mvgr1Fim +
 						"' and PerioIni eq '" + PerioIni +
 						"' and PerioFim eq '" + PerioFim + "'"
 				},
@@ -692,5 +726,38 @@ sap.ui.define([
 
 			this.byId("idMaterialFim").suggest();
 		},
+		
+		onSuggestCategoriaIni: function (evt) {
+
+			var sValue = evt.getSource().getValue();
+			var aFilters = [];
+			var oFilter = [new sap.ui.model.Filter("Mvgr1", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Mvgr1Text", sap.ui.model.FilterOperator.Contains, sValue)
+			];
+
+			var allFilters = new sap.ui.model.Filter(oFilter, false);
+
+			aFilters.push(allFilters);
+			this.byId("idCategoriaIni").getBinding("suggestionItems").filter(aFilters);
+
+			this.byId("idCategoriaIni").suggest();
+		},
+		
+		onSuggestCategoriaFim: function (evt) {
+
+			var sValue = evt.getSource().getValue();
+			var aFilters = [];
+			var oFilter = [new sap.ui.model.Filter("Mvgr1", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Mvgr1Text", sap.ui.model.FilterOperator.Contains, sValue)
+			];
+
+			var allFilters = new sap.ui.model.Filter(oFilter, false);
+
+			aFilters.push(allFilters);
+			this.byId("idCategoriaFim").getBinding("suggestionItems").filter(aFilters);
+
+			this.byId("idCategoriaFim").suggest();
+		},
+		
 	});
 });
