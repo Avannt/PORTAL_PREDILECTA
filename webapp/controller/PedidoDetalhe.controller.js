@@ -21,6 +21,7 @@ sap.ui.define([
 		onLoadFields: function () {
 
 			var that = this;
+			var NrPedido = that.getModelGlobal("modelAux").getProperty("/NrPedido");	
 
 			new Promise(function (resolve, reject) {
 
@@ -28,13 +29,12 @@ sap.ui.define([
 
 			}).then(function () {
 
-				if (that.getModelGlobal("modelAux").getProperty("/NrPedido") != "") {
+				if (NrPedido != "") {
 
 					new Promise(function (res, rej) {
-
+						
 						that.byId("idPedidoDetalhe").setBusy(true);
-
-						that.onBuscarPedido(res, rej, that.getModelGlobal("modelAux").getProperty("/NrPedido"));
+						that.onBuscarPedido(NrPedido, res, rej);
 
 					}).then(function (dataPed) {
 

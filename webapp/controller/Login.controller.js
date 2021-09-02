@@ -19,45 +19,53 @@ sap.ui.define([
 
 			_onLoadFields: function () {
 				var that = this;
-				
+
 				this.onInicializaModels();
 				/* 
 				Alterar aqui o ambiente:
 				PRD => ReleasePRD = TRUEa
 				QAS => ReleasePRD = FALSE
 				*/
-				this.getOwnerComponent().getModel("modelAux").setProperty("/ReleasePRD", false);
-				this.getOwnerComponent().getModel("modelAux").setProperty("/VersaoApp", "1.0");
-				this.getOwnerComponent().getModel("modelAux").setProperty("/Werks", "1000");
-				this.getOwnerComponent().getModel("modelAux").setProperty("/EditarIndexItem", 0);
-				this.getOwnerComponent().getModel("modelAux").setProperty("/bConectado", false);
+				this.getModelGlobal("modelAux").setProperty("/ReleasePRD", false);
+				this.getModelGlobal("modelAux").setProperty("/VersaoApp", "1.0");
+				this.getModelGlobal("modelAux").setProperty("/Werks", "1000");
+				this.getModelGlobal("modelAux").setProperty("/EditarIndexItem", 0);
+				this.getModelGlobal("modelAux").setProperty("/bConectado", false);
 
 				//Tipo de dispositivo:
 				//01 - Android
 				//02 - Portal
 				//03 - Todos
 
-				this.getOwnerComponent().getModel("modelAux").setProperty("/SistemaOper", "02");
+				this.getModelGlobal("modelAux").setProperty("/SistemaOper", "02");
 
 				var sUrl;
 				//Versão App
-				if (this.getOwnerComponent().getModel("modelAux").getProperty("/ReleasePRD")) {
+				if (this.getModelGlobal("modelAux").getProperty("/ReleasePRD")) {
 
-					sUrl = "https://srvaplsapdev.predilecta.com.br:10443/sap/opu/odata/sap/ZSF_FV_SRV/"; // QAS
+					//sUrl = "http://172.16.200.130:8000/sap/opu/odata/sap/ZSF_FV_SRV/"; // DEV 310
+					sUrl = "http://srvaplsapqas.predilecta.com.br:8010/sap/opu/odata/sap/ZSF_FV_SRV/"; // QAS 410
 
-					var oModel = new sap.ui.model.odata.v2.ODataModel(sUrl, {
-						json: true,
+					var oModel = new sap.ui.model.odata.ODataModel(sUrl, {
 						user: "t_rcardilo",
-						password: "sap123"
+						password: "sap123",
+						headers: {
+							"sap-client": "410",
+							"sap-language": "PT",
+							"Authorization": "Basic " + btoa("t_rcardilo" + ":" + "sap123"),
+							"Access-Control-Allow-Origin": "*"
+						}
 					});
 
 					this.getView().setModel(oModel);
-					this.getOwnerComponent().getModel("modelAux").setProperty("/DBModel", oModel);
+					this.getModelGlobal("modelAux").setProperty("/DBModel", oModel);
+					this.getModelGlobal("modelAux").setProperty("/Url", sUrl);
 
 				} else { // QAS
 
-					this.getOwnerComponent().getModel("modelAux").setProperty("/DBModel", this.getView().getModel());
-
+					sUrl = "/sap/opu/odata/sap/ZSF_FV_SRV/";
+					this.getModelGlobal("modelAux").setProperty("/DBModel", this.getView().getModel());
+					this.getModelGlobal("modelAux").setProperty("/Url", sUrl);
 				}
 			},
 
@@ -78,17 +86,19 @@ sap.ui.define([
 					DBModel: "",
 					ReleasePRD: "",
 					Lifnr: "",
-					Email: ""
+					Email: "",
+					Url: "/sap/opu/odata/sap/ZSF_FV_SRV/"
 				});
-				this.getOwnerComponent().setModel(oModelAux, "modelAux");
+				this.setModelGlobal(oModelAux, "modelAux");
 
 				var oModel = new sap.ui.model.json.JSONModel();
-				this.getOwnerComponent().setModel(oModel, "modelCliente");
-				this.getOwnerComponent().setModel(oModel, "modelMenu");
+				this.setModelGlobal(oModel, "modelCliente");
+				this.setModelGlobal(oModel, "modelMenu");
+
 			},
 
 			retornaDataAtualizacao: function () {
-				
+
 				var date = new Date();
 				var dia = String(date.getDate());
 				var mes = String(date.getMonth() + 1);
@@ -162,7 +172,7 @@ sap.ui.define([
 
 			getImei: function () {
 				var that = this;
-				var isTablet = this.getOwnerComponent().getModel("modelAux").getProperty("/isTablet");
+				var isTablet = this.getModelGlobal("modelAux").getProperty("/isTablet");
 				var isTablet = "Android";
 				window.plugins.sim.hasReadPermission(successCallbackTemPermissao, successCallbackTemPermissao);
 
@@ -184,7 +194,7 @@ sap.ui.define([
 				}
 				//READ PERMISSION
 				function successCallbackImei(result) {
-					that.getOwnerComponent().getModel("modelAux").setProperty("/Imei", result.deviceId);
+					that.getModelGlobal("modelAux").setProperty("/Imei", result.deviceId);
 					console.log(result);
 				}
 
@@ -235,33 +245,32 @@ sap.ui.define([
 				that._ItemDialog.open();
 
 			},
-			
-			onPularSenha: function(){
+
+			onPularSenha: function () {
 				sap.ui.getCore().byId("idSenha").focus();
 			},
-			
-			onPularSenha1: function(){
+
+			onPularSenha1: function () {
 				sap.ui.getCore().byId("idSenhaNova").focus();
 			},
-			
-			onPularSenha2: function(){
+
+			onPularSenha2: function () {
 				sap.ui.getCore().byId("idSenhaNova2").focus();
 			},
-			
+
 			onDialogMudarSenha: function () {
 
 				var that = this;
-				
+
 				var modelAux = this.getModelGlobal("modelAux").getData();
-				
+
 				// var codRrepres = sap.ui.getCore().byId("idCodRepres").getValue();
 				// var Senha = sap.ui.getCore().byId("idSenha").getValue();
 				var SenhaNova = sap.ui.getCore().byId("idSenhaNova").getValue();
 				var SenhaNova2 = sap.ui.getCore().byId("idSenhaNova2").getValue();
-				
-				
-				if(modelAux.CodRepres == "" || modelAux.CodRepres == "undefined"){
-					
+
+				if (modelAux.CodRepres == "" || modelAux.CodRepres == "undefined") {
+
 					sap.m.MessageBox.show(
 						"Preencher o código do representante!", {
 							icon: sap.m.MessageBox.Icon.WARNING,
@@ -272,9 +281,9 @@ sap.ui.define([
 							}
 						}
 					);
-					
-				} else if(modelAux.Senha == "" || modelAux.Senha == "undefined"){
-					
+
+				} else if (modelAux.Senha == "" || modelAux.Senha == "undefined") {
+
 					sap.m.MessageBox.show(
 						"Preencher a Senha atual!", {
 							icon: sap.m.MessageBox.Icon.WARNING,
@@ -285,7 +294,7 @@ sap.ui.define([
 							}
 						}
 					);
-					
+
 				} else if (SenhaNova != SenhaNova2) {
 
 					sap.m.MessageBox.show(
@@ -300,13 +309,14 @@ sap.ui.define([
 					);
 
 				} else {
-					
+
 					// var modelAux = this.getModelGlobal("modelAux").getData();
 
 					sap.ui.getCore().byId("idDialogAlterarSenha").setBusy(true);
 
 					modelAux.DBModel.read("/TrocarSenha(IvUsuario='" + modelAux.CodRepres + "',IvSenha='" + modelAux.Senha + "',IvSistOper='" +
-						modelAux.SistemaOper + "',IvImei='" + modelAux.Imei + "',IvVersaoApp='" + modelAux.VersaoApp + "',IvSenhaNova='" + SenhaNova + "')", {
+						modelAux.SistemaOper + "',IvImei='" + modelAux.Imei + "',IvVersaoApp='" + modelAux.VersaoApp + "',IvSenhaNova='" + SenhaNova +
+						"')", {
 							success: function (retorno) {
 
 								MessageBox.show("Senha foi alterada com sucesso!", {
@@ -314,14 +324,14 @@ sap.ui.define([
 									title: "Confirmação",
 									actions: [MessageBox.Action.OK],
 									onClose: function () {
-										
+
 										if (that._ItemDialog) {
 											that._ItemDialog.destroy(true);
 										}
-										
+
 									}
 								});
-								
+
 							},
 							error: function (error) {
 
@@ -332,27 +342,27 @@ sap.ui.define([
 						});
 				}
 			},
-			
+
 			onFecharAlteracaoSenha: function () {
 
 				if (this._ItemDialog) {
 					this._ItemDialog.destroy(true);
 				}
-				
+
 			},
 
 			onStartWorking: function () {
 
 				var that = this;
-				
+
 				this.getView().byId("idPageLogin").setBusy(true);
 				var CodRepres = this.byId("idLogin").getValue();
 				var Senha = this.byId("idSenha").getValue();
 				var Imei = "WEB";
-				
-				var VersaoApp = this.getOwnerComponent().getModel("modelAux").getProperty("/VersaoApp");
-				var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel");
-				var SistemaOp = that.getOwnerComponent().getModel("modelAux").getProperty("/SistemaOper");
+
+				var VersaoApp = this.getModelGlobal("modelAux").getProperty("/VersaoApp");
+				var oModel = that.getModelGlobal("modelAux").getProperty("/DBModel");
+				var SistemaOp = that.getModelGlobal("modelAux").getProperty("/SistemaOper");
 
 				oModel.read("/Logins(IvUsuario='" + CodRepres + "',IvSenha='" + Senha + "',IvSistOper='" + SistemaOp +
 					"',IvImei='" + Imei + "',IvVersaoApp='" + VersaoApp + "')", {
@@ -371,32 +381,32 @@ sap.ui.define([
 								success: function (result) {
 									var vetor = result.results.sort();
 									that.getModelGlobal("modelMenu").setData(vetor);
-									
-									sap.m.MessageBox.show(
-										"Usuário autenticado com sucesso!", {
-											icon: sap.m.MessageBox.Icon.SUCCESS,
-											title: "Autenticação!",
-											actions: [sap.m.MessageBox.Action.OK],
-											onClose: function (oAction) {
-		
-												sap.ui.core.UIComponent.getRouterFor(that).navTo("menu");
-												that.getView().byId("idPageLogin").setBusy(false);
-											}
-										}
-									);
+
+									sap.ui.core.UIComponent.getRouterFor(that).navTo("menu");
+									that.getView().byId("idPageLogin").setBusy(false);
+
+									// sap.m.MessageBox.show(
+									// 	"Usuário autenticado com sucesso!", {
+									// 		icon: sap.m.MessageBox.Icon.SUCCESS,
+									// 		title: "Autenticação!",
+									// 		actions: [sap.m.MessageBox.Action.OK],
+									// 		onClose: function (oAction) {
+									// 		}
+									// 	}
+									// );
 
 								},
 								error: function (error) {
-									
+
 									that.getView().byId("idPageLogin").setBusy(false);
-									
+
 									console.log(error);
 									that.onMensagemErroODATA(error);
 								}
 							});
 						},
 						error: function (error) {
-							
+
 							that.getView().byId("idPageLogin").setBusy(false);
 							console.log(error);
 							that.onMensagemErroODATA(error);

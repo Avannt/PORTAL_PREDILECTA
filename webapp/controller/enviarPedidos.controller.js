@@ -6,16 +6,10 @@ sap.ui.define([
 	"sap/ui/model/Filter",
 	"sap/ui/model/FilterOperator",
 	"sap/m/MessageBox",
-	"sap/ui/model/json/JSONModel"
-], function (BaseController, Filter, FilterOperator, MessageBox, JSONModel) {
+	"sap/ui/model/json/JSONModel",
+	"sap/ui/model/odata/v2/ODataModel"
+], function (BaseController, Filter, FilterOperator, MessageBox, JSONModel, ODataModel) {
 	"use strict";
-
-	var oPedidosEnviar = [];
-	var oItensPedidoGrid = [];
-	var oPedidoGrid = [];
-	var oItensPedidoEnviar = [];
-	var oItensPedidoGridEnviar = [];
-	var envioPedidos;
 
 	return BaseController.extend("application.controller.enviarPedidos", {
 
@@ -28,46 +22,49 @@ sap.ui.define([
 			var that = this;
 
 			that.oModel = that.getModel();
-
-			oPedidosEnviar = [];
-			oItensPedidoGrid = [];
-			oPedidoGrid = [];
-			oItensPedidoEnviar = [];
-			oItensPedidoGridEnviar = [];
-
-			//Se for true mostrar a grid de envio de pedidos, senão mostrar a grid de entrega futura.
-			envioPedidos = that.getOwnerComponent().getModel("modelAux").getProperty("/bEnviarPedido");
+			var CodRepres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
 
 			that.byId("table_pedidos").setBusy(true);
 
-			new Promise(function (res, rej) {
+			new Promise(function (resCentro, rejCentro) {
 
-				var Cliente = "";
-				var CodRepres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
-				var Envio = true;
+				that.onBuscarCentros(CodRepres, resCentro, rejCentro, that);
 
-				that.onBuscarPedidos(Cliente, CodRepres, Envio, res, rej, that);
+			}).then(function (DataCentro) {
 
-			}).then(function (result) {
-
-				that.vetorPedidos = result.results;
-				var oModel = new JSONModel(that.vetorPedidos);
-				that.setModel(oModel, "Pedidos");
-
-				that.byId("table_pedidos").setBusy(false);
+				var oModelCentro = new JSONModel(DataCentro);
+				that.setModel(oModelCentro, "Centros");
 
 				new Promise(function (resC, rejC) {
 
-					var CodRepres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
 					that.onBuscarClientes(CodRepres, resC, rejC, that);
 
-				}).then(function (dado) {
+				}).then(function (DataCliente) {
 
-					var oModelClientes = new JSONModel(dado);
+					var oModelClientes = new JSONModel(DataCliente);
 					that.setModel(oModelClientes, "Clientes");
-					
+
 					that.byId("table_pedidos").setBusy(false);
 
+					new Promise(function (res, rej) {
+
+						var Cliente = "";
+						var Envio = true;
+						that.onBuscarPedidos(Cliente, CodRepres, Envio, res, rej, that);
+
+					}).then(function (dataPedidos) {
+
+						that.vetorPedidos = dataPedidos;
+						var oModel = new JSONModel(that.vetorPedidos);
+						that.setModel(oModel, "Pedidos");
+
+						that.byId("table_pedidos").setBusy(false);
+
+					}).catch(function (error) {
+
+						that.byId("table_pedidos").setBusy(false);
+						that.onMensagemErroODATA(error);
+					});
 				}).catch(function (error) {
 
 					that.byId("table_pedidos").setBusy(false);
@@ -78,6 +75,28 @@ sap.ui.define([
 				that.byId("table_pedidos").setBusy(false);
 				that.onMensagemErroODATA(error);
 			});
+		},
+
+		myFormatterCodEmpresa: function (Value) {
+
+			var vetorCentros = this.getModel("Centros").getData();
+
+			for (var j = 0; j < vetorCentros.length; j++) {
+				if (Value == vetorCentros[j].Bukrs) {
+					return Value + "-" + vetorCentros[j].NomeCentro;
+				}
+			}
+		},
+
+		myFormatterCliente: function (Value) {
+
+			var vetorClientes = this.getModel("Clientes").getData();
+
+			for (var j = 0; j < vetorClientes.length; j++) {
+				if (Value == vetorClientes[j].Kunnr) {
+					return Value + "-" + vetorClientes[j].Name1;
+				}
+			}
 		},
 
 		onItemPressEF: function (oEvent) {
@@ -104,96 +123,6 @@ sap.ui.define([
 			});
 		},
 
-		onLoadPedidos: function () {
-
-			var open = indexedDB.open("VB_DataBase");
-			var that = this;
-
-			open.onerror = function () {
-				MessageBox.show(open.error.mensage, {
-					icon: MessageBox.Icon.ERROR,
-					title: "Banco não encontrado!",
-					actions: [MessageBox.Action.OK]
-				});
-			};
-
-			open.onsuccess = function () {
-				var db = open.result;
-
-				var store = db.transaction("PrePedidos").objectStore("PrePedidos");
-				var indiceStatusPed = store.index("idStatusPedido");
-
-				var request = indiceStatusPed.getAll(2);
-
-				request.onsuccess = function (event) {
-					oPedidoGrid = event.target.result;
-
-					var vetorPromise = [];
-
-					/* Recupero todos os pedidos pendentes de preposto (9)*/
-					store = db.transaction("PrePedidos").objectStore("PrePedidos");
-					indiceStatusPed = store.index("idStatusPedido");
-
-					request = indiceStatusPed.getAll(9);
-					request.onsuccess = function (event) {
-						var oPedidoGrid2 = event.target.result;
-
-						/* Verifico se já existem registros de pedidos de representante (status=2) */
-						if (oPedidoGrid == undefined || oPedidoGrid.length == 0) {
-							/* Caso não tenha, considero somente os pedidos de prepostos */
-							oPedidoGrid = event.target.result;
-						} else {
-							/* Caso exista pedidos de representantes, necessito verificar se existe pedidos de prepostos.*/
-							if (!(oPedidoGrid2 == undefined || oPedidoGrid2 == 0)) {
-
-								/* Se existir, necessito acrescentar 1 a 1 nos pedidos de representantes */
-								for (var k = 0; k < oPedidoGrid2.length; k++) {
-									oPedidoGrid.push(oPedidoGrid2[k]);
-								}
-							}
-						}
-
-						var oModel = new sap.ui.model.json.JSONModel(oPedidoGrid);
-						that.getView().setModel(oModel, "PedidosEnviar");
-
-						for (var j = 0; j < oPedidoGrid.length; j++) {
-
-							vetorPromise.push(new Promise(function (resolve, reject) {
-								var storeItensPed = db.transaction("ItensPedido").objectStore("ItensPedido");
-								var indiceNrPed = storeItensPed.index("nrPedCli");
-
-								request = indiceNrPed.getAll(oPedidoGrid[j].nrPedCli);
-
-								request.onsuccess = function (event) {
-
-									for (var i = 0; i < event.target.result.length; i++) {
-										var aux = event.target.result[i];
-										oItensPedidoGrid.push(aux);
-									}
-
-									console.log("Pedidos: ");
-									console.log(oItensPedidoGrid);
-									resolve();
-								};
-
-								request.onerror = function (event) {
-									console.error(event.error.mensage);
-									reject();
-								};
-							}));
-						}
-					};
-
-					Promise.all(vetorPromise).then(function (values) {
-						console.log("Itens Pedido: ");
-						console.log(oItensPedidoGrid);
-					});
-
-				};
-			};
-
-		},
-
 		onItemChange: function (oEvent) {
 
 			var sValue = oEvent.getSource().getValue();
@@ -213,6 +142,7 @@ sap.ui.define([
 		},
 
 		myFormatterDataImp: function (value) {
+
 			if (value !== undefined && value !== null && value !== "" && value !== 0) {
 				var data = value.split("-");
 
@@ -226,6 +156,7 @@ sap.ui.define([
 		},
 
 		onItemPress: function (oEvent) {
+
 			var that = this;
 			var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
 			var nrPedCli = oItem.getBindingContext("PedidosEnviar").getProperty("nrPedCli");
@@ -322,7 +253,9 @@ sap.ui.define([
 					that.getOwnerComponent().getModel("modelCliente").setProperty("/Parvw", result.parvw);
 					that.getOwnerComponent().getModel("modelCliente").setProperty("/Lifnr", result.lifnr);
 					resolve();
+
 				} else {
+
 					console.log("ERRO!! Falha ao ler Clientes.");
 					reject();
 				}
@@ -330,340 +263,95 @@ sap.ui.define([
 		},
 
 		onSelectionChange: function (oEvent) {
-			oPedidosEnviar = [];
-			oItensPedidoGridEnviar = [];
-			oItensPedidoEnviar = [];
 
 			var that = this;
-			var oSelectedItems = this.getView().byId("table_pedidos").getSelectedItems();
+			var vetorPedEnviar = [];
+			var oSelectedItems = this.byId("table_pedidos").getSelectedItems();
 
 			for (var i = 0; i < oSelectedItems.length; i++) {
-				var nrPedido = oSelectedItems[i].getBindingContext("PedidosEnviar").getProperty("nrPedCli");
 
-				for (var j = 0; j < oPedidoGrid.length; j++) {
+				var Pedido = oSelectedItems[i].getBindingContext("Pedidos").getObject();
 
-					if (oPedidoGrid[j].nrPedCli == nrPedido) {
-						oPedidosEnviar.push(oPedidoGrid[j]);
-					} /*EndIf*/
-				}
+				delete Pedido.__metadata;
+				delete Pedido.IvEnvio;
+				delete Pedido.IvUsuario;
+				delete Pedido.IvKunnr;
 
-				for (var k = 0; k < oItensPedidoGrid.length; k++) {
-					if (oItensPedidoGrid[k].nrPedCli == nrPedido) {
-						oItensPedidoGridEnviar.push(oItensPedidoGrid[k]);
-					}
-				}
+				vetorPedEnviar.push(Pedido);
 			}
+
+			var oModel = new JSONModel(vetorPedEnviar);
+			that.setModel(oModel, "PedidosEnviar");
 		},
 
 		onEnviarPedido: function (oEvent) {
-			var that = this;
 
-			if (oPedidosEnviar.length == 0) {
+			var that = this;
+			var PedidosEnviar = that.getModel("PedidosEnviar").getData();
+
+			if (PedidosEnviar.length == 0) {
 
 				MessageBox.show("Selecione pelo menos um pedido para enviar!", {
-					icon: MessageBox.Icon.WARNING,
-					title: "Banco não encontrado!",
+					icon: MessageBox.Icon.ERROR,
+					title: "Pedido não encontrado!!",
 					actions: [MessageBox.Action.OK]
 				});
 
 			} else {
 
-				var open = indexedDB.open("VB_DataBase");
+				MessageBox.show("Deseja enviar os itens selecionados?", {
+					icon: MessageBox.Icon.WARNING,
+					title: "Envio de itens",
+					actions: ["Enviar", "Cancelar"],
+					onClose: function (oAction) {
 
-				open.onerror = function () {
-					MessageBox.show(open.error.mensage, {
-						icon: MessageBox.Icon.ERROR,
-						title: "Banco não encontrado!",
-						actions: [MessageBox.Action.OK]
-					});
-				};
+						if (oAction == "Enviar") {
 
-				open.onsuccess = function () {
-					var db = open.result;
+							// var oModelPed = that.getModelGlobal("modelAux").getProperty("/DBModel");
+							var Url = that.getModelGlobal("modelAux").getProperty("/Url");
+							
+							var oModelPed = new ODataModel({
+								serviceUrl: Url,
+								// userName: "t_rcardilo",
+								// password: "sap123"
+							});
 
-					MessageBox.show("Deseja enviar os itens selecionados?", {
-						icon: MessageBox.Icon.WARNING,
-						title: "Envio de itens",
-						actions: ["Enviar", "Cancelar"],
-						onClose: function (oAction) {
+							oModelPed.setUseBatch(true);
+							oModelPed.refreshSecurityToken();
 
-							if (oAction == "Enviar") {
+							that.byId("table_pedidos").setBusy(true);
 
-								new Promise(function (p1res, p1rej) {
+							for (var j = 0; j < PedidosEnviar.length; j++) {
 
-									that.onVerificarAprovadorUsuario(p1res, p1rej);
+								var Pedido = PedidosEnviar[j];
+								
+								Pedido.IdStatusPedido = 3;
+								Pedido.SituacaoPedido = "FIN";
+								
+								that.onFormatNumberPedido(Pedido);
 
-								}).then(function () {
-									var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel");
+								oModelPed.create("/P_PedidoPR", Pedido, {
+									method: "POST",
+									success: function (data) {
 
-									oModel.setUseBatch(true);
-									oModel.refreshSecurityToken();
-									that.byId("table_pedidos").setBusy(true);
-
-									var repres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
-
-									for (var j = 0; j < oPedidosEnviar.length; j++) {
-
-										var bVerificadoPreposto = oPedidosEnviar[j].verificadoPreposto == undefined ? false : oPedidosEnviar[j].verificadoPreposto;
-										var bRepresentante = that.getOwnerComponent().getModel("modelAux").getProperty("/Tipousuario") == "1";
-										var iStatusPedido = oPedidosEnviar[j].idStatusPedido;
-
-										if (bRepresentante && iStatusPedido == 9 && !bVerificadoPreposto) {
-											var sPedido = oPedidosEnviar[j].nrPedCli;
-
-											MessageBox.show("Pedido " + sPedido + " necessita ser revisado antes do envio.", {
-												icon: MessageBox.Icon.ERROR,
-												title: "Erro",
-												actions: [MessageBox.Action.OK],
-												onClose: function () {
-													that.byId("table_pedidos").setBusy(false);
-												}
-											});
-
-											return;
-										}
+										console.info("Pedido " + data.NrPedido + " Inserido.");
+									},
+									error: function (error) {
+										
+										that.onMensagemErroODATA(error);
 									}
-
-									for (j = 0; j < oItensPedidoGridEnviar.length; j++) {
-
-										if (oItensPedidoGridEnviar[j].maxdescpermitido == undefined) {
-											oItensPedidoGridEnviar[j].maxdescpermitido = 0;
-										}
-										var bzzAtingiuCmpGlobal = ((oItensPedidoGridEnviar[j].zzAtingiuCmpGlobal || "") == "Sim");
-										var bzzutilcampglobal = ((oItensPedidoGridEnviar[j].zzUtilCampGlobal || "") == "Sim");
-
-										var objItensPedido = {
-											Iditempedido: String(oItensPedidoGridEnviar[j].idItemPedido),
-											Tindex: oItensPedidoGridEnviar[j].index,
-											Knumh: String(oItensPedidoGridEnviar[j].knumh),
-											Knumhextra: String(oItensPedidoGridEnviar[j].knumhExtra),
-											Zzregra: String(oItensPedidoGridEnviar[j].zzRegra),
-											Zzgrpmatextra: String(oItensPedidoGridEnviar[j].zzGrpmatExtra),
-											Zzgrpmat: String(oItensPedidoGridEnviar[j].zzGrpmat),
-											Zzregraextra: String(oItensPedidoGridEnviar[j].zzRegraExtra),
-											Maktx: String(oItensPedidoGridEnviar[j].maktx),
-											Matnr: String(oItensPedidoGridEnviar[j].matnr),
-											Nrpedcli: String(oItensPedidoGridEnviar[j].nrPedCli),
-											Ntgew: String(oItensPedidoGridEnviar[j].ntgew),
-											Tipoitem: String(oItensPedidoGridEnviar[j].tipoItem),
-											Zzdesext: String(oItensPedidoGridEnviar[j].zzDesext),
-											Zzdesitem: String(oItensPedidoGridEnviar[j].zzDesitem),
-											Zzpercdescdiluicao: String(oItensPedidoGridEnviar[j].zzPercDescDiluicao),
-											Zzpercdesctotal: String(oItensPedidoGridEnviar[j].zzPercDescTotal),
-											Zzpercom: String(oItensPedidoGridEnviar[j].zzPercom),
-											Zzpervm: String(oItensPedidoGridEnviar[j].zzPervm),
-											Zzvprod: String(oItensPedidoGridEnviar[j].zzVprod),
-											Zzvproddesc: String(oItensPedidoGridEnviar[j].zzVprodDesc),
-											Zzvproddesctotal: String(oItensPedidoGridEnviar[j].zzVprodDescTotal),
-											Length: String(oItensPedidoGridEnviar.length),
-											Zzvproddesc2: String(oItensPedidoGridEnviar[j].zzVprodDesc2),
-											Zzvprodminpermitido: String(oItensPedidoGridEnviar[j].zzVprodMinPermitido),
-											Zzvalordiluido: String(oItensPedidoGridEnviar[j].zzValorDiluido),
-											Zzvalexcedidoitem: String(oItensPedidoGridEnviar[j].zzValExcedidoItem),
-											Zzqntdiluicao: String(oItensPedidoGridEnviar[j].zzQntDiluicao),
-											Tipoitem2: String(oItensPedidoGridEnviar[j].tipoItem2),
-											Maxdescpermitidoextra: String(oItensPedidoGridEnviar[j].maxdescpermitidoExtra),
-											Maxdescpermitido: String(oItensPedidoGridEnviar[j].maxdescpermitido),
-											Mtpos: String(oItensPedidoGridEnviar[j].mtpos),
-											Kbetr: String(oItensPedidoGridEnviar[j].kbetr),
-											Zzvprodabb: String(oItensPedidoGridEnviar[j].zzVprodABB),
-											Aumng: String(oItensPedidoGridEnviar[j].aumng),
-											Zzqntamostra: String(oItensPedidoGridEnviar[j].zzQntAmostra),
-											Zzqnt: String(oItensPedidoGridEnviar[j].zzQnt),
-											Zzqntcpbrinde: String(oItensPedidoGridEnviar[j].zzQntCpBrinde),
-											Zzgrupoglobal: String(oItensPedidoGridEnviar[j].zzGrupoGlobal),
-											Zzsubgrupoglobal: String(oItensPedidoGridEnviar[j].zzSubGrupoGlobal),
-											Zzqntregragb: String(oItensPedidoGridEnviar[j].zzQntRegraGb),
-											Zzutilcampglobal: bzzutilcampglobal, //String(oItensPedidoGridEnviar[j].zzUtilCampGlobal),     // TROCAR POR BOLEANO 
-											Zzatingiucmpglobal: bzzAtingiuCmpGlobal, //String(oItensPedidoGridEnviar[j].zzAtingiuCmpGlobal), // TRPCAR POR BOLEANO
-											Zzqntcppa: String(oItensPedidoGridEnviar[j].zzQntCpPA || "0"),
-											Zzgrupocppa: String(oItensPedidoGridEnviar[j].zzGrupoCpPA || "0"),
-											Zzidcppa: String(oItensPedidoGridEnviar[j].zzIDCpPA || "0")
-										};
-
-										oModel.create("/InserirLinhaOV", objItensPedido, {
-											method: "POST",
-											success: function (data) {
-												/* Se for item do tipo Amostra (YAMO), diminui o saldo do item oItensPedidoGridEnviar */
-												if (data.Mtpos == "YAMO") {
-													/* Não é necessário mais reduzir o saldo no momento do envio, pois os pedidos
-													enviados agora estão considerados no cálculo.*/
-													// that.onAtulizaSaldoAmostra(db, data);
-												}
-												/* ---- */
-
-												console.info("Itens Inserido");
-												that.byId("table_pedidos").setBusy(false);
-											},
-											error: function (error) {
-												that.byId("table_pedidos").setBusy(false);
-												that.onMensagemErroODATA(error.statusCode);
-											}
-										});
-									}
-
-									for (var i = 0; i < oPedidosEnviar.length; i++) {
-
-										var objPedido = {
-											Nrpedcli: oPedidosEnviar[i].nrPedCli,
-											Idstatuspedido: String(oPedidosEnviar[i].idStatusPedido),
-											Kunnr: oPedidosEnviar[i].kunnr,
-											Werks: oPedidosEnviar[i].werks,
-											Lifnr: repres,
-											Auart: oPedidosEnviar[i].tipoPedido,
-											Situacaopedido: oPedidosEnviar[i].situacaoPedido,
-											Ntgew: String(oPedidosEnviar[i].ntgew),
-											// Brgew: null, // Não usa
-											// Dataentrega: "20181116", //Não usa
-											Pltyp: String(oPedidosEnviar[i].tabPreco),
-											Completo: oPedidosEnviar[i].completo,
-											Valminped: String(oPedidosEnviar[i].valMinPedido),
-											Erdat: String(oPedidosEnviar[i].dataImpl.substr(6, 4) + oPedidosEnviar[i].dataImpl.substr(3, 2) +
-												oPedidosEnviar[i].dataImpl.substr(0, 2)),
-											Horaped: String(oPedidosEnviar[i].dataImpl.substr(11, 2) + oPedidosEnviar[i].dataImpl.substr(14, 2) +
-												oPedidosEnviar[i].dataImpl.substr(17, 2)),
-											Obsped: oPedidosEnviar[i].observacaoPedido,
-											Obsaudped: oPedidosEnviar[i].observacaoAuditoriaPedido,
-											Existeentradapedido: String(oPedidosEnviar[i].existeEntradaPedido),
-											Percentradapedido: String(oPedidosEnviar[i].percEntradaPedido),
-											Valorentradapedido: String(oPedidosEnviar[i].valorEntradaPedido),
-											Inco1: String(oPedidosEnviar[i].tipoTransporte),
-											Diasprimeiraparcela: String(oPedidosEnviar[i].diasPrimeiraParcela),
-											Quantparcelas: String(oPedidosEnviar[i].quantParcelas),
-											Intervaloparcelas: String(oPedidosEnviar[i].intervaloParcelas),
-											Tiponego: String(oPedidosEnviar[i].tipoNegociacao),
-											// CodRepres: oPedidosEnviar[i].CodRepres,
-											Totitens: oPedidosEnviar[i].totalItensPedido,
-											Valorcomissao: String(parseFloat(oPedidosEnviar[i].valComissaoPedido)),
-											// ValDescontoTotal: oPedidosEnviar[i].valDescontoTotal,
-											// ValMinPedido: oPedidosEnviar[i].valMinPedido,
-											Valtotpedido: String(oPedidosEnviar[i].valTotPed),
-											Valtotabcomissao: String(oPedidosEnviar[i].valTotalAbatidoComissao),
-											Valabverba: String(oPedidosEnviar[i].valTotalAbatidoVerba),
-											Vlrprz: String(oPedidosEnviar[i].valTotalExcedentePrazoMed),
-											VlrprzCom: String(oPedidosEnviar[i].valUtilizadoComissaoPrazoMed),
-											VlrprzVm: String(oPedidosEnviar[i].valUtilizadoVerbaPrazoMed), //NÃO UTILIZA VERBA PARA PRAZO 
-											VlrprzDd: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
-											VlrprzVvb: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
-											Vlrdsc: String(oPedidosEnviar[i].valTotalExcedenteDesconto),
-											VlrdscCom: String(oPedidosEnviar[i].valComissaoUtilizadaDesconto),
-											VlrdscVm: String(oPedidosEnviar[i].valVerbaUtilizadaDesconto),
-											VlrdscDd: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
-											VlrdscVvb: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
-											Vlramo: String(oPedidosEnviar[i].valTotalExcedenteAmostra),
-											VlramoCom: String(oPedidosEnviar[i].valUtilizadoComissaoAmostra),
-											VlramoVm: String(oPedidosEnviar[i].valUtilizadoVerbaAmostra),
-											VlramoDd: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
-											VlramoVvb: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
-											Vlrbri: String(oPedidosEnviar[i].valTotalExcedenteBrinde),
-											VlrbriCom: String(oPedidosEnviar[i].valUtilizadoComissaoBrinde),
-											VlrbriVm: String(oPedidosEnviar[i].valUtilizadoVerbaBrinde),
-											VlrbriDd: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
-											VlrbriVvb: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
-											Vlrbon: String(oPedidosEnviar[i].valTotalExcedenteBonif),
-											VlrbonCom: String(oPedidosEnviar[i].valUtilizadoComissaoBonif),
-											VlrbonVm: String(oPedidosEnviar[i].valUtilizadoVerbaBonif),
-											VlrbonDd: String(0),
-											VlrbonVvb: String(0),
-											Valtotabcamppa: String(oPedidosEnviar[i].valTotalCampProdutoAcabado),
-											Valtotabcampbrinde: String(oPedidosEnviar[i].valTotalCampBrinde || 0),
-											Valtotexcndirdesc: String(oPedidosEnviar[i].valTotalExcedenteNaoDirecionadoDesconto),
-											Valtotexcndirprazo: String(oPedidosEnviar[i].valTotalExcedenteNaoDirecionadoPrazoMed),
-											Valverbapedido: String(oPedidosEnviar[i].valVerbaPedido),
-											BuGruop: "",
-											Obscom: "",
-											Obsdd: "",
-											Obsvm: "",
-											Obsvvb: "",
-											Vlrutilvpm: String(oPedidosEnviar[i].valUtilizadoVerbaPrazoMed),
-											Vltotexcndirbri: String(oPedidosEnviar[i].valTotalExcedenteNaoDirecionadoBrinde),
-											Vltotexcndiramo: String(oPedidosEnviar[i].valTotalExcedenteNaoDirecionadoAmostra),
-											Vltotexcndirbon: String(oPedidosEnviar[i].valTotalExcedenteNaoDirecionadoBonif),
-											Valcampenxoval: String(oPedidosEnviar[i].valUtilizadoCampEnxoval),
-											Valcampglobal: String(oPedidosEnviar[i].valUtilizadoCampGlobal),
-											Vlrutilcampenx: String(oPedidosEnviar[i].valCampEnxoval),
-											Valcampbrinde: String(oPedidosEnviar[i].valUtilizadoCampBrinde || 0),
-											Usuario: String(oPedidosEnviar[i].codUsr),
-											Tipousuario: String(oPedidosEnviar[i].tipoUsuario),
-											Prazopadrao: String(oPedidosEnviar[i].PrazoPadrao || 0),
-											Prazocp: String(oPedidosEnviar[i].PrazoCP || 0),
-											Diasexcedentecp: String(oPedidosEnviar[i].DiasExcedenteCP || 0),
-											Zlsch: String(oPedidosEnviar[i].zlsch),
-											Zzprazomed: String(oPedidosEnviar[i].zzPrazoMedio)
-										};
-
-										oModel.create("/InserirOV", objPedido, {
-											method: "POST",
-											success: function (data) {
-
-												var tx = db.transaction("PrePedidos", "readwrite");
-												var objPedido = tx.objectStore("PrePedidos");
-
-												var requestPrePedidos = objPedido.get(data.Nrpedcli);
-
-												requestPrePedidos.onsuccess = function (e) {
-													var oPrePedido = e.target.result;
-
-													oPrePedido.idStatusPedido = 3;
-													oPrePedido.situacaoPedido = "FIN";
-
-													var requestPutItens = objPedido.put(oPrePedido);
-
-													requestPutItens.onsuccess = function () {
-														MessageBox.show("Pedido: " + data.Nrpedcli + " Enviado!", {
-															icon: MessageBox.Icon.SUCCESS,
-															title: "Pedido enviado!",
-															actions: [MessageBox.Action.OK],
-															onClose: function () {
-
-																for (var o = 0; o < oPedidoGrid.length; o++) {
-																	if (oPedidoGrid[o].nrPedCli == data.Nrpedcli) {
-																		oPedidoGrid.splice(o, 1);
-																	}
-																}
-
-																/* Se teve uso da campanha enxoval, atualizo o campo 'efetuoucompra' no cliente para 'true'*/
-																/* 20190321 - Diego Djeri - Campanha Enxoval */
-																var dValorUtilizadoCpEnxoval = parseFloat(data.Valcampenxoval || 0);
-																if (dValorUtilizadoCpEnxoval > 0) {
-																	that.setaEfetuouCompraCliente(db, data.Kunnr);
-																}
-																/* FIM*/
-
-																// oModel = new sap.ui.model.json.JSONModel();
-																// that.getView().setModel(oModel, "PedidosEnviar");
-
-																oModel = new sap.ui.model.json.JSONModel(oPedidoGrid);
-																that.getView().setModel(oModel, "PedidosEnviar");
-																that.byId("table_pedidos").setBusy(false);
-															}
-														});
-													};
-												};
-											},
-											error: function (error) {
-												that.byId("table_pedidos").setBusy(false);
-												that.onMensagemErroODATA(error.statusCode);
-											}
-										});
-									}
-
-									oModel.submitChanges();
-
-								}).catch(function (sErro) {
-
-									MessageBox.error(sErro, {
-										title: "Envio de itens",
-										actions: ["Ok"],
-										onClose: function () {
-											return;
-										}
-									});
 								});
 							}
+
+							oModelPed.submitChanges();
+
+							oModelPed.attachBatchRequestCompleted(function (oEvent) {
+								
+								that._onLoadFields();
+							});
 						}
-					});
-				};
+					}
+				});
 			}
 		},
 
@@ -1066,6 +754,7 @@ sap.ui.define([
 
 		onDeletarPedido: function (oEvent) {
 			var that = this;
+			var Pedidos = this.getModel("Pedidos").getData();
 			var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel");
 
 			// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
@@ -1075,9 +764,9 @@ sap.ui.define([
 			// });
 
 			oModel.setUseBatch(true);
-			// oModel.refreshSecurityToken();
+			oModel.refreshSecurityToken();
 
-			if (oPedidosEnviar.length == 0) {
+			if (Pedidos.length == 0) {
 
 				MessageBox.show("Selecione pelo menos um pedido para deletar!", {
 					icon: MessageBox.Icon.WARNING,

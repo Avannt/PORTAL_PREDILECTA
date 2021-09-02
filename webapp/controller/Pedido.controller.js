@@ -349,7 +349,7 @@ sap.ui.define([
 
 								}).then(function (result) {
 
-									that.vetorPedidos = result.results;
+									that.vetorPedidos = result;
 
 									var oModel = new JSONModel(that.vetorPedidos);
 									that.getView().setModel(oModel, "Pedidos");

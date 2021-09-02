@@ -1,7 +1,6 @@
 <mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic"
 	height="100%" controllerName="application.controller.enviarPedidos">
 	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Envio de Pedidos">
-		<!--<subHeader></subHeader>-->
 		<content>
 			<Table id="table_pedidos" width="100%" backgroundDesign="Translucent"
 				items="{ path:'Pedidos>/', sorter: { path: 'NrPedido', descending: true}}" mode="MultiSelect" selectionChange="onSelectionChange"
@@ -14,7 +13,7 @@
 					</Toolbar>
 				</headerToolbar>
 				<columns>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="80px">
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="auto">
 						<Text text="Empresa"/>
 					</Column>
 					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" hAlign="Left">
@@ -32,9 +31,6 @@
 				</columns>
 				<items>
 					<ColumnListItem type="Active">
-						<!--<customData>-->
-						<!--	<core:CustomData key="mydataPED" value="{path: 'Pedidos>idStatusPedido', type: 'sap.ui.model.type.String'}" writeToDom="true"/>-->
-						<!--</customData>-->
 						<cells>
 							<Text text="{path : 'Pedidos>Bukrs', formatter:'.myFormatterCodEmpresa'}"/>
 							<Text text="{path : 'Pedidos>Kunnr', formatter:'.myFormatterCliente'}"/>
