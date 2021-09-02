@@ -144,9 +144,9 @@ sap.ui.define([
 				urlParameters: {
 					"$filter": "IvUsuario eq '" + CodRepres + "' and IvKunnr eq '" + Cliente + "' and IvEnvio eq " + Envio
 				},
-				success: function (result) {
+				success: function (data) {
 
-					res(result);
+					res(data.results);
 				},
 				error: function (error) {
 
@@ -154,23 +154,22 @@ sap.ui.define([
 				}
 			});
 		},
-		
-		onBuscarProdutos: function(CodRepres, res, rej, that){
-			
+
+		onBuscarProdutos: function (CodRepres, res, rej, that) {
+
 			that.oModel.read("/Produtos", {
 				urlParameters: {
 					"$filter": "IvUsuario eq '" + CodRepres + "'"
 				},
 				success: function (retorno) {
-					
+
 					res(retorno.results);
 				},
 				error: function (error) {
 
-					that.getView().byId("IdItemPedido").setBusy(false);
-					that.onMensagemErroODATA(error);
+					rej(error);
 				}
-			});	
+			});
 		},
 
 		onBuscarPedido: function (NrPedido, res, rej) {
@@ -190,15 +189,32 @@ sap.ui.define([
 		},
 
 		onInserirPedido: function (Pedido, res, rej, that) {
-			
+
 			that.oModel.create("/P_PedidoPR", Pedido, {
 				method: "POST",
 				success: function (data) {
-					
+
 					res(data);
 				},
 				error: function (error) {
-					
+
+					rej(error);
+				}
+			});
+		},
+
+		onBuscarCentros: function (CodRepres, res, rej, that) {
+
+			that.oModel.read("/Centros", {
+				urlParameters: {
+					"$filter": "IvUsuario eq '" + CodRepres + "'"
+				},
+				success: function (data) {
+
+					res(data.results);
+				},
+				error: function (error) {
+
 					rej(error);
 				}
 			});
