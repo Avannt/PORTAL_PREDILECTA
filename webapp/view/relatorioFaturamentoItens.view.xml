@@ -53,7 +53,6 @@
 												<SuggestionItem text="{modelBandeiras>Kvgr5}" description="{modelBandeiras>DescKvgr5}" key="{modelBandeiras>Kvgr5}"/>
 											</suggestionItems>
 										</SearchField>
-										
 										<Label text="Representante"/>
 										<SearchField id="idRepreIni" placeholder="Digite Código ou Nome do Representante" enableSuggestions="true" value="{modelParametros>/LifnrIni}" suggest="onSuggestRepresIni" suggestionItems="{ path: 'modelRepres>/', sorter: { path: 'Lifnr', ascending: true }}">
 											<suggestionItems>
@@ -65,7 +64,17 @@
 												<SuggestionItem text="{modelRepres>Lifnr}" description="{modelRepres>Name1Rep}" key="{modelRepres>Lifnr}"/>
 											</suggestionItems>
 										</SearchField>
-										
+										<Label text="Material"/>
+										<SearchField id="idMaterialIni" placeholder="Digite Código ou Descrição do Material" enableSuggestions="true" value="{modelParametros>/MatnrIni}" suggest="onSuggestMaterialIni" suggestionItems="{ path: 'modelMaterial>/', sorter: { path: 'Matnr', ascending: true }}">
+											<suggestionItems>
+												<SuggestionItem text="{modelMaterial>Matnr}" description="{modelMaterial>Maktx}" key="{modelMaterial>Matnr}"/>
+											</suggestionItems>
+										</SearchField>
+										<SearchField id="idMaterialFim" placeholder="Digite Código ou Descrição do Material" enableSuggestions="true" value="{modelParametros>/MatnrFim}" suggest="onSuggestMaterialFim" suggestionItems="{ path: 'modelMaterial/', sorter: { path: 'Matnr', ascending: true }}">
+											<suggestionItems>
+												<SuggestionItem text="{modelMaterial>Matnr}" description="{modelMaterial>Maktx}" key="{modelMaterial>Matnr}"/>
+											</suggestionItems>
+										</SearchField>
 										<Label id="idPeriodo" text="Período"/>
 										<DateRangeSelection displayFormat="dd/MM/yyyy" id="idCDateRange" value="{modelParametros>/Periodo}" placeholder="Período" width="100%"/>
 										<Button id="idBtnFiltrar" text="Filtrar" type="Emphasized" press="onPressBtnFiltrar" icon="sap-icon://filter"/>
@@ -81,34 +90,34 @@
 					<Column minScreenWidth="320px" demandPopin="true" width="65px" popinDisplay="Inline">
 						<Text text="Item"/>
 					</Column>
-					<Column minScreenWidth="900px" demandPopin="true" popinDisplay="Inline" width="250px">
+					<Column minScreenWidth="900px" demandPopin="true" popinDisplay="Inline" width="320px">
 						<Text text="Descrição"/>
 					</Column>
-					<Column minScreenWidth="610px" demandPopin="true" popinDisplay="Inline" width="125px">
+					<Column minScreenWidth="610px" demandPopin="true" popinDisplay="Inline" width="45px">
 						<Text text="UM"/>
 					</Column>
-					<Column minScreenWidth="520px" demandPopin="true" popinDisplay="Inline" width="110px">
-						<Text text="Categoria"/>
-					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="110px">
+					<!--<Column minScreenWidth="520px" demandPopin="true" popinDisplay="Inline" width="110px">-->
+					<!--	<Text text="Categoria"/>-->
+					<!--</Column>-->
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="200px">
 						<Text text="Desc.Categoria"/>
 					</Column>
-					<Column minScreenWidth="520px" demandPopin="true" popinDisplay="Inline" width="40px">
-						<Text text="SubCategoria"/>
-					</Column>
+					<!--<Column minScreenWidth="520px" demandPopin="true" popinDisplay="Inline" width="40px">-->
+					<!--	<Text text="SubCategoria"/>-->
+					<!--</Column>-->
 					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="220px">
 						<Text text="Desc.SubCategoria"/>
 					</Column>
-					<Column minScreenWidth="520px" demandPopin="true" popinDisplay="Inline" width="40px">
-						<Text text="Família"/>
-					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="220px">
+					<!--<Column minScreenWidth="520px" demandPopin="true" popinDisplay="Inline" width="40px">-->
+					<!--	<Text text="Família"/>-->
+					<!--</Column>-->
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="200px">
 						<Text text="Desc.Família"/>
 					</Column>
-					<Column minScreenWidth="520px" demandPopin="true" popinDisplay="Inline" width="40px">
-						<Text text="Marca"/>
-					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="220px">
+					<!--<Column minScreenWidth="520px" demandPopin="true" popinDisplay="Inline" width="40px">-->
+					<!--	<Text text="Marca"/>-->
+					<!--</Column>-->
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="100px">
 						<Text text="Desc.Marca"/>
 					</Column>
 					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="110px" hAlign="Right">
@@ -139,13 +148,13 @@
 						<Text text="{modelFatItens>Matnr}"/>
 							<Text text="{modelFatItens>Maktx}"/>
 							<Text text="{modelFatItens>Meins}"/>
-							<Text text="{modelFatItens>Mvgr1}"/>
+							<!--<Text text="{modelFatItens>Mvgr1}"/>-->
 							<Text text="{modelFatItens>Mvgr1Text}"/>
-							<Text text="{modelFatItens>Mvgr2}"/>
+							<!--<Text text="{modelFatItens>Mvgr2}"/>-->
 							<Text text="{modelFatItens>Mvgr2Text}"/>
-							<Text text="{modelFatItens>Mvgr3}"/>
+							<!--<Text text="{modelFatItens>Mvgr3}"/>-->
 							<Text text="{modelFatItens>Mvgr3Text}"/>
-							<Text text="{modelFatItens>Mvgr5}"/>
+							<!--<Text text="{modelFatItens>Mvgr5}"/>-->
 							<Text text="{modelFatItens>Mvgr5Text}"/>
 							<Text text="{path: 'modelFatItens>QtdFaturada', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
 							<Text text="{path: 'modelFatItens>ValFaturado', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
