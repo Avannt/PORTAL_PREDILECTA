@@ -154,6 +154,24 @@ sap.ui.define([
 				}
 			});
 		},
+		
+		onBuscarProdutos: function(CodRepres, res, rej, that){
+			
+			that.oModel.read("/Produtos", {
+				urlParameters: {
+					"$filter": "IvUsuario eq '" + CodRepres + "'"
+				},
+				success: function (retorno) {
+					
+					res(retorno.results);
+				},
+				error: function (error) {
+
+					that.getView().byId("IdItemPedido").setBusy(false);
+					that.onMensagemErroODATA(error);
+				}
+			});	
+		},
 
 		onBuscarPedido: function (NrPedido, res, rej) {
 

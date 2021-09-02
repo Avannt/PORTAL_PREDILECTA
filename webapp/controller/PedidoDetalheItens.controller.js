@@ -22,38 +22,37 @@ sap.ui.define([
 		onLoadFields: function () {
 
 			var that = this;
-			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
+			var CodRepres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
 			var Bukrs = that.getModelGlobal("modelPedido").getProperty("/Bukrs");
 
 			that.getView().byId("IdItemPedido").setBusy(true);
 
 			that.onInicializaCamposItens();
+			
+			new Promise(function(res, rej) {
+				
+				that.onBuscarProdutos(CodRepres, res, rej);
+				
+			}).then(function(data){
+				
+				var vetorProdutos = [];
 
-			that.oModel.read("/Produtos", {
-				urlParameters: {
-					"$filter": "IvUsuario eq '" + repres + "'"
-				},
-				success: function (retorno) {
+				vetorProdutos = data.filter(function (a, b) {
+					if (a.Vkorg == Bukrs) {
+						delete a.__metadata;
+						return a;
+					}
+				});
 
-					var vetorProdutos = [];
-
-					vetorProdutos = retorno.results.filter(function (a, b) {
-						if (a.Vkorg == Bukrs) {
-							delete a.__metadata;
-							return a;
-						}
-					});
-
-					var oModelProdutos = new JSONModel(vetorProdutos);
-					that.setModel(oModelProdutos, "modelProdutos");
-					that.getView().byId("IdItemPedido").setBusy(false);
-					that.getView().byId("IdItemPedido").focus();
-				},
-				error: function (error) {
-
-					that.getView().byId("IdItemPedido").setBusy(false);
-					that.onMensagemErroODATA(error);
-				}
+				var oModelProdutos = new JSONModel(vetorProdutos);
+				that.setModel(oModelProdutos, "modelProdutos");
+				that.getView().byId("IdItemPedido").setBusy(false);
+				that.getView().byId("IdItemPedido").focus();
+				
+			}).catch(function(error){
+				
+				that.getView().byId("IdItemPedido").setBusy(false);
+				that.onMensagemErroODATA(error);
 			});
 		},
 
