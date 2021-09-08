@@ -34,7 +34,10 @@ sap.ui.define([
 				break;
 			case "R05":
 				sap.ui.core.UIComponent.getRouterFor(this).navTo("relatorioFaturamentoItens");
-				break;		
+				break;
+			case "R06":
+				sap.ui.core.UIComponent.getRouterFor(this).navTo("relatorioNotasFiscais");
+				break;			
 			default:
 				sap.ui.core.UIComponent.getRouterFor(this).navTo("notFound");
 				break;
