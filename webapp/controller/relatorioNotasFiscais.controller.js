@@ -336,22 +336,8 @@ sap.ui.define([
 
 			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
 			that.oModel = that.getModelGlobal("modelAux").getProperty("/DBModel");
+			
 			var parametros = that.getModel("modelParametros").getData();
-
-			// var WerksIni = that.getModel("modelParametros").getProperty("/WerksIni");
-			// var WerksFim = that.getModel("modelParametros").getProperty("/WerksFim");
-			// var KunnrIni = that.getModel("modelParametros").getProperty("/KunnrIni");
-			// var KunnrFim = that.getModel("modelParametros").getProperty("/KunnrFim");
-			// var Kvgr4Ini = that.getModel("modelParametros").getProperty("/Kvgr4Ini");
-			// var Kvgr4Fim = that.getModel("modelParametros").getProperty("/Kvgr4Fim");
-			// var Kvgr5Ini = that.getModel("modelParametros").getProperty("/Kvgr5Ini");
-			// var Kvgr5Fim = that.getModel("modelParametros").getProperty("/Kvgr5Fim");
-			// var SeriesIni = that.getModel("modelParametros").getProperty("/SeriesIni");
-			// var SeriesFim = that.getModel("modelParametros").getProperty("/SeriesFim");
-			// var NfenumIni = that.getModel("modelParametros").getProperty("/NfenumIni");
-			// var NfenumFim = that.getModel("modelParametros").getProperty("/NfenumFim");
-			// var RepreIni = that.getModel("modelParametros").getProperty("/LifnrIni");
-			// var RepreFim = that.getModel("modelParametros").getProperty("/LifnrFim");
 			var PerioAux = that.getModel("modelParametros").getProperty("/Periodo");
 			var PerioSplit = PerioAux.split(" - ");
 			var PerioIni = PerioSplit[0];
@@ -369,8 +355,6 @@ sap.ui.define([
 						"' and Kvgr4Fim eq '" + parametros.Kvgr4Fim +
 						"' and Kvgr5Ini eq '" + parametros.Kvgr5Ini +
 						"' and Kvgr5Fim eq '" + parametros.Kvgr5Fim +
-						// "' and VbelnIni eq '" + parametros.VbelnIni +
-						// "' and VbelnFim eq '" + parametros.VbelnFim +
 						"' and SeriesIni eq '" + parametros.SeriesIni +
 						"' and SeriesFim eq '" + parametros.SeriesFim +
 						"' and NfenumIni eq '" + parametros.NfenumIni +
