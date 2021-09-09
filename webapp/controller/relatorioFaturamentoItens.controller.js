@@ -304,7 +304,7 @@ sap.ui.define([
 
 			aCols.push({
 				label: "Descrição Categoria",
-				property: "DescMvgr1",
+				property: "Mvgr1Text",
 				type: EdmType.String
 			});
 
@@ -316,7 +316,7 @@ sap.ui.define([
 
 			aCols.push({
 				label: "Descrição SubCategoria",
-				property: "DescMvgr2",
+				property: "Mvgr2Text",
 				type: EdmType.String
 			});
 
@@ -325,10 +325,10 @@ sap.ui.define([
 				property: "Mvgr3",
 				type: EdmType.String
 			});
-
+ 
 			aCols.push({
 				label: "Descrição Família",
-				property: "DescMvgr3",
+				property: "Mvgr3Text",
 				type: EdmType.String
 			});
 
@@ -340,7 +340,7 @@ sap.ui.define([
 
 			aCols.push({
 				label: "Descrição Marca",
-				property: "DescMvgr5",
+				property: "Mvgr5Text",
 				type: EdmType.String
 			});
 
