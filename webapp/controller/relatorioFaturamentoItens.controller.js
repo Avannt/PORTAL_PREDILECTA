@@ -166,7 +166,7 @@ sap.ui.define([
 
 					for (var k = 0; k < vetorSubCategoria.length; k++) {
 
-						if ((vetorMaterial[i].Mvgr2 == vetorCategoria[k].Mvgr2) || vetorMaterial[i].Mvgr2 == "") {
+						if ((vetorMaterial[i].Mvgr2 == vetorSubCategoria[k].Mvgr2) || vetorMaterial[i].Mvgr2 == "") {
 							vAchouSubCategoria = true;
 
 							break;
