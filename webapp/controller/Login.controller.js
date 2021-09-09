@@ -87,8 +87,7 @@ sap.ui.define([
 					ReleasePRD: "",
 					Lifnr: "",
 					Email: "",
-					Url: "/sap/opu/odata/sap/ZSF_FV_SRV/",
-					PedidosPend: 0
+					Url: "/sap/opu/odata/sap/ZSF_FV_SRV/"
 				});
 				this.setModelGlobal(oModelAux, "modelAux");
 
@@ -120,14 +119,12 @@ sap.ui.define([
 				if (minuto.length == 1) {
 					minuto = "0" + String(minuto);
 				}
-				
 				if (hora.length == 1) {
 					hora = "0" + String(hora);
 				}
 				if (seg.length == 1) {
 					seg = "0" + String(seg);
 				}
-				
 				//HRIMP E DATIMP
 				//var horario = String(hora) + ":" + String(minuto) + ":" + String(seg);
 				var data = String(dia + "/" + mes + "/" + ano);

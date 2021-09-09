@@ -31,7 +31,7 @@ sap.ui.define([
 			
 			new Promise(function(res, rej) {
 				
-				that.onBuscarProdutos(CodRepres, res, rej, that);
+				that.onBuscarProdutos(CodRepres, res, rej);
 				
 			}).then(function(data){
 				
