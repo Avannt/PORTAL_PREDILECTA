@@ -56,6 +56,10 @@ sap.ui.define([
 			});
 		},
 
+		onEditarPress: function (e) {
+			console.log("TESTE");
+		},
+
 		onInicializaModels: function () {
 
 			this.byId("master").setBusy(true);
@@ -87,24 +91,22 @@ sap.ui.define([
 		},
 
 		formatRentabilidade: function (Value) {
-
 			if (Value == 0) {
 
 				this.byId("table_pedidos").getColumns()[4].setVisible(false);
 				return Value;
-			} else if (Value > -3) {
 
+			} else if (Value > -3) {
 				this.byId("table_pedidos").getColumns()[4].setVisible(false);
 				return "";
-			} else {
 
+			} else {
 				this.byId("table_pedidos").getColumns()[4].setVisible(true);
 				return Value;
 			}
 		},
 
 		onAfterRendering: function () {
-
 			var oSplitCont = this.getSplitContObj(),
 				ref = oSplitCont.getDomRef() && oSplitCont.getDomRef().parentNode;
 			// set all parent elements to 100% height, this should be done by app developer, but just in case
@@ -124,7 +126,6 @@ sap.ui.define([
 		},
 
 		getSplitContObj: function () {
-
 			var result = this.byId("SplitCont");
 			if (!result) {
 				jQuery.sap.log.error("SplitApp object can't be found");
@@ -133,13 +134,11 @@ sap.ui.define([
 		},
 
 		onPressNavToDetail: function () {
-
 			this.getSplitContObj().to(this.createId("detailDetail"));
 		},
 
 		navBack2: function () {
-
-			var isTablet = this.getModelGlobal("modelAux").getProperty("/isTablet");
+			var isTablet = this.getOwnerComponent().getModel("modelAux").getProperty("/isTablet");
 
 			if (isTablet == true) {
 
@@ -149,7 +148,9 @@ sap.ui.define([
 
 				this.byId("listClientes").removeSelections(true);
 				this.onPressDetailBack();
+
 			}
+
 		},
 
 		onPressDetailBack: function () {
@@ -196,10 +197,8 @@ sap.ui.define([
 
 			var sValue = oEvent.getSource().getValue();
 			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Kunnr", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Name1", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Stcd1", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Stcd2", sap.ui.model.FilterOperator.Contains, sValue)
+			var oFilter = [new sap.ui.model.Filter("kunnr", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("name1", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
@@ -209,213 +208,81 @@ sap.ui.define([
 
 		},
 
-		onEditarPress: function (oEvent) {
-
-			var that = this;
-
-			var oNumeroPedido = oEvent.getParameter("listItem") || oEvent.getSource();
-
-			var NrPedido = oNumeroPedido.getBindingContext("Pedidos").getProperty("NrPedido");
-			var sStatus = oNumeroPedido.getBindingContext("Pedidos").getProperty("IdStatusPedido");
-
-			var Cliente = this.getModel("Cliente").getData();
-			var CodRepres = this.getModelGlobal("modelAux").getProperty("/CodRepres");
-
-			that.byId("table_pedidos").setBusy(true);
-
-			if (sStatus == 3) {
-
-				MessageBox.show("Não é possível realizar a edição de pedidos já integrados! ", {
-					icon: MessageBox.Icon.ERROR,
-					title: "Ação não permitida!",
-					actions: [MessageBox.Action.OK],
-					onClose: function () {
-
-						that.byId("table_pedidos").setBusy(false);
-					}
-				});
-
-			} else if (sStatus == 2) {
-
-				MessageBox.show("Deseja reabrir o pedido?", {
-					icon: MessageBox.Icon.WARNING,
-					title: "Detalhamento do pedido!",
-					actions: ["Reabrir", "Vizualizar", sap.m.MessageBox.Action.CANCEL],
-					onClose: function (oAction) {
-
-						/* Caso afirmativo, altero o status do pedido para 1 (Em digitação) (IdStatusPedido = 2)*/
-						if (oAction == "Reabrir") {
-
-							new Promise(function (res, rej) {
-
-								that.onCheckPedido(CodRepres, Cliente.Kunnr, res, rej, that);
-
-							}).then(function (data) {
-
-								if (data.TipoErro == "E") {
-
-									MessageBox.show("O Pedido: " + data.NrPedido + ", Cliente: " + data.Kunnr + " está em aberto.", {
-										icon: MessageBox.Icon.ERROR,
-										details: "<li> Curioso! </li>",
-										title: "Pedido em aberto",
-										actions: [MessageBox.Action.OK],
-										onClose: function () {
-											that.byId("table_pedidos").setBusy(false);
-										}
-									});
-
-								} else {
-
-									new Promise(function (res, rej) {
-
-										that.onBuscarPedido(NrPedido, res, rej);
-
-									}).then(function (Pedido) {
-
-										var dataAtual = that.onDataHora();
-
-										Pedido.SituacaoPedido = "EM DIGITAÇÃO";
-										Pedido.IdStatusPedido = 1;
-										Pedido.DataFim = dataAtual[0];
-										Pedido.HoraFim = dataAtual[1];
-										Pedido.Completo = true;
-
-										Pedido = that.onFormatNumberPedido(Pedido);
-
-										delete Pedido.__metadata;
-
-										new Promise(function (res, rej) {
-
-											that.onInserirPedido(Pedido, res, rej, that);
-
-										}).then(function (result) {
-
-											that.byId("table_pedidos").setBusy(false);
-
-											if (result.TipoErro == "E") {
-
-												sap.m.MessageBox.show(result.MsgErro, {
-													icon: sap.m.MessageBox.Icon.ERROR,
-													title: "Não Permitido",
-													actions: [MessageBox.Action.OK],
-													onClose: function () {
-
-													}
-												});
-											} else {
-												
-												that.getModelGlobal("modelAux").setProperty("/NrPedido", NrPedido);
-												sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
-											}
-										}).catch(function (error) {
-
-											that.byId("table_pedidos").setBusy(false);
-											that.onMensagemErroODATA(error);
-										});
-
-									}).catch(function (error) {
-
-										that.byId("table_pedidos").setBusy(false);
-										that.onMensagemErroODATA(error);
-									});
-								}
-
-							}).catch(function (error) {
-
-								that.byId("table_pedidos").setBusy(false);
-								that.onMensagemErroODATA(error);
-							});
-
-						} else if (oAction == "Vizualizar") {
-
-							that.byId("table_pedidos").setBusy(false);
-							that.getModelGlobal("modelAux").setProperty("/NrPedido", NrPedido);
-							sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
-						} else {
-
-							that.byId("table_pedidos").setBusy(false);
-						}
-					}
-				});
-
-			} else {
-
-				that.byId("table_pedidos").setBusy(false);
-				that.getModelGlobal("modelAux").setProperty("/NrPedido", NrPedido);
-				sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
-			}
-		},
-
 		onAddPedido: function () {
 
 			var Pedido = "";
 			var that = this;
 
-			var Cliente = this.getModel("Cliente").getData();
-			var CodRepres = this.getModelGlobal("modelAux").getProperty("/CodRepres");
+			var cliente = this.getModel("Cliente").getData();
 
-			if (Cliente.Kunnr == "") {
+			if (cliente.Kunnr == "") {
 
 				MessageBox.show("Nenhum cliente selecionado! Selecione um cliente!", {
 					icon: sap.m.MessageBox.Icon.WARNING,
 					title: "Nenhum cliente selecionado",
 					actions: [MessageBox.Action.OK]
 				});
+
 			} else {
 
-				new Promise(function (res, rej) {
+				this.oModel.read("/P_CheckPedidoR(IvUsuario='" + this.getModelGlobal("modelAux").getProperty("/CodRepres") + "',IvKunnr='" +
+					cliente.Kunnr + "')", {
+						// urlParameters: {
+						// 	"$filter": "IvUsuario eq '" + this.getModelGlobal("modelAux").getProperty("/CodRepres") + "'"
+						// },
+						success: function (result) {
 
-					that.onCheckPedido(CodRepres, Cliente.Kunnr, res, rej, that);
+							Pedido = result;
 
-				}).then(function (data) {
+							if (Pedido.TipoErro == "E") {
 
-					Pedido = data;
+								MessageBox.show("O Pedido: " + Pedido.NrPedido + ", Cliente: " + Pedido.Kunnr + " está em aberto.", {
+									icon: MessageBox.Icon.ERROR,
+									details: "<li> Curioso! </li>",
+									title: "Pedido em aberto",
+									actions: [MessageBox.Action.OK]
+								});
 
-					if (Pedido.TipoErro == "E") {
+							} else {
 
-						MessageBox.show("O Pedido: " + Pedido.NrPedido + ", Cliente: " + Pedido.Kunnr + " está em aberto.", {
-							icon: MessageBox.Icon.ERROR,
-							details: "<li> Curioso! </li>",
-							title: "Pedido em aberto",
-							actions: [MessageBox.Action.OK]
-						});
+								if (Pedido.TipoErro == "S" && Pedido.MsgErro == "") {
 
-					} else {
+									sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
 
-						if (Pedido.TipoErro == "S" && Pedido.MsgErro == "") {
+								} else {
 
-							sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
+									MessageBox.show(Pedido.MsgErro, {
+										icon: sap.m.MessageBox.Icon.WARNING,
+										title: "Títulos em Aberto!",
+										actions: ["Ver Titulo", "Continuar", "Cancelar"],
+										onClose: function (oAction) {
+											if (oAction == "Ver Titulo") {
 
-						} else {
+												that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
+												sap.ui.core.UIComponent.getRouterFor(that).navTo("relatorioTitulos");
 
-							MessageBox.show(Pedido.MsgErro, {
-								icon: sap.m.MessageBox.Icon.WARNING,
-								title: "Títulos em Aberto!",
-								actions: ["Ver Titulo", "Continuar", "Cancelar"],
-								onClose: function (oAction) {
-									if (oAction == "Ver Titulo") {
+											} else if (oAction == "Continuar") {
 
-										that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
-										sap.ui.core.UIComponent.getRouterFor(that).navTo("relatorioTitulos");
-									} else if (oAction == "Continuar") {
+												sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
 
-										sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
-									} else {
+											} else {
 
-										this.getOwnerComponent().getModel("modelAux").setProperty("/telaPedido", true);
-										sap.ui.core.UIComponent.getRouterFor(this).navTo("relatorioTitulos");
-									}
+												this.getOwnerComponent().getModel("modelAux").setProperty("/telaPedido", true);
+												sap.ui.core.UIComponent.getRouterFor(this).navTo("relatorioTitulos");
+
+											}
+										}
+									});
 								}
-							});
+							}
+						},
+						error: function (error) {
+
+							that.byId("table_pedidos").setBusy(false);
+							that.onMensagemErroODATA(error);
+
 						}
-					}
-
-				}).catch(function (error) {
-
-					that.byId("table_pedidos").setBusy(false);
-					that.onMensagemErroODATA(error);
-				});
-
+					});
 			}
 		},
 
@@ -481,8 +348,12 @@ sap.ui.define([
 									that.onBuscarPedidos(Cliente.Kunnr, CodRepres, Envio, res, rej, that);
 
 								}).then(function (result) {
-									
-									that.getModel("modelAux").setProperty("/PedidosPend", result);
+
+									that.vetorPedidos = result;
+
+									var oModel = new JSONModel(that.vetorPedidos);
+									that.getView().setModel(oModel, "Pedidos");
+
 									that.byId("table_pedidos").setBusy(false);
 
 								}).catch(function (error) {

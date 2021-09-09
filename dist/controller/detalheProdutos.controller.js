@@ -1,0 +1,1 @@
+sap.ui.define(["application/controller/BaseController","sap/ui/model/json/JSONModel"],function(e,t){"use strict";return e.extend("application.controller.detalheProdutos",{onInit:function(){console.log("pagina/controller")},_onObjectMatched:function(e){this.getView().bindElement({path:"/"+e.getParameter("arguments").invoicePath,model:"Predilecta"})}})});
