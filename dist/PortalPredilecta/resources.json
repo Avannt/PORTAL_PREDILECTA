@@ -1,12 +1,12 @@
 {
     "resources": [
         {
-            "name": "../controller/relatorioTabelas.controller.js"
+            "name": "../view/entregaFutura.view.xml"
         },
         {
-            "name": "../i18n/i18n_pt_BR.properties",
+            "name": "../i18n/i18n_pt.properties",
             "raw": "i18n/i18n.properties",
-            "locale": "_pt_BR"
+            "locale": "_pt"
         },
         {
             "name": "../i18n/i18n_en.properties",
@@ -18,13 +18,13 @@
             "raw": "i18n/i18n.properties"
         },
         {
-            "name": "../model/models.js"
-        },
-        {
             "name": "../manifest.json"
         },
         {
             "name": "../model/Menu.json"
+        },
+        {
+            "name": "../model/models.js"
         },
         {
             "name": "../model/formatter.js"
@@ -39,9 +39,7 @@
             "name": "../controller/relatorioTitulos.controller.js"
         },
         {
-            "name": "../i18n/i18n_pt.properties",
-            "raw": "i18n/i18n.properties",
-            "locale": "_pt"
+            "name": "../controller/relatorioTabelas.controller.js"
         },
         {
             "name": "../controller/relatorioPedidos.controller.js"
@@ -118,10 +116,6 @@
         {
             "name": "../Component-preload.js",
             "merged": true
-        },
-        {
-            "name": "../controller/App-dbg.controller.js",
-            "isDebug": true
         },
         {
             "name": "../model/models-dbg.js",
@@ -228,6 +222,10 @@
             "isDebug": true
         },
         {
+            "name": "../controller/App-dbg.controller.js",
+            "isDebug": true
+        },
+        {
             "name": "../serviceBinding-dbg.js",
             "isDebug": true
         },
@@ -281,7 +279,9 @@
             "name": "../view/enviarPedidos.view.xml"
         },
         {
-            "name": "../view/entregaFutura.view.xml"
+            "name": "../i18n/i18n_pt_BR.properties",
+            "raw": "i18n/i18n.properties",
+            "locale": "_pt_BR"
         },
         {
             "name": "../view/detalhesRelatorioTabelas.view.xml"
