@@ -21,7 +21,7 @@ sap.ui.define([
 		onLoadFields: function () {
 
 			var that = this;
-			var NrPedido = that.getModelGlobal("modelAux").getProperty("/NrPedido");
+			var NrPedido = that.getModelGlobal("modelAux").getProperty("/NrPedido");	
 
 			new Promise(function (resolve, reject) {
 
@@ -32,7 +32,7 @@ sap.ui.define([
 				if (NrPedido != "") {
 
 					new Promise(function (res, rej) {
-
+						
 						that.byId("idPedidoDetalhe").setBusy(true);
 						that.onBuscarPedido(NrPedido, res, rej);
 
@@ -1907,7 +1907,7 @@ sap.ui.define([
 					actions: [MessageBox.Action.OK]
 				});
 
-			} else if (Pedido.TipoPedido !== "Proposta" && parseFloat(Pedido.ValMinPed) > parseFloat(Pedido.ValorTotal)) {
+			} else if (Pedido.TipoPedido !== "Proposta" && Pedido.ValMinPed > Pedido.ValorTotal) {
 
 				sap.m.MessageBox.show("Pedido não atingiu o valor mínimo estipulado pela empresa de R$: " + parseFloat(Pedido.ValMinPed), {
 					icon: sap.m.MessageBox.Icon.ERROR,
@@ -1927,7 +1927,7 @@ sap.ui.define([
 
 				that.byId("idPedidoDetalhe").setBusy(true);
 
-				var data = that.onDataHora();
+				var data = this.onDataHora();
 
 				Pedido.SituacaoPedido = "PEND";
 				Pedido.IdStatusPedido = 2;
@@ -1962,22 +1962,17 @@ sap.ui.define([
 						sap.m.MessageBox.show("Pedido salvo com sucesso !! \n\n Deseja enviar o pedido agora ?", {
 							icon: sap.m.MessageBox.Icon.SUCCESS,
 							title: "Sucesso!",
-							actions: ["Enviar", sap.m.MessageBox.Action.NO],
+							actions: [sap.m.MessageBox.Action.YES, sap.m.MessageBox.Action.NO],
 							onClose: function (oAction) {
 
-								that.onLiberarAbas();
+								if (oAction == sap.m.MessageBox.Action.YES) {
 
-								if (oAction == "Enviar") {
-
-									data = that.onDataHora();
-
-									Pedido.SituacaoPedido = "FIN";
-									Pedido.IdStatusPedido = 3;
-									Pedido.DataFim = data[0];
-									Pedido.HoraFim = data[1];
-									Pedido.Completo = true;
+									that.onResetarDadosPedido();
+									sap.ui.core.UIComponent.getRouterFor(that).navTo("enviarPedidos");
 									
-									Pedido = that.onFormatNumberPedido(Pedido);
+								} else if (oAction == sap.m.MessageBox.Action.NO) {
+
+									that.onResetarDadosPedido();
 
 									new Promise(function (res, rej) {
 
@@ -1998,26 +1993,23 @@ sap.ui.define([
 											sap.m.MessageBox.show("Pedido enviado com sucesso !!", {
 												icon: sap.m.MessageBox.Icon.SUCCESS,
 												title: "Sucesso!",
-												actions: ["OK"],
+												actions: [sap.m.MessageBox.Action.YES, sap.m.MessageBox.Action.NO],
 												onClose: function (oAction) {
-
+													
 													sap.ui.core.UIComponent.getRouterFor(that).navTo("pedido");
 												},
 											});
 										}
-
+										
 									}).catch(function (error) {
 
 										that.byId("idPedidoDetalhe").setBusy(false);
 										that.onMensagemErroODATA(error);
 									});
-
-								} else {
-
-									that.byId("idPedidoDetalhe").setBusy(false);
-									that.onResetarDadosPedido();
-									sap.ui.core.UIComponent.getRouterFor(that).navTo("pedido");
 								}
+
+								that.byId("idPedidoDetalhe").setBusy(false);
+								that.onLiberarAbas();
 							}
 						});
 					}

@@ -69,6 +69,7 @@
 							</ColumnListItem>
 						</items>
 					</Table>
+				
 				</content>
 			</Page>
 		</detailPages>
@@ -86,15 +87,15 @@
 						mode="SingleSelectMaster" growing="true" growingScrollToLoad="true" updateFinished="onUpdateFinished" selectionChange="onSelectionChange">
 						<items>
 							<ObjectListItem id="ObjListCliente" type="Active" press="onSelectionChange" title="{Clientes>Name1}" number="{Clientes>Kunnr}"
-								intro="CPF/CNPJ: {path: 'Clientes>Stcd1', formatter:'.onFormatCnpj'} {path: 'Clientes>Stcd2', formatter:'.onFormatCpf'}"/>
+								intro="CPF/CNPJ: {path: 'Clientes>Stcd1', formatter:'.onFormatCnpj'} {path: 'Clientes&gt;Stcd2', formatter:'.onFormatCpf'}"/>
 						</items>
 					</List>
 				</content>
 				<footer>
 					<Bar id="bar0">
 						<contentRight>
-							<Button xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" text="Atualizar" id="button0" press="_onLoadFields"
-								activeIcon="sap-icon://refresh" icon="sap-icon://refresh" type="Emphasized" tooltip="Atualizar dados da tela do pedido" />
+							<Button xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" text="Atualizar" id="button0"
+								activeIcon="sap-icon://refresh" icon="sap-icon://refresh" type="Emphasized" tooltip="Atualizar dados da tela do pedido"/>
 						</contentRight>
 					</Bar>
 				</footer>

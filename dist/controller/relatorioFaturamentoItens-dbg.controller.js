@@ -325,7 +325,7 @@ sap.ui.define([
 				property: "Mvgr3",
 				type: EdmType.String
 			});
-
+ 
 			aCols.push({
 				label: "Descrição Família",
 				property: "Mvgr3Text",

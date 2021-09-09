@@ -474,25 +474,32 @@ sap.ui.define([
 
 			if (error.responseText == undefined) {
 
-				var error2 = error.response.body;
+				if (error.response == undefined) {
 
-				if (error2 == undefined) {
-
-					var errorLog = error.message;
+					errorLog = String(error);
 
 				} else {
 
-					var parser = new DOMParser();
-					var xmlDoc = parser.parseFromString(error2, "text/xml");
+					var error2 = error.response.body;
 
-					try {
-						var msg = xmlDoc.getElementsByTagName("message")[0].childNodes[0].nodeValue;
+					if (error2 == undefined) {
 
-					} catch (y) {
-						var msg = xmlDoc.getElementsByTagName("body")[0].childNodes[0].textContent;
+						var errorLog = error.message;
+
+					} else {
+
+						var parser = new DOMParser();
+						var xmlDoc = parser.parseFromString(error2, "text/xml");
+
+						try {
+							var msg = xmlDoc.getElementsByTagName("message")[0].childNodes[0].nodeValue;
+
+						} catch (y) {
+							var msg = xmlDoc.getElementsByTagName("body")[0].childNodes[0].textContent;
+						}
+
+						errorLog = msg;
 					}
-
-					errorLog = msg;
 				}
 
 			} else {

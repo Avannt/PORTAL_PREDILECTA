@@ -1,17 +1,7 @@
 {
     "resources": [
         {
-            "name": "../view/Dialog.fragment.xml"
-        },
-        {
-            "name": "../i18n/i18n_pt.properties",
-            "raw": "i18n/i18n.properties",
-            "locale": "_pt"
-        },
-        {
-            "name": "../i18n/i18n_en.properties",
-            "raw": "i18n/i18n.properties",
-            "locale": "_en"
+            "name": "../controller/relatorioTabelas.controller.js"
         },
         {
             "name": "../i18n/i18n_pt_BR.properties",
@@ -19,13 +9,22 @@
             "locale": "_pt_BR"
         },
         {
-            "name": "../controller/relatorioTabelas.controller.js"
+            "name": "../i18n/i18n_en.properties",
+            "raw": "i18n/i18n.properties",
+            "locale": "_en"
+        },
+        {
+            "name": "../i18n/i18n.properties",
+            "raw": "i18n/i18n.properties"
+        },
+        {
+            "name": "../model/models.js"
         },
         {
             "name": "../manifest.json"
         },
         {
-            "name": "../model/models.js"
+            "name": "../model/Menu.json"
         },
         {
             "name": "../model/formatter.js"
@@ -40,7 +39,9 @@
             "name": "../controller/relatorioTitulos.controller.js"
         },
         {
-            "name": "../model/Menu.json"
+            "name": "../i18n/i18n_pt.properties",
+            "raw": "i18n/i18n.properties",
+            "locale": "_pt"
         },
         {
             "name": "../controller/relatorioPedidos.controller.js"
@@ -119,7 +120,7 @@
             "merged": true
         },
         {
-            "name": "../controller/verbaConsultas-dbg.controller.js",
+            "name": "../controller/App-dbg.controller.js",
             "isDebug": true
         },
         {
@@ -132,6 +133,10 @@
         },
         {
             "name": "../controller/verbaConsultasDetalhe-dbg.controller.js",
+            "isDebug": true
+        },
+        {
+            "name": "../controller/verbaConsultas-dbg.controller.js",
             "isDebug": true
         },
         {
@@ -220,10 +225,6 @@
         },
         {
             "name": "../controller/BaseController-dbg.js",
-            "isDebug": true
-        },
-        {
-            "name": "../controller/App-dbg.controller.js",
             "isDebug": true
         },
         {
@@ -331,8 +332,7 @@
             "name": "../view/ItemDialog.fragment.xml"
         },
         {
-            "name": "../i18n/i18n.properties",
-            "raw": "i18n/i18n.properties"
+            "name": "../view/Dialog.fragment.xml"
         },
         {
             "name": "../view/App.view.xml"

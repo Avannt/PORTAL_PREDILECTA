@@ -138,54 +138,21 @@ sap.ui.define([
 			return Obj;
 		},
 
-		onCheckPedido: function (CodRepres, Cliente, res, rej, that) {
+		onBuscarPedidos: function (Cliente, CodRepres, Envio, res, rej, that) {
 
-			that.oModel.read("/P_CheckPedidoR(IvUsuario='" + CodRepres + "',IvKunnr='" + Cliente + "')", {
-				success: function (result) {
+			that.oModel.read("/P_PedidoQ", {
+				urlParameters: {
+					"$filter": "IvUsuario eq '" + CodRepres + "' and IvKunnr eq '" + Cliente + "' and IvEnvio eq " + Envio
+				},
+				success: function (data) {
 
-					res(result);
+					res(data.results);
 				},
 				error: function (error) {
 
 					rej(error);
 				}
 			});
-		},
-
-		onBuscarPedidos: function (Cliente, CodRepres, Envio, res, rej, that, Count) {
-
-			if (Count == true) {
-
-				that.oModel.read("/P_PedidoQ/$count", {
-					urlParameters: {
-						"$filter": "IvUsuario eq '" + CodRepres + "' and IvKunnr eq '" + Cliente + "' and IvEnvio eq " + Envio
-					},
-					success: function (data) {
-
-						res(data);
-					},
-					error: function (error) {
-
-						rej(error);
-					}
-				});
-
-			} else {
-
-				that.oModel.read("/P_PedidoQ", {
-					urlParameters: {
-						"$filter": "IvUsuario eq '" + CodRepres + "' and IvKunnr eq '" + Cliente + "' and IvEnvio eq " + Envio
-					},
-					success: function (data) {
-
-						res(data.results);
-					},
-					error: function (error) {
-
-						rej(error);
-					}
-				});
-			}
 		},
 
 		onBuscarProdutos: function (CodRepres, res, rej, that) {
@@ -507,32 +474,25 @@ sap.ui.define([
 
 			if (error.responseText == undefined) {
 
-				if (error.response == undefined) {
+				var error2 = error.response.body;
 
-					var errorLog = String(error);
+				if (error2 == undefined) {
+
+					var errorLog = error.message;
 
 				} else {
 
-					var error2 = error.response.body;
+					var parser = new DOMParser();
+					var xmlDoc = parser.parseFromString(error2, "text/xml");
 
-					if (error2 == undefined) {
+					try {
+						var msg = xmlDoc.getElementsByTagName("message")[0].childNodes[0].nodeValue;
 
-						errorLog = error.message;
-
-					} else {
-
-						var parser = new DOMParser();
-						var xmlDoc = parser.parseFromString(error2, "text/xml");
-
-						try {
-							var msg = xmlDoc.getElementsByTagName("message")[0].childNodes[0].nodeValue;
-
-						} catch (y) {
-							var msg = xmlDoc.getElementsByTagName("body")[0].childNodes[0].textContent;
-						}
-
-						errorLog = msg;
+					} catch (y) {
+						var msg = xmlDoc.getElementsByTagName("body")[0].childNodes[0].textContent;
 					}
+
+					errorLog = msg;
 				}
 
 			} else {
