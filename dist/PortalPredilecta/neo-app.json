@@ -41,7 +41,7 @@
       "path": "/sap/opu/odata",
       "target": {
         "type": "destination",
-        "name": "PredilectaDEV",
+        "name": "PredilectaDEV310",
         "entryPath": "/sap/opu/odata"
       },
       "description": "PREDILECTA DEV"

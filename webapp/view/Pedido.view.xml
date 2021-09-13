@@ -16,8 +16,8 @@
 					</ObjectHeader>
 					<Toolbar class="sapUiMediumSmallTop" id="toolbar1">
 						<ToolbarSpacer/>
-						<Label id="idLbDuplicatas" text="Duplicatas" design="Bold"/>
-						<Button id="idBtnDuplicatas" tooltip="Títulos em aberto" press="handleLinkPress" icon="sap-icon://batch-payments" type="Critical"/>
+						<Label id="idLbDuplicatas" text="Duplicatas" design="Bold" />
+						<Button id="idBtnDuplicatas" tooltip="Títulos em aberto" press="handleLinkPress" icon="sap-icon://batch-payments" type="Critical" />
 					</Toolbar>
 				</content>
 				<content>
