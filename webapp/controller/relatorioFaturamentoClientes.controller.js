@@ -335,6 +335,8 @@ sap.ui.define([
 			var PerioSplit = PerioAux.split(" - ");
 			var PerioIni = PerioSplit[0];
 			var PerioFim = PerioSplit[1];
+			
+			that.byId("master").setBusy(true);
 
 			that.oModel.read("/FatClientes", {
 				urlParameters: {
@@ -399,10 +401,12 @@ sap.ui.define([
 
 						that.vetorResumoEmpresa.push(vAuxTot);
 					}
-
+					
+					that.byId("master").setBusy(false);
 					that.getModel("modelResumoEmpresa").setData(that.vetorResumoEmpresa);
 				},
 				error: function (error) {
+					that.byId("master").setBusy(false);
 					that.onMensagemErroODATA(error);
 				}
 			});

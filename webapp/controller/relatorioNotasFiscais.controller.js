@@ -7,7 +7,8 @@ sap.ui.define([
 	"sap/ui/core/util/MockServer",
 	"sap/ui/export/library",
 	"sap/ui/export/Spreadsheet",
-	"sap/ui/model/odata/v2/ODataModel"
+	"sap/ui/model/odata/v2/ODataModel",
+	"sap/m/MessageBox"
 
 ], function (BaseController, JSONModel, MessageBox, formatter, MockServer, exportLibrary, Spreadsheet, ODataModel) {
 	"use strict";
@@ -195,7 +196,7 @@ sap.ui.define([
 				property: "Nfenum",
 				type: EdmType.String
 			});
-			
+
 			aCols.push({
 				label: "Referência Cliente",
 				property: "Bstkd",
@@ -330,19 +331,55 @@ sap.ui.define([
 			this.byId("idCentroIni").suggest();
 		},
 
+		onPressEnvioDanfe: function (evt) {
+
+			var that = this;
+
+			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
+			that.oModel = that.getModelGlobal("modelAux").getProperty("/DBModel");
+			var Docnum = evt.getSource().getBindingContext("modelNotasFiscais").getObject().Docnum;
+			var Email = "dfpezarezi@hotmail.com";
+			var Name1 = "Biridim";
+		
+			that.byId("master").setBusy(true);
+		
+			that.oModel.read("/EnviaEmailDanfe(IvUsuario='" + repres +
+				"',IvDocnum='" + Docnum +
+				"',IvEmail='" + Email +
+				"',IvName1='" + Name1 + "')", {
+					success: function (data) {
+
+						that.byId("master").setBusy(false);
+						MessageBox.show("Nota Fiscal enviada com sucesso", {
+							icon: MessageBox.Icon.SUCCESS,
+							title: "Envio de Notas Fiscais",
+							actions: [sap.m.MessageBox.Action.OK]
+						});
+
+					},
+					error: function (error) {
+						
+						that.byId("master").setBusy(false);
+						that.onMensagemErroODATA(error);
+					}
+				});
+		},
+
 		onPressBtnFiltrar: function () {
 
 			var that = this;
 
 			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
 			that.oModel = that.getModelGlobal("modelAux").getProperty("/DBModel");
-			
+
 			var parametros = that.getModel("modelParametros").getData();
 			var PerioAux = that.getModel("modelParametros").getProperty("/Periodo");
 			var PerioSplit = PerioAux.split(" - ");
 			var PerioIni = PerioSplit[0];
 			var PerioFim = PerioSplit[1];
 
+			that.byId("master").setBusy(true);
+			
 			that.oModel.read("/NotasFiscais", {
 				urlParameters: {
 
@@ -410,10 +447,12 @@ sap.ui.define([
 
 						that.vetorResumoEmpresa.push(vAuxTot);
 					}
-
+					
+					that.byId("master").setBusy(false);
 					that.getModel("modelResumoEmpresa").setData(that.vetorResumoEmpresa);
 				},
 				error: function (error) {
+					that.byId("master").setBusy(false);
 					that.onMensagemErroODATA(error);
 				}
 			});

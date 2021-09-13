@@ -1,7 +1,7 @@
 <mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:layout="sap.ui.layout"
 	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" xmlns="sap.m" xmlns:form="sap.ui.layout.form"
 	xmlns:semantic="sap.m.semantic" height="100%" controllerName="application.controller.relatorioNotasFiscais">
-	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Relatório de Notas Fiscais Emitidas" showFooter="false">
+	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Relatório de Notas Fiscais Emitidas" showFooter="false" busyIndicatorDelay="0">
 		<content>
 			<Table class="centralizaGroup" id="idtableNotasFiscais" growing="false" growingScrollToLoad="false" growingThreshold="5"
 				noDataText="Nenhum registro encontrado" alternateRowColors="true" backgroundDesign="Solid" width="100%"
@@ -75,14 +75,16 @@
 										<Input id="idNfenumIni" placeholder="Digite o número da nota fiscal" value="{modelParametros>/NfenumIni}"/>
 										<Input id="idNfenumFim" placeholder="Digite o número da nota fiscal" value="{modelParametros>/NfenumFim}"/>
 										<Label text="Representante"/>
-										<SearchField id="idRepreIni" placeholder="Digite Código ou Nome do Representante" enableSuggestions="true" value="{modelParametros>/LifnrIni}" 
-										    suggest="onSuggestRepresIni" suggestionItems="{ path: 'modelRepres>/', sorter: { path: 'Lifnr', ascending: true }}">
+										<SearchField id="idRepreIni" placeholder="Digite Código ou Nome do Representante" enableSuggestions="true"
+											value="{modelParametros>/LifnrIni}" suggest="onSuggestRepresIni"
+											suggestionItems="{ path: 'modelRepres>/', sorter: { path: 'Lifnr', ascending: true }}">
 											<suggestionItems>
 												<SuggestionItem text="{modelRepres>Lifnr}" description="{modelRepres>Name1Rep}" key="{modelRepres>Lifnr}"/>
 											</suggestionItems>
 										</SearchField>
-										<SearchField id="idRepreFim" placeholder="Digite Código ou Nome do Representante" enableSuggestions="true" value="{modelParametros>/LifnrFim}" 
-										    suggest="onSuggestRepresFim" suggestionItems="{ path: 'modelRepres>/', sorter: { path: 'Lifnr', ascending: true }}">
+										<SearchField id="idRepreFim" placeholder="Digite Código ou Nome do Representante" enableSuggestions="true"
+											value="{modelParametros>/LifnrFim}" suggest="onSuggestRepresFim"
+											suggestionItems="{ path: 'modelRepres>/', sorter: { path: 'Lifnr', ascending: true }}">
 											<suggestionItems>
 												<SuggestionItem text="{modelRepres>Lifnr}" description="{modelRepres>Name1Rep}" key="{modelRepres>Lifnr}"/>
 											</suggestionItems>
@@ -140,6 +142,9 @@
 					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="60px" hAlign="Right">
 						<Text text="%Rent"/>
 					</Column>
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="60px" hAlign="Right">
+						<Text text="DANFe"/>
+					</Column>
 				</columns>
 				<items>
 					<ColumnListItem type="Inactive">
@@ -161,6 +166,7 @@
 								text="{path: 'modelNotasFiscais>Netwrt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
 							<Text
 								text="{path: 'modelNotasFiscais>PctRentab', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
+							<Button type="Emphasized" icon="sap-icon://print" press="onPressEnvioDanfe"/>
 						</cells>
 					</ColumnListItem>
 				</items>
