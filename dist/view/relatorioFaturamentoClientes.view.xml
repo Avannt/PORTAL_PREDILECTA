@@ -45,7 +45,7 @@
 										<Label text="Bandeira"/>
 										<SearchField id="idBandeiraIni" placeholder="Digite Código ou Nome da Bandeira" enableSuggestions="true" value="{modelParametros>/Kvgr5Ini}" suggest="onSuggestBandeiraIni" suggestionItems="{ path: 'modelBandeiras>/', sorter: { path: 'Kvgr5', ascending: true }}">
 											<suggestionItems>
-												<SuggestionItem text="{modelBandeiras>Kvgr4}" description="{modelBandeiras>DescKvgr4}" key="{modelBandeiras>Kvgr5}"/>
+												<SuggestionItem text="{modelBandeiras>Kvgr5}" description="{modelBandeiras>DescKvgr5}" key="{modelBandeiras>Kvgr5}"/>
 											</suggestionItems>
 										</SearchField>
 										<SearchField id="idBandeiraFim" placeholder="Digite Código ou Nome da Bandeira" enableSuggestions="true" value="{modelParametros>/Kvgr5Fim}" suggest="onSuggestBandeiraFim" suggestionItems="{ path: 'modelBandeiras>/', sorter: { path: 'Kvgr5', ascending: true }}">
@@ -53,19 +53,6 @@
 												<SuggestionItem text="{modelBandeiras>Kvgr5}" description="{modelBandeiras>DescKvgr5}" key="{modelBandeiras>Kvgr5}"/>
 											</suggestionItems>
 										</SearchField>
-										
-										<!--<Label text="Ordem Vda"/>-->
-										<!--<SearchField id="idOrdemIni" placeholder="Digite Código da Ordem de Venda" enableSuggestions="false" value="{modelParametros>/VbelnIni}" suggest="onSuggestOrdemIni" suggestionItems="{ path: 'modelOrdens>/', sorter: { path: 'Vbeln', ascending: true }}">-->
-										<!--	<suggestionItems>-->
-										<!--		<SuggestionItem text="{modelOrdens>Vbeln}" description="{modelOrdens>Vbeln}" key="{modelOrdens>Vbeln}"/>-->
-										<!--	</suggestionItems>-->
-										<!--</SearchField>-->
-										<!--<SearchField id="idOrdemFim" placeholder="Digite Código da Ordem de Venda" enableSuggestions="false" value="{modelParametros>/VbelnFim}" suggest="onSuggestOrdemFim" suggestionItems="{ path: 'modelOrdens>/', sorter: { path: 'Vbeln', ascending: true }}">-->
-										<!--	<suggestionItems>-->
-										<!--		<SuggestionItem text="{modelOrdens>Vbeln}" description="{modelOrdens>Vbeln}" key="{modelOrdens>Vbeln}"/>-->
-										<!--	</suggestionItems>-->
-										<!--</SearchField>-->
-										
 										<Label text="Representante"/>
 										<SearchField id="idRepreIni" placeholder="Digite Código ou Nome do Representante" enableSuggestions="true" value="{modelParametros>/LifnrIni}" suggest="onSuggestRepresIni" suggestionItems="{ path: 'modelRepres>/', sorter: { path: 'Lifnr', ascending: true }}">
 											<suggestionItems>
@@ -96,7 +83,7 @@
 					<Column minScreenWidth="900px" demandPopin="true" popinDisplay="Inline" width="auto">
 						<Text text="Razão Social"/>
 					</Column>
-					<Column minScreenWidth="610px" demandPopin="true" popinDisplay="Inline" width="125px">
+					<Column minScreenWidth="610px" demandPopin="true" popinDisplay="Inline" width="155px">
 						<Text text="CNPJ/CPF"/>
 					</Column>
 					<Column minScreenWidth="520px" demandPopin="true" popinDisplay="Inline" width="110px">
@@ -129,7 +116,7 @@
 						<cells>
 							<Text text="{modelFatClientes>Kunnr}"/>
 							<Text text="{modelFatClientes>Name1Cli}"/>
-							<Text text="{modelFatClientes>Stcd1} {modelFatClientes&gt;Stcd2}"/>
+							<Text text="{path: 'modelFatClientes>Stcd1', formatter:'.onFormatCnpj'} {path: 'modelFatClientesStcd2', formatter:'.onFormatCpf'}"/>
 							<Text text="{modelFatClientes>Kvgr4Text}"/>
 							<Text text="{modelFatClientes>Kvgr5Text}"/>
 							<Text text="{modelFatClientes>Region}"/>

@@ -172,9 +172,7 @@ sap.ui.define([
 			});
 		},
 
-		onBuscarPedido: function (NrPedido, res, rej) {
-
-			var that = this;
+		onBuscarPedido: function (NrPedido, res, rej, that) {
 
 			that.oModel.read("/P_PedidoPR(NrPedido='" + NrPedido + "')", {
 				success: function (data) {

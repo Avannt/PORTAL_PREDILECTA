@@ -200,6 +200,18 @@ sap.ui.define([
 			});
 
 			aCols.push({
+				label: "Canal Atuação",
+				property: "Kvgr2",
+				type: EdmType.String
+			});
+			
+			aCols.push({
+				label: "Descrição Canal Atuação",
+				property: "Kvgr2Text",
+				type: EdmType.String
+			});
+			
+			aCols.push({
 				label: "Rede",
 				property: "Kvgr4",
 				type: EdmType.String
@@ -317,19 +329,8 @@ sap.ui.define([
 
 			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
 			that.oModel = that.getModelGlobal("modelAux").getProperty("/DBModel");
-
-			var WerksIni = that.getModel("modelParametros").getProperty("/WerksIni");
-			var WerksFim = that.getModel("modelParametros").getProperty("/WerksFim");
-			var KunnrIni = that.getModel("modelParametros").getProperty("/KunnrIni");
-			var KunnrFim = that.getModel("modelParametros").getProperty("/KunnrFim");
-			var Kvgr4Ini = that.getModel("modelParametros").getProperty("/Kvgr4Ini");
-			var Kvgr4Fim = that.getModel("modelParametros").getProperty("/Kvgr4Fim");
-			var Kvgr5Ini = that.getModel("modelParametros").getProperty("/Kvgr5Ini");
-			var Kvgr5Fim = that.getModel("modelParametros").getProperty("/Kvgr5Fim");
-			var VbelnIni = "";
-			var VbelnFim = "";
-			var RepreIni = that.getModel("modelParametros").getProperty("/LifnrIni");
-			var RepreFim = that.getModel("modelParametros").getProperty("/LifnrFim");
+			
+			var parametros = that.getModel("modelParametros").getData();
 			var PerioAux = that.getModel("modelParametros").getProperty("/Periodo");
 			var PerioSplit = PerioAux.split(" - ");
 			var PerioIni = PerioSplit[0];
@@ -339,18 +340,16 @@ sap.ui.define([
 				urlParameters: {
 
 					"$filter": "Usuario eq '" + repres +
-						"' and WerksIni eq '" + WerksIni +
-						"' and WerksFim eq '" + WerksFim +
-						"' and KunnrIni eq '" + KunnrIni +
-						"' and KunnrFim eq '" + KunnrFim +
-						"' and Kvgr4Ini eq '" + Kvgr4Ini +
-						"' and Kvgr4Fim eq '" + Kvgr4Fim +
-						"' and Kvgr5Ini eq '" + Kvgr5Ini +
-						"' and Kvgr5Fim eq '" + Kvgr5Fim +
-						"' and VbelnIni eq '" + VbelnIni +
-						"' and VbelnFim eq '" + VbelnFim +
-						"' and RepreIni eq '" + RepreIni +
-						"' and RepreFim eq '" + RepreFim +
+						"' and WerksIni eq '" + parametros.WerksIni +
+						"' and WerksFim eq '" + parametros.WerksFim +
+						"' and KunnrIni eq '" + parametros.KunnrIni +
+						"' and KunnrFim eq '" + parametros.KunnrFim +
+						"' and Kvgr4Ini eq '" + parametros.Kvgr4Ini +
+						"' and Kvgr4Fim eq '" + parametros.Kvgr4Fim +
+						"' and Kvgr5Ini eq '" + parametros.Kvgr5Ini +
+						"' and Kvgr5Fim eq '" + parametros.Kvgr5Fim +
+						"' and RepreIni eq '" + parametros.RepreIni +
+						"' and RepreFim eq '" + parametros.RepreFim +
 						"' and PerioIni eq '" + PerioIni +
 						"' and PerioFim eq '" + PerioFim + "'"
 				},
