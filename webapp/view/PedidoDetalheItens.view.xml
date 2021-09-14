@@ -70,6 +70,20 @@
 												<layout:GridData span="L2 M2"/>
 											</layoutData>
 										</Input>
+										
+										<Label text="Máx. Prom.">
+											<layoutData>
+												<layout:GridData span="L2 M2"/>
+											</layoutData>
+										</Label>
+										<Input id="idMaxPromocao"
+											value="{path: 'modelItem>/PercPromoMax', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} % ({modelItem>/CondPercPromoMax})"
+											enabled="false" class="desabilitado">
+											<layoutData>
+												<layout:GridData span="L2 M2"/>
+											</layoutData>
+										</Input>
+										
 										<Label text="Quantidade">
 											<layoutData>
 												<layout:GridData span="L2 M2" linebreakL="true"/>
@@ -97,20 +111,8 @@
 												<layout:GridData span="L2 M2"/>
 											</layoutData>
 										</Label>
-										<Input id="idPromocao" class="camposDialog" value="{ path: 'modelItem>/PercPromo' }" editable="true" change="onDescontoChange"
+										<Input id="idPromocao" class="camposDialog" value="{ path: 'modelItem>/PercPromo' }" editable="true" change="onPromocaoChange"
 											liveChange="onBloquearInput" submit="onFocusPromo" type="Number">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Input>
-										<Label text="Máx. Prom.">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Label>
-										<Input id="idMaxPromocao"
-											value="{path: 'modelItem>/PercPromoMax', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} % ({modelItem>/CondPercPromoMax})"
-											enabled="false" class="desabilitado">
 											<layoutData>
 												<layout:GridData span="L2 M2"/>
 											</layoutData>
@@ -137,9 +139,9 @@
 												<layout:GridData span="L2 M2"/>
 											</layoutData>
 										</Input>
-										<Label text="Preço c/ ST">
+										<Label text="Preço Caixa c/ ST">
 											<layoutData>
-												<layout:GridData span="L2 M2"/>
+												<layout:GridData span="L2 M2" linebreakL="true"/>
 											</layoutData>
 										</Label>
 										<Input id="idPrecoComST" enabled="false" class="desabilitado"

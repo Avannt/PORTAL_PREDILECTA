@@ -449,28 +449,8 @@ sap.ui.define([
 			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
 			that.oModel = that.getModelGlobal("modelAux").getProperty("/DBModel");
 
-			var WerksIni = that.getModel("modelParametros").getProperty("/WerksIni");
-			var WerksFim = that.getModel("modelParametros").getProperty("/WerksFim");
-			var KunnrIni = that.getModel("modelParametros").getProperty("/KunnrIni");
-			var KunnrFim = that.getModel("modelParametros").getProperty("/KunnrFim");
-			var Kvgr4Ini = that.getModel("modelParametros").getProperty("/Kvgr4Ini");
-			var Kvgr4Fim = that.getModel("modelParametros").getProperty("/Kvgr4Fim");
-			var Kvgr5Ini = that.getModel("modelParametros").getProperty("/Kvgr5Ini");
-			var Kvgr5Fim = that.getModel("modelParametros").getProperty("/Kvgr5Fim");
-			var VbelnIni = "";
-			var VbelnFim = "";
-			var RepreIni = that.getModel("modelParametros").getProperty("/LifnrIni");
-			var RepreFim = that.getModel("modelParametros").getProperty("/LifnrFim");
-			var MatnrIni = that.getModel("modelParametros").getProperty("/MatnrIni");
-			var MatnrFim = that.getModel("modelParametros").getProperty("/MatnrFim");
-			var Mvgr1Ini = that.getModel("modelParametros").getProperty("/Mvgr1Ini");
-			var Mvgr1Fim = that.getModel("modelParametros").getProperty("/Mvgr1Fim");
-			var Mvgr2Ini = that.getModel("modelParametros").getProperty("/Mvgr2Ini");
-			var Mvgr2Fim = that.getModel("modelParametros").getProperty("/Mvgr2Fim");
-			var Mvgr3Ini = that.getModel("modelParametros").getProperty("/Mvgr3Ini");
-			var Mvgr3Fim = that.getModel("modelParametros").getProperty("/Mvgr3Fim");
-			var Mvgr5Ini = that.getModel("modelParametros").getProperty("/Mvgr5Ini");
-			var Mvgr5Fim = that.getModel("modelParametros").getProperty("/Mvgr5Fim");
+			var parametros = that.getModel("modelParametros").getData();
+			
 			var PerioAux = that.getModel("modelParametros").getProperty("/Periodo");
 			var PerioSplit = PerioAux.split(" - ");
 			var PerioIni = PerioSplit[0];
@@ -480,28 +460,26 @@ sap.ui.define([
 				urlParameters: {
 
 					"$filter": "Usuario eq '" + repres +
-						"' and WerksIni eq '" + WerksIni +
-						"' and WerksFim eq '" + WerksFim +
-						"' and KunnrIni eq '" + KunnrIni +
-						"' and KunnrFim eq '" + KunnrFim +
-						"' and Kvgr4Ini eq '" + Kvgr4Ini +
-						"' and Kvgr4Fim eq '" + Kvgr4Fim +
-						"' and Kvgr5Ini eq '" + Kvgr5Ini +
-						"' and Kvgr5Fim eq '" + Kvgr5Fim +
-						"' and VbelnIni eq '" + VbelnIni +
-						"' and VbelnFim eq '" + VbelnFim +
-						"' and RepreIni eq '" + RepreIni +
-						"' and RepreFim eq '" + RepreFim +
-						"' and MatnrIni eq '" + MatnrIni +
-						"' and MatnrFim eq '" + MatnrFim +
-						"' and Mvgr1Ini eq '" + Mvgr1Ini +
-						"' and Mvgr1Fim eq '" + Mvgr1Fim +
-						"' and Mvgr2Ini eq '" + Mvgr2Ini +
-						"' and Mvgr2Fim eq '" + Mvgr2Fim +
-						"' and Mvgr3Ini eq '" + Mvgr3Ini +
-						"' and Mvgr3Fim eq '" + Mvgr3Fim +
-						"' and Mvgr5Ini eq '" + Mvgr5Ini +
-						"' and Mvgr5Fim eq '" + Mvgr5Fim +
+						"' and WerksIni eq '" + parametros.WerksIni +
+						"' and WerksFim eq '" + parametros.WerksFim +
+						"' and KunnrIni eq '" + parametros.KunnrIni +
+						"' and KunnrFim eq '" + parametros.KunnrFim +
+						"' and Kvgr4Ini eq '" + parametros.Kvgr4Ini +
+						"' and Kvgr4Fim eq '" + parametros.Kvgr4Fim +
+						"' and Kvgr5Ini eq '" + parametros.Kvgr5Ini +
+						"' and Kvgr5Fim eq '" + parametros.Kvgr5Fim +
+						"' and RepreIni eq '" + parametros.RepreIni +
+						"' and RepreFim eq '" + parametros.RepreFim +
+						"' and MatnrIni eq '" + parametros.MatnrIni +
+						"' and MatnrFim eq '" + parametros.MatnrFim +
+						"' and Mvgr1Ini eq '" + parametros.Mvgr1Ini +
+						"' and Mvgr1Fim eq '" + parametros.Mvgr1Fim +
+						"' and Mvgr2Ini eq '" + parametros.Mvgr2Ini +
+						"' and Mvgr2Fim eq '" + parametros.Mvgr2Fim +
+						"' and Mvgr3Ini eq '" + parametros.Mvgr3Ini +
+						"' and Mvgr3Fim eq '" + parametros.Mvgr3Fim +
+						"' and Mvgr5Ini eq '" + parametros.Mvgr5Ini +
+						"' and Mvgr5Fim eq '" + parametros.Mvgr5Fim +
 						"' and PerioIni eq '" + PerioIni +
 						"' and PerioFim eq '" + PerioFim + "'"
 				},

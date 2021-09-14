@@ -1,11 +1,132 @@
-<mvc:View controllerName="application.controller.detalheProdutos" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:wt="sap.ui.demo.wt.control">
-	<Page title="{i18n>detailPageTitleProdutos}" showNavButton="true" navButtonPress="onNavBack">
-		<ObjectHeader responsive="true" fullScreenOptimized="true" intro="{Predilecta>Name}" title="{Predilecta>Category}">
-			<attributes>
-				<ObjectAttribute title="Quantidade" text="{Predilecta>Quantity}"></ObjectAttribute>
-				<ObjectAttribute title="Data Vencimento"
-					text="{ path: 'Predilecta>dueDate', type: 'sap.ui.model.type.Date', formatOptions: { style: 'long', source: { pattern: 'yyyy-MM-ddTHH:mm:ss' } } }"/>
-			</attributes>
-		</ObjectHeader>
-	</Page>
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" xmlns="sap.m"
+	xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" xmlns:form="sap.ui.layout.form" xmlns:layout="sap.ui.layout"
+	xmlns:course="opensap.manageproducts.control" height="100%" controllerName="application.controller.detalheProdutos">
+	<SplitContainer id="SplitContDemoProdutos" initialDetail="detailProdutos" initialMaster="masterProdutos">
+		<masterPages>
+			<Page id="masterProdutos" title="Produtos" class="sapUiStdPage" showNavButton="true" navButtonPress="onNavBack" floatingFooter="true">
+				<headerContent/>
+				<subHeader>
+					<Toolbar id="searchBar">
+						<f:SimpleForm minWidth="1024" maxContainerCols="3" editable="true" layout="ResponsiveGridLayout" labelSpanL="3" labelSpanM="3"
+							labelSpanXL="1" emptySpanL="0" emptySpanM="0" emptySpanXL="1" columnsL="3" columnsXL="3" columnsM="3">
+							<f:toolbar>
+								<Toolbar width="100%" id="toolbar1">
+									<content>
+										<Select id="idEstabelecimento" forceSelection="false" selectedKey="{modelTela>/Bukrs}" showSecondaryValues="false"
+											items="{ path: 'modelCentros>/' }" change="onChangeEmpresa" busyIndicatorDelay="0">
+											<core:Item xmlns:core="sap.ui.core" key="{modelCentros>Bukrs}" text="{modelCentros>Werks} - {modelCentros>NomeCentro}"/>
+											<layoutData>
+												<layout:GridData xmlns:layout="sap.ui.layout" span="L2 M2" linebreakM="true" id="data98"/>
+											</layoutData>
+										</Select>
+									</content>
+								</Toolbar>
+							</f:toolbar>
+						</f:SimpleForm>
+					</Toolbar>
+				</subHeader>
+				<content>
+					<List id="list" items="{ path: 'modelProdutos>/' }" noDataText="{masterView>/noDataText}" mode="SingleSelectMaster" growing="true"
+						growingScrollToLoad="true" updateFinished="onUpdateFinished" selectionChange="onSelectionChange">
+						<items>
+							<ObjectListItem icon="{modelProdutos>PathImg}" type="Active" press="onSelectionChange" title="Cód. {modelProdutos>Matnr}">
+								<attributes>
+									<ObjectAttribute text="{modelProdutos>Maktx}"/>
+									<ObjectAttribute text="Categ.: {modelProdutos>Mvgr1}-{modelProdutos>DescMvgr1}"/>
+									<ObjectAttribute text="SubCateg.: {modelProdutos>Mvgr2}-{modelProdutos>DescMvgr2}"/>
+								</attributes>
+								<!--<firstStatus>-->
+								<!--	<ObjectStatus text=""/>-->
+								<!--</firstStatus>-->
+							</ObjectListItem>
+						</items>
+						<headerToolbar>
+							<Toolbar width="100%" id="toolbar2">
+								<content>
+									<SearchField xmlns:mvc="sap.ui.core.mvc" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+										xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" xmlns:form="sap.ui.layout.form" xmlns:layout="sap.ui.layout"
+										xmlns:course="opensap.manageproducts.control" xmlns="sap.m" id="searchField" showRefreshButton="false"
+										placeholder="Digite Desc./Cód. Produto" tooltip="Pesquisar Clientes pelo Nome." width="100%" liveChange="onSearch" search="onSearch">
+										<layoutData>
+											<layout:GridData xmlns:layout="sap.ui.layout" span="L2 M2" linebreakM="true" id="data97"/>
+										</layoutData>
+									</SearchField>
+								</content>
+							</Toolbar>
+						</headerToolbar>
+					</List>
+				</content>
+			</Page>
+		</masterPages>
+		<detailPages>
+			<Page id="detailProdutos" title="Produtos" class="sapUiStdPage" showNavButton="true" navButtonPress="onPressDetailBack" >
+				<content>
+					<IconTabBar id="idTopLevelIconTabBar">
+						<items>
+							<IconTabFilter id="tabInfoProduto" text="Dados Produtos" key="tab1" icon="sap-icon://hint">
+								<content>
+									<VBox class="sapUiSmallMargin">
+										<f:SimpleForm id="SimpleFormChange471" editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="4"
+											labelSpanS="12" adjustLabelSpan="false" emptySpanXL="3" emptySpanL="3" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
+											singleContainerFullSize="false">
+											<f:content>
+												<Label text="Código"/>
+												<Input id="idCodigoProduto" value="{modelProduto>/Matnr}" enabled="false"/>
+												<Label text="Nome Produto"/>
+												<Input id="idNomeProduto" value="{modelProduto>/Maktx}" enabled="false"/>
+												<!--<Label text="Grupo de Mercadorias"/>-->
+												<!--<Input id="idGrupoEstoque" value="{modelProduto>/Extwg} - {modelProduto>/DescExtwg}" enabled="false" />-->
+												<Label text="Categoria"/>
+												<Input id="idCategoria" value="{modelProduto>/Mvgr1} - {modelProduto>/DescMvgr1}" enabled="false" />
+												<Label text="SubCategoria"/>
+												<Input id="idSubCategoria" value="{modelProduto>/Mvgr2} - {modelProduto>/DescMvgr2}" enabled="false" />
+												<Label text="Familia"/>
+												<Input id="idFamilia" value="{modelProduto>/Mvgr3} - {modelProduto>/DescMvgr3}" enabled="false" />
+												<Label text="Gramatura"/>
+												<Input id="idGramatura" value="{modelProduto>/DescMvgr4}" enabled="false" />
+												<!--{modelProduto>/Mvgr4} - -->
+												<Label text="Marca"/>
+												<Input id="idMarca" value="{modelProduto>/Mvgr5} - {modelProduto>/DescMvgr5}" enabled="false" />
+												<Label text="Classificação Fiscal"/>
+												<Input id="idClassificacaoFiscal" value="{modelProduto>/Steuc}" enabled="false"/>
+												<!--<Label text="Unidade Negócio" />-->
+												<!--<Input id="idUnidadeNegocio" enabled="false" />-->
+												<Label text="Peso Bruto"/>
+												<Input id="idPesoBruto" value="{path: 'modelProduto>/Brgew', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} {modelProduto>/Gewei}" enabled="false"/>
+												<Label text="Peso Liquido"/>
+												<Input id="idPesoLiquido" value="{path: 'modelProduto>/Ntgew', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} {modelProduto>/Gewei}" enabled="false"/>
+												<Label text="Validade"/>
+												<Input id="idValidade" value="{modelProduto>/Mhdhb} (Meses)" enabled="false"/>
+												<Label text="Quantidade no pallet"/>
+												<Input id="idQuantidadeNoPallet" value="{modelProduto>/QntPallet}" enabled="false"/>
+												<Label text="Unidade Medida"/>
+												<Input id="idUnidadeMedida" value="{modelProduto>/Vrkme}" enabled="false"/>
+												<Label text="Quantidade na caixa"/>
+												<Input id="idQuantidadeNaCaixa" value="{modelProduto>/QntCaixa}" enabled="false"/>
+												<Label text="Comprimento"/>
+												<Input id="idComprimento" value="{path: 'modelProduto>/Laeng', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} {modelProduto>/Meabm}" enabled="false"/>
+												<Label text="Altura"/>
+												<Input id="idAltura" value="{path: 'modelProduto>/Hoehe', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} {modelProduto>/Meabm}" enabled="false"/>
+												<Label text="Largura"/>
+												<Input id="idLargura" value="{path: 'modelProduto>/Breit', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} {modelProduto>/Meabm}" enabled="false"/>
+												<Label text="Codigo EAN"/>
+												<Input id="idCodigoEAN" value="{modelProduto>/Ean11}" enabled="false"/>
+												<Label text="Codigo DUN"/>
+												<Input id="idCodigoDUN" value="{modelProduto>/Ean11Dun}" enabled="false"/>
+											</f:content>
+										</f:SimpleForm>
+									</VBox>
+								</content>
+							</IconTabFilter>
+							<IconTabFilter id="tabMovimentacao" text="Ilustração" key="tab2" icon="sap-icon://picture">
+								<VBox alignItems="Center">
+									<Image id="idPictureSrc" src="{modelProduto>/PathImg}" densityAware="false"/>
+								</VBox>
+							</IconTabFilter>
+						</items>
+					</IconTabBar>
+				</content>
+			</Page>
+		</detailPages>
+	</SplitContainer>
 </mvc:View>

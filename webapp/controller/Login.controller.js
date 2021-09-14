@@ -386,17 +386,6 @@ sap.ui.define([
 
 									sap.ui.core.UIComponent.getRouterFor(that).navTo("menu");
 									that.getView().byId("idPageLogin").setBusy(false);
-
-									// sap.m.MessageBox.show(
-									// 	"Usuário autenticado com sucesso!", {
-									// 		icon: sap.m.MessageBox.Icon.SUCCESS,
-									// 		title: "Autenticação!",
-									// 		actions: [sap.m.MessageBox.Action.OK],
-									// 		onClose: function (oAction) {
-									// 		}
-									// 	}
-									// );
-
 								},
 								error: function (error) {
 

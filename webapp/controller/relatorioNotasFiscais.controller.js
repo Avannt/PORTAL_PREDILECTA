@@ -374,7 +374,7 @@ sap.ui.define([
 			var that = this;
 
 			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
-			var Name1 = that.getModelGlobal("modelAux").getProperty("/NomeRepres").replace(" ", "_");
+			var Name1 = that.getModelGlobal("modelAux").getProperty("/NomeRepres").replaceAll(" ", "_");
 			var Docnum = that.getModel("modelParamDialog").getProperty("/Docnum");
 			var Nfenum = that.getModel("modelParamDialog").getProperty("/Nfenum");
 			var Series = that.getModel("modelParamDialog").getProperty("/Series");
