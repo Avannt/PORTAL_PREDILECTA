@@ -1,0 +1,46 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout" id="idPageAlterar">
+	<Dialog id="idDialogEmail" title="Envio DANF-e por E-mail" initialFocus="idEmail" icon="sap-icon://email" stretch="true" class="customizedDialog">
+		<content>
+			<f:Form id="idForm" editable="true" ariaLabelledBy="Title1">
+				<f:layout>
+					<f:ResponsiveGridLayout labelSpanXL="2" labelSpanL="2" labelSpanM="2" labelSpanS="3" adjustLabelSpan="false" emptySpanXL="0" emptySpanL="0" emptySpanM="0" emptySpanS="0" columnsXL="4" columnsL="4" columnsM="8"/>
+				</f:layout>
+				<f:FormContainer ariaLabelledBy="Title1">
+					<f:formElements>
+						<f:FormElement label="NF-e">
+							<f:fields>
+								<Input id="idNfenum" type="Text" value="{modelParamDialog>/Nfenum} - {modelParamDialog>/Series}" blocked="true">
+									<layoutData>
+										<l:GridData span="XL8 L8 M8 S12" linebreakXL="false" linebreakS="true"/>
+									</layoutData>
+								</Input>
+							</f:fields>
+						</f:FormElement>
+						<f:FormElement label="Representante">
+							<f:fields>
+								<Input id="idCodRepres" type="Text" value="{modelAux>/CodRepres} - {modelAux>/NomeRepres}" blocked="true">
+									<layoutData>
+										<l:GridData span="XL8 L8 M8 S12" linebreakXL="false" linebreakS="true"/>
+									</layoutData>
+								</Input>
+							</f:fields>
+						</f:FormElement>
+						<f:FormElement label="E-mail">
+							<f:fields>
+								<Input id="idEmail" type="Text" value="{modelParamDialog>/Email}">
+									<layoutData>
+										<l:GridData span="XL8 L8 M8 S12" linebreakXL="false" linebreakS="true"/>
+									</layoutData>
+								</Input>
+							</f:fields>
+						</f:FormElement>
+					</f:formElements>
+				</f:FormContainer>
+			</f:Form>
+		</content>
+		<buttons>
+			<Button text="Enviar" type="Accept" icon="sap-icon://accept" press="onDialogEnvioDanfe"/>
+			<Button text="Sair" icon="sap-icon://undo" press="onDialogClose"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>
