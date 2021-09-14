@@ -381,7 +381,6 @@ sap.ui.define([
 			var Email = that.getModelGlobal("modelAux").getProperty("/Email");
 
 			sap.ui.getCore().byId("idDialogEmail").setBusy(true);
-			//that.byId("idBtEnvioDanfe").setBusy(true);
 
 			that.oModel.read("/EnviaEmailDanfe(IvUsuario='" + repres +
 				"',IvDocnum='" + Docnum +
