@@ -126,10 +126,10 @@
 										
 										<Label id="idPeriodo" text="Período"/>
 										<DateRangeSelection displayFormat="dd/MM/yyyy" id="idCDateRange" value="{modelParametros>/Periodo}" placeholder="Período" width="100%"/>
-										<Button id="idBtnFiltrar" text="Filtrar" type="Emphasized" press="onPressBtnFiltrar" icon="sap-icon://filter"/>
+										<Button id="idBtnFiltrar" text="Filtrar" type="Emphasized" press="onPressBtnFiltrar" icon="sap-icon://filter" tooltip="Filtrar Dados"/>
 									</f:content>
 									<!--<ToolbarSpacer width="90%"/>-->
-									<Button icon="sap-icon://excel-attachment" press="onExport" type="Emphasized" text="Exportar"/>
+									<Button icon="sap-icon://excel-attachment" press="onExport" type="Emphasized" text="Exportar" tooltip="Exportar Dados"/>
 								</f:SimpleForm>
 							</content>
 						</Panel>
