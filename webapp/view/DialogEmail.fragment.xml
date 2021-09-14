@@ -1,5 +1,5 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout" id="idPageAlterar">
-	<Dialog id="idDialogEmail" title="Envio DANF-e por E-mail" initialFocus="idEmail" icon="sap-icon://email" stretch="true" class="customizedDialog">
+	<Dialog id="idDialogEmail" title="Envio DANF-e por E-mail" initialFocus="idEmail" icon="sap-icon://email" stretch="true" class="customizedDialog" busyIndicatorDelay="0">
 		<content>
 			<f:Form id="idForm" editable="true" ariaLabelledBy="Title1">
 				<f:layout>
@@ -27,7 +27,7 @@
 						</f:FormElement>
 						<f:FormElement label="E-mail">
 							<f:fields>
-								<Input id="idEmail" type="Text" value="{modelParamDialog>/Email}">
+								<Input id="idEmail" type="Text" value="{modelAux>/Email}">
 									<layoutData>
 										<l:GridData span="XL8 L8 M8 S12" linebreakXL="false" linebreakS="true"/>
 									</layoutData>
@@ -39,7 +39,7 @@
 			</f:Form>
 		</content>
 		<buttons>
-			<Button text="Enviar" type="Accept" icon="sap-icon://accept" press="onDialogEnvioDanfe"/>
+			<Button id="idBtEnvioDanfe" text="Enviar" icon="sap-icon://accept" press="onDialogEnvioDanfe" type="Accept"/>
 			<Button text="Sair" icon="sap-icon://undo" press="onDialogClose"/>
 		</buttons>
 	</Dialog>

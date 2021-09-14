@@ -338,8 +338,7 @@ sap.ui.define([
 			var vAux = {
 				Docnum: evt.getSource().getBindingContext("modelNotasFiscais").getObject().Docnum,
 				Nfenum: evt.getSource().getBindingContext("modelNotasFiscais").getObject().Nfenum,
-				Series: evt.getSource().getBindingContext("modelNotasFiscais").getObject().Series,
-				Email: "dfpezarezi@hotmail.com"
+				Series: evt.getSource().getBindingContext("modelNotasFiscais").getObject().Series
 			};
 
 			var omodelParamDialog = new JSONModel(vAux);
@@ -379,9 +378,10 @@ sap.ui.define([
 			var Docnum = that.getModel("modelParamDialog").getProperty("/Docnum");
 			var Nfenum = that.getModel("modelParamDialog").getProperty("/Nfenum");
 			var Series = that.getModel("modelParamDialog").getProperty("/Series");
-			var Email = that.getModel("modelParamDialog").getProperty("/Email");
+			var Email = that.getModelGlobal("modelAux").getProperty("/Email");
 
-			that.byId("master").setBusy(true);
+			sap.ui.getCore().byId("idDialogEmail").setBusy(true);
+			//that.byId("idBtEnvioDanfe").setBusy(true);
 
 			that.oModel.read("/EnviaEmailDanfe(IvUsuario='" + repres +
 				"',IvDocnum='" + Docnum +
@@ -389,7 +389,7 @@ sap.ui.define([
 				"',IvName1='" + Name1 + "')", {
 					success: function (data) {
 
-						that.byId("master").setBusy(false);
+						sap.ui.getCore().byId("idDialogEmail").setBusy(false);
 						MessageBox.show("NF-e " + Nfenum + " -" + Series + " enviada para o e-mail " + Email, {
 							icon: MessageBox.Icon.SUCCESS,
 							title: "Envio de Notas Fiscais",
@@ -399,7 +399,7 @@ sap.ui.define([
 					},
 					error: function (error) {
 
-						that.byId("master").setBusy(false);
+						sap.ui.getCore().byId("idDialogEmail").setBusy(true);
 						that.onMensagemErroODATA(error);
 					}
 				});
