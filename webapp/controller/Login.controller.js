@@ -73,6 +73,7 @@ sap.ui.define([
 
 				var oModelAux = new sap.ui.model.json.JSONModel({
 					CodRepres: "",
+					NomeRepres: "",
 					Imei: "",
 					VersaoApp: "",
 					Login: "",
@@ -369,6 +370,7 @@ sap.ui.define([
 						success: function (retorno) {
 
 							that.getModelGlobal("modelAux").setProperty("/CodRepres", CodRepres);
+							that.getModelGlobal("modelAux").setProperty("/NomeRepres", retorno.EvNomeRepres);
 							that.getModelGlobal("modelAux").setProperty("/Login", CodRepres);
 							that.getModelGlobal("modelAux").setProperty("/Senha", Senha);
 							that.getModelGlobal("modelAux").setProperty("/Lifnr", retorno.EvLifnr);

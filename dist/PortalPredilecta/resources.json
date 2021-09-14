@@ -1,7 +1,7 @@
 {
     "resources": [
         {
-            "name": "../view/entregaFutura.view.xml"
+            "name": "../view/Login.view.xml"
         },
         {
             "name": "../i18n/i18n_pt.properties",
@@ -9,19 +9,19 @@
             "locale": "_pt"
         },
         {
-            "name": "../i18n/i18n_en.properties",
+            "name": "../i18n/i18n_pt_BR.properties",
             "raw": "i18n/i18n.properties",
-            "locale": "_en"
+            "locale": "_pt_BR"
         },
         {
             "name": "../i18n/i18n.properties",
             "raw": "i18n/i18n.properties"
         },
         {
-            "name": "../manifest.json"
+            "name": "../controller/relatorioNotasFiscais.controller.js"
         },
         {
-            "name": "../model/Menu.json"
+            "name": "../manifest.json"
         },
         {
             "name": "../model/models.js"
@@ -45,7 +45,7 @@
             "name": "../controller/relatorioPedidos.controller.js"
         },
         {
-            "name": "../controller/relatorioNotasFiscais.controller.js"
+            "name": "../model/Menu.json"
         },
         {
             "name": "../controller/relatorioFaturamentoItens.controller.js"
@@ -279,9 +279,7 @@
             "name": "../view/enviarPedidos.view.xml"
         },
         {
-            "name": "../i18n/i18n_pt_BR.properties",
-            "raw": "i18n/i18n.properties",
-            "locale": "_pt_BR"
+            "name": "../view/entregaFutura.view.xml"
         },
         {
             "name": "../view/detalhesRelatorioTabelas.view.xml"
@@ -326,7 +324,9 @@
             "name": "../view/Menu.view.xml"
         },
         {
-            "name": "../view/Login.view.xml"
+            "name": "../i18n/i18n_en.properties",
+            "raw": "i18n/i18n.properties",
+            "locale": "_en"
         },
         {
             "name": "../view/ItemDialog.fragment.xml"
