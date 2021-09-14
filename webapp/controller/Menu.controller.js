@@ -2,7 +2,7 @@
 sap.ui.define([
 	"sap/ui/core/mvc/Controller",
 	"application/controller/BaseController"
-	
+
 ], function (Controller, BaseController) {
 	"use strict";
 
@@ -15,49 +15,87 @@ sap.ui.define([
 		},
 
 		onRouteMatched: function (oEvent) {
-			
+
 			var that = this;
-			var menu = this.getModelGlobal("modelMenu").getData();
-			
-			var objGeral = {
-				Principal: [], //posição 01
-				Consultas: [], //posição 02
-				Relatorios: [] //posição 03
-			};
-			
-			for(var i=0; i<menu.length; i++){
-				var posicao = menu[i].Posicao;
-				
-				var vetorGeral = {
-					"id": "",
-					"icon": "",
-					"title": "",
-					"info": "",
-					"visible": "",
-					"number": ""
+
+			this.oModel = this.getView().getModel();
+			var CodRepres = this.getModelGlobal("modelAux").getProperty("/CodRepres");
+			var Cliente = "";
+			var Envio = true;
+
+			new Promise(function (res, rej) {
+
+				that.oModel.read("/P_PedidoQ/$count", {
+					urlParameters: {
+						"$filter": "IvUsuario eq '" + CodRepres + "' and IvKunnr eq '" + Cliente + "' and IvEnvio eq " + Envio
+					},
+					success: function (data) {
+
+						res(data);
+					},
+					error: function (error) {
+
+						rej(error);
+					}
+				});
+
+			}).then(function (data) {
+
+				var menu = that.getModelGlobal("modelMenu").getData();
+
+				var objGeral = {
+					Principal: [], //posição 01
+					Consultas: [], //posição 02
+					Relatorios: [] //posição 03
 				};
-				
-				vetorGeral.id = menu[i].IdMenu;
-				vetorGeral.icon = menu[i].Icone;
-				vetorGeral.title = menu[i].DescMenu;
-				vetorGeral.info = menu[i].InfoAdic;
-				vetorGeral.visible = menu[i].Ativo;
-				vetorGeral.number = menu[i].Numero;
-				
-				if(posicao == "01"){ 
-					objGeral.Principal.push(vetorGeral);
-				} else if(posicao == "02"){
-				 	objGeral.Consultas.push(vetorGeral);
-				} else if(posicao == "03"){
-				 	objGeral.Relatorios.push(vetorGeral);
+
+				for (var i = 0; i < menu.length; i++) {
+					var posicao = menu[i].Posicao;
+
+					var vetorGeral = {
+						"id": "",
+						"icon": "",
+						"title": "",
+						"info": "",
+						"visible": "",
+						"number": ""
+					};
+
+					vetorGeral.id = menu[i].IdMenu;
+					vetorGeral.icon = menu[i].Icone;
+					vetorGeral.title = menu[i].DescMenu;
+					vetorGeral.info = menu[i].InfoAdic;
+					vetorGeral.visible = menu[i].Ativo;
+					vetorGeral.number = menu[i].Numero;
+
+					if (posicao == "01") {
+						
+						if(vetorGeral.id == "P02"){
+							vetorGeral.number = data;
+						}
+						
+						objGeral.Principal.push(vetorGeral);
+						
+					} else if (posicao == "02") {
+						
+						objGeral.Consultas.push(vetorGeral);
+					} else if (posicao == "03") {
+						
+						objGeral.Relatorios.push(vetorGeral);
+					}
 				}
-			}
-			
-			this.getModel("menu").setData(objGeral);
+
+				that.getModel("menu").setData(objGeral);
+
+			}).catch(function (error) {
+				
+				that.onMensagemErroODATA(error);
+			});
+
 		},
 
 		onTile: function (oEvent) {
-			
+
 			switch (oEvent.getSource().data("opcao")) {
 			case "P01":
 				sap.ui.core.UIComponent.getRouterFor(this).navTo("pedido");
