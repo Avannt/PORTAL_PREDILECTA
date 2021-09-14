@@ -398,7 +398,7 @@ sap.ui.define([
 					},
 					error: function (error) {
 
-						sap.ui.getCore().byId("idDialogEmail").setBusy(true);
+						sap.ui.getCore().byId("idDialogEmail").setBusy(false);
 						that.onMensagemErroODATA(error);
 					}
 				});
