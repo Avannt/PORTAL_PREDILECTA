@@ -38,9 +38,20 @@ sap.ui.define([
 				}
 			});
 
+			var modelTela = {
+				Werks: ""
+			};
+
+			var model = new JSONModel(modelTela);
+			that.setModel(model, "modelTela");
+
+			var modelProduto = new JSONModel();
+			that.setModel(modelProduto, "modelProduto");
+			that.setModel(modelProduto, "modelProdutos");
+
 		},
 
-		onChangeEmpresa: function (oEvent) {
+		onChangeCentro: function (oEvent) {
 
 			var that = this;
 
@@ -56,15 +67,24 @@ sap.ui.define([
 					"$filter": "IvUsuario eq '" + repres + "'"
 				},
 				success: function (retorno) {
-					
+
 					var vetorProdutos = [];
 
 					that.vetorProdutos = retorno.results;
 					var oModelProdutos = new JSONModel(that.vetorProdutos);
+					
+					for (var i = 0; i < that.vetorProdutos.length; i++) {
+						
+						//that.vetorProdutos[i].PathImg = "http://189.57.15.163:81/predilecta/images_produtos/" + that.vetorProdutos[i].Matnr + ".png";
+						
+						//that.vetorProdutos[i].PathImg = sap.ui.require.toUrl("http://189.57.15.163:81/predilecta/images_produtos/0300.png");
+
+					}
 
 					that.byId("masterProdutos").setBusy(false);
 					that.setModel(oModelProdutos, "modelProdutos");
-					that.onFilterEmpresa(werks);
+					that.onFilterCentro(werks);
+					
 				},
 				error: function (error) {
 
@@ -74,16 +94,31 @@ sap.ui.define([
 			});
 		},
 
-		onFilterEmpresa: function (oEvent) {
-			var sValue = oEvent.getSource().getValue();
+		onFilterCentro: function (werks) {
+
 			var aFilters = [];
 
-			var oFilter = [new sap.ui.model.Filter("Werks", sap.ui.model.FilterOperator.StartsWith, sValue)];
+			var oFilter = [new sap.ui.model.Filter("Werks", sap.ui.model.FilterOperator.StartsWith, werks)];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
 			aFilters.push(allFilters);
 
 			this.byId("list").getBinding("items").filter(aFilters, "Application");
+		},
+
+		onSelectionChange: function (oEvent) {
+
+			var that = this;
+			that.byId("detailProdutos").setBusy(true);
+
+			var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
+			var Produto = oItem.getBindingContext("modelProdutos").getObject();
+
+			that.getModel("modelProduto").setData(Produto);
+			that.getSplitContObj().toDetail(this.createId("detail"));
+
+			this.getSplitContObj().toDetail(this.createId("detail"));
+			that.byId("detailProdutos").setBusy(false);
 		},
 
 		onNavBack: function () {
@@ -97,10 +132,15 @@ sap.ui.define([
 
 		onSearch: function (oEvent) {
 
+			var that = this;
+
+			var werks = that.getModel("modelTela").getProperty("/Werks");
+
 			var sValue = oEvent.getSource().getValue();
 			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("matnr", sap.ui.model.FilterOperator.StartsWith, sValue),
-				new sap.ui.model.Filter("maktx", sap.ui.model.FilterOperator.Contains, sValue)
+			var oFilter = [new sap.ui.model.Filter("Matnr", sap.ui.model.FilterOperator.StartsWith, sValue),
+				new sap.ui.model.Filter("Maktx", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Werks", sap.ui.model.FilterOperator.Contains, werks)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
