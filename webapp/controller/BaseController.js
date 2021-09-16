@@ -201,6 +201,20 @@ sap.ui.define([
 			});
 		},
 
+		onBuscarVencimentos: function (res, rej, that) {
+			
+			that.oModel.read("/Vencimentos", {
+				success: function (result) {
+					
+					res(result.results);
+				},
+				error: function (error) {
+					
+					rej(error);
+				}
+			});
+		},
+
 		onBuscarCentros: function (CodRepres, res, rej, that) {
 
 			that.oModel.read("/Centros", {

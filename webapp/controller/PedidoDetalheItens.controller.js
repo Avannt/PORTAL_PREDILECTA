@@ -15,7 +15,7 @@ sap.ui.define([
 
 		onInit: function () {
 
-			this.getRouter().getRoute("PedidoDetalheItens").attachPatternMatched(this.onLoadFields, this);
+			this.getRouter().getRoute("pedidoDetalheItens").attachPatternMatched(this.onLoadFields, this);
 
 		},
 

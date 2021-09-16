@@ -279,13 +279,13 @@ sap.ui.define([
 
 			var sValue = oEvent.getSource().getValue();
 			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("kunnr", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("name1", sap.ui.model.FilterOperator.Contains, sValue)
+			var oFilter = [new sap.ui.model.Filter("Kunnr", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Name1", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Lifnr", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
 			aFilters.push(allFilters);
-			//oEvent.getSource().getBinding("items").filter(aFilters, "Application");
 			this.byId("listClientes").getBinding("items").filter(aFilters, "Application");
 		},
 
@@ -323,7 +323,7 @@ sap.ui.define([
 									title: "Pedido em aberto",
 									actions: [MessageBox.Action.OK]
 								});
-
+								
 							} else {
 
 								if (Pedido.TipoErro == "S" && Pedido.MsgErro == "") {

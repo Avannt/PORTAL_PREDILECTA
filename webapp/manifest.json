@@ -69,7 +69,8 @@
 					"defaultBindingMode": "OneWay",
 					"defaultCountMode": "Request"
 				},
-				"dataSource": "ZSF_FV_SRV"
+				"dataSource": "ZSF_FV_SRV",
+				"preload": true
 			}
 		},
 		"resources": {
@@ -99,149 +100,62 @@
 			},
 			"routes": [
 				{
-					"pattern": "",
 					"name": "login",
-					"target": "login"
+					"pattern": "",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"login"
+					]
 				},
 				{
-					"pattern": "Menu",
 					"name": "menu",
-					"target": "menu"
+					"pattern": "Menu",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"menu"
+					]
 				},
 				{
-					"pattern": "EnviarPedidos",
-					"name": "enviarPedidos",
-					"target": "enviarPedidos"
-				},
-				{
-					"pattern": "RelatorioFaturamentoClientes",
 					"name": "relatorioFaturamentoClientes",
-					"target": "relatorioFaturamentoClientes"
+					"pattern": "RelatorioFatClientes",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"relatorioFaturamentoClientes"
+					]
 				},
 				{
-					"pattern": "MenuConsultas",
 					"name": "menuConsultas",
-					"target": "menuConsultas"
+					"pattern": "MenuConsultas",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"menuConsultas"
+					]
 				},
 				{
-					"pattern": "MenuComercial",
-					"name": "menuComercial",
-					"target": "menuComercial"
+					"name": "enviarPedidos",
+					"pattern": "EnvioPedidos",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"enviarPedidos"
+					]
 				},
 				{
-					"pattern": "MenuRelatorios",
 					"name": "menuRelatorios",
-					"target": "menuRelatorios"
-				},
-				{
-					"pattern": "Pedido",
-					"name": "pedido",
-					"target": "pedido"
-				},
-				{
-					"pattern": "ClienteConsultas",
-					"name": "clienteConsultas",
-					"target": "clienteConsultas"
-				},
-				{
-					"pattern": "ProdutoConsultas",
-					"name": "produtoConsultas",
-					"target": "produtoConsultas"
-				},
-				{
-					"pattern": "VerbaConsultas",
-					"name": "VerbaConsultas",
-					"target": "VerbaConsultas"
-				},
-				{
-					"pattern": "PedidoDetalhe",
-					"name": "pedidoDetalhe",
-					"target": "pedidoDetalhe"
-				},
-				{
-					"pattern": "PedidoDetalheItens",
-					"name": "PedidoDetalheItens",
-					"target": "PedidoDetalheItens"
-				},
-				{
-					"pattern": "ClienteConsultasDetalhe",
-					"name": "clienteConsultasDetalhe",
-					"target": "clienteConsultasDetalhe"
-				},
-				{
-					"pattern": "DetalheProdutos",
-					"name": "detalheProdutos",
-					"target": "detalheProdutos"
-				},
-				{
-					"pattern": "VerbaConsultasDetalhe",
-					"name": "verbaConsultasDetalhe",
-					"target": "verbaConsultasDetalhe"
-				},
-				{
-					"pattern": "RelatorioTitulos",
-					"name": "relatorioTitulos",
-					"target": "relatorioTitulos"
-				},
-				{
-					"pattern": "RelatorioTabelas",
-					"name": "relatorioTabelas",
-					"target": "relatorioTabelas"
-				},
-				{
-					"pattern": "DetalhesRelatorioTabelas",
-					"name": "detalhesRelatorioTabelas",
-					"target": "detalhesRelatorioTabelas"
-				},
-				{
-					"pattern": "RelatorioPedidos",
-					"name": "relatorioPedidos",
-					"target": "relatorioPedidos"
-				},
-				{
-					"name": "entregaFutura",
-					"pattern": "EntregaFutura",
-					"target": "entregaFutura"
-				},
-				{
-					"name": "Aprovacoes",
-					"pattern": "Aprovacoes",
-					"target": "Aprovacoes"
-				},
-				{
-					"name": "relatorioEntregaFutura",
-					"pattern": "RelatorioEnvSaldo",
-					"target": "relatorioEntregaFutura"
-				},
-				{
-					"name": "PedidoDetalheAprov",
-					"pattern": "PedidoDetalheAprov",
-					"target": "PedidoDetalheAprov"
-				},
-				{
-					"name": "VerbaConsultas",
-					"pattern": "VerbaConsultas",
+					"pattern": "MenuRelatorio",
 					"titleTarget": "",
 					"greedy": false,
-					"target": "VerbaConsultas"
-				},
-				{
-					"name": "PedidoDetalheItens",
-					"pattern": "PedidoDetalheItens",
-					"titleTarget": "",
-					"greedy": false,
-					"target": "PedidoDetalheItens"
-				},
-				{
-					"name": "PedidoDetalheRel",
-					"pattern": "PedidoDetalheRel",
-					"titleTarget": "",
-					"greedy": false,
-					"target": "PedidoDetalheRel"
+					"target": [
+						"menuRelatorios"
+					]
 				},
 				{
 					"name": "notFound",
-					"pattern": "NotFound",
+					"pattern": "NotFoundPage",
 					"titleTarget": "",
 					"greedy": false,
 					"target": [
@@ -249,8 +163,116 @@
 					]
 				},
 				{
+					"name": "pedido",
+					"pattern": "Pedido",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"pedido"
+					]
+				},
+				{
+					"name": "clienteConsultas",
+					"pattern": "ClienteConsultas",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"clienteConsultas"
+					]
+				},
+				{
+					"name": "clienteConsultasDetalhe",
+					"pattern": "ClienteConsultasDetalhe",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"clienteConsultasDetalhe"
+					]
+				},
+				{
+					"name": "produtoConsultas",
+					"pattern": "ProdutoConsultas",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"produtoConsultas"
+					]
+				},
+				{
+					"name": "VerbaConsultas",
+					"pattern": "VerbaConsultas",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"VerbaConsultas"
+					]
+				},
+				{
+					"name": "pedidoDetalhe",
+					"pattern": "PedidoDetalhe",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"pedidoDetalhe"
+					]
+				},
+				{
+					"name": "verbaConsultasDetalhe",
+					"pattern": "VerbasConsultasDetalhe",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"verbaConsultasDetalhe"
+					]
+				},
+				{
+					"name": "relatorioTitulos",
+					"pattern": "RelatorioTitulos",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"relatorioTitulos"
+					]
+				},
+				{
+					"name": "relatorioPedidos",
+					"pattern": "RelatorioPedidos",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"relatorioPedidos"
+					]
+				},
+				{
+					"name": "detalhesRelatorioTabelas",
+					"pattern": "RelatorioTabPrecoDetalhe",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"detalhesRelatorioTabelas"
+					]
+				},
+				{
+					"name": "relatorioTabelas",
+					"pattern": "RelatorioTabPreco",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"relatorioTabelas"
+					]
+				},
+				{
+					"name": "cadastroRebaixa",
+					"pattern": "CadastroRebaixa",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"cadastroRebaixa"
+					]
+				},
+				{
 					"name": "relatorioFaturamentoItens",
-					"pattern": "RelatorioFaturamentoItens",
+					"pattern": "RelatorioFaturItens",
 					"titleTarget": "",
 					"greedy": false,
 					"target": [
@@ -259,11 +281,20 @@
 				},
 				{
 					"name": "relatorioNotasFiscais",
-					"pattern": "RelatorioNotasFiscais",
+					"pattern": "RelatorioNF",
 					"titleTarget": "",
 					"greedy": false,
 					"target": [
 						"relatorioNotasFiscais"
+					]
+				},
+				{
+					"name": "pedidoDetalheItens",
+					"pattern": "PedidoDetalheItens",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"pedidoDetalheItens"
 					]
 				}
 			],
@@ -286,10 +317,6 @@
 				},
 				"enviarPedidos": {
 					"viewName": "enviarPedidos",
-					"viewLevel": 1
-				},
-				"menuComercial": {
-					"viewName": "MenuComercial",
 					"viewLevel": 1
 				},
 				"menuRelatorios": {
@@ -348,46 +375,9 @@
 					"viewName": "relatorioTabelas",
 					"viewLevel": 2
 				},
-				"detalheProdutos": {
-					"viewName": "detalheProdutos",
-					"viewLevel": 1
-				},
-				"entregaFutura": {
-					"viewName": "entregaFutura",
-					"viewLevel": 1
-				},
-				"Aprovacoes": {
-					"viewName": "Aprovacoes",
-					"viewLevel": 1
-				},
-				"relatorioEnvSaldo": {
+				"cadastroRebaixa": {
 					"viewType": "XML",
-					"viewName": "relatorioEnvSaldo",
-					"viewLevel": 1
-				},
-				"PedidoDetalheAprov": {
-					"viewType": "XML",
-					"viewName": "PedidoDetalheAprov"
-				},
-				"relatorioEntregaFutura": {
-					"viewType": "XML",
-					"viewName": "relatorioEntregaFutura"
-				},
-				"PedidoDetalheRel": {
-					"viewType": "XML",
-					"viewName": "PedidoDetalheRel"
-				},
-				"PedidoDetalheBrinde": {
-					"viewType": "XML",
-					"viewName": "PedidoDetalheBrinde"
-				},
-				"PedidoDetalheItens": {
-					"viewName": "PedidoDetalheItens",
-					"viewLevel": 1
-				},
-				"Login2": {
-					"viewType": "XML",
-					"viewName": "Login2"
+					"viewName": "cadastroRebaixa"
 				},
 				"relatorioFaturamentoItens": {
 					"viewType": "XML",
@@ -405,6 +395,15 @@
 					"viewName": "relatorioNotasFiscais",
 					"controlAggregation": "pages",
 					"controlId": "app",
+					"viewPath": "application.view"
+				},
+				"pedidoDetalheItens": {
+					"viewType": "XML",
+					"transition": "slide",
+					"clearControlAggregation": false,
+					"viewName": "PedidoDetalheItens",
+					"controlId": "app",
+					"controlAggregation": "pages",
 					"viewPath": "application.view"
 				}
 			}

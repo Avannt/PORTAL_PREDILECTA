@@ -23,6 +23,8 @@ sap.ui.define([
 			var Cliente = "";
 			var Envio = true;
 
+			this.byId("idPage").setBusy(true);
+
 			new Promise(function (res, rej) {
 
 				that.oModel.read("/P_PedidoQ/$count", {
@@ -69,26 +71,28 @@ sap.ui.define([
 					vetorGeral.number = menu[i].Numero;
 
 					if (posicao == "01") {
-						
-						if(vetorGeral.id == "P02"){
+
+						if (vetorGeral.id == "P02") {
 							vetorGeral.number = data;
 						}
-						
+
 						objGeral.Principal.push(vetorGeral);
-						
+
 					} else if (posicao == "02") {
-						
+
 						objGeral.Consultas.push(vetorGeral);
 					} else if (posicao == "03") {
-						
+
 						objGeral.Relatorios.push(vetorGeral);
 					}
 				}
 
 				that.getModel("menu").setData(objGeral);
+				that.byId("idPage").setBusy(false);
 
 			}).catch(function (error) {
-				
+
+				that.byId("idPage").setBusy(false);
 				that.onMensagemErroODATA(error);
 			});
 

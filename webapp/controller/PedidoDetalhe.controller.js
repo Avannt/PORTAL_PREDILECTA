@@ -189,9 +189,6 @@ sap.ui.define([
 			vetorPromises.push(new Promise(function (res, rej) {
 
 				that.oModel.read("/Vencimentos", {
-					// urlParameters: {
-					// 	"$filter": "IvUsuario eq '" + that.CodRepres + "'"
-					// },
 					success: function (result) {
 
 						that.vetorVencimentoTotal = result.results;
@@ -203,7 +200,6 @@ sap.ui.define([
 						that.onMensagemErroODATA(error);
 					}
 				});
-
 			}));
 
 			//Tabela de Preço
@@ -328,20 +324,21 @@ sap.ui.define([
 					urlParameters: {
 						"$filter": "IvUsuario eq '" + that.CodRepres + "'"
 					},
-					success: function (result) {
-
-						that.vetorCentros = result.results;
-						var oModelCentro = new JSONModel(that.vetorCentros);
-						that.getView().setModel(oModelCentro, "modelCentros");
-
+					success: function (data) {
+						
+						that.vetorCentros = data.results;
+						
+						modelCentros = new JSONModel(that.vetorCentros);
+						that.setModel(modelCentros, "modelCentros");
+						
 						res();
 					},
 					error: function (error) {
 
-						rej();
-						that.onMensagemErroODATA(error);
+						rej(error);
 					}
 				});
+
 			}));
 
 			vetorPromises.push(new Promise(function (resMotv, rejMotv) {
@@ -1904,7 +1901,7 @@ sap.ui.define([
 
 			} else {
 
-				sap.ui.core.UIComponent.getRouterFor(this).navTo("PedidoDetalheItens");
+				sap.ui.core.UIComponent.getRouterFor(this).navTo("pedidoDetalheItens");
 
 			}
 		},

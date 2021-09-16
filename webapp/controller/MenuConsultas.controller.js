@@ -60,7 +60,7 @@ sap.ui.define([
 					sap.ui.core.UIComponent.getRouterFor(this).navTo("relatorioTabelas");
 					break;
 				case "C04":
-					sap.ui.core.UIComponent.getRouterFor(this).navTo("notFound");
+					sap.ui.core.UIComponent.getRouterFor(this).navTo("cadastroRebaixa");
 					break;
 				default:
 					sap.ui.core.UIComponent.getRouterFor(this).navTo("notFound");
