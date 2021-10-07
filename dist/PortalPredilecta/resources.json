@@ -1,7 +1,7 @@
 {
     "resources": [
         {
-            "name": "../index.html"
+            "name": "../view/relatorioTabelas.view.xml"
         },
         {
             "name": "../i18n/i18n_pt_BR.properties",
@@ -72,6 +72,9 @@
             "name": "../controller/clienteConsultas.controller.js"
         },
         {
+            "name": "../controller/cadastroRebaixa.controller.js"
+        },
+        {
             "name": "../controller/PedidoDetalheItens.controller.js"
         },
         {
@@ -88,9 +91,6 @@
         },
         {
             "name": "../controller/MenuConsultas.controller.js"
-        },
-        {
-            "name": "../controller/MenuComercial.controller.js"
         },
         {
             "name": "../controller/Menu.controller.js"
@@ -118,7 +118,7 @@
             "merged": true
         },
         {
-            "name": "../serviceBinding-dbg.js",
+            "name": "../controller/Menu-dbg.controller.js",
             "isDebug": true
         },
         {
@@ -186,6 +186,10 @@
             "isDebug": true
         },
         {
+            "name": "../controller/cadastroRebaixa-dbg.controller.js",
+            "isDebug": true
+        },
+        {
             "name": "../controller/PedidoDetalheItens-dbg.controller.js",
             "isDebug": true
         },
@@ -210,14 +214,6 @@
             "isDebug": true
         },
         {
-            "name": "../controller/MenuComercial-dbg.controller.js",
-            "isDebug": true
-        },
-        {
-            "name": "../controller/Menu-dbg.controller.js",
-            "isDebug": true
-        },
-        {
             "name": "../controller/Login-dbg.controller.js",
             "isDebug": true
         },
@@ -227,6 +223,10 @@
         },
         {
             "name": "../controller/App-dbg.controller.js",
+            "isDebug": true
+        },
+        {
+            "name": "../serviceBinding-dbg.js",
             "isDebug": true
         },
         {
@@ -255,7 +255,9 @@
             "name": "../view/relatorioTitulos.view.xml"
         },
         {
-            "name": "../view/relatorioTabelas.view.xml"
+            "name": "../i18n/i18n_pt.properties",
+            "raw": "i18n/i18n.properties",
+            "locale": "_pt"
         },
         {
             "name": "../view/relatorioPedidos.view.xml"
@@ -294,6 +296,9 @@
             "name": "../view/clienteConsultas.view.xml"
         },
         {
+            "name": "../view/cadastroRebaixa.view.xml"
+        },
+        {
             "name": "../view/Promocoes.fragment.xml"
         },
         {
@@ -318,9 +323,6 @@
             "name": "../view/MenuConsultas.view.xml"
         },
         {
-            "name": "../view/MenuComercial.view.xml"
-        },
-        {
             "name": "../view/Menu.view.xml"
         },
         {
@@ -328,6 +330,9 @@
         },
         {
             "name": "../view/ItemDialog.fragment.xml"
+        },
+        {
+            "name": "../view/DialogEmail.fragment.xml"
         },
         {
             "name": "../view/Dialog.fragment.xml"
@@ -369,9 +374,7 @@
             "name": "../css/style.css"
         },
         {
-            "name": "../i18n/i18n_pt.properties",
-            "raw": "i18n/i18n.properties",
-            "locale": "_pt"
+            "name": "../index.html"
         },
         {
             "name": "../extended_runnable_file.html"

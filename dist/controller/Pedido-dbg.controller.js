@@ -56,8 +56,89 @@ sap.ui.define([
 			});
 		},
 
-		onEditarPress: function (e) {
-			console.log("TESTE");
+		onEditarPress: function (oEvent) {
+
+			var that = this;
+			var oList = oEvent.getParameter("listItem") || oEvent.getSource();
+
+			var Ped = oList.getBindingContext("Pedidos").getObject();
+
+			if (Ped.IdStatusPedido == 3) {
+
+				MessageBox.show("Não é possível realizar a edição de pedidos já integrados! ", {
+					icon: MessageBox.Icon.ERROR,
+					title: "Ação não permitida!",
+					actions: [MessageBox.Action.OK]
+				});
+
+			} else if (Ped.IdStatusPedido == 2) {
+
+				MessageBox.show("Deseja reabrir o pedido?", {
+					icon: MessageBox.Icon.WARNING,
+					title: "Detalhamento do pedido!",
+					actions: ["Reabrir", "Visualizar", sap.m.MessageBox.Action.CANCEL],
+					onClose: function (oAction) {
+
+						/* Caso afirmativo, altero o status do pedido para 1 (Em digitação) (IdStatusPedido = 2)*/
+						if (oAction == "Reabrir") {
+							new Promise(function (res, rej) {
+
+								that.byId("table_pedidos").setBusy(true);
+								that.onBuscarPedido(Ped.NrPedido, res, rej, that);
+								
+							}).then(function (Pedido) {
+
+								var data = that.onDataHora();
+
+								Pedido.SituacaoPedido = "EM DIGITAÇÃO";
+								Pedido.IdStatusPedido = 1;
+								Pedido.DataFim = data[0];
+								Pedido.HoraFim = data[1];
+								Pedido.Completo = false;
+
+								Pedido = that.onFormatNumberPedido(Pedido);
+
+								delete Pedido.__metadata;
+
+								new Promise(function (res, rej) {
+
+									that.onInserirPedido(Pedido, res, rej, that);
+
+								}).then(function (dataPed) {
+
+									that.byId("table_pedidos").setBusy(false);
+									that.getModelGlobal("modelAux").setProperty("/NrPedido", Pedido.NrPedido);
+
+								}).catch(function (error) {
+
+									that.byId("table_pedidos").setBusy(false);
+									that.onMensagemErroODATA(error);
+								});
+
+							}).catch(function (error) {
+
+								that.byId("table_pedidos").setBusy(false);
+								that.onMensagemErroODATA(error);
+							});
+
+						} else if (oAction == "Visualizar") {
+
+							/* Se o usuário escolher Vizualizar, levo o usuário direto para o pedido sem alterar o status */
+							that.getModelGlobal("modelAux").setProperty("/NrPedido", Ped.NrPedido);
+							sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
+
+						} else {
+
+							that.getModelGlobal("modelAux").setProperty("/NrPedido", "");
+						}
+					}
+				});
+			} else {
+
+				/* Se o usuário escolher Vizualizar, levo o usuário direto para o pedido sem alterar o status */
+				that.getModelGlobal("modelAux").setProperty("/NrPedido", Ped.NrPedido);
+				sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
+			}
 		},
 
 		onInicializaModels: function () {
@@ -93,20 +174,21 @@ sap.ui.define([
 		formatRentabilidade: function (Value) {
 			if (Value == 0) {
 
-				this.byId("table_pedidos").getColumns()[4].setVisible(false);
+				this.byId("table_pedidos").getColumns()[5].setVisible(false);
 				return Value;
-
 			} else if (Value > -3) {
-				this.byId("table_pedidos").getColumns()[4].setVisible(false);
+				
+				this.byId("table_pedidos").getColumns()[5].setVisible(false);
 				return "";
-
 			} else {
-				this.byId("table_pedidos").getColumns()[4].setVisible(true);
+				
+				this.byId("table_pedidos").getColumns()[5].setVisible(true);
 				return Value;
 			}
 		},
 
 		onAfterRendering: function () {
+			
 			var oSplitCont = this.getSplitContObj(),
 				ref = oSplitCont.getDomRef() && oSplitCont.getDomRef().parentNode;
 			// set all parent elements to 100% height, this should be done by app developer, but just in case
@@ -126,6 +208,7 @@ sap.ui.define([
 		},
 
 		getSplitContObj: function () {
+			
 			var result = this.byId("SplitCont");
 			if (!result) {
 				jQuery.sap.log.error("SplitApp object can't be found");
@@ -138,6 +221,7 @@ sap.ui.define([
 		},
 
 		navBack2: function () {
+			
 			var isTablet = this.getOwnerComponent().getModel("modelAux").getProperty("/isTablet");
 
 			if (isTablet == true) {
@@ -148,9 +232,7 @@ sap.ui.define([
 
 				this.byId("listClientes").removeSelections(true);
 				this.onPressDetailBack();
-
 			}
-
 		},
 
 		onPressDetailBack: function () {
@@ -197,15 +279,14 @@ sap.ui.define([
 
 			var sValue = oEvent.getSource().getValue();
 			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("kunnr", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("name1", sap.ui.model.FilterOperator.Contains, sValue)
+			var oFilter = [new sap.ui.model.Filter("Kunnr", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Name1", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Lifnr", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
 			aFilters.push(allFilters);
-			//oEvent.getSource().getBinding("items").filter(aFilters, "Application");
 			this.byId("listClientes").getBinding("items").filter(aFilters, "Application");
-
 		},
 
 		onAddPedido: function () {
@@ -242,13 +323,12 @@ sap.ui.define([
 									title: "Pedido em aberto",
 									actions: [MessageBox.Action.OK]
 								});
-
+								
 							} else {
 
 								if (Pedido.TipoErro == "S" && Pedido.MsgErro == "") {
 
 									sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
-
 								} else {
 
 									MessageBox.show(Pedido.MsgErro, {
@@ -256,21 +336,19 @@ sap.ui.define([
 										title: "Títulos em Aberto!",
 										actions: ["Ver Titulo", "Continuar", "Cancelar"],
 										onClose: function (oAction) {
+											
 											if (oAction == "Ver Titulo") {
 
 												that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
 												sap.ui.core.UIComponent.getRouterFor(that).navTo("relatorioTitulos");
-
 											} else if (oAction == "Continuar") {
 
 												sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
-
-											} else {
-
-												this.getOwnerComponent().getModel("modelAux").setProperty("/telaPedido", true);
-												sap.ui.core.UIComponent.getRouterFor(this).navTo("relatorioTitulos");
-
 											}
+											// else {
+											// 	that.getOwnerComponent().getModel("modelAux").setProperty("/telaPedido", true);
+											// 	sap.ui.core.UIComponent.getRouterFor(that).navTo("relatorioTitulos");
+											// }
 										}
 									});
 								}
@@ -280,7 +358,6 @@ sap.ui.define([
 
 							that.byId("table_pedidos").setBusy(false);
 							that.onMensagemErroODATA(error);
-
 						}
 					});
 			}
@@ -290,16 +367,10 @@ sap.ui.define([
 
 			var that = this;
 			var oNumeroPedido = oEvent.getParameter("listItem") || oEvent.getSource();
-
 			var NrPedido = oNumeroPedido.getBindingContext("Pedidos").getProperty("NrPedido");
-			var sStatus = oNumeroPedido.getBindingContext("Pedidos").getProperty("SituacaoPedido");
-			var cliente = "";
-			var pedido = "";
 
 			that.getModelGlobal("modelAux").setProperty("/NrPedido", NrPedido);
-
 			sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
-
 		},
 
 		onExcluirPedido: function (oEvent) {

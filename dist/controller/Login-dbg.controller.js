@@ -73,6 +73,7 @@ sap.ui.define([
 
 				var oModelAux = new sap.ui.model.json.JSONModel({
 					CodRepres: "",
+					NomeRepres: "",
 					Imei: "",
 					VersaoApp: "",
 					Login: "",
@@ -369,6 +370,7 @@ sap.ui.define([
 						success: function (retorno) {
 
 							that.getModelGlobal("modelAux").setProperty("/CodRepres", CodRepres);
+							that.getModelGlobal("modelAux").setProperty("/NomeRepres", retorno.EvNomeRepres);
 							that.getModelGlobal("modelAux").setProperty("/Login", CodRepres);
 							that.getModelGlobal("modelAux").setProperty("/Senha", Senha);
 							that.getModelGlobal("modelAux").setProperty("/Lifnr", retorno.EvLifnr);
@@ -384,17 +386,6 @@ sap.ui.define([
 
 									sap.ui.core.UIComponent.getRouterFor(that).navTo("menu");
 									that.getView().byId("idPageLogin").setBusy(false);
-
-									// sap.m.MessageBox.show(
-									// 	"Usuário autenticado com sucesso!", {
-									// 		icon: sap.m.MessageBox.Icon.SUCCESS,
-									// 		title: "Autenticação!",
-									// 		actions: [sap.m.MessageBox.Action.OK],
-									// 		onClose: function (oAction) {
-									// 		}
-									// 	}
-									// );
-
 								},
 								error: function (error) {
 

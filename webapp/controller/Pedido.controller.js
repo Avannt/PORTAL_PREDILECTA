@@ -40,19 +40,9 @@ sap.ui.define([
 				that.byId("master").setBusy(false);
 
 			}).catch(function (error) {
-
-				sap.m.MessageBox.show(
-					"Falha ao carregar os clientes! (" + error.statusCode + ")", {
-						icon: sap.m.MessageBox.Icon.WARNING,
-						title: "Erro no carregamento!",
-						details: error,
-						actions: [sap.m.MessageBox.Action.OK],
-						onClose: function (oAction) {
-
-							that.byId("master").setBusy(false);
-						}
-					}
-				);
+				
+				that.byId("master").setBusy(false);
+				that.onMensagemErroODATA(error);
 			});
 		},
 

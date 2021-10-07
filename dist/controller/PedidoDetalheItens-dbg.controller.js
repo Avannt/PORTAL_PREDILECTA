@@ -15,7 +15,7 @@ sap.ui.define([
 
 		onInit: function () {
 
-			this.getRouter().getRoute("PedidoDetalheItens").attachPatternMatched(this.onLoadFields, this);
+			this.getRouter().getRoute("pedidoDetalheItens").attachPatternMatched(this.onLoadFields, this);
 
 		},
 
@@ -28,13 +28,13 @@ sap.ui.define([
 			that.getView().byId("IdItemPedido").setBusy(true);
 
 			that.onInicializaCamposItens();
-			
-			new Promise(function(res, rej) {
-				
-				that.onBuscarProdutos(CodRepres, res, rej);
-				
-			}).then(function(data){
-				
+
+			new Promise(function (res, rej) {
+
+				that.onBuscarProdutos(CodRepres, res, rej, that);
+
+			}).then(function (data) {
+
 				var vetorProdutos = [];
 
 				vetorProdutos = data.filter(function (a, b) {
@@ -48,9 +48,9 @@ sap.ui.define([
 				that.setModel(oModelProdutos, "modelProdutos");
 				that.getView().byId("IdItemPedido").setBusy(false);
 				that.getView().byId("IdItemPedido").focus();
-				
-			}).catch(function(error){
-				
+
+			}).catch(function (error) {
+
 				that.getView().byId("IdItemPedido").setBusy(false);
 				that.onMensagemErroODATA(error);
 			});
@@ -172,9 +172,9 @@ sap.ui.define([
 			this.setModel(model, "modelVar");
 
 			that.getView().byId("IdItemPedido").setEnabled(true);
-			
+
 			setTimeout(function () {
-				that.getView().byId("IdItemPedido").focus();	
+				that.getView().byId("IdItemPedido").focus();
 			}, 500);
 		},
 
@@ -331,7 +331,7 @@ sap.ui.define([
 				PercPromo: this.getModelGlobal("modelItem").getProperty("/PercPromo"),
 				ValPrecoInform: this.getModelGlobal("modelItem").getProperty("/ValPrecoInform"),
 				NrPedido: this.getModelGlobal("modelPedido").getProperty("/NrPedido"),
-				Evento: "ChangePrecoVenda",
+				Evento: "ChangePromocao",
 				Editar: String(this.getModel("modelVar").getProperty("/Editar"))
 			};
 
@@ -498,7 +498,7 @@ sap.ui.define([
 			}, 500);
 
 		},
-		
+
 		onDeletarItem: function (oEvent) {
 
 			var that = this;
@@ -514,7 +514,17 @@ sap.ui.define([
 
 				MessageBox.error(msg, {
 					icon: MessageBox.Icon.ERROR,
-					title: "Deleção de pedido.",
+					title: "Deleção de itens do pedido.",
+					actions: [sap.m.MessageBox.Action.OK]
+				});
+
+			} else if (statusPedido == 2) {
+
+				msg = "Reabra o pedido antes de editar!";
+
+				MessageBox.error(msg, {
+					icon: MessageBox.Icon.ERROR,
+					title: "Deleção de itens do pedido.",
 					actions: [sap.m.MessageBox.Action.OK]
 				});
 
@@ -527,8 +537,7 @@ sap.ui.define([
 					onClose: function (oAction) {
 
 						if (oAction == sap.m.MessageBox.Action.YES) {
-							
-							
+
 							that.byId("idItens").setBusy(true);
 
 							new Promise(function (res, rej) {
@@ -538,11 +547,11 @@ sap.ui.define([
 							}).then(function (data) {
 
 								new Promise(function (res, rej) {
-									
-									that.onBuscarItensPedido(res,rej,NrPedido);
+
+									that.onBuscarItensPedido(res, rej, NrPedido);
 
 								}).then(function (dataItens) {
-									
+
 									that.vetorItensPedido = dataItens;
 									that.getModelGlobal("modelItensPedidoGrid").setData(that.vetorItensPedido);
 
@@ -550,13 +559,13 @@ sap.ui.define([
 									that.onInicializaCamposItens();
 
 								}).catch(function (error) {
-									
+
 									that.byId("idItens").setBusy(false);
 									that.onMensagemErroODATA(error);
-									
+
 								});
 							}).catch(function (error) {
-									
+
 								that.byId("idItens").setBusy(false);
 								that.onMensagemErroODATA(error);
 							});
@@ -569,8 +578,6 @@ sap.ui.define([
 											"$filter": "IvNrPedido eq '" + NrPedido + "'"
 										},
 										success: function (dataItens) {
-
-											
 
 										},
 										error: function (error) {
@@ -612,7 +619,7 @@ sap.ui.define([
 				});
 
 			} else {
-				
+
 				that.onInicializaCamposItens();
 			}
 		},

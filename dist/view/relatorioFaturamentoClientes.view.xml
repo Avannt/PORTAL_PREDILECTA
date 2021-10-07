@@ -1,5 +1,5 @@
 <mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:layout="sap.ui.layout" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic" height="100%" controllerName="application.controller.relatorioFaturamentoClientes">
-	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Relatório de Faturamento Clientes" showFooter="false">
+	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Relatório de Faturamento Clientes" showFooter="false" busyIndicatorDelay="0">
 		<content>
 			<Table class="centralizaGroup" id="idtableFatClientes" growing="false" growingScrollToLoad="false" growingThreshold="5" noDataText="Nenhum registro encontrado" alternateRowColors="true" backgroundDesign="Solid" width="100%" growingTriggerText="Próximo &gt;&gt;&gt;" items="{ path: 'modelFatClientes>/', sorter : [{ path: 'Bukrs', ascending: true, group: '.ongetHeaderGroupBukrs' }] }">
 				<headerToolbar>
@@ -67,10 +67,10 @@
 										
 										<Label id="idPeriodo" text="Período"/>
 										<DateRangeSelection displayFormat="dd/MM/yyyy" id="idCDateRange" value="{modelParametros>/Periodo}" placeholder="Período" width="100%"/>
-										<Button id="idBtnFiltrar" text="Filtrar" type="Emphasized" press="onPressBtnFiltrar" icon="sap-icon://filter"/>
+										<Button id="idBtnFiltrar" text="Filtrar" type="Emphasized" press="onPressBtnFiltrar" icon="sap-icon://filter" tooltip="Filtrar Dados"/>
 									</f:content>
 									<!--<ToolbarSpacer width="90%"/>-->
-									<Button icon="sap-icon://excel-attachment" press="onExport" type="Emphasized" text="Exportar"/>
+									<Button icon="sap-icon://excel-attachment" press="onExport" type="Emphasized" text="Exportar" tooltip="Exportar Dados"/>
 								</f:SimpleForm>
 							</content>
 						</Panel>

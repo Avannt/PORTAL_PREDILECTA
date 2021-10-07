@@ -12,14 +12,9 @@ sap.ui.define([
 ], function (BaseController, JSONModel, MessageBox, formatter, MockServer, exportLibrary, Spreadsheet, ODataModel) {
 	"use strict";
 
-	var oDuplicataRelatorio = [];
-	var EdmType = exportLibrary.EdmType;
-
 	return BaseController.extend("application.controller.cadastroRebaixa", {
 
 		onInit: function () {
-
-			//FORÇA FAZER O INIT DA PÁGINA .. MESMO QUE JÁ FOI INICIADA.
 			this.getRouter().getRoute("cadastroRebaixa").attachPatternMatched(this._onLoadFields, this);
 		},
 
@@ -27,691 +22,654 @@ sap.ui.define([
 
 			var that = this;
 
-			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
-			that.oModel = that.getModelGlobal("modelAux").getProperty("/DBModel");
+			that.onInicializaModels();
 
-			var vAux = {
-				WerksIni: "",
-				WerksFim: "",
-				KunnrIni: "",
-				KunnrFim: "",
-				Kvgr4Ini: "",
-				Kvgr4Fim: "",
-				Kvgr5Ini: "",
-				Kvgr5Fim: "",
-				VBelnIni: "",
-				VBelnFim: "",
-				RepreIni: "",
-				RepreFim: "",
-				MatnrIni: "",
-				MatnrFim: "",
-				Mvgr1Ini: "",
-				Mvgr1Fim: "",
-				Mvgr2Ini: "",
-				Mvgr2Fim: "",
-				Mvgr3Ini: "",
-				Mvgr3Fim: "",
-				Mvgr5Ini: "",
-				Mvgr5Fim: "",
-				Periodo: ""
-			};
+			that.byId("idEmpresa").setBusy(true);
 
-			var omodelParametros = new JSONModel(vAux);
-			that.setModel(omodelParametros, "modelParametros");
-
-			var oModel = new JSONModel(that.vetorCentros);
-			that.setModel(oModel, "modelCentros");
-			
-			that.byId("idCentro").setBusy(true);
 			new Promise(function (res, rej) {
 
-				that.onBuscarCentros(repres, res, rej, that);
+				that.onBuscarCentros(that.CodRepres, res, rej, that);
 
 			}).then(function (data) {
 
-				var oModelRepres = new JSONModel(data);
-				that.setModel(oModelRepres, "modelCentros");
-				that.byId("master").setBusy(false);
+				that.byId("idEmpresa").setBusy(false);
+
+				var oModelEmpresas = new JSONModel(data);
+				that.setModel(oModelEmpresas, "modelEmpresas");
+
+				setTimeout(function () {
+
+					that.byId("idEmpresa").focus();
+				}, 500);
 
 			}).catch(function (error) {
 
-				that.byId("master").setBusy(false);
+				that.byId("idEmpresa").setBusy(false);
 				that.onMensagemErroODATA(error);
 			});
 		},
-		
-		onCentroChange: function (evt){
-			
+
+		onInicializaModels: function () {
+
 			var that = this;
-			
-			var Bukrs = evt.getSource().getBindingContext("modelCentros").getObject();
-			
-			that.oModel.read("/MsgNF", {
+
+			that.CodRepres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
+			that.oModel = that.getModelGlobal("modelAux").getProperty("/DBModel");
+
+			var parametros = {
+				Vkorg: "",
+				Lifnr: "",
+				Kunnr: "",
+				Kvgr4: "",
+				Mvgr1: "",
+				Mvgr2: "",
+				Mvgr3: "",
+				Mvgr4: "",
+				Mvgr5: "",
+				Matnr: "",
+				Usuario: "",
+				PercCadastrar: "",
+				PercCadastrado: ""
+			};
+
+			var omodelParametros = new JSONModel(parametros);
+			that.setModel(omodelParametros, "modelParametros");
+
+			var oModel = new JSONModel(that.vetorEmpresas);
+			that.setModel(oModel, "modelEmpresas");
+		},
+
+		onChangeEmpresa: function () {
+
+			var that = this;
+
+			that.byId("idRepres").setBusy(true);
+			var Bukrs = this.getModel("modelParametros").getProperty("/Bukrs");
+
+			that.oModel.read("/P_BuscarRepresQ", {
 				urlParameters: {
-					"$filter": "IvUsuario eq '" + that.CodRepres + "' and IvBukrs eq '" + Bukrs + "1'."
+					"$filter": "IvUsuario eq '" + that.CodRepres + "' and IvBukrs eq '" + Bukrs + "'"
 				},
 				success: function (result) {
 
-					var oModelRepres = new JSONModel(result.results);
-					that.getModel("modelRepres").setData(oModelRepres);
+					that.byId("idRepres").setBusy(false);
+
+					var vetorRepres = result.results;
+					if (vetorRepres.length == 0) {
+						vetorRepres.push({
+							Lifnr: "800001",
+							Name1: "Ricardo Junior"
+						});
+					}
+
+					var oModelRepres = new JSONModel(vetorRepres);
+					that.setModel(oModelRepres, "modelRepres");
+
+					setTimeout(function () {
+						that.byId("idRepres").focus();
+					}, 500);
 				},
 				error: function (error) {
-					
+
+					that.byId("idRepres").setBusy(false);
 					that.onMensagemErroODATA(error);
 				}
 			});
 		},
 
-		// ongetHeaderGroupLifnr: function (oContext) {
-		// 	return oContext.getProperty("Lifnr");
-		// },
+		onChangeRepres: function () {
 
-		// ongetHeaderGroupBukrs: function (oContext) {
-		// 	return oContext.getProperty("Bukrs") + ' - ' + oContext.getProperty("Butxt");
-		// },
+			var that = this;
+			var CodRepres = this.getModel("modelParametros").getProperty("/Lifnr");
 
-		createColumnConfig: function () {
-			
-			var aCols = [];
+			that.byId("idCliente").setBusy(true);
 
-			aCols.push({
-				label: "Repres",
-				property: "Lifnr",
-				type: EdmType.Number
+			new Promise(function (res, rej) {
+
+				that.onBuscarClientes(CodRepres, res, rej, that);
+
+			}).then(function (dado) {
+
+				that.byId("idCliente").setBusy(false);
+
+				var oModelClientes = new JSONModel(dado);
+				that.setModel(oModelClientes, "modelClientes");
+
+				var vetorRede = [];
+
+				for (var i = 0; i < dado.length; i++) {
+
+					var vAchouRede = false;
+
+					for (var j = 0; j < vetorRede.length; j++) {
+
+						if ((dado[i].Kvgr4 == vetorRede[j].Kvgr4) || dado[i].Kvgr4 == "") {
+							vAchouRede = true;
+
+							break;
+						}
+					}
+
+					if (vAchouRede == false) {
+						vetorRede.push(dado[i]);
+					}
+				}
+
+				var oModelRede = new JSONModel(vetorRede);
+				that.setModel(oModelRede, "modelRedes");
+
+				setTimeout(function () {
+
+					that.byId("idCliente").focus(false);
+				}, 500);
+
+				that.byId("idCategoria").setBusy(true);
+				that.byId("idSubCategoria").setBusy(true);
+				that.byId("idProdutos").setBusy(true);
+				that.byId("idMarca").setBusy(true);
+				that.byId("idGramatura").setBusy(true);
+				that.byId("idFamilia").setBusy(true);
+				that.byId("idProdutos").setBusy(true);
+
+				new Promise(function (res, rej) {
+
+					that.onBuscarProdutos(that.CodRepres, res, rej, that);
+
+				}).then(function (data) {
+
+					var vetorProdutos = [];
+
+					var Bukrs = that.getModel("modelParametros").getProperty("/Bukrs");
+
+					that.byId("idCategoria").setBusy(false);
+					that.byId("idSubCategoria").setBusy(false);
+					that.byId("idProdutos").setBusy(false);
+					that.byId("idMarca").setBusy(false);
+					that.byId("idGramatura").setBusy(false);
+					that.byId("idFamilia").setBusy(false);
+					that.byId("idProdutos").setBusy(false);
+
+					vetorProdutos = data.filter(function (a, b) {
+						if (a.Vkorg == Bukrs) {
+							delete a.__metadata;
+							return a;
+						}
+					});
+
+					var vetorCategoria = [];
+					var vetorSubCategoria = [];
+					var vetorFamilia = [];
+					var vetorGramatura = [];
+					var vetorMarca = [];
+
+					for (var i = 0; i < vetorProdutos.length; i++) {
+
+						var vAchouCateg = false;
+						var vAchouSubCateg = false;
+						var vAchouFamilia = false;
+						var vAchouGramatura = false;
+						var vAchouMarca = false;
+
+						for (var j = 0; j < vetorCategoria.length; j++) {
+
+							if ((vetorProdutos[i].Mvgr1 == vetorCategoria[j].Mvgr1) || vetorProdutos[i].Mvgr1 == "") {
+								vAchouCateg = true;
+
+								break;
+							}
+						}
+
+						for (var j = 0; j < vetorSubCategoria.length; j++) {
+
+							if ((vetorProdutos[i].Mvgr2 == vetorSubCategoria[j].Mvgr2) || vetorProdutos[i].Mvgr2 == "") {
+								vAchouSubCateg = true;
+
+								break;
+							}
+						}
+
+						for (var j = 0; j < vetorFamilia.length; j++) {
+
+							if ((vetorProdutos[i].Mvgr3 == vetorFamilia[j].Mvgr3) || vetorProdutos[i].Mvgr3 == "") {
+								vAchouFamilia = true;
+
+								break;
+							}
+						}
+						for (var j = 0; j < vetorGramatura.length; j++) {
+
+							if ((vetorProdutos[i].Mvgr4 == vetorGramatura[j].Mvgr4) || vetorProdutos[i].Mvgr4 == "") {
+								vAchouGramatura = true;
+
+								break;
+							}
+						}
+						for (var j = 0; j < vetorMarca.length; j++) {
+
+							if ((vetorProdutos[i].Mvgr5 == vetorMarca[j].Mvgr5) || vetorProdutos[i].Mvgr5 == "") {
+								vAchouMarca = true;
+
+								break;
+							}
+						}
+
+						if (vAchouCateg == false) {
+							vetorCategoria.push(vetorProdutos[i]);
+						}
+						if (vAchouSubCateg == false) {
+							vetorSubCategoria.push(vetorProdutos[i]);
+						}
+						if (vAchouFamilia == false) {
+							vetorFamilia.push(vetorProdutos[i]);
+						}
+						if (vAchouGramatura == false) {
+							vetorGramatura.push(vetorProdutos[i]);
+						}
+						if (vAchouMarca == false) {
+							vetorMarca.push(vetorProdutos[i]);
+						}
+					}
+
+					var oModel = new JSONModel(vetorProdutos);
+					that.setModel(oModel, "modelProdutos");
+
+					oModel = new JSONModel(vetorCategoria);
+					that.setModel(oModel, "modelCategoria");
+
+					oModel = new JSONModel(vetorSubCategoria);
+					that.setModel(oModel, "modelSubCategoria");
+
+					oModel = new JSONModel(vetorFamilia);
+					that.setModel(oModel, "modelFamilia");
+
+					oModel = new JSONModel(vetorGramatura);
+					that.setModel(oModel, "modelGramatura");
+
+					oModel = new JSONModel(vetorMarca);
+					that.setModel(oModel, "modelMarca");
+
+					that.getView().byId("idCategoria").focus();
+
+				}).catch(function (error) {
+
+					that.byId("idCategoria").setBusy(false);
+					that.byId("idSubCategoria").setBusy(false);
+					that.byId("idProdutos").setBusy(false);
+					that.byId("idMarca").setBusy(false);
+					that.byId("idGramatura").setBusy(false);
+					that.byId("idFamilia").setBusy(false);
+					that.byId("idProdutos").setBusy(false);
+
+					that.onMensagemErroODATA(error);
+				});
+
+			}).catch(function (error) {
+
+				that.byId("idCliente").setBusy(false);
+				that.onMensagemErroODATA(error);
 			});
-
-			aCols.push({
-				label: "Nome Repres",
-				property: "Name1Rep",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Empresa",
-				property: "Bukrs",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Nome Empresa",
-				property: "Butxt",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Material",
-				property: "Matnr",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Descrição Material",
-				property: "Maktx",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "UM",
-				property: "Meins",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Categoria",
-				property: "Mvgr1",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Descrição Categoria",
-				property: "Mvgr1Text",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "SubCategoria",
-				property: "Mvgr2",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Descrição SubCategoria",
-				property: "Mvgr2Text",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Família",
-				property: "Mvgr3",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Descrição Família",
-				property: "Mvgr3Text",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Marca",
-				property: "Mvgr5",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Descrição Marca",
-				property: "Mvgr5Text",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Qtd Faturada",
-				property: "QtdFaturada",
-				type: EdmType.Number,
-				scale: 2,
-				delimiter: true
-			});
-
-			aCols.push({
-				label: "Vlr Faturado",
-				property: "ValFaturado",
-				type: EdmType.Number,
-				scale: 2,
-				delimiter: true
-			});
-
-			aCols.push({
-				label: "%Partic.",
-				property: "PctPartic",
-				type: EdmType.Number,
-				scale: 2,
-				delimiter: true
-			});
-
-			aCols.push({
-				label: "Qtde Pedidos",
-				property: "QtdPedidos",
-				type: EdmType.Number,
-				scale: 0,
-				delimiter: true
-			});
-
-			aCols.push({
-				property: "PctRentab",
-				type: EdmType.Number,
-				scale: 2,
-				delimiter: true
-			});
-
-			aCols.push({
-				property: "UltPreco",
-				type: EdmType.Number,
-				scale: 2,
-				delimiter: true
-			});
-
-			aCols.push({
-				property: "MedPreco",
-				type: EdmType.Number,
-				scale: 2,
-				delimiter: true
-			});
-
-			return aCols;
 		},
 
-		onExport: function () {
-			var aCols, oRowBinding, oSettings, oSheet, oTable;
+		onChangeRede: function () {
 
-			if (!this._oTable) {
-				this._oTable = this.byId("idtableFatItens");
-			}
-
-			oTable = this._oTable;
-			oRowBinding = oTable.getBinding("items");
-			aCols = this.createColumnConfig();
-
-			oSettings = {
-				workbook: {
-					columns: aCols,
-					hierarchyLevel: "Level"
-				},
-				dataSource: oRowBinding,
-				fileName: "Rel_Fat_Item.xlsx",
-				worker: false // We need to disable worker because we are using a MockServer as OData Service
-			};
-
-			oSheet = new Spreadsheet(oSettings);
-			oSheet.build().finally(function () {
-				oSheet.destroy();
-			});
+			this.byId("idCategoria").focus();
 		},
 
-		onSuggestCentroIni: function (evt) {
+		onChangeCategoria: function () {
+
+			this.byId("idSubCategoria").focus();
+		},
+
+		onChangeSubCategoria: function () {
+
+			this.byId("idFamilia").focus();
+		},
+
+		onChangeFamilia: function () {
+
+			this.byId("idGramatura").focus();
+		},
+
+		onChangeGramatura: function () {
+
+			this.byId("idMarca").focus();
+		},
+
+		onChangeMarca: function () {
+
+			this.byId("idProdutos").focus();
+		},
+
+		onChangeCliente: function () {
+
+			this.byId("idRede").focus();
+		},
+
+		onSuggestEmpresa: function (evt) {
 
 			var sValue = evt.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Werks", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("NomeCentro", sap.ui.model.FilterOperator.Contains, sValue)
+				new sap.ui.model.Filter("NomeEmpresa", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
 
 			aFilters.push(allFilters);
-			this.byId("idCentroIni").getBinding("suggestionItems").filter(aFilters);
-			this.byId("idCentroIni").suggest();
+			this.byId("idEmpresa").getBinding("suggestionItems").filter(aFilters);
+			this.byId("idEmpresa").suggest();
 		},
 
-		onPressBtnFiltrar: function () {
+		onSuggestMarca: function (evt) {
+
+			var sValue = evt.getSource().getValue();
+			var aFilters = [];
+			var oFilter = [new sap.ui.model.Filter("Mvgr5", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("DescMvgr5", sap.ui.model.FilterOperator.Contains, sValue)
+			];
+
+			var allFilters = new sap.ui.model.Filter(oFilter, false);
+
+			aFilters.push(allFilters);
+			this.byId("idMarca").getBinding("suggestionItems").filter(aFilters);
+			this.byId("idMarca").suggest();
+		},
+
+		onSuggestGramatura: function (evt) {
+
+			var sValue = evt.getSource().getValue();
+			var aFilters = [];
+			var oFilter = [new sap.ui.model.Filter("Mvgr4", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("DescMvgr4", sap.ui.model.FilterOperator.Contains, sValue)
+			];
+
+			var allFilters = new sap.ui.model.Filter(oFilter, false);
+
+			aFilters.push(allFilters);
+			this.byId("idGramatura").getBinding("suggestionItems").filter(aFilters);
+			this.byId("idGramatura").suggest();
+		},
+
+		onSuggestFamilia: function (evt) {
+
+			var sValue = evt.getSource().getValue();
+			var aFilters = [];
+			var oFilter = [new sap.ui.model.Filter("Mvgr3", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("DescMvgr3", sap.ui.model.FilterOperator.Contains, sValue)
+			];
+
+			var allFilters = new sap.ui.model.Filter(oFilter, false);
+
+			aFilters.push(allFilters);
+			this.byId("idFamilia").getBinding("suggestionItems").filter(aFilters);
+			this.byId("idFamilia").suggest();
+		},
+
+		onSuggestCliente: function (evt) {
+
+			var sValue = evt.getSource().getValue();
+			var aFilters = [];
+			var oFilter = [new sap.ui.model.Filter("Kunnr", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Name1", sap.ui.model.FilterOperator.Contains, sValue)
+			];
+
+			var allFilters = new sap.ui.model.Filter(oFilter, false);
+
+			aFilters.push(allFilters);
+			this.byId("idCliente").getBinding("suggestionItems").filter(aFilters);
+			this.byId("idCliente").suggest();
+		},
+
+		onSuggestRede: function (evt) {
+
+			var sValue = evt.getSource().getValue();
+			var aFilters = [];
+			var oFilter = [new sap.ui.model.Filter("Kvgr4", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("DescKvgr4", sap.ui.model.FilterOperator.Contains, sValue)
+			];
+
+			var allFilters = new sap.ui.model.Filter(oFilter, false);
+
+			aFilters.push(allFilters);
+			this.byId("idRede").getBinding("suggestionItems").filter(aFilters);
+
+			this.byId("idRede").suggest();
+		},
+
+		onSuggestRepres: function (evt) {
+
+			var sValue = evt.getSource().getValue();
+			var aFilters = [];
+			var oFilter = [new sap.ui.model.Filter("Lifnr", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Name1", sap.ui.model.FilterOperator.Contains, sValue)
+			];
+
+			var allFilters = new sap.ui.model.Filter(oFilter, false);
+
+			aFilters.push(allFilters);
+
+			this.byId("idRepres").getBinding("suggestionItems").filter(aFilters);
+			this.byId("idRepres").suggest();
+		},
+
+		onSuggestCategoria: function (evt) {
+
+			var sValue = evt.getSource().getValue();
+			var aFilters = [];
+			var oFilter = [new sap.ui.model.Filter("Mvgr1", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("DescMvgr1", sap.ui.model.FilterOperator.Contains, sValue)
+			];
+
+			var allFilters = new sap.ui.model.Filter(oFilter, false);
+
+			aFilters.push(allFilters);
+
+			this.byId("idCategoria").getBinding("suggestionItems").filter(aFilters);
+			this.byId("idCategoria").suggest();
+		},
+
+		onSuggestSubCategoria: function (evt) {
+
+			var sValue = evt.getSource().getValue();
+			var aFilters = [];
+			var oFilter = [new sap.ui.model.Filter("Mvgr2", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("DescMvgr2", sap.ui.model.FilterOperator.Contains, sValue)
+			];
+
+			var allFilters = new sap.ui.model.Filter(oFilter, false);
+
+			aFilters.push(allFilters);
+
+			this.byId("idSubCategoria").getBinding("suggestionItems").filter(aFilters);
+			this.byId("idSubCategoria").suggest();
+		},
+
+		onSuggestProdutos: function (evt) {
+
+			var sValue = evt.getSource().getValue();
+			var aFilters = [];
+			var oFilter = [new sap.ui.model.Filter("Matnr", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Maktx", sap.ui.model.FilterOperator.Contains, sValue)
+			];
+
+			var allFilters = new sap.ui.model.Filter(oFilter, false);
+
+			aFilters.push(allFilters);
+
+			this.byId("idProdutos").getBinding("suggestionItems").filter(aFilters);
+			this.byId("idProdutos").suggest();
+		},
+
+		onBuscarDesconto: function () {
 
 			var that = this;
 
 			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
 			that.oModel = that.getModelGlobal("modelAux").getProperty("/DBModel");
 
-			var parametros = that.getModel("modelParametros").getData();
+			var aux = that.getModel("modelParametros").getData();
 
-			var PerioAux = that.getModel("modelParametros").getProperty("/Periodo");
-			var PerioSplit = PerioAux.split(" - ");
-			var PerioIni = PerioSplit[0];
-			var PerioFim = PerioSplit[1];
+			var parametros = {
+				Vkorg: aux.Bukrs,
+				Lifnr: aux.Lifnr,
+				Kunnr: aux.Kunnr,
+				Kvgr4: aux.Kvgr4,
+				Mvgr1: aux.Mvgr1,
+				Mvgr2: aux.Mvgr2,
+				Mvgr3: aux.Mvgr3,
+				Mvgr4: aux.Mvgr4,
+				Mvgr5: aux.Mvgr5,
+				Matnr: aux.Matnr,
+				Usuario: this.getModelGlobal("modelAux").getProperty("/CodRepres")
+			};
 
 			that.byId("master").setBusy(true);
 
-			that.oModel.read("/FatItens", {
-				urlParameters: {
+			that.oModel.callFunction("/P_Get_PercRebaixa", {
+				method: "POST",
+				urlParameters: parametros,
+				success: function (oData, oResponse) {
 
-					"$filter": "Usuario eq '" + repres +
-						"' and WerksIni eq '" + parametros.WerksIni +
-						"' and WerksFim eq '" + parametros.WerksFim +
-						"' and KunnrIni eq '" + parametros.KunnrIni +
-						"' and KunnrFim eq '" + parametros.KunnrFim +
-						"' and Kvgr4Ini eq '" + parametros.Kvgr4Ini +
-						"' and Kvgr4Fim eq '" + parametros.Kvgr4Fim +
-						"' and Kvgr5Ini eq '" + parametros.Kvgr5Ini +
-						"' and Kvgr5Fim eq '" + parametros.Kvgr5Fim +
-						"' and RepreIni eq '" + parametros.RepreIni +
-						"' and RepreFim eq '" + parametros.RepreFim +
-						"' and MatnrIni eq '" + parametros.MatnrIni +
-						"' and MatnrFim eq '" + parametros.MatnrFim +
-						"' and Mvgr1Ini eq '" + parametros.Mvgr1Ini +
-						"' and Mvgr1Fim eq '" + parametros.Mvgr1Fim +
-						"' and Mvgr2Ini eq '" + parametros.Mvgr2Ini +
-						"' and Mvgr2Fim eq '" + parametros.Mvgr2Fim +
-						"' and Mvgr3Ini eq '" + parametros.Mvgr3Ini +
-						"' and Mvgr3Fim eq '" + parametros.Mvgr3Fim +
-						"' and Mvgr5Ini eq '" + parametros.Mvgr5Ini +
-						"' and Mvgr5Fim eq '" + parametros.Mvgr5Fim +
-						"' and PerioIni eq '" + PerioIni +
-						"' and PerioFim eq '" + PerioFim + "'"
+					var Item = oData;
+					that.byId("master").setBusy(false);
+
+					if (Item.TipoErro == "E") {
+
+						MessageBox.show(Item.MsgErro, {
+							icon: MessageBox.Icon.WARNING,
+							title: "Não Permitido",
+							actions: [MessageBox.Action.OK],
+							onClose: function () {}
+						});
+
+					} else {
+
+						that.getModel("modelParametros").setProperty("/PercCadastrado", oData.PercCadastrado);
+					}
 				},
-				success: function (retorno) {
-
-					that.vetorFatItems = [];
-					that.vetorResumoEmpresa = [];
-
-					that.vetorFatItems = retorno.results;
-
-					that.getModel("modelFatItens").setData(that.vetorFatItems);
-
-					var vTotalEmp = 0;
-					for (var i = 0; i < that.vetorFatItems.length; i++) {
-						var vAchouEmpresa = false;
-						for (var j = 0; j < that.vetorResumoEmpresa.length; j++) {
-
-							if (that.vetorFatItems[i].Bukrs == that.vetorResumoEmpresa[j].Bukrs) {
-
-								vAchouEmpresa = true;
-
-								that.vetorResumoEmpresa[j].ValFaturado = parseFloat(that.vetorResumoEmpresa[j].ValFaturado) + Math.round(parseFloat(that.vetorFatItems[
-									i].ValFaturado) * 100) / 100;
-								that.vetorResumoEmpresa[j].ValFaturado = parseFloat(that.vetorResumoEmpresa[j].ValFaturado).toFixed(2);
-
-							}
-						}
-						if (vAchouEmpresa == false) {
-							var vAux = {
-								Bukrs: that.vetorFatItems[i].Bukrs,
-								Butxt: that.vetorFatItems[i].Butxt,
-								ValFaturado: parseFloat(that.vetorFatItems[i].ValFaturado)
-							};
-
-							that.vetorResumoEmpresa.push(vAux);
-
-						}
-						vTotalEmp += parseFloat(that.vetorFatItems[i].ValFaturado);
-					}
-
-					if (vTotalEmp > 0) {
-						var vAuxTot = {
-							Bukrs: "",
-							Butxt: "TOTAL",
-							ValFaturado: parseFloat(vTotalEmp).toFixed(2)
-						};
-
-						that.vetorResumoEmpresa.push(vAuxTot);
-					}
+				error: function (oError) {
 
 					that.byId("master").setBusy(false);
-					that.getModel("modelResumoEmpresa").setData(that.vetorResumoEmpresa);
-				},
-				error: function (error) {
-					that.byId("master").setBusy(false);
-					that.onMensagemErroODATA(error);
+					that.onMensagemErroODATA(oError);
 				}
 			});
-
 		},
 
-		onExpandFiltro: function () {
+		onCadastrarDesconto: function () {
 
-			if (this.byId("idPanelFiltro").getExpanded()) {
-				this.byId("idPanelFiltro").setHeaderText("Ocultar Filtros");
+			var that = this;
+
+			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
+			that.oModel = that.getModelGlobal("modelAux").getProperty("/DBModel");
+
+			var aux = that.getModel("modelParametros").getData();
+
+			if (aux.Bukrs == "" || aux.Bukrs == undefined) {
+
+				MessageBox.show("Preencher a Empresa!", {
+					icon: MessageBox.Icon.WARNING,
+					title: "Não Permitido",
+					actions: [MessageBox.Action.OK],
+					onClose: function () {
+						that.byId("idEmpresa").focus();
+					}
+				});
+
+			} else if (aux.Lifnr == "" || aux.Lifnr == undefined) {
+
+				MessageBox.show("Preencher o Representante!", {
+					icon: MessageBox.Icon.WARNING,
+					title: "Não Permitido",
+					actions: [MessageBox.Action.OK],
+					onClose: function () {
+						that.byId("idRepres").focus();
+					}
+				});
+
+			} else if ((aux.Kunnr != "" && aux.Kunnr != undefined) && (aux.Kvgr4 != "" && aux.Kvgr4 != undefined)) {
+
+				MessageBox.show("Preencher apenas o Cliente ou a Rede, para realização do cadastro da condição!", {
+					icon: MessageBox.Icon.WARNING,
+					title: "Não Permitido",
+					actions: [MessageBox.Action.OK],
+					onClose: function () {
+
+						that.getModel("modelParametros").setProperty("/Kunnr", "");
+						that.getModel("modelParametros").setProperty("/Kvgr4", "");
+					}
+				});
+
+			} else if (aux.PercCadastrado < aux.PercCadastrar) {
+
+				MessageBox.show("Valor máx permitido é de: " + aux.PercCadastrado + "%", {
+					icon: MessageBox.Icon.WARNING,
+					title: "Não Permitido",
+					actions: [MessageBox.Action.OK],
+					onClose: function () {
+						that.byId("idCliente").focus();
+					}
+				});
+
+			} else if (aux.PercCadastrado == "" || aux.PercCadastrado == undefined) {
+
+				MessageBox.show("Pesquise o valor já cadastrado antes de iniciar um novo cadastro!", {
+					icon: MessageBox.Icon.WARNING,
+					title: "Não Permitido",
+					actions: [MessageBox.Action.OK],
+					onClose: function () {
+						that.byId("idCliente").focus();
+					}
+				});
+
 			} else {
-				this.byId("idPanelFiltro").setHeaderText("Exibir Filtros");
+
+				var parametros = {
+					Vkorg: aux.Bukrs,
+					Lifnr: aux.Lifnr,
+					Kunnr: aux.Kunnr,
+					Kvgr4: aux.Kvgr4,
+					Mvgr1: aux.Mvgr1,
+					Mvgr2: aux.Mvgr2,
+					Mvgr3: aux.Mvgr3,
+					Mvgr4: aux.Mvgr4,
+					Mvgr5: aux.Mvgr5,
+					Matnr: aux.Matnr,
+					Usuario: this.getModelGlobal("modelAux").getProperty("/CodRepres"),
+					PercCadastrado: aux.PercCadastrado,
+					PercCadastrar: aux.PercCadastrar
+				};
+
+				that.byId("master").setBusy(true);
+
+				that.oModel.callFunction("/P_Set_PercRebaixa", {
+					method: "POST",
+					urlParameters: parametros,
+					success: function (oData, oResponse) {
+
+						var Item = oData;
+						that.byId("master").setBusy(false);
+
+						if (Item.TipoErro == "E") {
+
+							MessageBox.show(Item.MsgErro, {
+								icon: MessageBox.Icon.WARNING,
+								title: "Não Permitido",
+								actions: [MessageBox.Action.OK],
+								onClose: function () {}
+							});
+						} else {
+
+							that.getModel("modelParametros").setProperty("/PercCadastrado", oData.Kbetr);
+						}
+					},
+					error: function (oError) {
+
+						that.byId("master").setBusy(false);
+						that.onMensagemErroODATA(oError);
+					}
+				});
 			}
-		},
 
-		onSuggestCentroFim: function (evt) {
-
-			var sValue = evt.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Werks", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("NomeCentro", sap.ui.model.FilterOperator.Contains, sValue)
-			];
-
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-
-			aFilters.push(allFilters);
-			this.byId("idCentroFim").getBinding("suggestionItems").filter(aFilters);
-			this.byId("idCentroFim").suggest();
-		},
-
-		onSuggestClienteIni: function (evt) {
-
-			var sValue = evt.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Kunnr", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Name1", sap.ui.model.FilterOperator.Contains, sValue)
-			];
-
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-
-			aFilters.push(allFilters);
-			this.byId("idClienteIni").getBinding("suggestionItems").filter(aFilters);
-			this.byId("idClienteIni").suggest();
-		},
-
-		onSuggestClienteFim: function (evt) {
-
-			var sValue = evt.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Kunnr", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Name1", sap.ui.model.FilterOperator.Contains, sValue)
-			];
-
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-
-			aFilters.push(allFilters);
-			this.byId("idClienteFim").getBinding("suggestionItems").filter(aFilters);
-			this.byId("idClienteFim").suggest();
-		},
-
-		onSuggestRedeIni: function (evt) {
-
-			var sValue = evt.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Kvgr4", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("DescKvgr4", sap.ui.model.FilterOperator.Contains, sValue)
-			];
-
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-
-			aFilters.push(allFilters);
-			this.byId("idRedeIni").getBinding("suggestionItems").filter(aFilters);
-
-			this.byId("idRedeIni").suggest();
-		},
-
-		onSuggestRedeFim: function (evt) {
-
-			var sValue = evt.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Kvgr4", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("DescKvgr4", sap.ui.model.FilterOperator.Contains, sValue)
-			];
-
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-
-			aFilters.push(allFilters);
-			this.byId("idRedeFim").getBinding("suggestionItems").filter(aFilters);
-
-			this.byId("idRedeFim").suggest();
-		},
-
-		onSuggestBandeiraIni: function (evt) {
-
-			var sValue = evt.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Kvgr5", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("DescKvgr5", sap.ui.model.FilterOperator.Contains, sValue)
-			];
-
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-
-			aFilters.push(allFilters);
-			this.byId("idBandeiraIni").getBinding("suggestionItems").filter(aFilters);
-
-			this.byId("idBandeiraIni").suggest();
-		},
-
-		onSuggestBandeiraFim: function (evt) {
-
-			var sValue = evt.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Kvgr5", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("DescKvgr5", sap.ui.model.FilterOperator.Contains, sValue)
-			];
-
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-
-			aFilters.push(allFilters);
-			this.byId("idBandeiraFim").getBinding("suggestionItems").filter(aFilters);
-
-			this.byId("idBandeiraFim").suggest();
-		},
-
-		onSuggestRepresIni: function (evt) {
-
-			var sValue = evt.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Lifnr", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Name1Rep", sap.ui.model.FilterOperator.Contains, sValue)
-			];
-
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-
-			aFilters.push(allFilters);
-			this.byId("idRepreIni").getBinding("suggestionItems").filter(aFilters);
-
-			this.byId("idRepreIni").suggest();
-		},
-
-		onSuggestRepresFim: function (evt) {
-
-			var sValue = evt.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Lifnr", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Name1Rep", sap.ui.model.FilterOperator.Contains, sValue)
-			];
-
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-
-			aFilters.push(allFilters);
-			this.byId("idRepreFim").getBinding("suggestionItems").filter(aFilters);
-
-			this.byId("idRepreFim").suggest();
-		},
-
-		onSuggestMaterialIni: function (evt) {
-
-			var sValue = evt.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Matnr", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Maktx", sap.ui.model.FilterOperator.Contains, sValue)
-			];
-
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-
-			aFilters.push(allFilters);
-			this.byId("idMaterialIni").getBinding("suggestionItems").filter(aFilters);
-
-			this.byId("idMaterialIni").suggest();
-		},
-
-		onSuggestMaterialFim: function (evt) {
-
-			var sValue = evt.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Matnr", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Maktx", sap.ui.model.FilterOperator.Contains, sValue)
-			];
-
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-
-			aFilters.push(allFilters);
-			this.byId("idMaterialFim").getBinding("suggestionItems").filter(aFilters);
-
-			this.byId("idMaterialFim").suggest();
-		},
-
-		onSuggestCategoriaIni: function (evt) {
-
-			var sValue = evt.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Mvgr1", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("DescMvgr1", sap.ui.model.FilterOperator.Contains, sValue)
-			];
-
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-
-			aFilters.push(allFilters);
-			this.byId("idCategoriaIni").getBinding("suggestionItems").filter(aFilters);
-
-			this.byId("idCategoriaIni").suggest();
-		},
-
-		onSuggestCategoriaFim: function (evt) {
-
-			var sValue = evt.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Mvgr1", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("DescMvgr1", sap.ui.model.FilterOperator.Contains, sValue)
-			];
-
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-
-			aFilters.push(allFilters);
-			this.byId("idCategoriaFim").getBinding("suggestionItems").filter(aFilters);
-
-			this.byId("idCategoriaFim").suggest();
-		},
-
-		onSuggestSubCategoriaIni: function (evt) {
-
-			var sValue = evt.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Mvgr2", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("DescMvgr2", sap.ui.model.FilterOperator.Contains, sValue)
-			];
-
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-
-			aFilters.push(allFilters);
-			this.byId("idSubCategoriaIni").getBinding("suggestionItems").filter(aFilters);
-
-			this.byId("idSubCategoriaIni").suggest();
-		},
-
-		onSuggestSubCategoriaFim: function (evt) {
-
-			var sValue = evt.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Mvgr2", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("DescMvgr2", sap.ui.model.FilterOperator.Contains, sValue)
-			];
-
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-
-			aFilters.push(allFilters);
-			this.byId("idSubCategoriaFim").getBinding("suggestionItems").filter(aFilters);
-
-			this.byId("idSubCategoriaFim").suggest();
-		},
-
-		onSuggestFamiliaIni: function (evt) {
-
-			var sValue = evt.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Mvgr3", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("DescMvgr3", sap.ui.model.FilterOperator.Contains, sValue)
-			];
-
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-
-			aFilters.push(allFilters);
-			this.byId("idFamiliaIni").getBinding("suggestionItems").filter(aFilters);
-
-			this.byId("idFamiliaIni").suggest();
-		},
-
-		onSuggestFamiliaFim: function (evt) {
-
-			var sValue = evt.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Mvgr3", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("DescMvgr3", sap.ui.model.FilterOperator.Contains, sValue)
-			];
-
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-
-			aFilters.push(allFilters);
-			this.byId("idFamiliaFim").getBinding("suggestionItems").filter(aFilters);
-
-			this.byId("idFamiliaFim").suggest();
-		},
-
-		onSuggestMarcaIni: function (evt) {
-
-			var sValue = evt.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Mvgr5", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("DescMvgr5", sap.ui.model.FilterOperator.Contains, sValue)
-			];
-
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-
-			aFilters.push(allFilters);
-			this.byId("idMarcaIni").getBinding("suggestionItems").filter(aFilters);
-
-			this.byId("idMarcaIni").suggest();
-		},
-
-		onSuggestMarcaFim: function (evt) {
-
-			var sValue = evt.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Mvgr5", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("DescMvgr5", sap.ui.model.FilterOperator.Contains, sValue)
-			];
-
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-
-			aFilters.push(allFilters);
-			this.byId("idMarcaFim").getBinding("suggestionItems").filter(aFilters);
-
-			this.byId("idMarcaFim").suggest();
-		},
-
+		}
 	});
 });

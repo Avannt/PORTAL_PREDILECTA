@@ -7,7 +7,8 @@ sap.ui.define([
 	"sap/ui/core/util/MockServer",
 	"sap/ui/export/library",
 	"sap/ui/export/Spreadsheet",
-	"sap/ui/model/odata/v2/ODataModel"
+	"sap/ui/model/odata/v2/ODataModel",
+	"sap/m/MessageBox"
 
 ], function (BaseController, JSONModel, MessageBox, formatter, MockServer, exportLibrary, Spreadsheet, ODataModel) {
 	"use strict";
@@ -195,7 +196,7 @@ sap.ui.define([
 				property: "Nfenum",
 				type: EdmType.String
 			});
-			
+
 			aCols.push({
 				label: "Referência Cliente",
 				property: "Bstkd",
@@ -330,18 +331,93 @@ sap.ui.define([
 			this.byId("idCentroIni").suggest();
 		},
 
+		onDialogOpen: function (evt) {
+
+			var that = this;
+
+			var vAux = {
+				Docnum: evt.getSource().getBindingContext("modelNotasFiscais").getObject().Docnum,
+				Nfenum: evt.getSource().getBindingContext("modelNotasFiscais").getObject().Nfenum,
+				Series: evt.getSource().getBindingContext("modelNotasFiscais").getObject().Series
+			};
+
+			var omodelParamDialog = new JSONModel(vAux);
+			that.setModel(omodelParamDialog, "modelParamDialog");
+
+			if (that._ItemDialog) {
+				that._ItemDialog.destroy(true);
+			}
+
+			if (!that._CreateMaterialFragment) {
+
+				that._ItemDialog = sap.ui.xmlfragment(
+					"application.view.DialogEmail",
+					that
+				);
+				that.getView().addDependent(that._ItemDialog);
+			}
+
+			that._ItemDialog.open();
+
+		},
+
+		onDialogClose: function () {
+
+			if (this._ItemDialog) {
+				this._ItemDialog.destroy(true);
+			}
+
+		},
+
+		onDialogEnvioDanfe: function () {
+
+			var that = this;
+
+			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
+			var Name1 = that.getModelGlobal("modelAux").getProperty("/NomeRepres").replaceAll(" ", "_");
+			var Docnum = that.getModel("modelParamDialog").getProperty("/Docnum");
+			var Nfenum = that.getModel("modelParamDialog").getProperty("/Nfenum");
+			var Series = that.getModel("modelParamDialog").getProperty("/Series");
+			var Email = that.getModelGlobal("modelAux").getProperty("/Email");
+
+			sap.ui.getCore().byId("idDialogEmail").setBusy(true);
+
+			that.oModel.read("/EnviaEmailDanfe(IvUsuario='" + repres +
+				"',IvDocnum='" + Docnum +
+				"',IvEmail='" + Email +
+				"',IvName1='" + Name1 + "')", {
+					success: function (data) {
+
+						sap.ui.getCore().byId("idDialogEmail").setBusy(false);
+						MessageBox.show("NF-e " + Nfenum + " -" + Series + " enviada para o e-mail " + Email, {
+							icon: MessageBox.Icon.SUCCESS,
+							title: "Envio de Notas Fiscais",
+							actions: [sap.m.MessageBox.Action.OK]
+						});
+						that.onDialogClose();
+					},
+					error: function (error) {
+
+						sap.ui.getCore().byId("idDialogEmail").setBusy(false);
+						that.onMensagemErroODATA(error);
+					}
+				});
+		},
+
 		onPressBtnFiltrar: function () {
 
 			var that = this;
 
 			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
 			that.oModel = that.getModelGlobal("modelAux").getProperty("/DBModel");
-			
+
 			var parametros = that.getModel("modelParametros").getData();
 			var PerioAux = that.getModel("modelParametros").getProperty("/Periodo");
 			var PerioSplit = PerioAux.split(" - ");
 			var PerioIni = PerioSplit[0];
 			var PerioFim = PerioSplit[1];
+
+			that.byId("master").setBusy(true);
 
 			that.oModel.read("/NotasFiscais", {
 				urlParameters: {
@@ -411,9 +487,11 @@ sap.ui.define([
 						that.vetorResumoEmpresa.push(vAuxTot);
 					}
 
+					that.byId("master").setBusy(false);
 					that.getModel("modelResumoEmpresa").setData(that.vetorResumoEmpresa);
 				},
 				error: function (error) {
+					that.byId("master").setBusy(false);
 					that.onMensagemErroODATA(error);
 				}
 			});

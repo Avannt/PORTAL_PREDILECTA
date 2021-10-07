@@ -21,7 +21,7 @@ sap.ui.define([
 		onLoadFields: function () {
 
 			var that = this;
-			var NrPedido = that.getModelGlobal("modelAux").getProperty("/NrPedido");	
+			var NrPedido = that.getModelGlobal("modelAux").getProperty("/NrPedido");
 
 			new Promise(function (resolve, reject) {
 
@@ -32,9 +32,9 @@ sap.ui.define([
 				if (NrPedido != "") {
 
 					new Promise(function (res, rej) {
-						
+
 						that.byId("idPedidoDetalhe").setBusy(true);
-						that.onBuscarPedido(NrPedido, res, rej);
+						that.onBuscarPedido(NrPedido, res, rej, that);
 
 					}).then(function (dataPed) {
 
@@ -69,7 +69,7 @@ sap.ui.define([
 
 					}).catch(function (error) {
 
-						that.byId("idPedidoDetalhe").setBusy(false);
+						that.byId("table_pedidos").setBusy(false);
 						that.onMensagemErroODATA(error);
 					});
 
@@ -189,9 +189,6 @@ sap.ui.define([
 			vetorPromises.push(new Promise(function (res, rej) {
 
 				that.oModel.read("/Vencimentos", {
-					// urlParameters: {
-					// 	"$filter": "IvUsuario eq '" + that.CodRepres + "'"
-					// },
 					success: function (result) {
 
 						that.vetorVencimentoTotal = result.results;
@@ -203,7 +200,6 @@ sap.ui.define([
 						that.onMensagemErroODATA(error);
 					}
 				});
-
 			}));
 
 			//Tabela de Preço
@@ -328,20 +324,21 @@ sap.ui.define([
 					urlParameters: {
 						"$filter": "IvUsuario eq '" + that.CodRepres + "'"
 					},
-					success: function (result) {
-
-						that.vetorCentros = result.results;
-						var oModelCentro = new JSONModel(that.vetorCentros);
-						that.getView().setModel(oModelCentro, "modelCentros");
-
+					success: function (data) {
+						
+						that.vetorCentros = data.results;
+						
+						modelCentros = new JSONModel(that.vetorCentros);
+						that.setModel(modelCentros, "modelCentros");
+						
 						res();
 					},
 					error: function (error) {
 
-						rej();
-						that.onMensagemErroODATA(error);
+						rej(error);
 					}
 				});
+
 			}));
 
 			vetorPromises.push(new Promise(function (resMotv, rejMotv) {
@@ -1393,7 +1390,17 @@ sap.ui.define([
 
 				MessageBox.error(msg, {
 					icon: MessageBox.Icon.ERROR,
-					title: "Deleção de pedido.",
+					title: "Deleção de itens do pedido.",
+					actions: [sap.m.MessageBox.Action.OK]
+				});
+
+			} else if (statusPedido == 2) {
+
+				msg = "Reabra o pedido para realizar alterações";
+
+				MessageBox.error(msg, {
+					icon: MessageBox.Icon.ERROR,
+					title: "Deleção de itens do pedido.",
 					actions: [sap.m.MessageBox.Action.OK]
 				});
 
@@ -1434,7 +1441,7 @@ sap.ui.define([
 
 									new Promise(function (res, rej) {
 
-										that.onBuscarPedido(res, rej, NrPedido);
+										that.onBuscarPedido(NrPedido, res, rej, that);
 
 									}).then(function (dataPed) {
 
@@ -1877,8 +1884,16 @@ sap.ui.define([
 			var tipoPedido = this.getModelGlobal("modelPedido").getProperty("/TipoPedido");
 			that.oItemPedido = [];
 
-			if (statusPedido == 3 || statusPedido == 2 || statusPedido == 9) {
+			if (statusPedido == 3) {
 				MessageBox.show("Este pedido não pode mais ser alterado", {
+					icon: MessageBox.Icon.WARNING,
+					title: "Não Permitido",
+					actions: [MessageBox.Action.OK]
+				});
+
+			} else if (statusPedido == 2) {
+
+				MessageBox.show("Reabra o pedido para realizar alterações!", {
 					icon: MessageBox.Icon.WARNING,
 					title: "Não Permitido",
 					actions: [MessageBox.Action.OK]
@@ -1886,7 +1901,7 @@ sap.ui.define([
 
 			} else {
 
-				sap.ui.core.UIComponent.getRouterFor(this).navTo("PedidoDetalheItens");
+				sap.ui.core.UIComponent.getRouterFor(this).navTo("pedidoDetalheItens");
 
 			}
 		},
@@ -1965,16 +1980,27 @@ sap.ui.define([
 							actions: [sap.m.MessageBox.Action.YES, sap.m.MessageBox.Action.NO],
 							onClose: function (oAction) {
 
-								if (oAction == sap.m.MessageBox.Action.YES) {
+								that.onResetarDadosPedido();
 
-									that.onResetarDadosPedido();
-									sap.ui.core.UIComponent.getRouterFor(that).navTo("enviarPedidos");
-									
-								} else if (oAction == sap.m.MessageBox.Action.NO) {
+								if (oAction == sap.m.MessageBox.Action.NO) {
 
-									that.onResetarDadosPedido();
+									sap.ui.core.UIComponent.getRouterFor(that).navTo("pedido");
+
+								} else {
 
 									new Promise(function (res, rej) {
+
+										Pedido.SituacaoPedido = "FIN";
+										Pedido.IdStatusPedido = 3;
+										Pedido.DataFim = data[0];
+										Pedido.HoraFim = data[1];
+										Pedido.Completo = true;
+
+										that.onLimparValueState("None");
+
+										Pedido = that.onFormatNumberPedido(Pedido);
+
+										delete Pedido.__metadata;
 
 										that.onInserirPedido(Pedido, res, rej, that);
 
@@ -1993,27 +2019,26 @@ sap.ui.define([
 											sap.m.MessageBox.show("Pedido enviado com sucesso !!", {
 												icon: sap.m.MessageBox.Icon.SUCCESS,
 												title: "Sucesso!",
-												actions: [sap.m.MessageBox.Action.YES, sap.m.MessageBox.Action.NO],
+												actions: ["OK"],
 												onClose: function (oAction) {
-													
+
 													sap.ui.core.UIComponent.getRouterFor(that).navTo("pedido");
+
+													that.byId("idPedidoDetalhe").setBusy(false);
+													that.onLiberarAbas();
 												},
 											});
 										}
-										
+
 									}).catch(function (error) {
 
 										that.byId("idPedidoDetalhe").setBusy(false);
 										that.onMensagemErroODATA(error);
 									});
 								}
-
-								that.byId("idPedidoDetalhe").setBusy(false);
-								that.onLiberarAbas();
 							}
 						});
 					}
-
 				}).catch(function (error) {
 
 					that.byId("idPedidoDetalhe").setBusy(false);
