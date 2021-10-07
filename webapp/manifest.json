@@ -69,8 +69,7 @@
 					"defaultBindingMode": "OneWay",
 					"defaultCountMode": "Request"
 				},
-				"dataSource": "ZSF_FV_SRV",
-				"preload": true
+				"dataSource": "ZSF_FV_SRV"
 			}
 		},
 		"resources": {
@@ -190,15 +189,6 @@
 					]
 				},
 				{
-					"name": "produtoConsultas",
-					"pattern": "ProdutoConsultas",
-					"titleTarget": "",
-					"greedy": false,
-					"target": [
-						"produtoConsultas"
-					]
-				},
-				{
 					"name": "VerbaConsultas",
 					"pattern": "VerbaConsultas",
 					"titleTarget": "",
@@ -296,6 +286,15 @@
 					"target": [
 						"pedidoDetalheItens"
 					]
+				},
+				{
+					"name": "detalheProdutos",
+					"pattern": "DetalheProdutos",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"detalheProdutos"
+					]
 				}
 			],
 			"targets": {
@@ -341,10 +340,6 @@
 				},
 				"clienteConsultasDetalhe": {
 					"viewName": "clienteConsultasDetalhe",
-					"viewLevel": 2
-				},
-				"produtoConsultas": {
-					"viewName": "produtoConsultas",
 					"viewLevel": 2
 				},
 				"VerbaConsultas": {
@@ -402,6 +397,15 @@
 					"transition": "slide",
 					"clearControlAggregation": false,
 					"viewName": "PedidoDetalheItens",
+					"controlId": "app",
+					"controlAggregation": "pages",
+					"viewPath": "application.view"
+				},
+				"detalheProdutos": {
+					"viewType": "XML",
+					"transition": "slide",
+					"clearControlAggregation": false,
+					"viewName": "detalheProdutos",
 					"controlId": "app",
 					"controlAggregation": "pages",
 					"viewPath": "application.view"
