@@ -116,7 +116,7 @@
 						<cells>
 							<Text text="{modelFatClientes>Kunnr}"/>
 							<Text text="{modelFatClientes>Name1Cli}"/>
-							<Text text="{path: 'modelFatClientes>Stcd1', formatter:'.onFormatCnpj'} {path: 'modelFatClientesStcd2', formatter:'.onFormatCpf'}"/>
+							<Text text="{path: 'modelFatClientes>Stcd1', formatter:'.onFormatCnpj'} {path: 'modelFatClientes>Stcd2', formatter:'.onFormatCpf'}"/>
 							<Text text="{modelFatClientes>Kvgr4Text}"/>
 							<Text text="{modelFatClientes>Kvgr5Text}"/>
 							<Text text="{modelFatClientes>Region}"/>
