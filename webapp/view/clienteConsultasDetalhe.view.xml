@@ -1,4 +1,5 @@
-<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" displayBlock="true" controllerName="application.controller.clienteConsultasDetalhe">
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" displayBlock="true"
+	controllerName="application.controller.clienteConsultasDetalhe">
 	<App>
 		<pages>
 			<Page title="Cliente" class="sapUiResponsivePadding" showNavButton="true" navButtonPress="onNavBack">
@@ -8,7 +9,9 @@
 							<IconTabFilter id="tabInfoCliente" text="Dados Cliente" icon="sap-icon://hint" key="tab1">
 								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
 									<VBox class="sapUiSmallMargin">
-										<f:SimpleForm id="SimpleFormChange471" editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="4" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="3" emptySpanL="3" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1" singleContainerFullSize="false">
+										<f:SimpleForm id="SimpleFormChange471" editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="4"
+											labelSpanS="12" adjustLabelSpan="false" emptySpanXL="3" emptySpanL="3" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
+											singleContainerFullSize="false">
 											<f:content>
 												<Label text="Código"/>
 												<Input id="idCodigo" enabled="false" value="{modelCliente>/Kunnr}"/>
@@ -17,19 +20,20 @@
 												<Label text="Nome"/>
 												<Input id="idNome" enabled="false" value="{modelCliente>/Name1}"/>
 												<Label text="CNPJ"/>
-												<Input id="idCNPJ" enabled="false" value="{path: 'Cliente>/Stcd1', formatter:'.onFormatCnpj'}{path: 'Cliente&gt;/Stcd2', formatter:'.onFormatCpf'}"/>
+												<Input id="idCNPJ" enabled="false"
+													value="{path: 'modelCliente>/Stcd1', formatter:'.onFormatCnpj'}{path: 'modelCliente>/Stcd2', formatter:'.onFormatCpf'}"/>
 												<Label text="CEP"/>
 												<Input id="idCEP" enabled="false" value="{modelCliente>/Pstlz}"/>
 												<Label text="Inscrição Estadual"/>
 												<Input id="idInscricaoEstadual" enabled="false" value="{modelCliente>/Stcd3}"/>
 												<Label text="Telefone"/>
-												<Input id="idTelefone" enabled="false" value="{path: 'Cliente>/Telf1', formatter: '.onFormatTelefone'}"/>
+												<Input id="idTelefone" enabled="false" value="{path: 'modelCliente>/Telf1', formatter: '.onFormatTelefone'}"/>
 												<Label text="Endereço"/>
 												<Input id="idEndereco" enabled="false" value="{modelCliente>/Stras}"/>
 												<Label text="Cidade / UF"/>
 												<Input id="idCidade" enabled="false" value="{modelCliente>/Ort01} - {modelCliente>/Regio}"/>
 												<Label text="Data Cadastro Cliente"/>
-												<Input id="idDataCadastroCliente" enabled="false" value="{path : 'Cliente>/Crdat', formatter: '.myFormatterDataMobile'}"/>
+												<Input id="idDataCadastroCliente" enabled="false" value="{path : 'modelCliente>/Crdat', formatter: '.myFormatterDataMobile'}"/>
 												<Label text="Email"/>
 												<Input id="idEmail" enabled="false" value="{modelCliente>/EmailNf}"/>
 												<Label text="Email Envio XML"/>
@@ -39,7 +43,7 @@
 												<!--<Label text="Divisão de Vendas"/>-->
 												<!--<Input id="idDivVendas" enabled="false" value="{modelCliente>/Bzirk}"/>-->
 												<Label text="Insc. Aux Subst. Trib."/>
-												<Input id="idInscAuxSubstTrib" enabled="false" value="{path: 'Cliente>/RegimeEspecial', formatter: '.myFormatterDataMobile'}"/>
+												<Input id="idInscAuxSubstTrib" enabled="false" value="{path: 'modelCliente>/RegimeEspecial', formatter: '.myFormatterDataMobile'}"/>
 												<Label text="Divisão cliente"/>
 												<Input id="idDivisao" enabled="false" value="{modelCliente>/Kvgr1} - {modelCliente>/DescKvgr1}"/>
 												<Label text="Canal Atuação"/>
@@ -57,9 +61,9 @@
 												<Label text="Tipo de Frete"/>
 												<Input id="idFrete" value="{modelCliente>/Inco1}" enabled="false"/>
 												<Label text="Faturar Saldo?"/>
-												<Input id="idFaturarSaldo" value="{path: 'Cliente>/CancelaSaldo', formatter: '.onFormatCancelaSaldo'}" enabled="false"/>
+												<Input id="idFaturarSaldo" value="{path: 'modelCliente>/CancelaSaldo', formatter: '.onFormatCancelaSaldo'}" enabled="false"/>
 												<Label text="Simples Nacional"/>
-												<Input id="idSimplesNacional" value="{path: 'Cliente>/Tdt', formatter: '.onFormatSimplesNacional'}" enabled="false"/>
+												<Input id="idSimplesNacional" value="{path: 'modelCliente>/Tdt', formatter: '.onFormatSimplesNacional'}" enabled="false"/>
 											</f:content>
 										</f:SimpleForm>
 									</VBox>
@@ -70,25 +74,30 @@
 									<f:SimpleForm id="simpleFormChange1" title="" editable="true" class="editableForm">
 										<f:content>
 											<Label text="Status Crédito"/>
-											<Input id="idStatusCredito" value="{path: 'Cliente>/RiskClass'} - {path: 'Cliente>/RiskClassDesc'}" enabled="false"/>
+											<Input id="idStatusCredito" value="{path: 'modelCliente>/RiskClass'} - {path: 'modelCliente>/RiskClassDesc'}" enabled="false"/>
 											<Label text="Limite Crédito"/>
-											<Input id="idLimiteCredito" value="R$: {path: 'Cliente>/CreditLimit', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false"/>
+											<Input id="idLimiteCredito"
+												value="R$: {path: 'modelCliente>/CreditLimit', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+												enabled="false"/>
 											<Label text="Data Lim. Crédito"/>
-											<Input id="idDataLimCredito" value="{path: 'Cliente>/LimitValidDate', formatter: '.myFormatterDataMobile'}" enabled="false"/>
+											<Input id="idDataLimCredito" value="{path: 'modelCliente>/LimitValidDate', formatter: '.myFormatterDataMobile'}" enabled="false"/>
 											<!--<Label text="Limite Crédito Disponível"/>-->
 											<!--<Input id="idLimiteCreditoDisp" value="R$: {path: 'Cliente>/CredLimReq', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false"/>-->
 											<Label text="Valor Último Título/NF"/>
 											<!--CredLimDisp-->
-											<Input id="idUltimoTitulo_NF" value="{path: 'Cliente>/ValorUltFatura', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false"/>
+											<Input id="idUltimoTitulo_NF"
+												value="{path: 'modelCliente>/ValorUltFatura', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+												enabled="false"/>
 											<Label text="Data Valor Último Título/NF"/>
-											<Input id="idDataUltimoTitulo_NF" value="{path: 'Cliente>/DataUltFatura', formatter: '.myFormatterDataInvert'}" enabled="false" />
+											<Input id="idDataUltimoTitulo_NF" value="{path: 'modelCliente>/DataUltFatura', formatter: '.myFormatterDataInvert'}" enabled="false"/>
 										</f:content>
 									</f:SimpleForm>
 								</ScrollContainer>
 							</IconTabFilter>
 							<IconTabFilter id="tabTabelaPrecos" text="Tabela Preços" icon="sap-icon://table-view" key="tab3">
 								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
-									<Table id="table_TabelaPrecos" items="{ path: 'TabPreco>/' }" width="100%" updateFinished="onListUpdateFinished" itemPress="onItemPress" noDataText="Nenhuma tabela de preços cadastrado para o cliente" busyIndicatorDelay="{detailView>/lineItemTableDelay}" fixedLayout="false">
+									<Table id="table_TabelaPrecos" items="{ path: 'modelTbPreco>/' }" width="100%" updateFinished="onListUpdateFinished" itemPress="onItemPress"
+										noDataText="Nenhuma tabela de preços cadastrado para o cliente" busyIndicatorDelay="{detailView>/lineItemTableDelay}" fixedLayout="false">
 										<columns>
 											<Column>
 												<Text text="Cliente"/>
@@ -103,9 +112,9 @@
 										<items>
 											<ColumnListItem type="Inactive">
 												<cells>
-													<Text text="{TabPreco>Kunnr}-{modelCliente&gt;/Name1}"/>
-													<Text text="{TabPreco>Pltyp}"/>
-													<Text text="{TabPreco>Ptext}"/>
+													<Text text="{modelTbPreco>Kunnr}-{modelTbPreco>Name1}"/>
+													<Text text="{modelTbPreco>Pltyp}"/>
+													<Text text="{modelTbPreco>Ptext}"/>
 												</cells>
 											</ColumnListItem>
 										</items>
@@ -114,7 +123,9 @@
 							</IconTabFilter>
 							<IconTabFilter id="tabContratos" text="Contratos" icon="sap-icon://document-text" key="tab4">
 								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
-									<Table id="table_ContratosAtivos" width="100%" items="{path: 'modelTotalContratos>/', sorter : [{ path : 'Bukrs', ascending : true, group: true }] }" updateFinished="onListUpdateFinished" itemPress="onItemPress" noDataText="Nenhum contrato Ativo cadastrado para o cliente" busyIndicatorDelay="0">
+									<Table id="table_ContratosAtivos" width="100%"
+										items="{path: 'modelContratos>/', sorter : [{ path : 'Bukrs', ascending : true, group: true }] }" updateFinished="onListUpdateFinished"
+										itemPress="onItemPress" noDataText="Nenhum contrato Ativo cadastrado para o cliente" busyIndicatorDelay="0">
 										<columns>
 											<Column >
 												<Text text="ID"/>
@@ -148,66 +159,27 @@
 											<ColumnListItem type="Inactive">
 												<cells>
 													<!--<Text text="{modelContratos>Compo}-{modelContratos>DescCompo}" />-->
-													<Text text="{path: 'modelTotalContratos>IndexSum'}"/> 
-													<Text text="{path: 'modelTotalContratos>Bukrs'}-{path : 'modelTotalContratos>NomeEmpresa', formatter: '.onFormatterText'}"/>
-													<Text text="{modelTotalContratos>Versg}-{modelTotalContratos>DescVersg}"/>
-													<Text text="{modelTotalContratos>Mvgr1}-{modelTotalContratos>DescMvgr1}"/>
-													<Text text="{modelTotalContratos>Mvgr5}-{modelTotalContratos>DescMvgr5}"/>
-													<Text text="{modelTotalContratos>Kvgr5}-{modelTotalContratos>DescKvgr5}"/>
-													<Text text="{modelTotalContratos>Kunnr}-{modelTotalContratos>Name1}"/>
-													<Text text="{path: 'modelTotalContratos>IndiceItem', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} %"/>
-													<Text text="{path: 'modelTotalContratos>ContratoInterno', type: 'sap.ui.model.type.Integer'}"/>
+													<Text text="{path: 'modelContratos>IndexSum'}"/>
+													<Text text="{path: 'modelContratos>Bukrs'}-{path : 'modelContratos>NomeEmpresa', formatter: '.onFormatterText'}"/>
+													<Text text="{modelContratos>Versg}-{modelContratos>DescVersg}"/>
+													<Text text="{modelContratos>Mvgr1}-{modelContratos>DescMvgr1}"/>
+													<Text text="{modelContratos>Mvgr5}-{modelContratos>DescMvgr5}"/>
+													<Text text="{modelContratos>Kvgr5}-{modelContratos>DescKvgr5}"/>
+													<Text text="{modelContratos>Kunnr}-{modelContratos>Name1}"/>
+													<Text
+														text="{path: 'modelContratos>IndiceItem', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} %"/>
+													<Text text="{path: 'modelContratos>ContratoInterno', type: 'sap.ui.model.type.Integer'}"/>
 												</cells>
 											</ColumnListItem>
 										</items>
-									<!--<infoToolbar>-->
-									<!--    <Toolbar width="100%" id="toolbar2">-->
-									<!--        <content>-->
-									<!--            <Label text="Contratos Vinculados" width="100%" id="label30"/>-->
-									<!--        </content>-->
-									<!--    </Toolbar>-->
-									<!--</infoToolbar>-->
 									</Table>
-									<!--<Table id="table_ContratosTotal" items="{path: 'modelTotalContratos>/', sorter : { path : 'IndexSum', ascending : true }}" width="100%" updateFinished="onListUpdateFinished" fixedLayout="false" noDataText="Nenhuma duplicata em aberto para o cliente" busyIndicatorDelay="{detailView>/lineItemTableDelay}">-->
-									<!--	<headerToolbar>-->
-									<!--		<ToolbarSpacer/>-->
-									<!--		<ToolbarSpacer/>-->
-									<!--		<ToolbarSpacer/>-->
-									<!--		<Toolbar>-->
-									<!--			<Title text="Total Índice / Contrato" class="bold"/>-->
-									<!--		</Toolbar>-->
-									<!--	</headerToolbar>-->
-									<!--	<columns>-->
-									<!--		<Column>-->
-									<!--			<Text text="Condição"/>-->
-									<!--		</Column>-->
-									<!--		<Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">-->
-									<!--			<Text text="Empresa"/>-->
-									<!--		</Column>-->
-									<!--		<Column demandPopin="true" popinDisplay="Inline" width="120px">-->
-									<!--			<Text text="Contrato"/>-->
-									<!--		</Column>-->
-									<!--		<Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">-->
-									<!--			<Text text="Desc.Fin."/>-->
-									<!--		</Column>-->
-									<!--	</columns>-->
-									<!--	<items>-->
-									<!--		<ColumnListItem type="Inactive">-->
-									<!--			<cells>-->
-									<!--				<Text text="{path: 'modelTotalContratos>IndexSum'}"/> -->
-									<!--				<Text text="{path: 'modelTotalContratos>Bukrs'}-{path : 'modelTotalContratos>NomeEmpresa', formatter: '.onFormatterText'}"/>-->
-									<!--				<Text text="{path: 'modelTotalContratos>ContratoInterno', type: 'sap.ui.model.type.Integer'}"/>-->
-									<!--				<Text text="{path: 'modelTotalContratos>IndiceItem', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} %"/>-->
-									<!--			</cells>-->
-									<!--		</ColumnListItem>-->
-									<!--	</items>-->
-									<!--</Table>-->
-								
 								</ScrollContainer>
 							</IconTabFilter>
 							<IconTabFilter id="tabDuplicatas" text="Duplicatas" icon="sap-icon://expense-report" key="tab5">
 								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
-									<Table id="table_DuplicatasAtivos" fixedLayout="false" items="{ path: 'modelTitulos>/', sorter: { path : 'Bukrs', ascending: 'true'}}" updateFinished="onListUpdateFinished" noDataText="Nenhuma duplicata em aberto para o cliente" width="100%" busyIndicatorDelay="{detailView>/lineItemTableDelay}">
+									<Table id="table_DuplicatasAtivos" fixedLayout="false" items="{ path: 'modelTitulos>/', sorter: { path : 'Bukrs', ascending: 'true'}}"
+										updateFinished="onListUpdateFinished" noDataText="Nenhuma duplicata em aberto para o cliente" width="100%"
+										busyIndicatorDelay="{detailView>/lineItemTableDelay}" growingThreshold="50" growing="true">
 										<columns>
 											<Column minScreenWidth="800px" demandPopin="true" popinDisplay="Inline" hAlign="Left">
 												<Text text="Empresa"/>
@@ -215,45 +187,50 @@
 											<Column minScreenWidth="320px" width="100px">
 												<Text text="Nr Doc."/>
 											</Column>
-											<Column minScreenWidth="500px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="100px">
+											<Column minScreenWidth="500px" demandPopin="true" popinDisplay="Inline" hAlign="Left">
 												<Text text="Emissão"/>
 											</Column>
-											<Column minScreenWidth="420px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="100px">
-												<Text text="Venc."/>
+											<Column minScreenWidth="420px" demandPopin="true" popinDisplay="Inline" hAlign="Left">
+												<Text text="Vencto"/>
 											</Column>
-											<Column minScreenWidth="320px">
+											<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" hAlign="Right">
 												<Text text="Valor Orig."/>
 											</Column>
-											<Column minScreenWidth="720px" demandPopin="true" popinDisplay="Inline" width="70px">
+											<Column minScreenWidth="720px" demandPopin="true" popinDisplay="Inline">
 												<Text text="Dias Atrs."/>
 											</Column>
-											<Column minScreenWidth="520px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="120px">
-												<Text text="Pedido"/>
+											<Column minScreenWidth="520px" demandPopin="true" popinDisplay="Inline" hAlign="Left">
+												<Text text="Doc.Vendas"/>
 											</Column>
-											<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="80px">
-												<Text text="Status"/>
+											<Column minScreenWidth="360px" demandPopin="true" popinDisplay="Inline" hAlign="Left">
+												<Text text="Últ.cobr."/>
 											</Column>
-											<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="50px">
-												<Text text=""/>
+											<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" hAlign="Left">
+												<Text text="NívCobran."/>
 											</Column>
 										</columns>
 										<items>
 											<ColumnListItem type="Inactive">
 												<cells>
-													<Text text="{modelTitulos>Bukrs} - {modelTitulos>NomeEmpresa}"/>
+													<Text text="{modelTitulos>Bukrs} - {modelTitulos>Butxt}"/>
 													<Text text="{modelTitulos>Belnr}"/>
-													<Text text="{path: 'modelTitulos>Budat'}"/>
-													<Text text="{path: 'modelTitulos>Zfbdt'}"/>
-													<Text text="R$ {path: 'modelTitulos>Dmbtr', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
+													<Text
+														text="{path: 'modelTitulos>Budat', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' , strictParsing: true , UTC: true }}"/>
+													<Text
+														text="{path: 'modelTitulos>Zfbdt', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' , strictParsing: true , UTC: true }}"/>
+													<Text
+														text="{path: 'modelTitulos>Dmbtr', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
 													<Text text="{modelTitulos>DiasAtraso}"/>
-													<Text text="{modelTitulos>Vbeln}"/>
-													<Text text="{path : 'modelTitulos>Status'}"/>
-													<Image src="{path : 'modelTitulos>PathImg'}" width="50%" tooltip="{path : 'modelTitulos>Status'}"/>
+													<Text text="{modelTitulos>DocNum}"/>
+													<Text text="{path: 'modelTitulos>Madat', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' , strictParsing: true , UTC: true }}"/>
+													<Text text="{modelTitulos>Manst}"/>
 												</cells>
 											</ColumnListItem>
 										</items>
 									</Table>
-									<Table id="table_DuplicatasAtivosTotal" items="{ path: 'modelTitulosTotal>/', sorter: { path : 'Bukrs', ascending: 'true'}}" width="100%" updateFinished="onListUpdateFinished" fixedLayout="false" noDataText="Nenhuma duplicata em aberto para o cliente" busyIndicatorDelay="{detailView>/lineItemTableDelay}">
+									<Table id="table_DuplicatasAtivosTotal" items="{ path: 'modelTitulosTotal>/', sorter: { path : 'Bukrs', ascending: 'true'}}" width="100%"
+										updateFinished="onListUpdateFinished" fixedLayout="false" noDataText="Nenhuma duplicata em aberto para o cliente"
+										busyIndicatorDelay="{detailView>/lineItemTableDelay}">
 										<headerToolbar>
 											<ToolbarSpacer/>
 											<ToolbarSpacer/>
@@ -264,17 +241,18 @@
 										</headerToolbar>
 										<columns>
 											<Column minScreenWidth="320px">
-												<Text text="Empresa - Desc"/>
+												<Text text="Emp - Descrição"/>
 											</Column>
-											<Column minScreenWidth="320px">
+											<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" hAlign="Right">
 												<Text text="Valor Total"/>
 											</Column>
 										</columns>
 										<items>
 											<ColumnListItem type="Inactive">
 												<cells>
-													<Text text="{modelTitulosTotal>Bukrs} - {modelTitulosTotal>NomeEmpresa}"/>
-													<Text text="R$: {path: 'modelTitulosTotal>ValorTotal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
+													<Text text="{modelTitulosTotal>Bukrs} - {modelTitulosTotal>Butxt}"/>
+													<Text
+														text="R$: {path: 'modelTitulosTotal>ValTotal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
 												</cells>
 											</ColumnListItem>
 										</items>
