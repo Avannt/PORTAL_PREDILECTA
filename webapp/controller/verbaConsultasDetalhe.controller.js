@@ -1,103 +1,153 @@
+/*eslint-disable no-console, no-alert */
+/*eslint-disable eqeqeq, no-alert */
+/*eslint-disable sap-no-hardcoded-url, no-alert */
+/*eslint-disable no-shadow, no-alert */
+/*eslint-disable consistent-return, no-alert */
 sap.ui.define([
 	"application/controller/BaseController",
-	"sap/ui/core/routing/History"
-], function(BaseController, History) {
+	"sap/ui/core/routing/History",
+	"sap/ui/model/json/JSONModel"
+], function (BaseController, History, JSONModel) {
 	"use strict";
 
 	return BaseController.extend("application.controller.verbaConsultasDetalhe", {
 
-		onInit: function(oEvent) {
+		onInit: function (oEvent) {
 
 			this.getRouter().getRoute("verbaConsultasDetalhe").attachPatternMatched(this._onLoadFields, this);
 		},
 
-		onAfterRendering: function() {
+		_onLoadFields: function () {
 
-		
-		},
-
-		onNavBack: function(oEvent) {
-
-			var oHistory, sPreviousHash;
-			oHistory = History.getInstance();
-			sPreviousHash = oHistory.getPreviousHash();
-			if (sPreviousHash !== undefined) {
-				window.history.go(-1);
-			} else {
-				this.getRouter().navTo("clienteConsultas", {}, true);
-			}
-			// sap.ui.core.UIComponent.getRouterFor(this).navTo("clienteConsultas");
-		},
-		
-		_onLoadFields: function() {
-			var oModel = new sap.ui.model.json.JSONModel();
-			this.getView().setModel(oModel);
-			// this.getOwnerComponent().setModel(oModel, "modelAux");
-			this.byId("idTopLevelIconTabBar").setSelectedKey("tab1");
-			
-			//carrega os dados do Clinte Consultas pelo model Verba
-			//var codigoEmp = this.getOwnerComponent().getModel("modelVerba").getProperty("/idEmpresaVerba");
-
-			this.byId("idTopLevelIconTabBar").setSelectedKey("tab1");
-			this.byId("idTopLevelIconTabBar").setSelectedKey("tab2");
-			this.byId("idTopLevelIconTabBar").setSelectedKey("tab1");
-			//seta os dados da objectHeader
-			this.getView().byId("idCodigoCliente").setValue(this.getOwnerComponent().getModel("modelVerba").getProperty("/idUsuarioVerba"));
-			this.getView().byId("idNomeEmpresa").setValue(this.getOwnerComponent().getModel("modelVerba").getProperty("/nomeEmpresaVerba"));
-			this.getView().byId("idPeriodo").setValue(this.getOwnerComponent().getModel("modelVerba").getProperty("/dataLancamentoVerba"));
-			this.getView().byId("idVerbaInicial").setValue(this.getOwnerComponent().getModel("modelVerba").getProperty("/verbaInicialVerba"));
-			this.getView().byId("idDebito").setValue(this.getOwnerComponent().getModel("modelVerba").getProperty("/valorDebitoVerba"));
-			this.getView().byId("idCredito").setValue(this.getOwnerComponent().getModel("modelVerba").getProperty("/valorCreditoVerba"));
-			this.getView().byId("idVerbaFinal").setValue(this.getOwnerComponent().getModel("modelVerba").getProperty("/VerbaFinalVerba"));
-
-			//>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Carregar a tabela de transações >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-			var oItemVerbas = [];
 			var that = this;
-			var open = indexedDB.open("VB_DataBase");
 
-			open.onerror = function() {
+			var oModel = new JSONModel({
+
+				Bukrs: "",
+				CodMotivVerba: "",
+				DatMovto: "",
+				HraMovto: "",
+				IdMovtoVerba: "",
+				IvUsuario: "",
+				Lifnr: "",
+				NrPedido: "",
+				OrigemMovto: "",
+				Periodo: "",
+				TipoMovto: "",
+				Usuario: "",
+				ValMovto: "",
+				ValSaldo: ""
+
+			});
+			that.setModel(oModel, "modelMov");
+
+			var Bukrs = this.getModelGlobal("modelVerba").getProperty("/Bukrs");
+			var Periodo  = this.getModelGlobal("modelVerba").getProperty("/Periodo");
+			var ChaveAcesso = Bukrs + "." + Periodo;
+			
+			this.byId("idTopLevelIconTabBar").setSelectedKey("tab1");
+
+			var oItemVerbas = [];
+			
+			var open = indexedDB.open("PRED");
+
+			open.onerror = function (error) {
 				alert(open.error.mensage);
 			};
 
-			open.onsuccess = function() {
+			open.onsuccess = function () {
 				var db = open.result;
-				var store = db.transaction("TabelaMovimentacao").objectStore("TabelaMovimentacao");
 
-				// var tx = db.transaction("Produtos", "read");
-				// oItemTemplate = tx.objectStore("Verbas");
-				var codEmpresa = that.getOwnerComponent().getModel("modelVerba").getProperty("/idEmpresaVerba");
-				var iDUsuario = that.getOwnerComponent().getModel("modelVerba").getProperty("/idUsuarioVerba");
-				
-				store.openCursor().onsuccess = function(event) {
-					// consulta resultado do event
-					var cursor = event.target.result;
-					if (cursor) {
-						if (cursor.value.CodEmpresa == codEmpresa && cursor.value.CodRepres == iDUsuario){
+				var str = db.transaction("TabelaMovimentacao", "readwrite");
+				var objStr = str.objectStore("TabelaMovimentacao");
+				var indexStr = objStr.index("IndexAcesso");
+
+				var request = indexStr.getAll(ChaveAcesso);
+
+				request.onsuccess = function (e) {
+
+					var result = e.target.result;
+
+					if (result !== undefined) {
+
+						var aux = result;
+						var vetorTrans = [];
+
+						var data = new Date();
+						var Ano = data.getFullYear();
+
+						var Mes = data.getMonth() + 1;
+						Mes = String(Mes).length == 1 ? "0" + String(Mes) : Mes;
+
+						var Dia = data.getDate();
+						Dia = String(Dia).length == 1 ? "0" + String(Dia) : Dia;
+
+						data = Ano + Mes + Dia;
+
+						for (var i = 0; i < aux.length; i++) {
+
+							var aux2 = aux[i];
+							delete aux2._metadata;
+
+							if (aux2.TipoMovto == "02") {
+
+								aux2.PathImg = sap.ui.require.toUrl("application/img/S.png");
+
+							} else {
+
+								aux2.PathImg = sap.ui.require.toUrl("application/img/R.png");
+							}
+
+							try {
+
+								var dataAux3 = aux2.DatMovto.indexOf("T");
+
+								if (dataAux3 > 0) {
+
+									dataAux3 = aux2.DatMovto.split("T");
+									dataAux3 = dataAux3[0].split("-");
+									var dataFormatada2 = dataAux3[2] + "/" + dataAux3[1] + "/" + dataAux3[0];
+
+								}
+
+							} catch (x) {
+
+								dataAux3 = aux2.DatMovto;
+
+								if (dataAux3 != undefined) {
+
+									Ano = String(dataAux3.getFullYear());
+
+									Mes = dataAux3.getMonth() + 1;
+									Mes = String(Mes).length == 1 ? "0" + String(Mes) : String(Mes);
+
+									Dia = dataAux3.getDate();
+									Dia = String(Dia).length == 1 ? "0" + String(Dia) : String(Dia);
+
+									dataFormatada2 = Dia + "/" + Mes + "/" + Ano;
+								}
+
+							}
 							
-							oItemVerbas.push(cursor.value);
+							aux2.DatMovto = dataFormatada2;
+
+							vetorTrans.push(aux2);
 						}
-						cursor.continue();
-					}
-					else {
-						for(var i =0; i<oItemVerbas.length; i++){
-							var Data = oItemVerbas[i].Data; 
-							var Hora = oItemVerbas[i].Hora;
-							var Tipo = oItemVerbas[i].Tipo;
-							
-							var Dia = Data.substr(0,2);
-							var Mes = Data.substr(3,2);
-							var Ano = Data.substr(8,2);
-							var DataCheia = Dia + "/" + Mes + "/" + Ano;
-							
-							oItemVerbas[i].Tipo = Tipo.substr(0,3); 
-							oItemVerbas[i].Data = DataCheia;
-							oItemVerbas[i].Hora = Hora.substr(0,5);
-						}
-						oModel = new sap.ui.model.json.JSONModel(oItemVerbas);
-						that.getView().setModel(oModel);
+
+						// model = new JSONModel(vetorTrans);
+						that.getModel("modelMov").setData(vetorTrans);
 					}
 				};
 			};
+		},
+
+		formatTipo: function (value) {
+
+			if (value == "02") {
+				return "Crédito";
+			} else if (value == "01") {
+				return "Débito";
+			}
 		}
 	});
 });
