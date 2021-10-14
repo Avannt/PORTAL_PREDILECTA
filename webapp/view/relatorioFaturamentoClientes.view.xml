@@ -1,4 +1,4 @@
-<mvc:View xmlns:t="sap.ui.table" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:f="sap.ui.layout.form"
+<mvc:View xmlns:table="sap.ui.table" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:f="sap.ui.layout.form"
 	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" xmlns:semantic="sap.m.semantic" height="100%"
 	controllerName="application.controller.relatorioFaturamentoClientes">
 	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Relatório de Faturamento Clientes" showFooter="false"
@@ -153,71 +153,38 @@
 				singleContainerFullSize="false">
 				<f:content>
 					<Label/>
-					<t:TreeTable id="treeTable" selectionMode="Single" enableColumnReordering="false" expandFirstLevel="false"
-						rows="{ path : 'modelFatClientes>/', 
-								parameters : { countMode: 'Inline', 
-								treeAnnotationProperties : { 
-									hierarchyLevelFor : 'Hierarchylevel', 
-									hierarchyNodeFor : 'Nodeid', 
-									hierarchyParentNodeFor : 'Parentnodeid', 
-									hierarchyDrillStateFor : 'Drillstate' 
-									}
-								}
-							}">
-						<t:columns>
-							<t:Column label="Descrição">
-								<t:template>
+					<table:TreeTable id="treeTable" enableSelectAll="true" expandFirstLevel="false"
+						rows="{ path:'modelFatClientes>/', parameters : 
+						{ countMode: 'Inline', treeAnnotationProperties : 
+						{ hierarchyLevelFor : 'Hierarchylevel', hierarchyNodeFor : 'NodeID', hierarchyParentNodeFor : 'ParentNodeID', hierarchyDrillStateFor : 'DrillState' } } }">
+						<table:columns>
+							<table:Column label="Descrição">
+								<table:template>
 									<Text text="{modelFatClientes>Description}" wrapping="false"/>
-								</t:template>
-							</t:Column>
-							<t:Column label="NodeID">
-								<t:template>
-									<Text text="{path: 'modelFatClientes>Nodeid', type: 'sap.ui.model.type.Integer'}" wrapping="false"/>
-								</t:template>
-							</t:Column>
-							<t:Column label="HierarchyLevel">
-								<t:template>
-									<Text text="{path: 'modelFatClientes>Hierarchylevel', type: 'sap.ui.model.type.Integer'}" wrapping="false"/>
-								</t:template>
-							</t:Column>
-							<t:Column label="ParentNodeID">
-								<t:template>
-									<Text text="{path: 'modelFatClientes>Parentnodeid', type: 'sap.ui.model.type.Integer'}" wrapping="false"/>
-								</t:template>
-							</t:Column>
-							<t:Column label="DrillState">
-								<t:template>
-									<Text text="{modelFatClientes>Drillstate}" wrapping="false"/>
-								</t:template>
-							</t:Column>
-							<t:Column label="Vlr Fatur.">
-								<t:template>
-									<!--<Text text="{path: 'modelFatClientes>ValFaturado', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimu '0', maximu '99' }}"/> -->
-									<Text text="{modelFatClientes>ValFaturado}" wrapping="false"/>
-								</t:template>
-							</t:Column>
-							<t:Column label="%Part.">
-								<t:template>
-									<Text text="{modelFatClientes>PctPartic}" wrapping="false"/>
-								</t:template>
-							</t:Column>
-							<!--<Column label="HierarchyLevel">-->
-							<!--	<template>-->
-							<!--		<m:Text text="{HierarchyLevel}" wrapping="false"/>-->
-							<!--	</template>-->
-							<!--</Column>-->
-							<!--<Column label="NodeID">-->
-							<!--	<template>-->
-							<!--		<m:Text text="{NodeID}" wrapping="false"/>-->
-							<!--	</template>-->
-							<!--</Column>-->
-							<!--<Column label="ParentNodeID">-->
-							<!--	<template>-->
-							<!--		<m:Text text="{ParentNodeID}" wrapping="false"/>-->
-							<!--	</template>-->
-							<!--</Column>-->
-						</t:columns>
-					</t:TreeTable>
+								</table:template>
+							</table:Column>
+							<table:Column label="NodeID">
+								<table:template>
+									<Text text="{path: 'modelFatClientes>NodeID', type: 'sap.ui.model.type.Integer'}" wrapping="false"/>
+								</table:template>
+							</table:Column>
+							<table:Column label="HierarchyLevel">
+								<table:template>
+									<Text text="{path: 'modelFatClientes>HierarchyLevel', type: 'sap.ui.model.type.Integer'}" wrapping="false"/>
+								</table:template>
+							</table:Column>
+							<table:Column label="ParentNodeID">
+								<table:template>
+									<Text text="{path: 'modelFatClientes>ParentNodeID', type: 'sap.ui.model.type.Integer'}" wrapping="false"/>
+								</table:template>
+							</table:Column>
+							<table:Column label="DrillState">
+								<table:template>
+									<Text text="{modelFatClientes>DrillState}" wrapping="false"/>
+								</table:template>
+							</table:Column>
+						</table:columns>
+					</table:TreeTable>
 					<!--<Table class="centralizaGroup" id="idtableResumoEmpresa" growing="false" growingScrollToLoad="false" growingThreshold="5" noDataText="Nenhum registro encontrado" items="{ path: 'modelResumoEmpresa>/' }">-->
 					<!--	<columns>-->
 					<!--		<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" styleClass="">-->

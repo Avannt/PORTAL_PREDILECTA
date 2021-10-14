@@ -51,9 +51,9 @@ sap.ui.define([
 			var oModelFatClientes = new JSONModel(that.vetorFatClientes);
 			that.setModel(oModelFatClientes, "modelFatClientes");
 
-			that.vetorResumoEmpresa = [];
-			var oModelResumoEmpresa = new JSONModel(that.vetorResumoEmpresa);
-			that.setModel(oModelResumoEmpresa, "modelResumoEmpresa");
+			// that.vetorResumoEmpresa = [];
+			// var oModelResumoEmpresa = new JSONModel(that.vetorResumoEmpresa);
+			// that.setModel(oModelResumoEmpresa, "modelResumoEmpresa");
 
 			new Promise(function (res, rej) {
 
@@ -365,8 +365,8 @@ sap.ui.define([
 					var vTotalEmp = 0;
 					for (var i = 0; i < that.vetorFatClientes.length; i++) {
 
-						if (that.vetorFatClientes[i].Hierarchylevel == 0) {
-							that.vetorFatClientes[i].Parentnodeid = null;
+						if (that.vetorFatClientes[i].HierarchyLevel == 0) {
+							that.vetorFatClientes[i].ParentNodeID = null;
 						} 
 
 						var vAchouEmpresa = false;
@@ -407,7 +407,7 @@ sap.ui.define([
 
 					that.byId("master").setBusy(false);
 					that.getModel("modelFatClientes").setData(that.vetorFatClientes);
-					that.getModel("modelResumoEmpresa").setData(that.vetorResumoEmpresa);
+					// that.getModel("modelResumoEmpresa").setData(that.vetorResumoEmpresa);
 				},
 				error: function (error) {
 					that.byId("master").setBusy(false);
