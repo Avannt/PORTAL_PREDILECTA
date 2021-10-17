@@ -41,6 +41,9 @@
 							<Column minScreenWidth="Desktop" demandPopin="true" popinDisplay="Inline">
 								<Text text="Pedido SAP" />
 							</Column>
+							<Column minScreenWidth="Desktop" demandPopin="true" popinDisplay="Inline">
+								<Text text="Pedido Interno" />
+							</Column>
 							<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline">
 								<Text text="Total cxs" />
 							</Column>
@@ -63,7 +66,7 @@
 									<Text text="{path : 'Pedidos>DataFim', formatter:'.myFormatterData'} - {path : 'Pedidos>HoraFim', formatter:'.myFormatterHora'}" />
 									<Text text="R$: {path : 'Pedidos>ValorTotal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" />
 									<Text text="{path : 'Pedidos>Vbeln'}" />
-									<!--<Text text="{path : 'Pedidos>NrPedido'}" />-->
+									<Text text="{Pedidos>Lifnr} - {Pedidos>NrPedido}" />
 									<Text text="{path : 'Pedidos>TotalItens'}" />
 									<Text text="R$: {path :'Pedidos>TotalVerba', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" />
 									<ObjectListItem number="{path: 'Pedidos>RentTotal', formatter: '.formatRentabilidade'} %" numberState="{= ${Pedidos>RentTotal} >= 0 ? 'Success' : 'Error' }" />
