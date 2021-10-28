@@ -15,23 +15,23 @@
 				labelSpanS="12" adjustLabelSpan="false" emptySpanXL="3" emptySpanL="3" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
 				singleContainerFullSize="false">
 				<f:content>
-					<Label text="Empresa" required="true" />
+					<Label text="Empresa" required="true"/>
 					<SearchField id="idEmpresa" busyIndicatorDelay="0" placeholder="Digite Código ou Nome da Empresa" enableSuggestions="true"
-						value="{modelParametros>/Bukrs}" search="onChangeEmpresa" suggest="onSuggestEmpresa" 
+						value="{modelParametros>/Bukrs}" search="onChangeEmpresa" suggest="onSuggestEmpresa"
 						suggestionItems="{ path: 'modelEmpresas>/', sorter: { path: 'Bukrs', ascending: true }}">
 						<suggestionItems>
 							<SuggestionItem text="{modelEmpresas>Bukrs}" description="{modelEmpresas>NomeCentro}" key="{modelEmpresas>Bukrs}"/>
 						</suggestionItems>
 					</SearchField>
-					<Label text="Representante" required="true" />
+					<Label text="Representante" required="true"/>
 					<SearchField id="idRepres" busyIndicatorDelay="0" placeholder="Digite Código ou Nome do Representante" enableSuggestions="true"
 						value="{modelParametros>/Lifnr}" suggest="onSuggestRepres" search="onChangeRepres"
 						suggestionItems="{ path: 'modelRepres>/', sorter: { path: 'Lifnr', ascending: true }}">
 						<suggestionItems>
-							<SuggestionItem text="{modelRepres>Lifnr}" description="{modelRepres>Name1}" key="{modelRepres>Lifnr}" />
+							<SuggestionItem text="{modelRepres>Lifnr}" description="{modelRepres>Name1}" key="{modelRepres>Lifnr}"/>
 						</suggestionItems>
 					</SearchField>
-					<Label text="Cliente" required="true" />
+					<Label text="Cliente" required="true"/>
 					<SearchField id="idCliente" busyIndicatorDelay="0" placeholder="Digite Código ou Nome do Cliente" enableSuggestions="true"
 						value="{modelParametros>/Kunnr}" suggest="onSuggestCliente" search="onChangeCliente"
 						suggestionItems="{ path: 'modelClientes>/', sorter: { path: 'Kunnr', ascending: true }}">
@@ -39,7 +39,7 @@
 							<SuggestionItem text="{modelClientes>Kunnr}" description="{modelClientes>Name1}" key="{modelClientes>Kunnr}"/>
 						</suggestionItems>
 					</SearchField>
-					<Label text="Rede" />
+					<Label text="Rede"/>
 					<SearchField id="idRede" busyIndicatorDelay="0" placeholder="Digite Código ou Nome da Rede" enableSuggestions="true"
 						value="{modelParametros>/Kvgr4}" search="onChangeRede" suggest="onSuggestRede"
 						suggestionItems="{ path: 'modelRedes>/', sorter: { path: 'Kvgr4', ascending: true }}">
@@ -89,19 +89,22 @@
 					</SearchField>
 					<Label text="Produtos"/>
 					<SearchField id="idProdutos" busyIndicatorDelay="0" placeholder="Digite Código ou Nome da Produto" enableSuggestions="true"
-						value="{modelParametros>/Matnr}" suggest="onSuggestProdutos"
+						value="{modelParametros>/Matnr}" suggest="onSuggestProdutos" search="onChangeProdutos"
 						suggestionItems="{ path: 'modelProdutos>/', sorter: { path: 'Matnr', ascending: true }}">
 						<suggestionItems>
 							<SuggestionItem text="{modelProdutos>Matnr}" description="{modelProdutos>Maktx}" key="{modelProdutos>Matnr}"/>
 						</suggestionItems>
 					</SearchField>
 					<Label text="Percentual Cadastrado"/>
-					<Input id="idPerc" placeholder="" value="{modelParametros>/PercCadastrado}" enabled="false" valueState="Warning" description="%" />
+					<Input id="idPerc" placeholder=""
+						value="{path :'modelParametros>/PercCadastrado', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+						enabled="false" valueState="Warning" description="%"/>
 					<Label text="Percentual à Cadastrar"/>
-					<Input id="idPercCadastrar" autocomplete="false" description="%" value="{modelParametros>/PercCadastrar}" enabled="true" valueState="None" />
+					<Input id="idPercCadastrar" autocomplete="false" type="Number" description="%" value="{path :'modelParametros>/PercCadastrar'}" enabled="true"
+						valueState="None"/>
 					<Label text=""/>
 				</f:content>
-				<Button text="Procurar Desconto" icon="sap-icon://search" press="onBuscarDesconto" type="Default" tooltip="Cadastrar Percentual de Rebaixa" />
+				<Button text="Procurar Desconto" icon="sap-icon://search" press="onBuscarDesconto" type="Default" tooltip="Cadastrar Percentual de Rebaixa"/>
 				<Button text="Cadastrar Percentual" icon="sap-icon://add" press="onCadastrarDesconto" type="Emphasized"
 					tooltip="Cadastrar Percentual de Rebaixa"/>
 			</f:SimpleForm>

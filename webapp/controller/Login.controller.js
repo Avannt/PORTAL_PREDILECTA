@@ -73,6 +73,7 @@ sap.ui.define([
 
 				var oModelAux = new sap.ui.model.json.JSONModel({
 					CodRepres: "",
+					Usuario: "",
 					NomeRepres: "",
 					Imei: "",
 					VersaoApp: "",

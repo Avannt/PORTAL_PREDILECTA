@@ -95,10 +95,12 @@ sap.ui.define([
 					that.byId("idRepres").setBusy(false);
 
 					var vetorRepres = result.results;
+					
 					if (vetorRepres.length == 0) {
+						
 						vetorRepres.push({
 							Lifnr: "800001",
-							Name1: "Ricardo Junior"
+							Name1: "APARECE QUANDO NÃO TEM CADASTRO FEITO !! IHAA "
 						});
 					}
 
@@ -120,16 +122,15 @@ sap.ui.define([
 		onChangeRepres: function () {
 
 			var that = this;
-			var CodRepres = this.getModel("modelParametros").getProperty("/Lifnr");
-
 			that.byId("idCliente").setBusy(true);
 
 			new Promise(function (res, rej) {
 
-				that.onBuscarClientes(CodRepres, res, rej, that);
+				that.onBuscarClientes(that.CodRepres, res, rej, that);
 
 			}).then(function (dado) {
 
+				that.getModel("modelParametros").setProperty("/Kunnr", "");
 				that.byId("idCliente").setBusy(false);
 
 				var oModelClientes = new JSONModel(dado);
@@ -236,6 +237,7 @@ sap.ui.define([
 								break;
 							}
 						}
+						
 						for (var j = 0; j < vetorGramatura.length; j++) {
 
 							if ((vetorProdutos[i].Mvgr4 == vetorGramatura[j].Mvgr4) || vetorProdutos[i].Mvgr4 == "") {
@@ -244,6 +246,7 @@ sap.ui.define([
 								break;
 							}
 						}
+						
 						for (var j = 0; j < vetorMarca.length; j++) {
 
 							if ((vetorProdutos[i].Mvgr5 == vetorMarca[j].Mvgr5) || vetorProdutos[i].Mvgr5 == "") {
@@ -288,8 +291,6 @@ sap.ui.define([
 					oModel = new JSONModel(vetorMarca);
 					that.setModel(oModel, "modelMarca");
 
-					that.getView().byId("idCategoria").focus();
-
 				}).catch(function (error) {
 
 					that.byId("idCategoria").setBusy(false);
@@ -313,36 +314,53 @@ sap.ui.define([
 		onChangeRede: function () {
 
 			this.byId("idCategoria").focus();
+			this.getModel("modelParametros").setProperty("/Kunnr", "");
+		},
+		
+		onChangeCliente: function () {
+
+			this.byId("idRede").focus();
+			this.getModel("modelParametros").setProperty("/Kvgr4", "");
+		},
+		
+		onChangeProdutos: function () {
+			
+			this.getModel("modelParametros").setProperty("/Mvgr1", "");
+			this.getModel("modelParametros").setProperty("/Mvgr2", "");
+			this.getModel("modelParametros").setProperty("/Mvgr3", "");
+			this.getModel("modelParametros").setProperty("/Mvgr4", "");
+			this.getModel("modelParametros").setProperty("/Mvgr5", "");
+
 		},
 
 		onChangeCategoria: function () {
 
 			this.byId("idSubCategoria").focus();
+				this.getModel("modelParametros").setProperty("/Matnr", "");
 		},
 
 		onChangeSubCategoria: function () {
 
 			this.byId("idFamilia").focus();
+			this.getModel("modelParametros").setProperty("/Matnr", "");
 		},
 
 		onChangeFamilia: function () {
 
 			this.byId("idGramatura").focus();
+			this.getModel("modelParametros").setProperty("/Matnr", "");
 		},
 
 		onChangeGramatura: function () {
 
 			this.byId("idMarca").focus();
+			this.getModel("modelParametros").setProperty("/Matnr", "");
 		},
 
 		onChangeMarca: function () {
 
 			this.byId("idProdutos").focus();
-		},
-
-		onChangeCliente: function () {
-
-			this.byId("idRede").focus();
+			this.getModel("modelParametros").setProperty("/Matnr", "");
 		},
 
 		onSuggestEmpresa: function (evt) {
@@ -539,11 +557,19 @@ sap.ui.define([
 							icon: MessageBox.Icon.WARNING,
 							title: "Não Permitido",
 							actions: [MessageBox.Action.OK],
-							onClose: function () {}
+							onClose: function () {
+								that._onLoadFields();
+							}
 						});
 
 					} else {
 
+						that.getModel("modelParametros").setProperty("/PercCadastrado", oData.Mvgr1);
+						that.getModel("modelParametros").setProperty("/PercCadastrado", oData.Mvgr2);
+						that.getModel("modelParametros").setProperty("/PercCadastrado", oData.Mvgr3);
+						that.getModel("modelParametros").setProperty("/PercCadastrado", oData.Mvgr4);
+						that.getModel("modelParametros").setProperty("/PercCadastrado", oData.Mvgr5);
+						
 						that.getModel("modelParametros").setProperty("/PercCadastrado", oData.PercCadastrado);
 					}
 				},
@@ -557,7 +583,7 @@ sap.ui.define([
 
 		onCadastrarDesconto: function () {
 
-			var that = this;
+			var that = this; 
 
 			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
 			that.oModel = that.getModelGlobal("modelAux").getProperty("/DBModel");
@@ -572,6 +598,43 @@ sap.ui.define([
 					actions: [MessageBox.Action.OK],
 					onClose: function () {
 						that.byId("idEmpresa").focus();
+					}
+				});
+
+			} else if (parseFloat(aux.PercCadastrado) == 0 ) {
+
+				MessageBox.show("Preencher a Empresa!", {
+					icon: MessageBox.Icon.WARNING,
+					title: "Não Permitido",
+					actions: [MessageBox.Action.OK],
+					onClose: function () {
+						that.byId("idEmpresa").focus();
+					}
+				});
+
+			} else if (aux.PercCadastrar < 0) {
+
+				MessageBox.show("Cadastre o percentual positivo! ", {
+					icon: MessageBox.Icon.WARNING,
+					title: "Não Permitido",
+					actions: [MessageBox.Action.OK],
+					onClose: function () {
+						
+						aux.PercCadastrar = "";
+						that.byId("idPercCadastrar").focus();
+					}
+				});
+
+			} else if (aux.PercCadastrar == "") {
+
+				MessageBox.show("Informe o percentual a cadastrar! ", {
+					icon: MessageBox.Icon.WARNING,
+					title: "Não Permitido",
+					actions: [MessageBox.Action.OK],
+					onClose: function () {
+						
+						aux.PercCadastrar = "";
+						that.byId("idPercCadastrar").focus();
 					}
 				});
 
@@ -635,8 +698,8 @@ sap.ui.define([
 					Mvgr5: aux.Mvgr5,
 					Matnr: aux.Matnr,
 					Usuario: this.getModelGlobal("modelAux").getProperty("/CodRepres"),
-					PercCadastrado: aux.PercCadastrado,
-					PercCadastrar: aux.PercCadastrar
+					PercCadastrado: String(parseFloat(aux.PercCadastrado)),
+					PercCadastrar: String(parseFloat(aux.PercCadastrar))
 				};
 
 				that.byId("master").setBusy(true);
@@ -655,11 +718,22 @@ sap.ui.define([
 								icon: MessageBox.Icon.WARNING,
 								title: "Não Permitido",
 								actions: [MessageBox.Action.OK],
-								onClose: function () {}
+								onClose: function () {
+									that._onLoadFields();
+								}
 							});
+							
 						} else {
-
-							that.getModel("modelParametros").setProperty("/PercCadastrado", oData.Kbetr);
+							
+							MessageBox.show("Condição cadastrada com sucesso!", {
+								icon: MessageBox.Icon.SUCCESS,
+								title: "Feito!",
+								details: Item.MsgErro,
+								actions: [MessageBox.Action.OK],
+								onClose: function () {
+									that._onLoadFields();
+								}
+							});
 						}
 					},
 					error: function (oError) {
