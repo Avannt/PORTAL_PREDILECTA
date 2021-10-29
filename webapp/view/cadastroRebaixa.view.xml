@@ -95,7 +95,7 @@
 							<SuggestionItem text="{modelProdutos>Matnr}" description="{modelProdutos>Maktx}" key="{modelProdutos>Matnr}"/>
 						</suggestionItems>
 					</SearchField>
-					<Label text="Percentual Cadastrado"/>
+					<Label text="Percentual Máximo"/>
 					<Input id="idPerc" placeholder=""
 						value="{path :'modelParametros>/PercCadastrado', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
 						enabled="false" valueState="Warning" description="%"/>

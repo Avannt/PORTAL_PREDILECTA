@@ -662,17 +662,6 @@ sap.ui.define([
 					}
 				});
 
-			} else if (aux.PercCadastrado < aux.PercCadastrar) {
-
-				MessageBox.show("Valor máx permitido é de: " + aux.PercCadastrado + "%", {
-					icon: MessageBox.Icon.WARNING,
-					title: "Não Permitido",
-					actions: [MessageBox.Action.OK],
-					onClose: function () {
-						that.byId("idCliente").focus();
-					}
-				});
-
 			} else if (aux.PercCadastrado == "" || aux.PercCadastrado == undefined) {
 
 				MessageBox.show("Pesquise o valor já cadastrado antes de iniciar um novo cadastro!", {
@@ -683,6 +672,18 @@ sap.ui.define([
 						that.byId("idCliente").focus();
 					}
 				});
+				
+			} else if (parseFloat(aux.PercCadastrado) < parseFloat(aux.PercCadastrar)) {
+
+				MessageBox.show("Valor máx permitido é de: " + aux.PercCadastrado + "%", {
+					icon: MessageBox.Icon.WARNING,
+					title: "Não Permitido",
+					actions: [MessageBox.Action.OK],
+					onClose: function () {
+						that.byId("idCliente").focus();
+					}
+				});
+
 
 			} else {
 

@@ -623,7 +623,7 @@ sap.ui.define([
 			var horario = dataAtual[1].substring(0, 2) + dataAtual[1].substring(3, 5) + dataAtual[1].substring(6, 8);
 
 			if (Lifnr == CodRepres) {
-				
+
 				var numeroPed = Lifnr + "." + data + "." + horario;
 			} else {
 
@@ -824,7 +824,6 @@ sap.ui.define([
 						that.byId("idTopLevelIconTabBar").setSelectedKey("tab2");
 						that.byId("idPedidoOrigem").focus();
 						that.byId("idPedidoOrigem").setValueState("Error");
-
 					}
 				});
 
@@ -841,6 +840,7 @@ sap.ui.define([
 							that.onLimparValueState("None");
 
 							Pedido.Completo = false;
+							Pedido.Usuario = that.getModelGlobal("modelAux").getProperty("/CodRepres");
 							that.byId("idPedidoDetalhe").setBusy(true);
 
 							Pedido = that.onFormatNumberPedido(Pedido);
@@ -864,7 +864,7 @@ sap.ui.define([
 
 								},
 								error: function (error) {
-									
+
 									that.byId("table_pedidos").setBusy(false);
 									that.byId("idPedidoDetalhe").setBusy(false);
 									that.onMensagemErroODATA(error);
@@ -1077,24 +1077,26 @@ sap.ui.define([
 					that.getModelGlobal("modelPedido").setProperty("/Gerencia", that.vetorCentros[i].Gerencia);
 					that.getModelGlobal("modelPedido").setProperty("/Supervisor", that.vetorCentros[i].Supervisor);
 					break;
-
 				}
 
 				//Setar Local de entrega default
 				if (this.getModel("modelLocaisEntregas").getData().length == 1) {
+					
 					this.getModel("modelPedido").setProperty("/LocalEntrega", (this.getModel("modelLocaisEntregas").getData()[0].Addrnumber));
 				}
 
 				//Setar Tipo pedido Default
 				if (this.getModel("modelTipoPedidos").getData().length == 1) {
+					
 					this.getModel("modelPedido").setProperty("/TipoPedido", (this.getModel("modelTipoPedidos").getData()[0].TipoPedido));
 				}
 
 			}
-
+			
 			//Vencimentos
 			new Promise(function (res, rej) {
 
+				that.byId("idVencimento1").setEnabled(true);
 				that.byId("idContrato").setBusy(true);
 				that.byId("idVencimento1").setBusy(true);
 
@@ -1111,22 +1113,26 @@ sap.ui.define([
 						that.byId("idContrato").setBusy(false);
 						that.byId("idVencimento1").setBusy(false);
 
+						var vetorVenc = that.getModel("modelVencimentos1").getData();
+						var vetorVencContrato = [];
+
 						if (result.ContratoInterno != "") {
 
-							// that.byId("idContrato").setVisible(true);
 							// that.byId("idLabelContrato").setVisible(true);
 
-							var vetorVenc = that.getModel("modelVencimentos1").getData();
 							var encontrou = "false";
+							var indiceVec = 0;
 
 							for (var j = 0; j < vetorVenc.length; j++) {
 
 								if (vetorVenc[j].Zterm == result.Zterm) {
-									encontrou = true;
+									encontrou = "true";
 
-									if (result.AtlOrdem == true) {
+									if (String(result.AtlOrdem) == "true") {
+
 										that.getModel("modelPedido").setProperty("/IndiceFinal", result.IndiceContrato);
 									} else {
+
 										that.getModel("modelPedido").setProperty("/IndiceFinal", vetorVenc[i].Kbetr);
 									}
 
@@ -1134,7 +1140,7 @@ sap.ui.define([
 								}
 							}
 
-							if (encontrou == false) {
+							if (encontrou == "false") {
 
 								var aux = {
 									Zterm: result.Zterm,
@@ -1142,28 +1148,43 @@ sap.ui.define([
 									DescCond: result.DescCond
 								};
 
-								vetorVenc.push(aux);
-								that.getModel("modelVencimentos1").setData(vetorVenc);
+								vetorVencContrato.push(aux);
+								that.getModel("modelVencimentos1").setData(vetorVencContrato);
+
+								if (String(result.AtlOrdem) == "true") {
+
+									that.getModel("modelPedido").setProperty("/IndiceFinal", result.IndiceContrato);
+								} else {
+
+									//Não possui vencimento cadastrado e vinculado para o representante.
+									that.getModel("modelPedido").setProperty("/IndiceFinal", 0);
+								}
 							}
 
 							if (that.getModel("modelPedido").getProperty("/Vencimento") == "") {
+
 								that.byId("idVencimento1").setEnabled(true);
 							} else {
+
 								that.byId("idVencimento1").setEnabled(false);
 							}
 
 							that.getModelGlobal("modelPedido").setProperty("/Vencimento", result.Zterm);
 							that.getModelGlobal("modelPedido").setProperty("/Contrato", result.ContratoInterno);
+
+							that.byId("idVencimento1").setEnabled(false);
+
+						} else {
+
+							that.getModel("modelVencimentos1").setData(that.vetorVencimentoTotal);
 						}
 
 						res();
-
 					},
 					error: function (error) {
 
 						that.onMensagemErroODATA(error);
 						rej();
-
 					}
 				});
 

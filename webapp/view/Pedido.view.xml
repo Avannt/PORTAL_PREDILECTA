@@ -7,11 +7,11 @@
 				<content>
 					<ObjectHeader id="objectHeader" title="{Cliente>/Name1}" number="{Cliente>/Kunnr}">
 						<statuses>
-							<ObjectStatus id="objectStatus_cidade" text="Cidade/Estado: {Cliente>/Ort01} {Cliente&gt;/Regio}" />
+							<ObjectStatus id="objectStatus_cidade" text="Cidade/Estado: {Cliente>/Ort01} {Cliente>/Regio}" />
 						</statuses>
 						<attributes>
 							<ObjectAttribute id="objectAttribute_cnpj"
-								text="CNPJ/CPF: {path: 'Cliente>/Stcd1', formatter:'.onFormatCnpj'} {path: 'Cliente&gt;/Stcd2', formatter:'.onFormatCpf'}" />
+								text="CNPJ/CPF: {path: 'Cliente>/Stcd1', formatter:'.onFormatCnpj'} {path: 'Cliente>/Stcd2', formatter:'.onFormatCpf'}" />
 						</attributes>
 					</ObjectHeader>
 					<Toolbar class="sapUiMediumSmallTop" id="toolbar1">
@@ -84,7 +84,7 @@
 				<headerContent/>
 				<subHeader>
 					<Toolbar id="searchBar">
-						<SearchField id="searchField" showRefreshButton="false" placeholder="Pesquisar Nome/Cod" tooltip="Pesquisar Clientes pelo Nome" width="100%"
+						<SearchField id="searchField" showRefreshButton="false" placeholder="Pesquisar" tooltip="Pesquisar Clientes pelo Nome" width="100%"
 							liveChange="onSearch" search="onSearch"/>
 					</Toolbar>
 				</subHeader>
@@ -93,8 +93,11 @@
 						mode="SingleSelectMaster" growing="true" growingScrollToLoad="true" selectionChange="onSelectionChange">
 						<items>
 							<ObjectListItem id="ObjListCliente" type="Active" press="onSelectionChange" title="{Clientes>Name1}" number="{Clientes>Kunnr}"
-								intro="CPF/CNPJ: {path: 'Clientes>Stcd1', formatter:'.onFormatCnpj'} {path: 'Clientes&gt;Stcd2', formatter:'.onFormatCpf'}">
+								intro="CPF/CNPJ: {path: 'Clientes>Stcd1', formatter:'.onFormatCnpj'} {path: 'Clientes>Stcd2', formatter:'.onFormatCpf'}">
 								<ObjectAttribute  text="Repres: {path: 'Clientes>Lifnr'}" />
+								<firstStatus>
+									<ObjectStatus text="{path: 'Clientes>Ort01'}-{path: 'Clientes>Regio'}" />
+								</firstStatus>
 							</ObjectListItem>
 						</items>
 					</List>

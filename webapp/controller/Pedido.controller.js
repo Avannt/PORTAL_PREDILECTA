@@ -286,7 +286,11 @@ sap.ui.define([
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Kunnr", sap.ui.model.FilterOperator.Contains, sValue),
 				new sap.ui.model.Filter("Name1", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Lifnr", sap.ui.model.FilterOperator.Contains, sValue)
+				new sap.ui.model.Filter("Lifnr", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Ort01", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Regio", sap.ui.model.FilterOperator.StartsWith, sValue),
+				new sap.ui.model.Filter("Stcd1", sap.ui.model.FilterOperator.StartsWith, sValue),
+				new sap.ui.model.Filter("Stcd2", sap.ui.model.FilterOperator.StartsWith, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
