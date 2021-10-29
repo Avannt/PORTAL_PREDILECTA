@@ -69,7 +69,8 @@
                     "defaultBindingMode": "OneWay",
                     "defaultCountMode": "Request"
                 },
-                "dataSource": "ZSF_FV_SRV"
+                "dataSource": "ZSF_FV_SRV",
+                "preload": true
             }
         },
         "resources": {

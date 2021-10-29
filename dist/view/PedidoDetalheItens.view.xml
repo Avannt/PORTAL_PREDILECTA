@@ -20,15 +20,15 @@
 										<SearchField class="camposDialog" id="IdItemPedido" placeholder="Digite Código ou Nome do Produto" enableSuggestions="true"
 											value="{modelItem>/Matnr}" search="onItemChange" suggest="onSuggestProdutos" busyIndicatorDelay="0" suggestionItems="{ path: 'modelProdutos>/', sorter: { path: 'Matnr', ascending: true }}">
 											<suggestionItems>
-												<SuggestionItem text="{modelProdutos>Matnr}" description="{modelProdutos>Maktx}" key="{modelProdutos>Matnr}"/>
+												<SuggestionItem text="{modelProdutos>Matnr}" description="{modelProdutos>Maktx}" key="{modelProdutos>Matnr}" />
 											</suggestionItems>
 											<layoutData>
-												<layout:GridData span="L2 M2"/>
+												<layout:GridData span="L2 M2" />
 											</layoutData>
 										</SearchField>
 										<Label text="Descrição">
 											<layoutData>
-												<layout:GridData span="L2 M2"/>
+												<layout:GridData span="L2 M2" />
 											</layoutData>
 										</Label>
 										<Input id="idDescricao" enabled="false" class="desabilitado" value="{modelItem>/Maktx}">

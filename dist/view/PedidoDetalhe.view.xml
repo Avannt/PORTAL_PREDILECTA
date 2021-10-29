@@ -11,8 +11,8 @@
 									<f:SimpleForm id="form0" minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
 										emptySpanL="2" emptySpanM="3" columnsL="2" columnsM="2">
 										<f:content>
-											<Label text="Cod Cli - Cod Repres"/>
-											<Input id="idCodCliente" value="{modelCliente>/Kunnr} - {modelAux>/CodRepres}" enabled="false"/>
+											<Label text="Cod Cli - Cod Repres - Sup/Ger/Div"/>
+											<Input id="idCodCliente" value="{modelCliente>/Kunnr} - {modelAux>/CodRepres} - {modelAux>/Usuario}" enabled="false"/>
 											<Label text="Nome"/>
 											<Input id="idNome" value="{modelCliente>/Name1}" enabled="false"/>
 											<Label text="CPF/CNPJ"/>
@@ -56,6 +56,19 @@
 									<f:SimpleForm minWidth="1024" maxContainerCols="3" editable="true" layout="ResponsiveGridLayout" labelSpanL="3" labelSpanM="2"
 										labelSpanXL="1" emptySpanL="2" emptySpanM="2" emptySpanXL="1" columnsL="3" columnsXL="3" columnsM="3">
 										<f:content>
+											<Label text="Estabelecimento*">
+												<layoutData>
+													<layout:GridData span="L2 M2" linebreakM="true"/>
+												</layoutData>
+											</Label>
+											<Select id="idEstabelecimento" forceSelection="false" selectedKey="{modelPedido>/Werks}" showSecondaryValues="false"
+												items="{ path: 'modelCentros>/', sorter: { path: 'Werks', ascending: true }}" change="onChangeEstabelecimento" busyIndicatorDelay="0"
+												busy="{modelBusy>Centro}">
+												<core:Item key="{modelCentros>Werks}" text="{modelCentros>NomeCentro}"/>
+												<layoutData>
+													<layout:GridData span="L4 M4"/>
+												</layoutData>
+											</Select>
 											<Label text="Nº Pedido">
 												<layoutData>
 													<layout:GridData span="L2 M2" linebreakM="true"/>
@@ -66,15 +79,14 @@
 													<layout:GridData span="L4 M4"/>
 												</layoutData>
 											</Input>
-											<Label text="Estabelecimento*">
+											<Label text="Tipo pedido *" wrapping="true">
 												<layoutData>
 													<layout:GridData span="L2 M2" linebreakM="true"/>
 												</layoutData>
 											</Label>
-											<Select id="idEstabelecimento" forceSelection="false" selectedKey="{modelPedido>/Werks}" showSecondaryValues="false"
-												items="{ path: 'modelCentros>/', sorter: { path: 'Werks', ascending: true }}" change="onChangeEstabelecimento" busyIndicatorDelay="0"
-												busy="{modelBusy>Centro}">
-												<core:Item key="{modelCentros>Werks}" text="{modelCentros>NomeCentro}"/>
+											<Select id="idTipoPedido" showSecondaryValues="false" forceSelection="false" items="{ path: 'modelTipoPedidos>/' }"
+												selectedKey="{modelPedido>/TipoPedido}" change="onChangeInfo">
+												<core:Item key="{modelTipoPedidos>TipoPedido}" text="{modelTipoPedidos>TipoPedido}"/>
 												<layoutData>
 													<layout:GridData span="L4 M4"/>
 												</layoutData>
@@ -89,6 +101,16 @@
 													<layout:GridData span="L4 M4"/>
 												</layoutData>
 											</Input>
+											<Label text="Pedido origem cliente *">
+												<layoutData>
+													<layout:GridData span="L2 M2" linebreakM="true"/>
+												</layoutData>
+											</Label>
+											<Input id="idPedidoOrigem" maxLength="12" value="{modelPedido>/PedidoOrigem}" change="onChangeInfo">
+												<layoutData>
+													<layout:GridData span="L4 M4"/>
+												</layoutData>
+											</Input>
 											<Label text="Tabela de preço *">
 												<layoutData>
 													<layout:GridData span="L2 M2" linebreakM="true"/>
@@ -97,6 +119,18 @@
 											<Select id="idTabelaPreco" showSecondaryValues="false" forceSelection="false" items="{ path: 'modelTabPrecos>/' }"
 												selectedKey="{modelPedido>/Pltyp}" change="onChangeInfo" busyIndicatorDelay="0" busy="{modelBusy>TabPreco}">
 												<core:Item key="{modelTabPrecos>Pltyp}" text="{modelTabPrecos>Pltyp} - {modelTabPrecos>Ptext}"/>
+												<layoutData>
+													<layout:GridData span="L4 M4"/>
+												</layoutData>
+											</Select>
+											<Label text="Tipo transporte *">
+												<layoutData>
+													<layout:GridData span="L2 M2" linebreakM="true"/>
+												</layoutData>
+											</Label>
+											<Select id="idTipoTransporte" forceSelection="false" items="{ path: 'modelFretes>/' }" showSecondaryValues="true"
+												selectedKey="{modelPedido>/Inco1}" busyIndicatorDelay="0" busy="{modelDelay>/Frete}" change="onChangeInfo">
+												<core:Item key="{modelFretes>Inco1}" text="{modelFretes>Inco1} - {modelFretes>Bezei}"/>
 												<layoutData>
 													<layout:GridData span="L4 M4"/>
 												</layoutData>
@@ -121,31 +155,9 @@
 												change="onChangeVencimento1">
 												<core:Item key="{modelVencimentos1>Zterm}" text="{path: 'modelVencimentos1>DescCond'}"/>
 												<layoutData>
-													<layout:GridData span="L2 M2"/>
-												</layoutData>
-											</Select>
-											<Label text="Índice *">
-												<layoutData>
-													<layout:GridData span="L1 M2" linebreakM="true"/>
-												</layoutData>
-											</Label>
-											<Input id="idIndice" enabled="false"
-												value="{path: 'modelPedido>/IndiceFinal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} %">
-												<layoutData>
-													<layout:GridData span="L1 M2"/>
-												</layoutData>
-											</Input>
-											<Label text="Data entrega">
-												<layoutData>
-													<layout:GridData span="L2 M2" linebreakM="true"/>
-												</layoutData>
-											</Label>
-											<DatePicker id="idDataEntrega" class="readOnly" required="true" displayFormat="dd/MM/yyyy" valueFormat="dd/MM/yyyy"
-												value="{modelPedido>/DataEntrega}" change="onChangeDataEntrega">
-												<layoutData>
 													<layout:GridData span="L4 M4"/>
 												</layoutData>
-											</DatePicker>
+											</Select>
 											<Label id="idLabelContrato" text="Contrato" visible="true">
 												<layoutData>
 													<layout:GridData span="L2 M2" linebreakM="true"/>
@@ -153,42 +165,20 @@
 											</Label>
 											<Input id="idContrato" visible="true" enabled="false" value="{path: 'modelPedido>/Contrato'}">
 												<layoutData>
-													<layout:GridData span="L4 M4 " />
+													<layout:GridData span="L4 M4 "/>
 												</layoutData>
 											</Input>
-											<Label text="Data entrega sujerida">
-												<layoutData>
-													<layout:GridData span="L2 M2" linebreakM="true" />
-												</layoutData>
-											</Label>
-											<DatePicker id="idDataEntregaSujerida" required="true" displayFormat="dd/MM/yyyy" valueFormat="dd/MM/yyyy" enabled="false"
-												valueState="Warning" value="{modelPedido>/DataEntregaSujerida}">
-												<layoutData>
-													<layout:GridData span="L4 M4"/>
-												</layoutData>
-											</DatePicker>
-											<Label text="Data limite faturamento *">
+											<Label text="Índice *">
 												<layoutData>
 													<layout:GridData span="L2 M2" linebreakM="true"/>
 												</layoutData>
 											</Label>
-											<DatePicker id="idDataLimite" displayFormat="dd/MM/yyyy" valueFormat="dd/MM/yyyy" change="onChangeInfo" value="{modelPedido>/DataLimite}">
+											<Input id="idIndice" enabled="false"
+												value="{path: 'modelPedido>/IndiceFinal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} %">
 												<layoutData>
 													<layout:GridData span="L4 M4"/>
 												</layoutData>
-											</DatePicker>
-											<Label text="Tipo pedido *" wrapping="true">
-												<layoutData>
-													<layout:GridData span="L2 M2" linebreakM="true"/>
-												</layoutData>
-											</Label>
-											<Select id="idTipoPedido" showSecondaryValues="false" forceSelection="false" items="{ path: 'modelTipoPedidos>/' }"
-												selectedKey="{modelPedido>/TipoPedido}" change="onChangeInfo">
-												<core:Item key="{modelTipoPedidos>TipoPedido}" text="{modelTipoPedidos>TipoPedido}"/>
-												<layoutData>
-													<layout:GridData span="L4 M4"/>
-												</layoutData>
-											</Select>
+											</Input>
 											<Label text="Local entrega *">
 												<layoutData>
 													<layout:GridData span="L2 M2" linebreakM="true"/>
@@ -201,18 +191,68 @@
 													<layout:GridData span="L4 M4"/>
 												</layoutData>
 											</Select>
-											<Label text="Tipo transporte *">
+											<Label text="Data entrega">
 												<layoutData>
 													<layout:GridData span="L2 M2" linebreakM="true"/>
 												</layoutData>
 											</Label>
-											<Select id="idTipoTransporte" forceSelection="false" items="{ path: 'modelFretes>/' }" showSecondaryValues="true"
-												selectedKey="{modelPedido>/Inco1}" busyIndicatorDelay="0" busy="{modelDelay>/Frete}" change="onChangeInfo">
-												<core:Item key="{modelFretes>Inco1}" text="{modelFretes>Inco1} - {modelFretes>Bezei}"/>
+											<DatePicker id="idDataEntrega" class="readOnly" required="true" displayFormat="dd/MM/yyyy" valueFormat="dd/MM/yyyy"
+												value="{modelPedido>/DataEntrega}" change="onChangeDataEntrega">
 												<layoutData>
 													<layout:GridData span="L4 M4"/>
 												</layoutData>
-											</Select>
+											</DatePicker>
+											<Label text="Email Cliente">
+												<layoutData>
+													<layout:GridData span="L2 M2" linebreakM="true"/>
+												</layoutData>
+											</Label>
+											<Input id="idEmailCliente" type="Email" value="{modelPedido>/EmailCliente}" enabled="false" change="onChangeInfo">
+												<layoutData>
+													<layout:GridData span="L4 M4"/>
+												</layoutData>
+											</Input>
+											<Label text="Data entrega sujerida">
+												<layoutData>
+													<layout:GridData span="L2 M2" linebreakM="true"/>
+												</layoutData>
+											</Label>
+											<DatePicker id="idDataEntregaSujerida" required="true" displayFormat="dd/MM/yyyy" valueFormat="dd/MM/yyyy" enabled="false"
+												valueState="Warning" value="{modelPedido>/DataEntregaSujerida}">
+												<layoutData>
+													<layout:GridData span="L4 M4"/>
+												</layoutData>
+											</DatePicker>
+											<Label text="Enviar Cópia do Pedido p/ Cliente">
+												<layoutData>
+													<layout:GridData span="L2 M2" linebreakM="true"/>
+												</layoutData>
+											</Label>
+											<CheckBox id="idCheckEmailCliente" text="" selected="{modelPedido>/EnviarEmailCliente}" enabled="true" select="onChangeInfo">
+												<layoutData>
+													<layout:GridData span="L4 M4"/>
+												</layoutData>
+											</CheckBox>
+											<Label text="Data limite faturamento *">
+												<layoutData>
+													<layout:GridData span="L2 M2" linebreakM="true" />
+												</layoutData>
+											</Label>
+											<DatePicker id="idDataLimite" displayFormat="dd/MM/yyyy" valueFormat="dd/MM/yyyy" change="onChangeInfo" value="{modelPedido>/DataLimite}">
+												<layoutData>
+													<layout:GridData span="L4 M4"/>
+												</layoutData>
+											</DatePicker>
+											<Label text="Email Representante">
+												<layoutData>
+													<layout:GridData span="L2 M2" linebreakM="true"/>
+												</layoutData>
+											</Label>
+											<Input id="idEmailRepres" value="{modelPedido>/EmailRepres}" enabled="false">
+												<layoutData>
+													<layout:GridData span="L4 M4"/>
+												</layoutData>
+											</Input>
 											<Label text="Msg p/ sair na NF 01">
 												<layoutData>
 													<layout:GridData span="L2 M2" linebreakM="true"/>
@@ -225,6 +265,16 @@
 													<layout:GridData span="L4 M4"/>
 												</layoutData>
 											</Select>
+											<Label text="Enviar Cópia do Pedido p/ Repres">
+												<layoutData>
+													<layout:GridData span="L2 M2" linebreakM="true"/>
+												</layoutData>
+											</Label>
+											<CheckBox id="idCheckEmailRepres" text="" selected="{modelPedido>/EnviarEmailRepres}" enabled="true">
+												<layoutData>
+													<layout:GridData span="L4 M4"/>
+												</layoutData>
+											</CheckBox>
 											<Label text="Msg p/ sair na NF 02">
 												<layoutData>
 													<layout:GridData span="L2 M2" linebreakM="true"/>
@@ -249,16 +299,6 @@
 													<layout:GridData span="L4 M4"/>
 												</layoutData>
 											</Select>
-											<Label text="Pedido origem cliente *">
-												<layoutData>
-													<layout:GridData span="L2 M2" linebreakM="true"/>
-												</layoutData>
-											</Label>
-											<Input id="idPedidoOrigem" maxLength="12" value="{modelPedido>/PedidoOrigem}" change="onChangeInfo">
-												<layoutData>
-													<layout:GridData span="L4 M4"/>
-												</layoutData>
-											</Input>
 											<Label text="Observações para equipe de logística">
 												<layoutData>
 													<layout:GridData span="L2 M2" linebreakM="true"/>
@@ -269,46 +309,6 @@
 													<layout:GridData span="L4 M4"/>
 												</layoutData>
 											</TextArea>
-											<Label text="Email Cliente">
-												<layoutData>
-													<layout:GridData span="L2 M2" linebreakM="true"/>
-												</layoutData>
-											</Label>
-											<Input id="idEmailCliente" type="Email" value="{modelPedido>/EmailCliente}" enabled="false" change="onChangeInfo">
-												<layoutData>
-													<layout:GridData span="L4 M4"/>
-												</layoutData>
-											</Input>
-											<Label text="Enviar Cópia do Pedido p/ Cliente">
-												<layoutData>
-													<layout:GridData span="L2 M2" linebreakM="true"/>
-												</layoutData>
-											</Label>
-											<CheckBox id="idCheckEmailCliente" text="" selected="{modelPedido>/EnviarEmailCliente}" enabled="false" select="onChangeInfo">
-												<layoutData>
-													<layout:GridData span="L4 M4"/>
-												</layoutData>
-											</CheckBox>
-											<Label text="Email Representante">
-												<layoutData>
-													<layout:GridData span="L2 M2" linebreakM="true"/>
-												</layoutData>
-											</Label>
-											<Input id="idEmailRepres" value="{modelPedido>/EmailRepres}" enabled="false">
-												<layoutData>
-													<layout:GridData span="L4 M4"/>
-												</layoutData>
-											</Input>
-											<Label text="Enviar Cópia do Pedido p/ Repres">
-												<layoutData>
-													<layout:GridData span="L2 M2" linebreakM="true"/>
-												</layoutData>
-											</Label>
-											<CheckBox id="idCheckEmailRepres" text="" selected="{modelPedido>/EnviarEmailRepres}" enabled="false">
-												<layoutData>
-													<layout:GridData span="L4 M4"/>
-												</layoutData>	
-											</CheckBox>
 										</f:content>
 									</f:SimpleForm>
 									<Toolbar>
@@ -318,7 +318,8 @@
 									</Toolbar>
 								</ScrollContainer>
 							</IconTabFilter>
-							<IconTabFilter id="tabItensPedidoStep" text="Itens Pedido" icon="sap-icon://add" key="tab3" count="{modelAux>/ItensPedidoTab}"  enabled="false">
+							<IconTabFilter id="tabItensPedidoStep" text="Itens Pedido" icon="sap-icon://add" key="tab3" count="{modelAux>/ItensPedidoTab}"
+								enabled="false">
 								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
 									<Toolbar id="lineItemsToolbar">
 										<Title id="lineItemsHeader"/>
@@ -465,15 +466,15 @@
 											<Input id="idTotalPedido"
 												value="R$ {path: 'modelPedido>/ValorTotal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' } }"
 												enabled="false" class="desabilitado"/>
-											<Label text="Total líquido"/>
+											<Label text="Total S/ST"/>
 											<Input id="idTotalLiquido"
 												value="R$ {path: 'modelPedido>/ValorTotal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' } }"
 												enabled="false" class="desabilitado"/>
-											<Label text="Total com ST"/>
+											<Label text="Total C/ST"/>
 											<Input id="idTotalComST"
 												value="R$ {path: 'modelPedido>/ValTotItemSt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' } }"
 												enabled="false" class="desabilitado"/>
-											<Label text="Total itens"/>
+											<Label text="Total Cxs."/>
 											<Input id="idTotalItens" value="{path: 'modelPedido>/TotalItens', type: 'sap.ui.model.type.Integer'}" enabled="false" class="desabilitado"/>
 											<Label text="Peso Bruto"/>
 											<Input id="idPesoBruto"
@@ -487,7 +488,7 @@
 											<Input id="idValMinPed"
 												value="{path: 'modelPedido>/ValMinPed', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' } }"
 												enabled="false" class="desabilitado"/>
-											<Label text="Verba pedido "/>
+											<Label text="Valor Verba"/>
 											<Input id="idVerbaPedido"
 												value="R$ {path: 'modelPedido>/TotalVerba', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' } }"
 												enabled="false" class="desabilitado"/>

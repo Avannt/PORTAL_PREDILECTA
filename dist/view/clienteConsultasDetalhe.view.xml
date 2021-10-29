@@ -1,88 +1,103 @@
-<mvc:View displayBlock="true" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form"
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" displayBlock="true"
 	controllerName="application.controller.clienteConsultasDetalhe">
 	<App>
 		<pages>
 			<Page title="Cliente" class="sapUiResponsivePadding" showNavButton="true" navButtonPress="onNavBack">
 				<content>
-					<IconTabBar id="idTopLevelIconTabBar" stretchContentHeight="true" >
+					<IconTabBar id="idTopLevelIconTabBar" stretchContentHeight="true">
 						<items>
 							<IconTabFilter id="tabInfoCliente" text="Dados Cliente" icon="sap-icon://hint" key="tab1">
 								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
-									<f:SimpleForm id="simpleFormChange" title="" editable="true" class="editableForm">
+									<VBox class="sapUiSmallMargin">
+										<f:SimpleForm id="SimpleFormChange471" editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="4"
+											labelSpanS="12" adjustLabelSpan="false" emptySpanXL="3" emptySpanL="3" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
+											singleContainerFullSize="false">
+											<f:content>
+												<Label text="Código"/>
+												<Input id="idCodigo" enabled="false" value="{modelCliente>/Kunnr}"/>
+												<Label text="Código Repres."/>
+												<Input id="idCodRepres" enabled="false" value="{modelAux>/CodRepres}"/>
+												<Label text="Nome"/>
+												<Input id="idNome" enabled="false" value="{modelCliente>/Name1}"/>
+												<Label text="CNPJ"/>
+												<Input id="idCNPJ" enabled="false"
+													value="{path: 'modelCliente>/Stcd1', formatter:'.onFormatCnpj'}{path: 'modelCliente>/Stcd2', formatter:'.onFormatCpf'}"/>
+												<Label text="CEP"/>
+												<Input id="idCEP" enabled="false" value="{modelCliente>/Pstlz}"/>
+												<Label text="Inscrição Estadual"/>
+												<Input id="idInscricaoEstadual" enabled="false" value="{modelCliente>/Stcd3}"/>
+												<Label text="Telefone"/>
+												<Input id="idTelefone" enabled="false" value="{path: 'modelCliente>/Telf1', formatter: '.onFormatTelefone'}"/>
+												<Label text="Endereço"/>
+												<Input id="idEndereco" enabled="false" value="{modelCliente>/Stras}"/>
+												<Label text="Cidade / UF"/>
+												<Input id="idCidade" enabled="false" value="{modelCliente>/Ort01} - {modelCliente>/Regio}"/>
+												<Label text="Data Cadastro Cliente"/>
+												<Input id="idDataCadastroCliente" enabled="false" value="{path : 'modelCliente>/Crdat', formatter: '.myFormatterDataMobile'}"/>
+												<Label text="Email"/>
+												<Input id="idEmail" enabled="false" value="{modelCliente>/EmailNf}"/>
+												<Label text="Email Envio XML"/>
+												<Input id="idEmailXML" enabled="false" value="{modelCliente>/EmailComprador}"/>
+												<Label text="Email Contas a Pagar"/>
+												<Input id="idEmailPagar" enabled="false" value="{modelCliente>/EmailFinanc}"/>
+												<!--<Label text="Divisão de Vendas"/>-->
+												<!--<Input id="idDivVendas" enabled="false" value="{modelCliente>/Bzirk}"/>-->
+												<Label text="Insc. Aux Subst. Trib."/>
+												<Input id="idInscAuxSubstTrib" enabled="false" value="{path: 'modelCliente>/RegimeEspecial', formatter: '.myFormatterDataMobile'}"/>
+												<Label text="Divisão cliente"/>
+												<Input id="idDivisao" enabled="false" value="{modelCliente>/Kvgr1} - {modelCliente>/DescKvgr1}"/>
+												<Label text="Canal Atuação"/>
+												<Input id="idCanalVenda" enabled="false" value="{modelCliente>/Kvgr2} - {modelCliente>/DescKvgr2}"/>
+												<Label text="Atuação"/>
+												<Input id="idAtuacao" enabled="false" value="{modelCliente>/Kvgr3} - {modelCliente>/DescKvgr3}"/>
+												<Label text="Rede"/>
+												<Input id="idRede" enabled="false" value="{modelCliente>/Kvgr4} - {modelCliente>/DescKvgr4}"/>
+												<Label text="Bandeira"/>
+												<Input id="idBandeira" enabled="false" value="{modelCliente>/Kvgr5} - {modelCliente>/DescKvgr5}"/>
+												<Label text="Cod. Suframa"/>
+												<Input id="idCodSuframa" enabled="false" value="{modelCliente>/Suframa}"/>
+												<Label text="Área Nielsen"/>
+												<Input id="idAreaNielsen" value="{modelCliente>/Niels} - {modelCliente>/DescNiels}" enabled="false"/>
+												<Label text="Tipo de Frete"/>
+												<Input id="idFrete" value="{modelCliente>/Inco1}" enabled="false"/>
+												<Label text="Faturar Saldo?"/>
+												<Input id="idFaturarSaldo" value="{path: 'modelCliente>/CancelaSaldo', formatter: '.onFormatCancelaSaldo'}" enabled="false"/>
+												<Label text="Simples Nacional"/>
+												<Input id="idSimplesNacional" value="{path: 'modelCliente>/Tdt', formatter: '.onFormatSimplesNacional'}" enabled="false"/>
+											</f:content>
+										</f:SimpleForm>
+									</VBox>
+								</ScrollContainer>
+							</IconTabFilter>
+							<IconTabFilter id="tabInfoFinanceiro" text="Dados Financ." icon="sap-icon://lead" key="tab2">
+								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
+									<f:SimpleForm id="simpleFormChange1" title="" editable="true" class="editableForm">
 										<f:content>
-											<Label text="Código"/>
-											<Input id="idCodigo" enabled="false" value="{clienteModel>/kunnr}"/>
-											<Label text="Código Repres."/>
-											<Input id="idCodRepres" enabled="false" value="{modelAux>/CodRepres}"/>
-											<Label text="Nome"/>
-											<Input id="idNome" enabled="false" value="{clienteModel>/name1}"/>
-											<Label text="CNPJ"/>
-											<Input id="idCNPJ" enabled="false" value="{clienteModel>/stcd1}"/>
-											<Label text="CEP"/>
-											<Input id="idCEP" enabled="false" value="{clienteModel>/pstlz}"/>
-											<Label text="Inscrição Estadual"/>
-											<Input id="idInscricaoEstadual" enabled="false" value="{clienteModel>/stcd2}"/>
-											<Label text="Telefone"/>
-											<Input id="idTelefone" enabled="false"/>
-											<Label text="Endereço"/>
-											<Input id="idEndereco" enabled="false" value="{clienteModel>/stras}"/>
-											<Label text="Cidade"/>
-											<Input id="idCidade" enabled="false" value="{clienteModel>/ort01}"/>
-											<Label text="Data Cadastro Cliente"/>
-											<Input id="idDataCadastroCliente" enabled="false"/>
-											<Label text="Email"/>
-											<Input id="idEmail" enabled="false"/>
-											<Label text="Email Envio XML"/>
-											<Input id="idEmailXML" enabled="false"/>
-											<Label text="Email Contas a Pagar"/>
-											<Input id="idEmailPagar" enabled="false"/>
-											<Label text="Microrregião"/>
-											<Input id="idMicrorregiao" enabled="false"/>
-											<Label text="Insc. Aux Subst. Trib."/>
-											<Input id="idInscAuxSubstTrib" enabled="false"/>
-											<Label text="Grupo Cliente"/>
-											<Input id="idGrupoCliente" enabled="false"/>
-											<Label text="Canal Venda"/>
-											<Input id="idCanalVenda" enabled="false"/>
-											<Label text="Matriz"/>
-											<Input id="idMatriz" enabled="false"/>
-											<Label text="Cod. Suframa"/>
-											<Input id="idCodSuframa" enabled="false"/>
-											<Label text="Faturar Saldo?"/>
-											<Input id="idFaturarSaldo" enabled="false"/>
 											<Label text="Status Crédito"/>
-											<Input id="idStatusCredito" enabled="false"/>
+											<Input id="idStatusCredito" value="{path: 'modelCliente>/RiskClass'} - {path: 'modelCliente>/RiskClassDesc'}" enabled="false"/>
+											<Label text="Limite Crédito"/>
+											<Input id="idLimiteCredito"
+												value="R$: {path: 'modelCliente>/CreditLimit', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+												enabled="false"/>
+											<Label text="Data Lim. Crédito"/>
+											<Input id="idDataLimCredito" value="{path: 'modelCliente>/LimitValidDate', formatter: '.myFormatterDataMobile'}" enabled="false"/>
+											<!--<Label text="Limite Crédito Disponível"/>-->
+											<!--<Input id="idLimiteCreditoDisp" value="R$: {path: 'Cliente>/CredLimReq', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false"/>-->
+											<Label text="Valor Último Título/NF"/>
+											<!--CredLimDisp-->
+											<Input id="idUltimoTitulo_NF"
+												value="{path: 'modelCliente>/ValorUltFatura', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+												enabled="false"/>
+											<Label text="Data Valor Último Título/NF"/>
+											<Input id="idDataUltimoTitulo_NF" value="{path: 'modelCliente>/DataUltFatura', formatter: '.myFormatterDataInvert'}" enabled="false"/>
 										</f:content>
 									</f:SimpleForm>
 								</ScrollContainer>
 							</IconTabFilter>
-							<!--<IconTabFilter id="tabInfoFinanceiro" text="Dados Financ." icon="sap-icon://lead" key="tab2">-->
-							<!--	<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">-->
-							<!--		<f:SimpleForm id="simpleFormChange1" title="" editable="true" class="editableForm">-->
-							<!--			<f:content>-->
-							<!--				<Label text="Limite Crédito"/>-->
-							<!--				<Input id="idLimiteCredito" enabled="false"/>-->
-							<!--				<Label text="Data Lim. Crédito"/>-->
-							<!--				<Input id="idDataLimCredito" enabled="false"/>-->
-							<!--				<Label text="Maior Titulo_NF"/>-->
-							<!--				<Input id="idMaiorTitulo_NF" enabled="false"/>-->
-							<!--				<Label text="Data Maior Titulo/NF"/>-->
-							<!--				<Input id="idDataMaiorTitulo_NF" enabled="false"/>-->
-							<!--				<Label text="Valor Ultimo Titulo/NF"/>-->
-							<!--				<Input id="idUltimoTitulo_NF" enabled="false"/>-->
-							<!--				<Label text="Data Valor Ultimo Titulo/NF"/>-->
-							<!--				<Input id="idDataUltimoTitulo_NF" enabled="false"/>-->
-							<!--				<Label text="Simples Nacional"/>-->
-							<!--				<Input id="idSimplesNacional" enabled="false"/>-->
-							<!--			</f:content>-->
-							<!--		</f:SimpleForm>-->
-							<!--	</ScrollContainer>-->
-							<!--</IconTabFilter>-->
 							<IconTabFilter id="tabTabelaPrecos" text="Tabela Preços" icon="sap-icon://table-view" key="tab3">
 								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
-									<Table id="table_TabelaPrecos" items="{ path: 'tabPreco>/' }" width="100%" updateFinished="onListUpdateFinished"
-										itemPress="onItemPress" noDataText="Nenhuma tabela de preços cadastrado para o cliente"
-										busyIndicatorDelay="{detailView>/lineItemTableDelay}" fixedLayout="false">
+									<Table id="table_TabelaPrecos" items="{ path: 'modelTbPreco>/' }" width="100%" updateFinished="onListUpdateFinished" itemPress="onItemPress"
+										noDataText="Nenhuma tabela de preços cadastrado para o cliente" busyIndicatorDelay="{detailView>/lineItemTableDelay}" fixedLayout="false">
 										<columns>
 											<Column>
 												<Text text="Cliente"/>
@@ -94,138 +109,156 @@
 												<Text text="Descrição"/>
 											</Column>
 										</columns>
-										<items >
+										<items>
 											<ColumnListItem type="Inactive">
 												<cells>
-													<Text text="{tabPreco>kunnr}"/>
-													<Text text="{tabPreco>pltyp}"/>
-													<Text text="{tabPreco>ptext}"/>
+													<Text text="{modelTbPreco>Kunnr}-{modelTbPreco>Name1}"/>
+													<Text text="{modelTbPreco>Pltyp}"/>
+													<Text text="{modelTbPreco>Ptext}"/>
 												</cells>
 											</ColumnListItem>
 										</items>
 									</Table>
 								</ScrollContainer>
 							</IconTabFilter>
-							<!--<IconTabFilter id="tabContratos" text="Contratos Ativos" icon="sap-icon://document-text" key="tab4">-->
-							<!--	<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">-->
-							<!--		<Table id="table_ContratosAtivos" width="100%" items="{path: 'contratoCliente>/', sorter : { path : 'CodEstabel', ascending : true }}"-->
-							<!--			updateFinished="onListUpdateFinished" itemPress="onItemPress" noDataText="Nenhum contrato Ativo cadastrado para o cliente"-->
-							<!--			busyIndicatorDelay="{detailView>/lineItemTableDelay}">-->
-							<!--			<columns>-->
-							<!--				<Column minScreenWidth="Tablet" demandPopin="true">-->
-							<!--					<Text text="Est"/>-->
-							<!--				</Column>-->
-							<!--				<Column>-->
-							<!--					<Text text="Nome"/>-->
-							<!--				</Column>-->
-							<!--				<Column>-->
-							<!--					<Text text="Contrato"/>-->
-							<!--				</Column>-->
-							<!--				<Column minScreenWidth="Tablet" demandPopin="true">-->
-							<!--					<Text text="Unid. Negócio"/>-->
-							<!--				</Column>-->
-							<!--				<Column minScreenWidth="Tablet" demandPopin="true">-->
-							<!--					<Text text="Desc.Fin.(%)"/>-->
-							<!--				</Column>-->
-							<!--			</columns>-->
-							<!--			<items >-->
-							<!--				<ColumnListItem type="Active">-->
-							<!--					<cells>-->
-							<!--						<Text text="{contratoCliente>CodEstabel}"/>-->
-							<!--						<Text text="{contratoCliente>NomEstabel}"/>-->
-							<!--						<Text text="{contratoCliente>CodContrato}"/>-->
-							<!--						<Text text="{contratoCliente>UnidadeNegocio}"/>-->
-							<!--						<Text text="{contratoCliente>PctDescContrato}"/>-->
-							<!--					</cells>-->
-							<!--				</ColumnListItem>-->
-							<!--			</items>-->
-							<!--		</Table>-->
-							<!--	</ScrollContainer>-->
-							<!--</IconTabFilter>-->
-							<!--<IconTabFilter id="tabDuplicatas" text="Duplicatas Pendentes" icon="sap-icon://expense-report" key="tab5">-->
-							<!--	<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">-->
-							<!--		<Table id="table_DuplicatasAtivos" fixedLayout="false"-->
-							<!--			items="{ path: 'duplicataCliente>/', sorter: { path : 'CodEstabel', ascending: 'true'}}" updateFinished="onListUpdateFinished"-->
-							<!--			noDataText="Nenhum duplicata em aberto para o cliente" width="100%" busyIndicatorDelay="{detailView>/lineItemTableDelay}">-->
-							<!--			<columns>-->
-							<!--				<Column minScreenWidth="320px">-->
-							<!--					<Text text="Estab"/>-->
-							<!--				</Column>-->
-							<!--				<Column minScreenWidth="320px">-->
-							<!--					<Text text="Nr Doc."/>-->
-							<!--				</Column>-->
-							<!--				<Column minScreenWidth="550px" demandPopin="true">-->
-							<!--					<Text text="Ped Venda"/>-->
-							<!--				</Column>-->
-							<!--				<Column minScreenWidth="460px">-->
-							<!--					<Text text="Emissão"/>-->
-							<!--				</Column>-->
-							<!--				<Column minScreenWidth="400px">-->
-							<!--					<Text text="Venc."/>-->
-							<!--				</Column>-->
-							<!--				<Column minScreenWidth="320px">-->
-							<!--					<Text text="Valor Orig."/>-->
-							<!--				</Column>-->
-							<!--				<Column minScreenWidth="650px" demandPopin="true">-->
-							<!--					<Text text="Saldo"/>-->
-							<!--				</Column>-->
-							<!--				<Column minScreenWidth="720px" demandPopin="true">-->
-							<!--					<Text text="Dias Atrs."/>-->
-							<!--				</Column>-->
-							<!--				<Column minScreenWidth="780px" demandPopin="true">-->
-							<!--					<Text text="Historico"/>-->
-							<!--				</Column>-->
-							<!--			</columns>-->
-							<!--			<items >-->
-							<!--				<ColumnListItem type="Active">-->
-							<!--					<cells>-->
-							<!--						<Text text="{duplicataCliente>NomeEstabel}"/>-->
-							<!--						<Text text="{duplicataCliente>CodTitAcr}"/>-->
-							<!--						<Text text="{duplicataCliente>CodPedVda}"/>-->
-							<!--						<Text text="{duplicataCliente>DatEmisDocto}"/>-->
-							<!--						<Text text="{duplicataCliente>DatVenctoTitAcr}"/>-->
-							<!--						<Text text="{duplicataCliente>ValOriginTitAcr}"/>-->
-							<!--						<Text text="{duplicataCliente>ValSdoTitAcr}"/>-->
-							<!--						<Text text="{duplicataCliente>DiasAtraso}"/>-->
-							<!--						<Text text="{duplicataCliente>Historico}"/>-->
-							<!--					</cells>-->
-							<!--				</ColumnListItem>-->
-							<!--			</items>-->
-							<!--		</Table>-->
-							<!--		<Table id="table_DuplicatasAtivosTotal" items="{ path: 'duplicataClienteTotal>/', sorter: { path : 'CodEstabel', ascending: 'true'}}"-->
-							<!--			width="100%" updateFinished="onListUpdateFinished" fixedLayout="false" noDataText="Nenhum duplicata em aberto para o cliente"-->
-							<!--			busyIndicatorDelay="{detailView>/lineItemTableDelay}">-->
-							<!--			<headerToolbar>-->
-							<!--				<ToolbarSpacer/>-->
-							<!--				<ToolbarSpacer/>-->
-							<!--				<ToolbarSpacer/>-->
-							<!--				<Toolbar id="lineItemsToolbar">-->
-							<!--					<Title id="lineItemsHeader" text="Total Duplicatas em Aberto" class="bold"/>-->
-							<!--				</Toolbar>-->
-							<!--			</headerToolbar>-->
-							<!--			<columns>-->
-							<!--				<Column minScreenWidth="320px">-->
-							<!--					<Text text="Estab"/>-->
-							<!--				</Column>-->
-							<!--				<Column minScreenWidth="320px">-->
-							<!--					<Text text="Valor Orig."/>-->
-							<!--				</Column>-->
-							<!--				<Column minScreenWidth="320px">-->
-							<!--					<Text text="Saldo"/>-->
-							<!--				</Column>-->
-							<!--			</columns>-->
-							<!--			<items >-->
-							<!--				<ColumnListItem type="Active">-->
-							<!--					<cells>-->
-							<!--						<Text text="{duplicataClienteTotal>NomeEstabel}"/>-->
-							<!--						<Text text="R$: {duplicataClienteTotal>ValOriginTitAcr}"/>-->
-							<!--						<Text text="R$: {duplicataClienteTotal>ValSdoTitAcr}"/>-->
-							<!--					</cells>-->
-							<!--				</ColumnListItem>-->
-							<!--			</items>-->
-							<!--		</Table>-->
-							<!--	</ScrollContainer>-->
-							<!--</IconTabFilter>-->
+							<IconTabFilter id="tabContratos" text="Contratos" icon="sap-icon://document-text" key="tab4">
+								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
+									<Table id="table_ContratosAtivos" width="100%"
+										items="{path: 'modelContratos>/', sorter : [{ path : 'Bukrs', ascending : true, group: true }] }" updateFinished="onListUpdateFinished"
+										itemPress="onItemPress" noDataText="Nenhum contrato Ativo cadastrado para o cliente" busyIndicatorDelay="0">
+										<columns>
+											<Column >
+												<Text text="ID"/>
+											</Column>
+											<Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+												<Text text="Empresa"/>
+											</Column>
+											<Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+												<Text text="Linha Prod"/>
+											</Column>
+											<Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+												<Text text="Categ"/>
+											</Column>
+											<Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" width="120px">
+												<Text text="Marca"/>
+											</Column>
+											<Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" width="120px">
+												<Text text="Bandeira"/>
+											</Column>
+											<Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" width="auto">
+												<Text text="Cliente"/>
+											</Column>
+											<Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+												<Text text="Desc.Fin."/>
+											</Column>
+											<Column minScreenWidth="Desktop" demandPopin="true" popinDisplay="Inline">
+												<Text text="Contrato"/>
+											</Column>
+										</columns>
+										<items>
+											<ColumnListItem type="Inactive">
+												<cells>
+													<!--<Text text="{modelContratos>Compo}-{modelContratos>DescCompo}" />-->
+													<Text text="{path: 'modelContratos>IndexSum'}"/>
+													<Text text="{path: 'modelContratos>Bukrs'}-{path : 'modelContratos>NomeEmpresa', formatter: '.onFormatterText'}"/>
+													<Text text="{modelContratos>Versg}-{modelContratos>DescVersg}"/>
+													<Text text="{modelContratos>Mvgr1}-{modelContratos>DescMvgr1}"/>
+													<Text text="{modelContratos>Mvgr5}-{modelContratos>DescMvgr5}"/>
+													<Text text="{modelContratos>Kvgr5}-{modelContratos>DescKvgr5}"/>
+													<Text text="{modelContratos>Kunnr}-{modelContratos>Name1}"/>
+													<Text
+														text="{path: 'modelContratos>IndiceItem', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} %"/>
+													<Text text="{path: 'modelContratos>ContratoInterno', type: 'sap.ui.model.type.Integer'}"/>
+												</cells>
+											</ColumnListItem>
+										</items>
+									</Table>
+								</ScrollContainer>
+							</IconTabFilter>
+							<IconTabFilter id="tabDuplicatas" text="Duplicatas" icon="sap-icon://expense-report" key="tab5">
+								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
+									<Table id="table_DuplicatasAtivos" fixedLayout="false" items="{ path: 'modelTitulos>/', sorter: { path : 'Bukrs', ascending: 'true'}}"
+										updateFinished="onListUpdateFinished" noDataText="Nenhuma duplicata em aberto para o cliente" width="100%"
+										busyIndicatorDelay="{detailView>/lineItemTableDelay}" growingThreshold="50" growing="true">
+										<columns>
+											<Column minScreenWidth="800px" demandPopin="true" popinDisplay="Inline" hAlign="Left">
+												<Text text="Empresa"/>
+											</Column>
+											<Column minScreenWidth="320px" width="100px">
+												<Text text="Nr Doc."/>
+											</Column>
+											<Column minScreenWidth="500px" demandPopin="true" popinDisplay="Inline" hAlign="Left">
+												<Text text="Emissão"/>
+											</Column>
+											<Column minScreenWidth="420px" demandPopin="true" popinDisplay="Inline" hAlign="Left">
+												<Text text="Vencto"/>
+											</Column>
+											<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" hAlign="Right">
+												<Text text="Valor Orig."/>
+											</Column>
+											<Column minScreenWidth="720px" demandPopin="true" popinDisplay="Inline">
+												<Text text="Dias Atrs."/>
+											</Column>
+											<Column minScreenWidth="520px" demandPopin="true" popinDisplay="Inline" hAlign="Left">
+												<Text text="Doc.Vendas"/>
+											</Column>
+											<Column minScreenWidth="360px" demandPopin="true" popinDisplay="Inline" hAlign="Left">
+												<Text text="Últ.cobr."/>
+											</Column>
+											<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" hAlign="Left">
+												<Text text="NívCobran."/>
+											</Column>
+										</columns>
+										<items>
+											<ColumnListItem type="Inactive">
+												<cells>
+													<Text text="{modelTitulos>Bukrs} - {modelTitulos>Butxt}"/>
+													<Text text="{modelTitulos>Belnr}"/>
+													<Text
+														text="{path: 'modelTitulos>Budat', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' , strictParsing: true , UTC: true }}"/>
+													<Text
+														text="{path: 'modelTitulos>Zfbdt', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' , strictParsing: true , UTC: true }}"/>
+													<Text
+														text="{path: 'modelTitulos>Dmbtr', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
+													<Text text="{modelTitulos>DiasAtraso}"/>
+													<Text text="{modelTitulos>DocNum}"/>
+													<Text text="{path: 'modelTitulos>Madat', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' , strictParsing: true , UTC: true }}"/>
+													<Text text="{modelTitulos>Manst}"/>
+												</cells>
+											</ColumnListItem>
+										</items>
+									</Table>
+									<Table id="table_DuplicatasAtivosTotal" items="{ path: 'modelTitulosTotal>/', sorter: { path : 'Bukrs', ascending: 'true'}}" width="100%"
+										updateFinished="onListUpdateFinished" fixedLayout="false" noDataText="Nenhuma duplicata em aberto para o cliente"
+										busyIndicatorDelay="{detailView>/lineItemTableDelay}">
+										<headerToolbar>
+											<ToolbarSpacer/>
+											<ToolbarSpacer/>
+											<ToolbarSpacer/>
+											<Toolbar id="lineItemsToolbar">
+												<Title id="lineItemsHeader" text="Total Duplicatas em Aberto" class="bold"/>
+											</Toolbar>
+										</headerToolbar>
+										<columns>
+											<Column minScreenWidth="320px">
+												<Text text="Emp - Descrição"/>
+											</Column>
+											<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" hAlign="Right">
+												<Text text="Valor Total"/>
+											</Column>
+										</columns>
+										<items>
+											<ColumnListItem type="Inactive">
+												<cells>
+													<Text text="{modelTitulosTotal>Bukrs} - {modelTitulosTotal>Butxt}"/>
+													<Text
+														text="R$: {path: 'modelTitulosTotal>ValTotal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
+												</cells>
+											</ColumnListItem>
+										</items>
+									</Table>
+								</ScrollContainer>
+							</IconTabFilter>
 						</items>
 					</IconTabBar>
 				</content>

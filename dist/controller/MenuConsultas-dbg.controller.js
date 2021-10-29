@@ -57,7 +57,7 @@ sap.ui.define([
 					sap.ui.core.UIComponent.getRouterFor(this).navTo("clienteConsultas");
 					break;
 				case "C03":
-					sap.ui.core.UIComponent.getRouterFor(this).navTo("relatorioTabelas");
+					sap.ui.core.UIComponent.getRouterFor(this).navTo("VerbaConsultas");
 					break;
 				case "C04":
 					sap.ui.core.UIComponent.getRouterFor(this).navTo("cadastroRebaixa");
