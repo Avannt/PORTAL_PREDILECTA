@@ -41,18 +41,8 @@ sap.ui.define([
 
 			}).catch(function (error) {
 
-				sap.m.MessageBox.show(
-					"Falha ao carregar os clientes! (" + error.statusCode + ")", {
-						icon: sap.m.MessageBox.Icon.WARNING,
-						title: "Erro no carregamento!",
-						details: error,
-						actions: [sap.m.MessageBox.Action.OK],
-						onClose: function (oAction) {
-
-							that.byId("master").setBusy(false);
-						}
-					}
-				);
+				that.byId("master").setBusy(false);
+				that.onMensagemErroODATA(error);
 			});
 		},
 
@@ -66,6 +56,15 @@ sap.ui.define([
 			if (Ped.IdStatusPedido == 3) {
 
 				MessageBox.show("Não é possível realizar a edição de pedidos já integrados! ", {
+					icon: MessageBox.Icon.ERROR,
+					title: "Ação não permitida!",
+					actions: [MessageBox.Action.OK]
+				});
+
+			} else if (Ped.Usuario != that.getModelGlobal("modelAux").getProperty("/CodRepres")) {
+
+				MessageBox.show("Não é possível realizar a edição. Usuario criação: " + Ped.Usuario + ", Usuario edição: " + that.getModelGlobal(
+					"modelAux").getProperty("/CodRepres") + ".", {
 					icon: MessageBox.Icon.ERROR,
 					title: "Ação não permitida!",
 					actions: [MessageBox.Action.OK]
@@ -85,7 +84,7 @@ sap.ui.define([
 
 								that.byId("table_pedidos").setBusy(true);
 								that.onBuscarPedido(Ped.NrPedido, res, rej, that);
-								
+
 							}).then(function (Pedido) {
 
 								var data = that.onDataHora();
@@ -133,6 +132,7 @@ sap.ui.define([
 						}
 					}
 				});
+
 			} else {
 
 				/* Se o usuário escolher Vizualizar, levo o usuário direto para o pedido sem alterar o status */
@@ -174,21 +174,21 @@ sap.ui.define([
 		formatRentabilidade: function (Value) {
 			if (Value == 0) {
 
-				this.byId("table_pedidos").getColumns()[5].setVisible(false);
+				this.byId("table_pedidos").getColumns()[6].setVisible(false);
 				return Value;
 			} else if (Value > -3) {
-				
-				this.byId("table_pedidos").getColumns()[5].setVisible(false);
+
+				this.byId("table_pedidos").getColumns()[6].setVisible(false);
 				return "";
 			} else {
-				
-				this.byId("table_pedidos").getColumns()[5].setVisible(true);
+
+				this.byId("table_pedidos").getColumns()[6].setVisible(true);
 				return Value;
 			}
 		},
 
 		onAfterRendering: function () {
-			
+
 			var oSplitCont = this.getSplitContObj(),
 				ref = oSplitCont.getDomRef() && oSplitCont.getDomRef().parentNode;
 			// set all parent elements to 100% height, this should be done by app developer, but just in case
@@ -208,7 +208,7 @@ sap.ui.define([
 		},
 
 		getSplitContObj: function () {
-			
+
 			var result = this.byId("SplitCont");
 			if (!result) {
 				jQuery.sap.log.error("SplitApp object can't be found");
@@ -221,7 +221,7 @@ sap.ui.define([
 		},
 
 		navBack2: function () {
-			
+
 			var isTablet = this.getOwnerComponent().getModel("modelAux").getProperty("/isTablet");
 
 			if (isTablet == true) {
@@ -249,11 +249,16 @@ sap.ui.define([
 			var Cliente = oItem.getBindingContext("Clientes").getObject();
 
 			that.getModelGlobal("Cliente_G").setData(Cliente);
+			this.getModelGlobal("modelAux").setProperty("/Usuario", Cliente.Lifnr);
+
+			//Atualiza o Lifnr para fazer a integração do pedido com o código do fornecedor.
+			this.getModelGlobal("modelAux").setProperty("/Lifnr", Cliente.Lifnr);
 			this.getSplitContObj().toDetail(this.createId("detail"));
 
 			this.oModel.read("/P_PedidoQ", {
 				urlParameters: {
-					"$filter": "IvUsuario eq '" + this.getModelGlobal("modelAux").getProperty("/CodRepres") + "' and IvKunnr eq '" + Cliente.Kunnr +
+					"$filter": "IvUsuario eq '" + this.getModelGlobal("modelAux").getProperty("/Usuario") + "' and IvKunnr eq '" + Cliente.Kunnr +
+						// "$filter": "IvUsuario eq '" + this.getModelGlobal("modelAux").getProperty("/CodRepres") + "' and IvKunnr eq '" + Cliente.Kunnr +
 						"'"
 				},
 				success: function (result) {
@@ -281,7 +286,11 @@ sap.ui.define([
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Kunnr", sap.ui.model.FilterOperator.Contains, sValue),
 				new sap.ui.model.Filter("Name1", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Lifnr", sap.ui.model.FilterOperator.Contains, sValue)
+				new sap.ui.model.Filter("Lifnr", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Ort01", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Regio", sap.ui.model.FilterOperator.StartsWith, sValue),
+				new sap.ui.model.Filter("Stcd1", sap.ui.model.FilterOperator.StartsWith, sValue),
+				new sap.ui.model.Filter("Stcd2", sap.ui.model.FilterOperator.StartsWith, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
@@ -306,11 +315,8 @@ sap.ui.define([
 
 			} else {
 
-				this.oModel.read("/P_CheckPedidoR(IvUsuario='" + this.getModelGlobal("modelAux").getProperty("/CodRepres") + "',IvKunnr='" +
+				this.oModel.read("/P_CheckPedidoR(IvUsuario='" + this.getModelGlobal("modelAux").getProperty("/Usuario") + "',IvKunnr='" +
 					cliente.Kunnr + "')", {
-						// urlParameters: {
-						// 	"$filter": "IvUsuario eq '" + this.getModelGlobal("modelAux").getProperty("/CodRepres") + "'"
-						// },
 						success: function (result) {
 
 							Pedido = result;
@@ -323,7 +329,7 @@ sap.ui.define([
 									title: "Pedido em aberto",
 									actions: [MessageBox.Action.OK]
 								});
-								
+
 							} else {
 
 								if (Pedido.TipoErro == "S" && Pedido.MsgErro == "") {
@@ -336,7 +342,7 @@ sap.ui.define([
 										title: "Títulos em Aberto!",
 										actions: ["Ver Titulo", "Continuar", "Cancelar"],
 										onClose: function (oAction) {
-											
+
 											if (oAction == "Ver Titulo") {
 
 												that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
@@ -369,8 +375,22 @@ sap.ui.define([
 			var oNumeroPedido = oEvent.getParameter("listItem") || oEvent.getSource();
 			var NrPedido = oNumeroPedido.getBindingContext("Pedidos").getProperty("NrPedido");
 
-			that.getModelGlobal("modelAux").setProperty("/NrPedido", NrPedido);
-			sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
+			var Ped = oNumeroPedido.getBindingContext("Pedidos").getObject();
+
+			if (Ped.Usuario != that.getModelGlobal("modelAux").getProperty("/CodRepres") && (Ped.IdStatusPedido == 1 || Ped.IdStatusPedido == 2)) {
+
+				MessageBox.show("Não é possível realizar a edição. Usuario criação: " + Ped.Usuario + ", Usuario edição: " + that.getModelGlobal(
+					"modelAux").getProperty("/CodRepres") + ".", {
+					icon: MessageBox.Icon.ERROR,
+					title: "Ação não permitida!",
+					actions: [MessageBox.Action.OK]
+				});
+
+			} else {
+
+				that.getModelGlobal("modelAux").setProperty("/NrPedido", NrPedido);
+				sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
+			}
 		},
 
 		onExcluirPedido: function (oEvent) {

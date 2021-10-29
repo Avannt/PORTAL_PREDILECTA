@@ -22,6 +22,7 @@ sap.ui.define([
 
 			var that = this;
 			var NrPedido = that.getModelGlobal("modelAux").getProperty("/NrPedido");
+			that.byId("idPedidoDetalhe").setBusy(true);
 
 			new Promise(function (resolve, reject) {
 
@@ -33,7 +34,6 @@ sap.ui.define([
 
 					new Promise(function (res, rej) {
 
-						that.byId("idPedidoDetalhe").setBusy(true);
 						that.onBuscarPedido(NrPedido, res, rej, that);
 
 					}).then(function (dataPed) {
@@ -42,12 +42,9 @@ sap.ui.define([
 
 						that.onCarregarTipoPedido(dataPed.Werks);
 						that.onCarregarCombosMsgPedido(dataPed);
-
 						that.byId("idPedidoDetalhe").setBusy(false);
 
 						new Promise(function (res, rej) {
-
-							that.byId("table_pedidos").setBusy(true);
 
 							that.onBuscarItensPedido(res, rej, that.getModelGlobal("modelAux").getProperty("/NrPedido"));
 
@@ -90,6 +87,7 @@ sap.ui.define([
 
 			that.oModel = this.getModelGlobal("modelAux").getProperty("/DBModel");
 			that.CodRepres = this.getModelGlobal("modelAux").getProperty("/CodRepres");
+			that.Usuario = this.getModelGlobal("modelAux").getProperty("/Usuario");
 
 			//remover o Bloqueio dos campos
 			this.byId("idVencimento1").setEnabled(true);
@@ -122,8 +120,6 @@ sap.ui.define([
 
 			var modelCliente = that.getModelGlobal("Cliente_G");
 			that.setModel(modelCliente, "modelCliente");
-
-			console.log(modelCliente.getData());
 
 			var modelContratos = new JSONModel(that.vetorContratos);
 			that.setModel(modelContratos, "modelContratos");
@@ -204,6 +200,7 @@ sap.ui.define([
 
 			//Tabela de Preço
 			vetorPromises.push(new Promise(function (res, rej) {
+
 				that.oModel.read("/TabPrecos", {
 					// urlParameters: {
 					// 	"$filter": "IvUsuario eq '" + that.CodRepres + "'"
@@ -220,19 +217,16 @@ sap.ui.define([
 
 						that.getModel("modelTabPrecos").setData(that.vetorTabPrecos);
 						res();
-
 					},
 					error: function (error) {
+
 						that.onMensagemErroODATA(error);
 					}
 				});
 			}));
 			vetorPromises.push(new Promise(function (res, rej) {
-				//MsgPedido
+
 				that.oModel.read("/MsgNF", {
-					// urlParameters: {
-					// 	"$filter": "IvUsuario eq '" + that.CodRepres + "'"
-					// },
 					success: function (result) {
 
 						that.vetorMsgPedido = result.results;
@@ -246,10 +240,10 @@ sap.ui.define([
 			}));
 
 			vetorPromises.push(new Promise(function (res, rej) {
-				//Locais Entregas
+
 				that.oModel.read("/LocaisEntregas", {
 					urlParameters: {
-						"$filter": "IvUsuario eq '" + that.CodRepres + "'"
+						"$filter": "IvUsuario eq '" + that.Usuario + "'"
 					},
 					success: function (retornoEntregas) {
 
@@ -269,7 +263,6 @@ sap.ui.define([
 
 					},
 					error: function (error) {
-						that.onBusyDialogClosed();
 						that.onMensagemErroODATA(error);
 					}
 				});
@@ -287,17 +280,16 @@ sap.ui.define([
 
 					},
 					error: function (error) {
-						that.onBusyDialogClosed();
 						that.onMensagemErroODATA(error);
 					}
 				});
 			}));
 
 			vetorPromises.push(new Promise(function (res, rej) {
-				//Tipos Pedidos
+
 				that.oModel.read("/TipoPedidos", {
 					urlParameters: {
-						"$filter": "IvUsuario eq '" + that.CodRepres + "'"
+						"$filter": "IvUsuario eq '" + that.Usuario + "'"
 					},
 					success: function (retorno) {
 
@@ -322,15 +314,15 @@ sap.ui.define([
 
 				that.oModel.read("/Centros", {
 					urlParameters: {
-						"$filter": "IvUsuario eq '" + that.CodRepres + "'"
+						"$filter": "IvUsuario eq '" + that.Usuario + "'"
 					},
 					success: function (data) {
-						
+
 						that.vetorCentros = data.results;
-						
+
 						modelCentros = new JSONModel(that.vetorCentros);
 						that.setModel(modelCentros, "modelCentros");
-						
+
 						res();
 					},
 					error: function (error) {
@@ -391,7 +383,7 @@ sap.ui.define([
 
 				that.oModel.read("/TipoIntegraBol", {
 					urlParameters: {
-						"$filter": "IvUsuario eq '" + CodRepres + "'"
+						"$filter": "IvUsuario eq '" + that.Usuario + "'"
 					},
 					success: function (retoroTipIntegraBol) {
 
@@ -424,7 +416,6 @@ sap.ui.define([
 					error: function (error) {
 
 						rejTipo();
-						that.onBusyDialogClosed();
 						that.onMensagemErroODATA(error);
 					}
 				});
@@ -498,6 +489,7 @@ sap.ui.define([
 			this.getModelGlobal("modelPedido").setProperty("/IdStatusPedido", 1);
 			this.getModelGlobal("modelPedido").setProperty("/TipoDispositivo", "PORTALWEB");
 			this.getModelGlobal("modelPedido").setProperty("/Lifnr", this.getModel("modelAux").getProperty("/Lifnr"));
+			this.getModelGlobal("modelPedido").setProperty("/Usuario", this.getModel("modelAux").getProperty("/Usuario"));
 			this.getModelGlobal("modelPedido").setProperty("/DataIni", data[0]);
 			this.getModelGlobal("modelPedido").setProperty("/HoraIni", data[1]);
 			this.getModelGlobal("modelPedido").setProperty("/DataFim", data[0]);
@@ -624,12 +616,20 @@ sap.ui.define([
 			this.getModelGlobal("modelPedido").setProperty("/Completo", false);
 
 			var CodRepres = this.getModelGlobal("modelAux").getProperty("/CodRepres");
+			var Lifnr = this.getModelGlobal("modelAux").getProperty("/Lifnr");
 			var dataAtual = this.onDataHora();
 
 			var data = dataAtual[0].substring(0, 2) + dataAtual[0].substring(3, 5) + dataAtual[0].substring(6, 11);
 			var horario = dataAtual[1].substring(0, 2) + dataAtual[1].substring(3, 5) + dataAtual[1].substring(6, 8);
 
-			var numeroPed = CodRepres + "." + data + "." + horario;
+			if (Lifnr == CodRepres) {
+
+				var numeroPed = Lifnr + "." + data + "." + horario;
+			} else {
+
+				numeroPed = CodRepres + "." + data + "." + horario;
+			}
+
 			this.getModelGlobal("modelAux").setProperty("/NrPedido", numeroPed);
 			this.getModelGlobal("modelPedido").setProperty("/NrPedido", numeroPed);
 
@@ -864,8 +864,12 @@ sap.ui.define([
 
 								},
 								error: function (error) {
+
 									that.byId("table_pedidos").setBusy(false);
+									that.byId("idPedidoDetalhe").setBusy(false);
 									that.onMensagemErroODATA(error);
+
+									sap.ui.core.UIComponent.getRouterFor(that).navTo("pedido");
 								}
 							});
 						}
@@ -957,6 +961,7 @@ sap.ui.define([
 				Vencimento: "",
 				IndiceFinal: "",
 				Lifnr: "",
+				Usuario: "",
 				DataIni: "",
 				HoraIni: "",
 				DataFim: "",
@@ -1090,6 +1095,7 @@ sap.ui.define([
 			//Vencimentos
 			new Promise(function (res, rej) {
 
+				that.byId("idVencimento1").setEnabled(true);
 				that.byId("idContrato").setBusy(true);
 				that.byId("idVencimento1").setBusy(true);
 
@@ -1106,22 +1112,26 @@ sap.ui.define([
 						that.byId("idContrato").setBusy(false);
 						that.byId("idVencimento1").setBusy(false);
 
+						var vetorVenc = that.getModel("modelVencimentos1").getData();
+						var vetorVencContrato = [];
+
 						if (result.ContratoInterno != "") {
 
-							// that.byId("idContrato").setVisible(true);
 							// that.byId("idLabelContrato").setVisible(true);
 
-							var vetorVenc = that.getModel("modelVencimentos1").getData();
 							var encontrou = "false";
+							var indiceVec = 0;
 
 							for (var j = 0; j < vetorVenc.length; j++) {
 
 								if (vetorVenc[j].Zterm == result.Zterm) {
-									encontrou = true;
+									encontrou = "true";
 
-									if (result.AtlOrdem == true) {
+									if (String(result.AtlOrdem) == "true") {
+
 										that.getModel("modelPedido").setProperty("/IndiceFinal", result.IndiceContrato);
 									} else {
+
 										that.getModel("modelPedido").setProperty("/IndiceFinal", vetorVenc[i].Kbetr);
 									}
 
@@ -1129,7 +1139,7 @@ sap.ui.define([
 								}
 							}
 
-							if (encontrou == false) {
+							if (encontrou == "false") {
 
 								var aux = {
 									Zterm: result.Zterm,
@@ -1137,28 +1147,43 @@ sap.ui.define([
 									DescCond: result.DescCond
 								};
 
-								vetorVenc.push(aux);
-								that.getModel("modelVencimentos1").setData(vetorVenc);
+								vetorVencContrato.push(aux);
+								that.getModel("modelVencimentos1").setData(vetorVencContrato);
+
+								if (String(result.AtlOrdem) == "true") {
+
+									that.getModel("modelPedido").setProperty("/IndiceFinal", result.IndiceContrato);
+								} else {
+
+									//Não possui vencimento cadastrado e vinculado para o representante.
+									that.getModel("modelPedido").setProperty("/IndiceFinal", 0);
+								}
 							}
 
 							if (that.getModel("modelPedido").getProperty("/Vencimento") == "") {
+
 								that.byId("idVencimento1").setEnabled(true);
 							} else {
+
 								that.byId("idVencimento1").setEnabled(false);
 							}
 
 							that.getModelGlobal("modelPedido").setProperty("/Vencimento", result.Zterm);
 							that.getModelGlobal("modelPedido").setProperty("/Contrato", result.ContratoInterno);
+
+							that.byId("idVencimento1").setEnabled(false);
+
+						} else {
+
+							that.getModel("modelVencimentos1").setData(that.vetorVencimentoTotal);
 						}
 
 						res();
-
 					},
 					error: function (error) {
 
 						that.onMensagemErroODATA(error);
 						rej();
-
 					}
 				});
 
@@ -1208,11 +1233,12 @@ sap.ui.define([
 
 				}).then(function (data) {
 
-					var CodRepres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
+					// var CodRepres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
+					// var Usuario = that.getModelGlobal("modelAux").getProperty("/Usuario");
 
 					that.oModel.read("/TipoIntegraBol", {
 						urlParameters: {
-							"$filter": "IvUsuario eq '" + CodRepres + "'"
+							"$filter": "IvUsuario eq '" + that.Usuario + "'"
 						},
 						success: function (retoroTipIntegraBol) {
 
@@ -1241,7 +1267,6 @@ sap.ui.define([
 						},
 						error: function (error) {
 
-							that.onBusyDialogClosed();
 							that.onMensagemErroODATA(error);
 						}
 					});
@@ -1449,18 +1474,15 @@ sap.ui.define([
 										that.getModelGlobal("modelPedido").refresh();
 
 									}).catch(function (error) {
-
-										that.byId("table_pedidos").setBusy(false);
+										that.byId("idPedidoDetalhe").setBusy(false);
 										that.onMensagemErroODATA(error);
 									});
 								}).catch(function (error) {
-
-									that.byId("table_pedidos").setBusy(false);
+									that.byId("idPedidoDetalhe").setBusy(false);
 									that.onMensagemErroODATA(error);
 								});
 							}).catch(function (error) {
-
-								that.byId("table_pedidos").setBusy(false);
+								that.byId("idPedidoDetalhe").setBusy(false);
 								that.onMensagemErroODATA(error);
 							});
 						}
@@ -1902,7 +1924,6 @@ sap.ui.define([
 			} else {
 
 				sap.ui.core.UIComponent.getRouterFor(this).navTo("pedidoDetalheItens");
-
 			}
 		},
 
@@ -1922,7 +1943,7 @@ sap.ui.define([
 					actions: [MessageBox.Action.OK]
 				});
 
-			} else if (Pedido.TipoPedido !== "Proposta" && Pedido.ValMinPed > Pedido.ValorTotal) {
+			} else if (Pedido.TipoPedido !== "Proposta" && parseFloat(Pedido.ValMinPed) > parseFloat(Pedido.ValorTotal)) {
 
 				sap.m.MessageBox.show("Pedido não atingiu o valor mínimo estipulado pela empresa de R$: " + parseFloat(Pedido.ValMinPed), {
 					icon: sap.m.MessageBox.Icon.ERROR,

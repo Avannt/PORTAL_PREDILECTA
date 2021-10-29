@@ -51,9 +51,9 @@ sap.ui.define([
 			var oModelFatClientes = new JSONModel(that.vetorFatClientes);
 			that.setModel(oModelFatClientes, "modelFatClientes");
 
-			that.vetorResumoEmpresa = [];
-			var oModelResumoEmpresa = new JSONModel(that.vetorResumoEmpresa);
-			that.setModel(oModelResumoEmpresa, "modelResumoEmpresa");
+			// that.vetorResumoEmpresa = [];
+			// var oModelResumoEmpresa = new JSONModel(that.vetorResumoEmpresa);
+			// that.setModel(oModelResumoEmpresa, "modelResumoEmpresa");
 
 			new Promise(function (res, rej) {
 
@@ -204,13 +204,13 @@ sap.ui.define([
 				property: "Kvgr2",
 				type: EdmType.String
 			});
-			
+
 			aCols.push({
 				label: "Descrição Canal Atuação",
 				property: "Kvgr2Text",
 				type: EdmType.String
 			});
-			
+
 			aCols.push({
 				label: "Rede",
 				property: "Kvgr4",
@@ -329,13 +329,13 @@ sap.ui.define([
 
 			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
 			that.oModel = that.getModelGlobal("modelAux").getProperty("/DBModel");
-			
+
 			var parametros = that.getModel("modelParametros").getData();
 			var PerioAux = that.getModel("modelParametros").getProperty("/Periodo");
 			var PerioSplit = PerioAux.split(" - ");
 			var PerioIni = PerioSplit[0];
 			var PerioFim = PerioSplit[1];
-			
+
 			that.byId("master").setBusy(true);
 
 			that.oModel.read("/FatClientes", {
@@ -361,11 +361,14 @@ sap.ui.define([
 					that.vetorResumoEmpresa = [];
 
 					that.vetorFatClientes = retorno.results;
-
-					that.getModel("modelFatClientes").setData(that.vetorFatClientes);
-
+					
 					var vTotalEmp = 0;
 					for (var i = 0; i < that.vetorFatClientes.length; i++) {
+
+						if (that.vetorFatClientes[i].HierarchyLevel == 0) {
+							that.vetorFatClientes[i].ParentNodeID = null;
+						} 
+
 						var vAchouEmpresa = false;
 						for (var j = 0; j < that.vetorResumoEmpresa.length; j++) {
 
@@ -401,9 +404,10 @@ sap.ui.define([
 
 						that.vetorResumoEmpresa.push(vAuxTot);
 					}
-					
+
 					that.byId("master").setBusy(false);
-					that.getModel("modelResumoEmpresa").setData(that.vetorResumoEmpresa);
+					that.getModel("modelFatClientes").setData(that.vetorFatClientes);
+					// that.getModel("modelResumoEmpresa").setData(that.vetorResumoEmpresa);
 				},
 				error: function (error) {
 					that.byId("master").setBusy(false);

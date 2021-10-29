@@ -373,6 +373,7 @@ sap.ui.define([
 							var vAuxRepres = {
 								Lifnr: that.vetorFatClientes[i].Lifnr,
 								Name1Rep: that.vetorFatClientes[i].Name1Rep,
+								ValFaturado: parseFloat(that.vetorFatClientes[i].ValFaturado),
 								NodeID: that.vetorFatClientes[i].NodeID,
 								HierarchyLevel: [],
 								Description: that.vetorFatClientes[i].Description,
@@ -388,6 +389,7 @@ sap.ui.define([
 								Name1Rep: that.vetorFatClientes[i].Name1Rep,
 								Bukrs: that.vetorFatClientes[i].Bukrs,
 								Butxt: that.vetorFatClientes[i].Butxt,
+								ValFaturado: parseFloat(that.vetorFatClientes[i].ValFaturado),
 								NodeID: that.vetorFatClientes[i].NodeID,
 								HierarchyLevel: [],
 								Description: that.vetorFatClientes[i].Description,

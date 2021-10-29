@@ -7,7 +7,7 @@
 			<!--<Table class="centralizaGroup" id="idtableFatClientes" growing="false" growingScrollToLoad="false" growingThreshold="5" noDataText="Nenhum registro encontrado" alternateRowColors="true" backgroundDesign="Solid" width="100%" growingTriggerText="Próximo &gt;&gt;&gt;" items="{ path: 'modelFatClientes>/', sorter : [{ path: 'Bukrs', ascending: true, group: '.ongetHeaderGroupBukrs' }] }">-->
 			<Table class="centralizaGroup" id="idtableFatClientes" growing="false" growingScrollToLoad="false" growingThreshold="5"
 				noDataText="Nenhum registro encontrado" alternateRowColors="true" backgroundDesign="Solid" width="100%"
-				growingTriggerText="Próximo &gt;&gt;&gt;">
+				growingTriggerText="Próximo &gt;&gt;&gt;" showNoData="false">
 				<headerToolbar>
 					<OverflowToolbar/>
 					<Toolbar height="100%" class="backGround">
@@ -148,43 +148,54 @@
 				<!--	</ColumnListItem>-->
 				<!--</items>-->
 			</Table>
-			<f:SimpleForm id="SimpleFormChange472" editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="3"
-				labelSpanS="1" adjustLabelSpan="false" emptySpanXL="3" emptySpanL="3" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
-				singleContainerFullSize="false">
+			<table:TreeTable id="treeTable" selectionMode="None" enableColumnReordering="false" enableSelectAll="false" expandFirstLevel="true"
+				rows="{ path:'modelFatClientes>/', parameters : { countMode: 'Inline', treeAnnotationProperties : { hierarchyLevelFor : 'Hierarchylevel', hierarchyNodeFor : 'NodeID', hierarchyParentNodeFor : 'ParentNodeID', hierarchyDrillStateFor : 'DrillState' } } }">
+				<table:columns>
+					<table:Column width="30rem">
+						<table:template>
+							<Text text="{modelFatClientes>Description}" wrapping="false"/>
+						</table:template>
+					</table:Column>
+					<!--<table:Column label="ID Federal">-->
+					<!--	<table:template>-->
+					<!--		<Text text="{path: 'modelFatClientes>Stcd1', formatter:'.onFormatCnpj'} {path: 'modelFatClientes&gt;Stcd2', formatter:'.onFormatCpf'}"-->
+					<!--			wrapping="false"/>-->
+					<!--	</table:template>-->
+					<!--</table:Column>-->
+					<table:Column label="Rede">
+						<table:template>
+							<Text text="{modelFatClientes>Kvgr4Text}" wrapping="false"/>
+						</table:template>
+					</table:Column>
+					<table:Column label="Bandeira">
+						<table:template>
+							<Text text="{modelFatClientes>Kvgr5Text}" wrapping="false"/>
+						</table:template>
+					</table:Column>
+					<table:Column label="UF">
+						<table:template>
+							<Text text="{modelFatClientes>Region}" wrapping="false"/>
+						</table:template>
+					</table:Column>
+					<table:Column label="Cidade">
+						<table:template>
+							<Text text="{modelFatClientes>City1}" wrapping="false"/>
+						</table:template>
+					</table:Column>
+					<table:Column label="Vlr Faturado" hAlign="Right">
+						<table:template>
+							<!--<Text text="{modelFatClientes>ValFaturado}" wrapping="false"/>-->
+							<Text
+								text="{path: 'modelFatClientes>ValFaturado', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+								wrapping="false"/>
+						</table:template>
+					</table:Column>
+				</table:columns>
+			</table:TreeTable>
+			<f:SimpleForm id="SimpleFormChange472" layout="ResponsiveGridLayout" labelSpanXL="1" labelSpanL="1" labelSpanM="1" labelSpanS="1"
+				adjustLabelSpan="false" emptySpanXL="1" emptySpanL="1" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
+				singleContainerFullSize="false" breakpointM="800">
 				<f:content>
-					<Label/>
-					<table:TreeTable id="treeTable" enableSelectAll="true" expandFirstLevel="false"
-						rows="{ path:'modelFatClientes>/', parameters : 
-						{ countMode: 'Inline', treeAnnotationProperties : 
-						{ hierarchyLevelFor : 'Hierarchylevel', hierarchyNodeFor : 'NodeID', hierarchyParentNodeFor : 'ParentNodeID', hierarchyDrillStateFor : 'DrillState' } } }">
-						<table:columns>
-							<table:Column label="Descrição">
-								<table:template>
-									<Text text="{modelFatClientes>Description}" wrapping="false"/>
-								</table:template>
-							</table:Column>
-							<table:Column label="NodeID">
-								<table:template>
-									<Text text="{path: 'modelFatClientes>NodeID', type: 'sap.ui.model.type.Integer'}" wrapping="false"/>
-								</table:template>
-							</table:Column>
-							<table:Column label="HierarchyLevel">
-								<table:template>
-									<Text text="{path: 'modelFatClientes>HierarchyLevel', type: 'sap.ui.model.type.Integer'}" wrapping="false"/>
-								</table:template>
-							</table:Column>
-							<table:Column label="ParentNodeID">
-								<table:template>
-									<Text text="{path: 'modelFatClientes>ParentNodeID', type: 'sap.ui.model.type.Integer'}" wrapping="false"/>
-								</table:template>
-							</table:Column>
-							<table:Column label="DrillState">
-								<table:template>
-									<Text text="{modelFatClientes>DrillState}" wrapping="false"/>
-								</table:template>
-							</table:Column>
-						</table:columns>
-					</table:TreeTable>
 					<!--<Table class="centralizaGroup" id="idtableResumoEmpresa" growing="false" growingScrollToLoad="false" growingThreshold="5" noDataText="Nenhum registro encontrado" items="{ path: 'modelResumoEmpresa>/' }">-->
 					<!--	<columns>-->
 					<!--		<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" styleClass="">-->

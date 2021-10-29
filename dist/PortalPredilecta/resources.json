@@ -1,12 +1,9 @@
 {
     "resources": [
         {
-            "name": "../view/relatorioTabelas.view.xml"
-        },
-        {
-            "name": "../i18n/i18n_pt_BR.properties",
+            "name": "../i18n/i18n_pt.properties",
             "raw": "i18n/i18n.properties",
-            "locale": "_pt_BR"
+            "locale": "_pt"
         },
         {
             "name": "../i18n/i18n_en.properties",
@@ -14,14 +11,15 @@
             "locale": "_en"
         },
         {
-            "name": "../i18n/i18n.properties",
-            "raw": "i18n/i18n.properties"
+            "name": "../i18n/i18n_pt_BR.properties",
+            "raw": "i18n/i18n.properties",
+            "locale": "_pt_BR"
+        },
+        {
+            "name": "../controller/relatorioPedidos.controller.js"
         },
         {
             "name": "../manifest.json"
-        },
-        {
-            "name": "../model/Menu.json"
         },
         {
             "name": "../model/models.js"
@@ -42,7 +40,7 @@
             "name": "../controller/relatorioTabelas.controller.js"
         },
         {
-            "name": "../controller/relatorioPedidos.controller.js"
+            "name": "../model/Menu.json"
         },
         {
             "name": "../controller/relatorioNotasFiscais.controller.js"
@@ -118,7 +116,7 @@
             "merged": true
         },
         {
-            "name": "../controller/Menu-dbg.controller.js",
+            "name": "../controller/clienteConsultasDetalhe-dbg.controller.js",
             "isDebug": true
         },
         {
@@ -178,8 +176,8 @@
             "isDebug": true
         },
         {
-            "name": "../controller/clienteConsultasDetalhe-dbg.controller.js",
-            "isDebug": true
+            "name": "../i18n/i18n.properties",
+            "raw": "i18n/i18n.properties"
         },
         {
             "name": "../controller/clienteConsultas-dbg.controller.js",
@@ -211,6 +209,10 @@
         },
         {
             "name": "../controller/MenuConsultas-dbg.controller.js",
+            "isDebug": true
+        },
+        {
+            "name": "../controller/Menu-dbg.controller.js",
             "isDebug": true
         },
         {
@@ -255,9 +257,7 @@
             "name": "../view/relatorioTitulos.view.xml"
         },
         {
-            "name": "../i18n/i18n_pt.properties",
-            "raw": "i18n/i18n.properties",
-            "locale": "_pt"
+            "name": "../view/relatorioTabelas.view.xml"
         },
         {
             "name": "../view/relatorioPedidos.view.xml"
