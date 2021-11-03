@@ -1,221 +1,177 @@
-<mvc:View xmlns:table="sap.ui.table" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:f="sap.ui.layout.form"
-	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" xmlns:semantic="sap.m.semantic" height="100%"
-	controllerName="application.controller.relatorioFaturamentoClientes">
+<mvc:View xmlns:table="sap.ui.table" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core"
+	xmlns:layout="sap.ui.layout" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" xmlns:semantic="sap.m.semantic"
+	height="100%" controllerName="application.controller.relatorioFaturamentoClientes">
 	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Relatório de Faturamento Clientes" showFooter="false"
 		busyIndicatorDelay="0">
 		<content>
-			<!--<Table class="centralizaGroup" id="idtableFatClientes" growing="false" growingScrollToLoad="false" growingThreshold="5" noDataText="Nenhum registro encontrado" alternateRowColors="true" backgroundDesign="Solid" width="100%" growingTriggerText="Próximo &gt;&gt;&gt;" items="{ path: 'modelFatClientes>/', sorter : [{ path: 'Bukrs', ascending: true, group: '.ongetHeaderGroupBukrs' }] }">-->
-			<Table class="centralizaGroup" id="idtableFatClientes" growing="false" growingScrollToLoad="false" growingThreshold="5"
-				noDataText="Nenhum registro encontrado" alternateRowColors="true" backgroundDesign="Solid" width="100%"
-				growingTriggerText="Próximo &gt;&gt;&gt;" showNoData="false">
-				<headerToolbar>
-					<OverflowToolbar/>
-					<Toolbar height="100%" class="backGround">
-						<Panel id="idPanelFiltro" headerText="Ocultar Filtros" expandable="true" expanded="true" expand="onExpandFiltro">
-							<content>
-								<f:SimpleForm id="SimpleFormChange471" editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="2"
-									labelSpanS="12" adjustLabelSpan="false" emptySpanXL="3" emptySpanL="3" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
-									singleContainerFullSize="false">
-									<f:content>
-										<Label text="Centro"/>
-										<SearchField id="idCentroIni" placeholder="Digite Código ou Nome do Centro" enableSuggestions="true" value="{modelParametros>/WerksIni}"
-											suggest="onSuggestCentroIni" suggestionItems="{ path: 'modelCentros>/', sorter: { path: 'Werks', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelCentros>Werks}" description="{modelCentros>NomeCentro}" key="{modelCentros>Werks}"/>
-											</suggestionItems>
-										</SearchField>
-										<SearchField id="idCentroFim" placeholder="Digite Código ou Nome do Centro" enableSuggestions="true" value="{modelParametros>/WerksFim}"
-											suggest="onSuggestCentroFim" suggestionItems="{ path: 'modelCentros>/', sorter: { path: 'Werks', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelCentros>Werks}" description="{modelCentros>NomeCentro}" key="{modelCentros>Werks}"/>
-											</suggestionItems>
-										</SearchField>
-										<Label text="Cliente"/>
-										<SearchField id="idClienteIni" placeholder="Digite Código ou Nome do Cliente" enableSuggestions="true" value="{modelParametros>/KunnrIni}"
-											suggest="onSuggestClienteIni" suggestionItems="{ path: 'modelClientes>/', sorter: { path: 'Kunnr', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelClientes>Kunnr}" description="{modelClientes>Name1}" key="{modelClientes>Kunnr}"/>
-											</suggestionItems>
-										</SearchField>
-										<SearchField id="idClienteFim" placeholder="Digite Código ou Nome do Cliente" enableSuggestions="true" value="{modelParametros>/KunnrFim}"
-											suggest="onSuggestClienteFim" suggestionItems="{ path: 'modelClientes>/', sorter: { path: 'Kunnr', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelClientes>Kunnr}" description="{modelClientes>Name1}" key="{modelClientes>Kunnr}"/>
-											</suggestionItems>
-										</SearchField>
-										<Label text="Rede"/>
-										<SearchField id="idRedeIni" placeholder="Digite Código ou Nome da Rede" enableSuggestions="true" value="{modelParametros>/Kvgr4Ini}"
-											suggest="onSuggestRedeIni" suggestionItems="{ path: 'modelRedes>/', sorter: { path: 'Kvgr4', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelRedes>Kvgr4}" description="{modelRedes>DescKvgr4}" key="{modelRedes>Kvgr4}"/>
-											</suggestionItems>
-										</SearchField>
-										<SearchField id="idRedeFim" placeholder="Digite Código ou Nome da Rede" enableSuggestions="true" value="{modelParametros>/Kvgr4Fim}"
-											suggest="onSuggestRedeFim" suggestionItems="{ path: 'modelRedes>/', sorter: { path: 'Kvgr4', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelRedes>Kvgr4}" description="{modelRedes>DescKvgr4}" key="{modelRedes>Kvgr4}"/>
-											</suggestionItems>
-										</SearchField>
-										<Label text="Bandeira"/>
-										<SearchField id="idBandeiraIni" placeholder="Digite Código ou Nome da Bandeira" enableSuggestions="true" value="{modelParametros>/Kvgr5Ini}"
-											suggest="onSuggestBandeiraIni" suggestionItems="{ path: 'modelBandeiras>/', sorter: { path: 'Kvgr5', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelBandeiras>Kvgr5}" description="{modelBandeiras>DescKvgr5}" key="{modelBandeiras>Kvgr5}"/>
-											</suggestionItems>
-										</SearchField>
-										<SearchField id="idBandeiraFim" placeholder="Digite Código ou Nome da Bandeira" enableSuggestions="true" value="{modelParametros>/Kvgr5Fim}"
-											suggest="onSuggestBandeiraFim" suggestionItems="{ path: 'modelBandeiras>/', sorter: { path: 'Kvgr5', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelBandeiras>Kvgr5}" description="{modelBandeiras>DescKvgr5}" key="{modelBandeiras>Kvgr5}"/>
-											</suggestionItems>
-										</SearchField>
-										<Label text="Representante"/>
-										<SearchField id="idRepreIni" placeholder="Digite Código ou Nome do Representante" enableSuggestions="true"
-											value="{modelParametros>/LifnrIni}" suggest="onSuggestRepresIni"
-											suggestionItems="{ path: 'modelRepres>/', sorter: { path: 'Lifnr', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelRepres>Lifnr}" description="{modelRepres>Name1Rep}" key="{modelRepres>Lifnr}"/>
-											</suggestionItems>
-										</SearchField>
-										<SearchField id="idRepreFim" placeholder="Digite Código ou Nome do Representante" enableSuggestions="true"
-											value="{modelParametros>/LifnrFim}" suggest="onSuggestRepresFim"
-											suggestionItems="{ path: 'modelRepres>/', sorter: { path: 'Lifnr', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelRepres>Lifnr}" description="{modelRepres>Name1Rep}" key="{modelRepres>Lifnr}"/>
-											</suggestionItems>
-										</SearchField>
-										<Label id="idPeriodo" text="Período"/>
-										<DateRangeSelection displayFormat="dd/MM/yyyy" id="idCDateRange" value="{modelParametros>/Periodo}" placeholder="Período" width="100%"/>
-										<Button id="idBtnFiltrar" text="Filtrar" type="Emphasized" press="onPressBtnFiltrar" icon="sap-icon://filter" tooltip="Filtrar Dados"/>
-									</f:content>
-									<!--<ToolbarSpacer width="90%"/>-->
-									<Button icon="sap-icon://excel-attachment" press="onExport" type="Emphasized" text="Exportar" tooltip="Exportar Dados"/>
-								</f:SimpleForm>
-							</content>
-						</Panel>
-					</Toolbar>
-				</headerToolbar>
-				<!--<columns>-->
-				<!--	<Column minScreenWidth="320px" demandPopin="true" width="65px" popinDisplay="Inline">-->
-				<!--		<Text text="Cliente"/>-->
-				<!--	</Column>-->
-				<!--	<Column minScreenWidth="900px" demandPopin="true" popinDisplay="Inline" width="auto">-->
-				<!--		<Text text="Razão Social"/>-->
-				<!--	</Column>-->
-				<!--	<Column minScreenWidth="610px" demandPopin="true" popinDisplay="Inline" width="155px">-->
-				<!--		<Text text="CNPJ/CPF"/>-->
-				<!--	</Column>-->
-				<!--	<Column minScreenWidth="520px" demandPopin="true" popinDisplay="Inline" width="110px">-->
-				<!--		<Text text="Rede"/>-->
-				<!--	</Column>-->
-				<!--	<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="110px">-->
-				<!--		<Text text="Bandeira"/>-->
-				<!--	</Column>-->
-				<!--	<Column minScreenWidth="520px" demandPopin="true" popinDisplay="Inline" width="40px">-->
-				<!--		<Text text="UF"/>-->
-				<!--	</Column>-->
-				<!--	<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="220px">-->
-				<!--		<Text text="Cidade"/>-->
-				<!--	</Column>-->
-				<!--	<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="110px" hAlign="Right">-->
-				<!--		<Text text="Vlr Fatur."/>-->
-				<!--	</Column>-->
-				<!--	<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="60px" hAlign="Right">-->
-				<!--		<Text text="%Part."/>-->
-				<!--	</Column>-->
-				<!--	<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="55px" hAlign="Right">-->
-				<!--		<Text text="Qt.Pd"/>-->
-				<!--	</Column>-->
-				<!--	<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="60px" hAlign="Right">-->
-				<!--		<Text text="%Rent"/>-->
-				<!--	</Column>-->
-				<!--</columns>-->
-				<!--<items>-->
-				<!--	<ColumnListItem type="Inactive">-->
-				<!--		<cells>-->
-				<!--			<Text text="{modelFatClientes>Kunnr}"/>-->
-				<!--			<Text text="{modelFatClientes>Name1Cli}"/>-->
-				<!--			<Text text="{path: 'modelFatClientes>Stcd1', formatter:'.onFormatCnpj'} {path: 'modelFatClientes>Stcd2', formatter:'.onFormatCpf'}"/>-->
-				<!--			<Text text="{modelFatClientes>Kvgr4Text}"/>-->
-				<!--			<Text text="{modelFatClientes>Kvgr5Text}"/>-->
-				<!--			<Text text="{modelFatClientes>Region}"/>-->
-				<!--			<Text text="{modelFatClientes>City1}"/>-->
-				<!--<Text text="{path: 'modelFatClientes>ValFaturado', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimu '0', maximu '99' }}"/>-->
-				<!--			<Text text="{path: 'modelFatClientes>PctPartic', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimu '0', maximu '99' }}"/>-->
-				<!--			<Text text="{modelFatClientes>QtdPedidos}"/>-->
-				<!--			<Text text="{path: 'modelFatClientes>PctRentab', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimu '0', maximu '99' }}"/>-->
-				<!--		</cells>-->
-				<!--	</ColumnListItem>-->
-				<!--</items>-->
-			</Table>
-			<table:TreeTable id="treeTable" selectionMode="None" enableColumnReordering="false" enableSelectAll="false" expandFirstLevel="true"
+			<Panel id="idPanelFiltro" headerText="Ocultar Filtros" expandable="true" expanded="true" expand="onExpandFiltro">
+				<content>
+					<f:SimpleForm id="SimpleFormChange471" editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="2"
+						labelSpanS="12" adjustLabelSpan="false" emptySpanXL="3" emptySpanL="3" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
+						singleContainerFullSize="false">
+						<f:content>
+							<Label text="Centro"/>
+							<SearchField id="idCentroIni" placeholder="Digite Código ou Nome do Centro" enableSuggestions="true" value="{modelParametros>/WerksIni}"
+								suggest="onSuggestCentroIni" suggestionItems="{ path: 'modelCentros>/', sorter: { path: 'Werks', ascending: true }}">
+								<suggestionItems>
+									<SuggestionItem text="{modelCentros>Werks}" description="{modelCentros>NomeCentro}" key="{modelCentros>Werks}"/>
+								</suggestionItems>
+							</SearchField>
+							<SearchField id="idCentroFim" placeholder="Digite Código ou Nome do Centro" enableSuggestions="true" value="{modelParametros>/WerksFim}"
+								suggest="onSuggestCentroFim" suggestionItems="{ path: 'modelCentros>/', sorter: { path: 'Werks', ascending: true }}">
+								<suggestionItems>
+									<SuggestionItem text="{modelCentros>Werks}" description="{modelCentros>NomeCentro}" key="{modelCentros>Werks}"/>
+								</suggestionItems>
+							</SearchField>
+							<Label text="Cliente"/>
+							<SearchField id="idClienteIni" placeholder="Digite Código ou Nome do Cliente" enableSuggestions="true" value="{modelParametros>/KunnrIni}"
+								suggest="onSuggestClienteIni" suggestionItems="{ path: 'modelClientes>/', sorter: { path: 'Kunnr', ascending: true }}">
+								<suggestionItems>
+									<SuggestionItem text="{modelClientes>Kunnr}" description="{modelClientes>Name1}" key="{modelClientes>Kunnr}"/>
+								</suggestionItems>
+							</SearchField>
+							<SearchField id="idClienteFim" placeholder="Digite Código ou Nome do Cliente" enableSuggestions="true" value="{modelParametros>/KunnrFim}"
+								suggest="onSuggestClienteFim" suggestionItems="{ path: 'modelClientes>/', sorter: { path: 'Kunnr', ascending: true }}">
+								<suggestionItems>
+									<SuggestionItem text="{modelClientes>Kunnr}" description="{modelClientes>Name1}" key="{modelClientes>Kunnr}"/>
+								</suggestionItems>
+							</SearchField>
+							<Label text="Rede"/>
+							<SearchField id="idRedeIni" placeholder="Digite Código ou Nome da Rede" enableSuggestions="true" value="{modelParametros>/Kvgr4Ini}"
+								suggest="onSuggestRedeIni" suggestionItems="{ path: 'modelRedes>/', sorter: { path: 'Kvgr4', ascending: true }}">
+								<suggestionItems>
+									<SuggestionItem text="{modelRedes>Kvgr4}" description="{modelRedes>DescKvgr4}" key="{modelRedes>Kvgr4}"/>
+								</suggestionItems>
+							</SearchField>
+							<SearchField id="idRedeFim" placeholder="Digite Código ou Nome da Rede" enableSuggestions="true" value="{modelParametros>/Kvgr4Fim}"
+								suggest="onSuggestRedeFim" suggestionItems="{ path: 'modelRedes>/', sorter: { path: 'Kvgr4', ascending: true }}">
+								<suggestionItems>
+									<SuggestionItem text="{modelRedes>Kvgr4}" description="{modelRedes>DescKvgr4}" key="{modelRedes>Kvgr4}"/>
+								</suggestionItems>
+							</SearchField>
+							<Label text="Bandeira"/>
+							<SearchField id="idBandeiraIni" placeholder="Digite Código ou Nome da Bandeira" enableSuggestions="true" value="{modelParametros>/Kvgr5Ini}"
+								suggest="onSuggestBandeiraIni" suggestionItems="{ path: 'modelBandeiras>/', sorter: { path: 'Kvgr5', ascending: true }}">
+								<suggestionItems>
+									<SuggestionItem text="{modelBandeiras>Kvgr5}" description="{modelBandeiras>DescKvgr5}" key="{modelBandeiras>Kvgr5}"/>
+								</suggestionItems>
+							</SearchField>
+							<SearchField id="idBandeiraFim" placeholder="Digite Código ou Nome da Bandeira" enableSuggestions="true" value="{modelParametros>/Kvgr5Fim}"
+								suggest="onSuggestBandeiraFim" suggestionItems="{ path: 'modelBandeiras>/', sorter: { path: 'Kvgr5', ascending: true }}">
+								<suggestionItems>
+									<SuggestionItem text="{modelBandeiras>Kvgr5}" description="{modelBandeiras>DescKvgr5}" key="{modelBandeiras>Kvgr5}"/>
+								</suggestionItems>
+							</SearchField>
+							<Label text="Representante"/>
+							<SearchField id="idRepreIni" placeholder="Digite Código ou Nome do Representante" enableSuggestions="true"
+								value="{modelParametros>/LifnrIni}" suggest="onSuggestRepresIni"
+								suggestionItems="{ path: 'modelRepres>/', sorter: { path: 'Lifnr', ascending: true }}">
+								<suggestionItems>
+									<SuggestionItem text="{modelRepres>Lifnr}" description="{modelRepres>Name1Rep}" key="{modelRepres>Lifnr}"/>
+								</suggestionItems>
+							</SearchField>
+							<SearchField id="idRepreFim" placeholder="Digite Código ou Nome do Representante" enableSuggestions="true"
+								value="{modelParametros>/LifnrFim}" suggest="onSuggestRepresFim"
+								suggestionItems="{ path: 'modelRepres>/', sorter: { path: 'Lifnr', ascending: true }}">
+								<suggestionItems>
+									<SuggestionItem text="{modelRepres>Lifnr}" description="{modelRepres>Name1Rep}" key="{modelRepres>Lifnr}"/>
+								</suggestionItems>
+							</SearchField>
+							<Label id="idPeriodo" text="Período"/>
+							<DateRangeSelection displayFormat="dd/MM/yyyy" id="idCDateRange" value="{modelParametros>/Periodo}" placeholder="Período" width="100%"/>
+							<Button id="idBtnFiltrar" text="Filtrar" type="Emphasized" press="onPressBtnFiltrar" icon="sap-icon://filter" tooltip="Filtrar Dados"/>
+						</f:content>
+						<Button icon="sap-icon://excel-attachment" press="onExport" type="Emphasized" text="Exportar" tooltip="Exportar Dados"/>
+					</f:SimpleForm>
+				</content>
+			</Panel>
+			<table:TreeTable id="treeTable" selectionMode="None" enableColumnReordering="false" enableSelectAll="false" expandFirstLevel="true" 
 				rows="{ path:'modelFatClientes>/', parameters : { countMode: 'Inline', treeAnnotationProperties : { hierarchyLevelFor : 'Hierarchylevel', hierarchyNodeFor : 'NodeID', hierarchyParentNodeFor : 'ParentNodeID', hierarchyDrillStateFor : 'DrillState' } } }">
 				<table:columns>
-					<table:Column width="30rem">
+					<table:Column width="600px">
 						<table:template>
 							<Text text="{modelFatClientes>Description}" wrapping="false"/>
 						</table:template>
 					</table:Column>
-					<!--<table:Column label="ID Federal">-->
-					<!--	<table:template>-->
-					<!--		<Text text="{path: 'modelFatClientes>Stcd1', formatter:'.onFormatCnpj'} {path: 'modelFatClientes&gt;Stcd2', formatter:'.onFormatCpf'}"-->
-					<!--			wrapping="false"/>-->
-					<!--	</table:template>-->
-					<!--</table:Column>-->
-					<table:Column label="Rede">
-						<table:template>
-							<Text text="{modelFatClientes>Kvgr4Text}" wrapping="false"/>
-						</table:template>
-					</table:Column>
-					<table:Column label="Bandeira">
+					<table:Column label="Bandeira" width="130px">
 						<table:template>
 							<Text text="{modelFatClientes>Kvgr5Text}" wrapping="false"/>
 						</table:template>
 					</table:Column>
-					<table:Column label="UF">
+					<table:Column label="Canal Atuação" width="130px">
 						<table:template>
-							<Text text="{modelFatClientes>Region}" wrapping="false"/>
+							<Text text="{modelFatClientes>Kvgr2Text}" wrapping="false"/>
 						</table:template>
 					</table:Column>
-					<table:Column label="Cidade">
+					<table:Column label="Cidade" width="200px">
 						<table:template>
 							<Text text="{modelFatClientes>City1}" wrapping="false"/>
 						</table:template>
 					</table:Column>
-					<table:Column label="Vlr Faturado" hAlign="Right">
+					<table:Column label="UF" width="40px">
 						<table:template>
-							<!--<Text text="{modelFatClientes>ValFaturado}" wrapping="false"/>-->
+							<Text text="{modelFatClientes>Region}" wrapping="false"/>
+						</table:template>
+					</table:Column>
+					<table:Column label="Qtd Faturada" width="100px" hAlign="Right">
+						<table:template>
 							<Text
-								text="{path: 'modelFatClientes>ValFaturado', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+								text="{path: 'modelFatClientes>Menge', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+								wrapping="false"/>
+						</table:template>
+					</table:Column>
+					<table:Column label="Vlr Faturado" width="100px" hAlign="Right">
+						<table:template>
+							<Text
+								text="{path: 'modelFatClientes>Netwrt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+								wrapping="false"/>
+						</table:template>
+					</table:Column>
+					<table:Column label="%Partic" width="68px" hAlign="Right">
+						<table:template>
+							<Text
+								text="{path: 'modelFatClientes>PctPartic', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+								wrapping="false"/>
+						</table:template>
+					</table:Column>
+					<table:Column label="Qt.Ped." width="68px" hAlign="Right">
+						<table:template>
+							<Text text="{modelFatClientes>QtdPedidos}" wrapping="false"/>
+							<!--<Text-->
+							<!--	text="{path: 'modelFatClientes>QtdPedidos', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"-->
+							<!--	wrapping="false"/>-->
+						</table:template>
+					</table:Column>
+					<table:Column label="%Rent" width="65px" hAlign="Right">
+						<table:template>
+							<Text
+								text="{path: 'modelFatClientes>PctRentab', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
 								wrapping="false"/>
 						</table:template>
 					</table:Column>
 				</table:columns>
 			</table:TreeTable>
-			<f:SimpleForm id="SimpleFormChange472" layout="ResponsiveGridLayout" labelSpanXL="1" labelSpanL="1" labelSpanM="1" labelSpanS="1"
-				adjustLabelSpan="false" emptySpanXL="1" emptySpanL="1" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
-				singleContainerFullSize="false" breakpointM="800">
-				<f:content>
-					<!--<Table class="centralizaGroup" id="idtableResumoEmpresa" growing="false" growingScrollToLoad="false" growingThreshold="5" noDataText="Nenhum registro encontrado" items="{ path: 'modelResumoEmpresa>/' }">-->
-					<!--	<columns>-->
-					<!--		<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" styleClass="">-->
-					<!--			<Text text="Resumo Representante"/>-->
-					<!--		</Column>-->
-					<!--		<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" hAlign="Right">-->
-					<!--			<Text text="Valor Total Faturado"/>-->
-					<!--		</Column>-->
-					<!--	</columns>-->
-					<!--	<items>-->
-					<!--		<ColumnListItem type="Inactive">-->
-					<!--			<cells>-->
-					<!--				<Text text="{modelResumoEmpresa>Bukrs} - {modelResumoEmpresa>Butxt}"/>-->
-					<!--				<Text text="{path: 'modelResumoEmpresa>ValFaturado', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimu '0', maximu '99' }}"/>-->
-					<!--			</cells>-->
-					<!--		</ColumnListItem>-->
-					<!--	</items>-->
-					<!--</Table>-->
-				</f:content>
-			</f:SimpleForm>
+			<Table class="centralizaGroup" id="idtableFatClientes" growing="false" growingScrollToLoad="false" growingThreshold="5" fixedLayout="Strict"
+				noDataText="Nenhum registro encontrado" alternateRowColors="true" backgroundDesign="Solid" width="100%"
+				growingTriggerText="Próximo &gt;&gt;&gt;" items="{ path: 'modelFatClientesExcel>/', sorter: { path: 'Lifnr', descending: true}}"
+				showNoData="true" visible="false">
+				<headerToolbar>
+					<OverflowToolbar/>
+					<Toolbar height="100%" class="backGround"></Toolbar>
+				</headerToolbar>
+				<columns>
+					<Column minScreenWidth="320px" demandPopin="true" width="65px" popinDisplay="Inline">
+						<Text text="Repres"/>
+					</Column>
+				</columns>
+				<items visible="false">
+					<ColumnListItem type="Inactive">
+						<cells>
+							<Text text="{modelFatClientesExcel>Lifnr}"/>
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
 		</content>
 	</Page>
 </mvc:View>
