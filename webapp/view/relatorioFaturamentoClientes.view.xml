@@ -137,9 +137,6 @@
 					<table:Column label="Qt.Ped." width="68px" hAlign="Right">
 						<table:template>
 							<Text text="{modelFatClientes>QtdPedidos}" wrapping="false"/>
-							<!--<Text-->
-							<!--	text="{path: 'modelFatClientes>QtdPedidos', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"-->
-							<!--	wrapping="false"/>-->
 						</table:template>
 					</table:Column>
 					<table:Column label="%Rent" width="65px" hAlign="Right">
