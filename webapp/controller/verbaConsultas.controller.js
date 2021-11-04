@@ -1,4 +1,5 @@
 /*eslint-disable no-console, no-alert */
+
 sap.ui.define([
 	"application/controller/BaseController",
 	"sap/ui/model/json/JSONModel",
@@ -10,6 +11,8 @@ sap.ui.define([
 
 	return BaseController.extend("application.controller.verbaConsultas", {
 
+		formatter: formatter,
+
 		onInit: function () {
 			this.getRouter().getRoute("VerbaConsultas").attachPatternMatched(this._onLoadFields, this);
 		},
@@ -20,49 +23,41 @@ sap.ui.define([
 			
 			that.onInicializaModels();
 
-			var open = indexedDB.open("PRED");
+			// open.onsuccess = function () {
 
-			open.onerror = function () {
-				alert(open.error.mensage);
-			};
+			// new Promise(function (resolve, reject) {
 
-			open.onsuccess = function () {
+				// 	var transCentro = db.transaction("Centros", "readwrite");
+				// 	var objCentro = transCentro.objectStore("Centros");
 
-				var db = open.result;
+				// 	var requestCentro = objCentro.getAll();
 
-				new Promise(function (resolve, reject) {
+				// 	requestCentro.onsuccess = function (event) {
+				// 		that.vetorCentros = event.target.result;
 
-					var transCentro = db.transaction("Centros", "readwrite");
-					var objCentro = transCentro.objectStore("Centros");
+				// 		var modelCentros = new JSONModel(that.vetorCentros);
+				// 		that.setModel(modelCentros, "modelCentros");
 
-					var requestCentro = objCentro.getAll();
+				// 		resolve();
+				// 	};
 
-					requestCentro.onsuccess = function (event) {
-						that.vetorCentros = event.target.result;
+				// }).then(function (resolve) {
 
-						var modelCentros = new JSONModel(that.vetorCentros);
-						that.setModel(modelCentros, "modelCentros");
+				// 	that.onAbrirCentros();
 
-						resolve();
-					};
+				// }).catch(function (msg) {
 
-				}).then(function (resolve) {
+				// 	sap.m.MessageBox.show(msg, {
+				// 		icon: sap.m.MessageBox.Icon.ERROR,
+				// 		title: "Falha ao carregar os centros!",
+				// 		actions: [MessageBox.Action.OK],
+				// 		onClose: function () {
 
-					that.onAbrirCentros();
+				// 		}
+				// 	});
+				// });
 
-				}).catch(function (msg) {
-
-					sap.m.MessageBox.show(msg, {
-						icon: sap.m.MessageBox.Icon.ERROR,
-						title: "Falha ao carregar os centros!",
-						actions: [MessageBox.Action.OK],
-						onClose: function () {
-
-						}
-					});
-				});
-
-			};
+			// };
 		},
 
 		onChangeEmpresa: function () {

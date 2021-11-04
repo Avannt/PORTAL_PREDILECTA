@@ -53,7 +53,7 @@
 							<SearchField id="idBandeiraIni" placeholder="Digite Código ou Nome da Bandeira" enableSuggestions="true" value="{modelParametros>/Kvgr5Ini}"
 								suggest="onSuggestBandeiraIni" suggestionItems="{ path: 'modelBandeiras>/', sorter: { path: 'Kvgr5', ascending: true }}">
 								<suggestionItems>
-									<SuggestionItem text="{modelBandeiras>Kvgr5}" description="{modelBandeiras>DescKvgr5}" key="{modelBandeiras>Kvgr5}"/>
+									<SuggestionItem text="{modelBandeiras>Kvgr4}" description="{modelBandeiras>DescKvgr4}" key="{modelBandeiras>Kvgr5}"/>
 								</suggestionItems>
 							</SearchField>
 							<SearchField id="idBandeiraFim" placeholder="Digite Código ou Nome da Bandeira" enableSuggestions="true" value="{modelParametros>/Kvgr5Fim}"
@@ -64,14 +64,14 @@
 							</SearchField>
 							<Label text="Representante"/>
 							<SearchField id="idRepreIni" placeholder="Digite Código ou Nome do Representante" enableSuggestions="true"
-								value="{modelParametros>/RepreIni}" suggest="onSuggestRepresIni"
+								value="{modelParametros>/LifnrIni}" suggest="onSuggestRepresIni"
 								suggestionItems="{ path: 'modelRepres>/', sorter: { path: 'Lifnr', ascending: true }}">
 								<suggestionItems>
 									<SuggestionItem text="{modelRepres>Lifnr}" description="{modelRepres>Name1Rep}" key="{modelRepres>Lifnr}"/>
 								</suggestionItems>
 							</SearchField>
 							<SearchField id="idRepreFim" placeholder="Digite Código ou Nome do Representante" enableSuggestions="true"
-								value="{modelParametros>/RepreFim}" suggest="onSuggestRepresFim"
+								value="{modelParametros>/LifnrFim}" suggest="onSuggestRepresFim"
 								suggestionItems="{ path: 'modelRepres>/', sorter: { path: 'Lifnr', ascending: true }}">
 								<suggestionItems>
 									<SuggestionItem text="{modelRepres>Lifnr}" description="{modelRepres>Name1Rep}" key="{modelRepres>Lifnr}"/>

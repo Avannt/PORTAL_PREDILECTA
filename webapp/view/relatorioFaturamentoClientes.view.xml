@@ -64,14 +64,14 @@
 							</SearchField>
 							<Label text="Representante"/>
 							<SearchField id="idRepreIni" placeholder="Digite Código ou Nome do Representante" enableSuggestions="true"
-								value="{modelParametros>/RepreIni}" suggest="onSuggestRepresIni"
+								value="{modelParametros>/LifnrIni}" suggest="onSuggestRepresIni"
 								suggestionItems="{ path: 'modelRepres>/', sorter: { path: 'Lifnr', ascending: true }}">
 								<suggestionItems>
 									<SuggestionItem text="{modelRepres>Lifnr}" description="{modelRepres>Name1Rep}" key="{modelRepres>Lifnr}"/>
 								</suggestionItems>
 							</SearchField>
 							<SearchField id="idRepreFim" placeholder="Digite Código ou Nome do Representante" enableSuggestions="true"
-								value="{modelParametros>/RepreFim}" suggest="onSuggestRepresFim"
+								value="{modelParametros>/LifnrFim}" suggest="onSuggestRepresFim"
 								suggestionItems="{ path: 'modelRepres>/', sorter: { path: 'Lifnr', ascending: true }}">
 								<suggestionItems>
 									<SuggestionItem text="{modelRepres>Lifnr}" description="{modelRepres>Name1Rep}" key="{modelRepres>Lifnr}"/>

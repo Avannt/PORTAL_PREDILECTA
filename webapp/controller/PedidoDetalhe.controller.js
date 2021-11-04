@@ -1081,18 +1081,18 @@ sap.ui.define([
 
 				//Setar Local de entrega default
 				if (this.getModel("modelLocaisEntregas").getData().length == 1) {
-					
+
 					this.getModel("modelPedido").setProperty("/LocalEntrega", (this.getModel("modelLocaisEntregas").getData()[0].Addrnumber));
 				}
 
 				//Setar Tipo pedido Default
 				if (this.getModel("modelTipoPedidos").getData().length == 1) {
-					
+
 					this.getModel("modelPedido").setProperty("/TipoPedido", (this.getModel("modelTipoPedidos").getData()[0].TipoPedido));
 				}
 
 			}
-			
+
 			//Vencimentos
 			new Promise(function (res, rej) {
 
@@ -2067,6 +2067,60 @@ sap.ui.define([
 					that.onMensagemErroODATA(error);
 				});
 			}
+		},
+
+		onAbrirTela: function () {
+
+			var oModelDelay = new JSONModel({
+				"table": false
+			});
+
+			this.getView().setModel(oModelDelay, "modelDelay");
+
+			if (this._ItemDialog) {
+				this._ItemDialog.destroy(true);
+			}
+
+			if (!this._CreateMaterialFragment) {
+
+				this._ItemDialog = sap.ui.xmlfragment(
+					"application.view.ItensCampanha",
+					this
+				);
+				this.getView().addDependent(this._ItemDialog);
+			}
+
+			this._ItemDialog.open();
+		},
+
+		onBuscarCampanhaAtiva: function () {
+
+			var that = this;
+			
+			var aux = {
+				dialog: true
+			};
+			
+			var modelDialog = new JSONModel(aux);
+			that.setModel(modelDialog, "modelDelay");
+
+			that.oModel.read("/P_ItensCampQ", {
+				urlParameters: {
+					"$filter": "EvNrPedido eq '" + that.getModel("modelPedido").getProperty("/NrPedido") + "'"
+				},
+				success: function (result) {
+					
+					var modelItensCamp = new JSONModel(result.results);
+					that.setModel(modelItensCamp, "modelItensCampanha");
+					
+					that.getModel("modelDelay").setProperty("/dialog", false);
+				},
+				error: function (error) {
+
+					that.getModel("modelDelay").setProperty("/dialog", false);
+					that.onMensagemErroODATA(error);
+				}
+			});
 		}
 	});
 });

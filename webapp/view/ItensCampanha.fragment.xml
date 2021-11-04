@@ -1,0 +1,46 @@
+<core:FragmentDefinition id="idItensCampanha" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc"
+	xmlns:form="sap.ui.layout.form" xmlns:layout="sap.ui.layout">
+	<Dialog id="idDialog" title="Itens Campanha" afterOpen="onBuscarCampanhaAtiva" busy="{modelDelay>/dialog}" busyIndicatorDelay="0" stretch="true">
+		<!--<content>-->
+		<Table id="idTableItens" noDataText="Nenhum item inserido!" showNoData="Nenhum funcionário encontrado!" growingThreshold="30" growing="true"
+			growingTriggerText="Próximos >>" busy="{modelDelayOperadores>/table}" mode="None" alternateRowColors="true" busyIndicatorDelay="0"
+			items="{ path: 'modelItensCampanha>/', sorter: [{ path: 'CodCampanha', ascending: true, group: true }] }">
+			<!--sorter: { [ {path: 'CodCampanha', ascending: true, group: true}, path: 'DescCampanha', ascending: true, group: true ]}-->
+			<columns>
+				<Column hAlign="Left" width="auto">
+					<Text text="Campanha"/>
+				</Column>
+				<Column minScreenWidth="650px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="auto">
+					<Text text="Item"/>
+				</Column>
+				<Column minScreenWidth="420px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="120px">
+					<Text text="Qnt Pedida"/>
+				</Column>
+				<Column minScreenWidth="420px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="120px">
+					<Text text="Qnt Multipla"/>
+				</Column>
+				<Column minScreenWidth="520px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="auto">
+					<Text text="Val Desc."/>
+				</Column>
+			</columns>
+			<items>
+				<ColumnListItem press="onSeletedFunc" type="Inactive">
+					<cells>
+						<Text text="{modelItensCampanha>CodCampanha} - {path: 'modelItensCampanha>DescCampanha'}" />
+						<Text text="{modelItensCampanha>Matnr} - {path: 'modelItensCampanha>Maktx', formatter: '.onFormatterText'}" />
+						<Text text="{modelItensCampanha>QtdPedida}" />
+						<Text text="{modelItensCampanha>QtdMultipla}" />
+						<Text
+							text="R$: {path: 'modelItensCampanha>ValorTotal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+							textAlign="Left" />
+					</cells>
+				</ColumnListItem>
+			</items>
+		</Table>
+		<!--</content>-->
+		<endButton>
+			<Button id="idCancelar" text="Cancelar" press="onDialogCancelar" type="Reject" busyIndicatorDelay="0" busy="{modelAux>btnDialogCancel}"
+				icon="sap-icon://decline"/>
+		</endButton>
+	</Dialog>
+</core:FragmentDefinition>
