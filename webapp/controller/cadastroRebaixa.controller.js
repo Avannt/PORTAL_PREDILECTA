@@ -126,7 +126,7 @@ sap.ui.define([
 
 			new Promise(function (res, rej) {
 
-				that.onBuscarClientes(that.getModel("modelParametros").getProperty("/Lifnr"), res, rej, that);
+				that.onBuscarClientes(that.CodRepres, res, rej, that);
 
 			}).then(function (dado) {
 
