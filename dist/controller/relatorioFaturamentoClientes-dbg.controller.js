@@ -51,9 +51,9 @@ sap.ui.define([
 			var oModelFatClientes = new JSONModel(that.vetorFatClientes);
 			that.setModel(oModelFatClientes, "modelFatClientes");
 
-			that.vetorFatClientesExcel = [];
-			var oModelFatClientesExcel = new JSONModel(that.vetorFatClientesExcel);
-			that.setModel(oModelFatClientesExcel, "modelFatClientesExcel");
+			// that.vetorResumoEmpresa = [];
+			// var oModelResumoEmpresa = new JSONModel(that.vetorResumoEmpresa);
+			// that.setModel(oModelResumoEmpresa, "modelResumoEmpresa");
 
 			new Promise(function (res, rej) {
 
@@ -248,16 +248,8 @@ sap.ui.define([
 			});
 
 			aCols.push({
-				label: "Qtd Faturada",
-				property: "Menge",
-				type: EdmType.Number,
-				scale: 2,
-				delimiter: true
-			});
-
-			aCols.push({
 				label: "Vlr Faturado",
-				property: "Netwrt",
+				property: "ValFaturado",
 				type: EdmType.Number,
 				scale: 2,
 				delimiter: true
@@ -365,186 +357,56 @@ sap.ui.define([
 				},
 				success: function (retorno) {
 
-					that.vetorTreeRepres  = [];
-					that.vetorTreeEmpresa = [];
-					that.vetorTreeRede    = [];
-					that.vetorTreeCliente = [];
-
-					that.vetorFatClientes   = [];
+					that.vetorFatClientes = [];
 					that.vetorResumoEmpresa = [];
 
 					that.vetorFatClientes = retorno.results;
-
+					
+					var vTotalEmp = 0;
 					for (var i = 0; i < that.vetorFatClientes.length; i++) {
 
 						if (that.vetorFatClientes[i].HierarchyLevel == 0) {
+							that.vetorFatClientes[i].ParentNodeID = null;
+						} 
 
-							var vAuxRepres = {
-								Lifnr: that.vetorFatClientes[i].Lifnr,
-								Name1Rep: that.vetorFatClientes[i].Name1Rep,
-								Menge: parseFloat(that.vetorFatClientes[i].Menge),
-								Netwrt: parseFloat(that.vetorFatClientes[i].Netwrt),
-								PctPartic: parseFloat(that.vetorFatClientes[i].PctPartic),
-								QtdPedidos: parseFloat(that.vetorFatClientes[i].QtdPedidos),
-								PctRentab: parseFloat(that.vetorFatClientes[i].PctRentab),
-								NodeID: that.vetorFatClientes[i].NodeID,
-								HierarchyLevel: [],
-								Description: that.vetorFatClientes[i].Description,
-								ParentNodeID: that.vetorFatClientes[i].ParentNodeID
-							};
-							that.vetorTreeRepres.push(vAuxRepres);
-						}
+						var vAchouEmpresa = false;
+						for (var j = 0; j < that.vetorResumoEmpresa.length; j++) {
 
-						if (that.vetorFatClientes[i].HierarchyLevel == 1) {
+							if (that.vetorFatClientes[i].Bukrs == that.vetorResumoEmpresa[j].Bukrs) {
 
-							var vAuxEmpresa = {
-								Lifnr: that.vetorFatClientes[i].Lifnr,
-								Name1Rep: that.vetorFatClientes[i].Name1Rep,
-								Bukrs: that.vetorFatClientes[i].Bukrs,
-								Butxt: that.vetorFatClientes[i].Butxt,
-								Menge: parseFloat(that.vetorFatClientes[i].Menge),
-								Netwrt: parseFloat(that.vetorFatClientes[i].Netwrt),
-								PctPartic: parseFloat(that.vetorFatClientes[i].PctPartic),
-								QtdPedidos: parseFloat(that.vetorFatClientes[i].QtdPedidos),
-								PctRentab: parseFloat(that.vetorFatClientes[i].PctRentab),
-								NodeID: that.vetorFatClientes[i].NodeID,
-								HierarchyLevel: [],
-								Description: that.vetorFatClientes[i].Description,
-								ParentNodeID: that.vetorFatClientes[i].ParentNodeID
-							};
-							that.vetorTreeEmpresa.push(vAuxEmpresa);
-						}
+								vAchouEmpresa = true;
 
-						if (that.vetorFatClientes[i].HierarchyLevel == 2) {
+								that.vetorResumoEmpresa[j].ValFaturado = parseFloat(that.vetorResumoEmpresa[j].ValFaturado) + Math.round(parseFloat(that.vetorFatClientes[
+									i].ValFaturado) * 100) / 100;
+								that.vetorResumoEmpresa[j].ValFaturado = parseFloat(that.vetorResumoEmpresa[j].ValFaturado).toFixed(2);
 
-							var vAuxRede = {
-								Lifnr: that.vetorFatClientes[i].Lifnr,
-								Name1Rep: that.vetorFatClientes[i].Name1Rep,
-								Bukrs: that.vetorFatClientes[i].Bukrs,
-								Butxt: that.vetorFatClientes[i].Butxt,
-								Kunnr: that.vetorFatClientes[i].Kunnr,
-								Kvgr4: that.vetorFatClientes[i].Kvgr4,
-								Kvgr4Text: that.vetorFatClientes[i].Kvgr4Text,
-								Menge: parseFloat(that.vetorFatClientes[i].Menge),
-								Netwrt: parseFloat(that.vetorFatClientes[i].Netwrt),
-								PctPartic: parseFloat(that.vetorFatClientes[i].PctPartic),
-								QtdPedidos: parseFloat(that.vetorFatClientes[i].QtdPedidos),
-								PctRentab: parseFloat(that.vetorFatClientes[i].PctRentab),
-								NodeID: that.vetorFatClientes[i].NodeID,
-								HierarchyLevel: [],
-								Description: that.vetorFatClientes[i].Description,
-								ParentNodeID: that.vetorFatClientes[i].ParentNodeID
-							};
-							that.vetorTreeRede.push(vAuxRede);
-						}
-
-						if (that.vetorFatClientes[i].HierarchyLevel == 3) {
-
-							var vAuxCliente = {
-								Lifnr: that.vetorFatClientes[i].Lifnr,
-								Name1Rep: that.vetorFatClientes[i].Name1Rep,
-								Bukrs: that.vetorFatClientes[i].Bukrs,
-								Butxt: that.vetorFatClientes[i].Butxt,
-								Kunnr: that.vetorFatClientes[i].Kunnr,
-								Name1Cli: that.vetorFatClientes[i].Name1Cli,
-								Stcd1: that.vetorFatClientes[i].Stcd1,
-								Stcd2: that.vetorFatClientes[i].Stcd2,
-								Street: that.vetorFatClientes[i].Street,
-								HouseNum1: that.vetorFatClientes[i].HouseNum1,
-								City1: that.vetorFatClientes[i].City1,
-								Region: that.vetorFatClientes[i].Region,
-								Kvgr2: that.vetorFatClientes[i].Kvgr2,
-								Kvgr2Text: that.vetorFatClientes[i].Kvgr2Text,
-								Kvgr4: that.vetorFatClientes[i].Kvgr4,
-								Kvgr4Text: that.vetorFatClientes[i].Kvgr4Text,
-								Kvgr5: that.vetorFatClientes[i].Kvgr5,
-								Kvgr5Text: that.vetorFatClientes[i].Kvgr5Text,
-								Menge: parseFloat(that.vetorFatClientes[i].Menge),
-								Netwrt: parseFloat(that.vetorFatClientes[i].Netwrt),
-								PctPartic: parseFloat(that.vetorFatClientes[i].PctPartic),
-								QtdPedidos: parseFloat(that.vetorFatClientes[i].QtdPedidos),
-								PctRentab: parseFloat(that.vetorFatClientes[i].PctRentab),
-								NodeID: that.vetorFatClientes[i].NodeID,
-								HierarchyLevel: [],
-								Description: that.vetorFatClientes[i].Description,
-								ParentNodeID: that.vetorFatClientes[i].ParentNodeID
-							};
-							that.vetorTreeCliente.push(vAuxCliente);
-							that.vetorFatClientesExcel.push(that.vetorFatClientes[i]);
-						}
-					}
-
-					that.vetorFatClientes = [];
-
-					for (var k = 0; k < that.vetorTreeRepres.length; k++) {
-
-						that.vetorFatClientes.push(that.vetorTreeRepres[k]);
-
-						for (var l = 0; l < that.vetorTreeEmpresa.length; l++) {
-							if (that.vetorTreeEmpresa[l].Lifnr == that.vetorTreeRepres[k].Lifnr) {
-								that.vetorFatClientes[k].HierarchyLevel.push(that.vetorTreeEmpresa[l]);
 							}
 						}
-					}
+						if (vAchouEmpresa == false) {
+							var vAux = {
+								Bukrs: that.vetorFatClientes[i].Bukrs,
+								Butxt: that.vetorFatClientes[i].Butxt,
+								ValFaturado: parseFloat(that.vetorFatClientes[i].ValFaturado)
+							};
 
-					debugger;
+							that.vetorResumoEmpresa.push(vAux);
 
-					for (var k = 0; k < that.vetorFatClientes.length; k++) {
-
-						for (var i = 0; i < that.vetorFatClientes[k].HierarchyLevel.length; i++) {
-
-							for (var m = 0; m < that.vetorTreeRede.length; m++) {
-
-								if ((that.vetorTreeRede[m].Lifnr == that.vetorFatClientes[k].HierarchyLevel[i].Lifnr) &&
-									(that.vetorTreeRede[m].Bukrs == that.vetorFatClientes[k].HierarchyLevel[i].Bukrs)) {
-
-									that.vetorFatClientes[k].HierarchyLevel[i].HierarchyLevel.push(that.vetorTreeRede[m]);
-								}
-							}
 						}
+						vTotalEmp += parseFloat(that.vetorFatClientes[i].ValFaturado);
 					}
 
-					for (var k = 0; k < that.vetorFatClientes.length; k++) {
+					if (vTotalEmp > 0) {
+						var vAuxTot = {
+							Bukrs: "",
+							Butxt: "TOTAL",
+							ValFaturado: parseFloat(vTotalEmp).toFixed(2)
+						};
 
-						for (var i = 0; i < that.vetorFatClientes[k].HierarchyLevel.length; i++) {
-
-							for (var m = 0; m < that.vetorFatClientes[k].HierarchyLevel[i].HierarchyLevel.length; m++) {
-
-								if ((that.vetorFatClientes[k].HierarchyLevel[i].HierarchyLevel[m].Lifnr == that.vetorFatClientes[k].HierarchyLevel[i].Lifnr) &&
-									(that.vetorFatClientes[k].HierarchyLevel[i].HierarchyLevel[m].Bukrs == that.vetorFatClientes[k].HierarchyLevel[i].Bukrs)) {
-
-									for (var n = 0; n < that.vetorTreeCliente.length; n++) {
-
-										if ((that.vetorTreeCliente[n].Lifnr == that.vetorFatClientes[k].HierarchyLevel[i].HierarchyLevel[m].Lifnr) &&
-											(that.vetorTreeCliente[n].Bukrs == that.vetorFatClientes[k].HierarchyLevel[i].HierarchyLevel[m].Bukrs) &&
-											(that.vetorTreeCliente[n].Kvgr4 == that.vetorFatClientes[k].HierarchyLevel[i].HierarchyLevel[m].Kvgr4)) {
-
-											that.vetorFatClientes[k].HierarchyLevel[i].HierarchyLevel[m].HierarchyLevel.push(that.vetorTreeCliente[n]);
-										}
-									}
-								}
-							}
-						}
+						that.vetorResumoEmpresa.push(vAuxTot);
 					}
-
-					// for (var k = 0; k < that.vetorFatClientes.length; k++) {
-
-					// 	for (var i = 0; i < that.vetorFatClientes[k].HierarchyLevel.length; i++) {
-
-					// 		for (var m = 0; m < that.vetorTreeCliente.length; m++) {
-
-					// 			if ((that.vetorTreeCliente[m].Lifnr == that.vetorFatClientes[k].HierarchyLevel[i].Lifnr) &&
-					// 				(that.vetorTreeCliente[m].Bukrs == that.vetorFatClientes[k].HierarchyLevel[i].Bukrs)) {
-
-					// 				that.vetorFatClientes[k].HierarchyLevel[i].HierarchyLevel.push(that.vetorTreeCliente[m]);
-					// 			}
-					// 		}
-					// 	}
-					// }
 
 					that.byId("master").setBusy(false);
 					that.getModel("modelFatClientes").setData(that.vetorFatClientes);
-					that.getModel("modelFatClientesExcel").setData(that.vetorFatClientesExcel);
 					// that.getModel("modelResumoEmpresa").setData(that.vetorResumoEmpresa);
 				},
 				error: function (error) {

@@ -41,6 +41,7 @@ sap.ui.define([
 				VBelnIni: "",
 				VBelnFim: "",
 				RepreIni: "",
+				RepreFim: "",
 				Periodo: ""
 			};
 
@@ -343,6 +344,10 @@ sap.ui.define([
 			var PerioSplit = PerioAux.split(" - ");
 			var PerioIni = PerioSplit[0];
 			var PerioFim = PerioSplit[1];
+			
+			if (PerioFim == undefined) {
+				PerioFim = "";
+			}
 
 			that.byId("master").setBusy(true);
 

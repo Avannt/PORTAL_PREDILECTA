@@ -824,6 +824,7 @@ sap.ui.define([
 						that.byId("idTopLevelIconTabBar").setSelectedKey("tab2");
 						that.byId("idPedidoOrigem").focus();
 						that.byId("idPedidoOrigem").setValueState("Error");
+
 					}
 				});
 
@@ -840,7 +841,6 @@ sap.ui.define([
 							that.onLimparValueState("None");
 
 							Pedido.Completo = false;
-							Pedido.Usuario = that.getModelGlobal("modelAux").getProperty("/CodRepres");
 							that.byId("idPedidoDetalhe").setBusy(true);
 
 							Pedido = that.onFormatNumberPedido(Pedido);
@@ -1077,17 +1077,16 @@ sap.ui.define([
 					that.getModelGlobal("modelPedido").setProperty("/Gerencia", that.vetorCentros[i].Gerencia);
 					that.getModelGlobal("modelPedido").setProperty("/Supervisor", that.vetorCentros[i].Supervisor);
 					break;
+
 				}
 
 				//Setar Local de entrega default
 				if (this.getModel("modelLocaisEntregas").getData().length == 1) {
-
 					this.getModel("modelPedido").setProperty("/LocalEntrega", (this.getModel("modelLocaisEntregas").getData()[0].Addrnumber));
 				}
 
 				//Setar Tipo pedido Default
 				if (this.getModel("modelTipoPedidos").getData().length == 1) {
-
 					this.getModel("modelPedido").setProperty("/TipoPedido", (this.getModel("modelTipoPedidos").getData()[0].TipoPedido));
 				}
 
@@ -2067,60 +2066,6 @@ sap.ui.define([
 					that.onMensagemErroODATA(error);
 				});
 			}
-		},
-
-		onAbrirTela: function () {
-
-			var oModelDelay = new JSONModel({
-				"table": false
-			});
-
-			this.getView().setModel(oModelDelay, "modelDelay");
-
-			if (this._ItemDialog) {
-				this._ItemDialog.destroy(true);
-			}
-
-			if (!this._CreateMaterialFragment) {
-
-				this._ItemDialog = sap.ui.xmlfragment(
-					"application.view.ItensCampanha",
-					this
-				);
-				this.getView().addDependent(this._ItemDialog);
-			}
-
-			this._ItemDialog.open();
-		},
-
-		onBuscarCampanhaAtiva: function () {
-
-			var that = this;
-			
-			var aux = {
-				dialog: true
-			};
-			
-			var modelDialog = new JSONModel(aux);
-			that.setModel(modelDialog, "modelDelay");
-
-			that.oModel.read("/P_ItensCampQ", {
-				urlParameters: {
-					"$filter": "EvNrPedido eq '" + that.getModel("modelPedido").getProperty("/NrPedido") + "'"
-				},
-				success: function (result) {
-					
-					var modelItensCamp = new JSONModel(result.results);
-					that.setModel(modelItensCamp, "modelItensCampanha");
-					
-					that.getModel("modelDelay").setProperty("/dialog", false);
-				},
-				error: function (error) {
-
-					that.getModel("modelDelay").setProperty("/dialog", false);
-					that.onMensagemErroODATA(error);
-				}
-			});
 		}
 	});
 });

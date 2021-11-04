@@ -202,14 +202,14 @@ sap.ui.define([
 		},
 
 		onBuscarVencimentos: function (res, rej, that) {
-
+			
 			that.oModel.read("/Vencimentos", {
 				success: function (result) {
-
+					
 					res(result.results);
 				},
 				error: function (error) {
-
+					
 					rej(error);
 				}
 			});
@@ -549,13 +549,6 @@ sap.ui.define([
 					}
 				}
 			);
-		},
-
-		onDialogCancelar: function () {
-
-			if (this._ItemDialog) {
-				this._ItemDialog.destroy(true);
-			}
 		},
 
 		setLog: function (sLog, sClasse) {
