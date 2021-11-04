@@ -370,9 +370,7 @@ sap.ui.define([
 					that.vetorTreeRede    = [];
 					that.vetorTreeCliente = [];
 
-					that.vetorFatClientes   = [];
-					that.vetorResumoEmpresa = [];
-
+					that.vetorFatClientes = [];
 					that.vetorFatClientes = retorno.results;
 
 					for (var i = 0; i < that.vetorFatClientes.length; i++) {
@@ -487,7 +485,7 @@ sap.ui.define([
 						}
 					}
 
-					debugger;
+					// debugger;
 
 					for (var k = 0; k < that.vetorFatClientes.length; k++) {
 
@@ -526,26 +524,9 @@ sap.ui.define([
 							}
 						}
 					}
-
-					// for (var k = 0; k < that.vetorFatClientes.length; k++) {
-
-					// 	for (var i = 0; i < that.vetorFatClientes[k].HierarchyLevel.length; i++) {
-
-					// 		for (var m = 0; m < that.vetorTreeCliente.length; m++) {
-
-					// 			if ((that.vetorTreeCliente[m].Lifnr == that.vetorFatClientes[k].HierarchyLevel[i].Lifnr) &&
-					// 				(that.vetorTreeCliente[m].Bukrs == that.vetorFatClientes[k].HierarchyLevel[i].Bukrs)) {
-
-					// 				that.vetorFatClientes[k].HierarchyLevel[i].HierarchyLevel.push(that.vetorTreeCliente[m]);
-					// 			}
-					// 		}
-					// 	}
-					// }
-
 					that.byId("master").setBusy(false);
 					that.getModel("modelFatClientes").setData(that.vetorFatClientes);
 					that.getModel("modelFatClientesExcel").setData(that.vetorFatClientesExcel);
-					// that.getModel("modelResumoEmpresa").setData(that.vetorResumoEmpresa);
 				},
 				error: function (error) {
 					that.byId("master").setBusy(false);

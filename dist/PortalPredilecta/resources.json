@@ -1,6 +1,10 @@
 {
     "resources": [
         {
+            "name": "../controller/cadastroRebaixa-dbg.controller.js",
+            "isDebug": true
+        },
+        {
             "name": "../i18n/i18n_pt.properties",
             "raw": "i18n/i18n.properties",
             "locale": "_pt"
@@ -11,12 +15,11 @@
             "locale": "_en"
         },
         {
-            "name": "../i18n/i18n_pt_BR.properties",
-            "raw": "i18n/i18n.properties",
-            "locale": "_pt_BR"
+            "name": "../i18n/i18n.properties",
+            "raw": "i18n/i18n.properties"
         },
         {
-            "name": "../controller/relatorioPedidos.controller.js"
+            "name": "../controller/Menu.controller.js"
         },
         {
             "name": "../manifest.json"
@@ -40,7 +43,7 @@
             "name": "../controller/relatorioTabelas.controller.js"
         },
         {
-            "name": "../model/Menu.json"
+            "name": "../controller/relatorioPedidos.controller.js"
         },
         {
             "name": "../controller/relatorioNotasFiscais.controller.js"
@@ -91,7 +94,7 @@
             "name": "../controller/MenuConsultas.controller.js"
         },
         {
-            "name": "../controller/Menu.controller.js"
+            "name": "../model/Menu.json"
         },
         {
             "name": "../controller/Login.controller.js"
@@ -116,7 +119,7 @@
             "merged": true
         },
         {
-            "name": "../controller/clienteConsultasDetalhe-dbg.controller.js",
+            "name": "../controller/MenuRelatorios-dbg.controller.js",
             "isDebug": true
         },
         {
@@ -176,16 +179,17 @@
             "isDebug": true
         },
         {
-            "name": "../i18n/i18n.properties",
-            "raw": "i18n/i18n.properties"
+            "name": "../controller/clienteConsultasDetalhe-dbg.controller.js",
+            "isDebug": true
         },
         {
             "name": "../controller/clienteConsultas-dbg.controller.js",
             "isDebug": true
         },
         {
-            "name": "../controller/cadastroRebaixa-dbg.controller.js",
-            "isDebug": true
+            "name": "../i18n/i18n_pt_BR.properties",
+            "raw": "i18n/i18n.properties",
+            "locale": "_pt_BR"
         },
         {
             "name": "../controller/PedidoDetalheItens-dbg.controller.js",
@@ -201,10 +205,6 @@
         },
         {
             "name": "../controller/NotFound-dbg.controller.js",
-            "isDebug": true
-        },
-        {
-            "name": "../controller/MenuRelatorios-dbg.controller.js",
             "isDebug": true
         },
         {
@@ -327,6 +327,9 @@
         },
         {
             "name": "../view/Login.view.xml"
+        },
+        {
+            "name": "../view/ItensCampanha.fragment.xml"
         },
         {
             "name": "../view/ItemDialog.fragment.xml"

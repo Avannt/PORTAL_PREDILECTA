@@ -85,7 +85,8 @@
 					</f:SimpleForm>
 				</content>
 			</Panel>
-			<table:TreeTable id="treeTable" selectionMode="None" enableColumnReordering="false" enableSelectAll="false" expandFirstLevel="true" visibleRowCountMode="Auto"
+			<table:TreeTable id="treeTable" selectionMode="None" enableColumnReordering="false" enableSelectAll="false" expandFirstLevel="false"
+				visibleRowCountMode="Auto"
 				rows="{ path:'modelFatClientes>/', parameters : { countMode: 'Inline', treeAnnotationProperties : { hierarchyLevelFor : 'Hierarchylevel', hierarchyNodeFor : 'NodeID', hierarchyParentNodeFor : 'ParentNodeID', hierarchyDrillStateFor : 'DrillState' } } }">
 				<table:columns>
 					<table:Column width="600px">

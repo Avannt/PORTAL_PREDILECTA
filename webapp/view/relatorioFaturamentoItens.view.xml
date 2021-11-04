@@ -1,244 +1,263 @@
-<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:layout="sap.ui.layout" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic" height="100%" controllerName="application.controller.relatorioFaturamentoItens">
-	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Relatório de Faturamento Itens" showFooter="false" busyIndicatorDelay="0">
+<mvc:View xmlns:table="sap.ui.table" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core"
+	xmlns:layout="sap.ui.layout" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" xmlns:semantic="sap.m.semantic"
+	height="100%" controllerName="application.controller.relatorioFaturamentoItens">
+	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Relatório de Faturamento Itens" showFooter="false"
+		busyIndicatorDelay="0">
 		<content>
-			<Table class="centralizaGroup" id="idtableFatItens" growing="false" growingScrollToLoad="false" growingThreshold="5" noDataText="Nenhum registro encontrado" alternateRowColors="true" backgroundDesign="Solid" width="100%" growingTriggerText="Próximo &gt;&gt;&gt;" items="{ path: 'modelFatItens>/', sorter : [{ path: 'Bukrs', ascending: true, group: '.ongetHeaderGroupBukrs' }] }">
+			<Panel id="idPanelFiltro" headerText="Ocultar Filtros" expandable="true" expanded="true" expand="onExpandFiltro">
+				<content>
+					<f:SimpleForm id="SimpleFormChange471" editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="2"
+						labelSpanS="12" adjustLabelSpan="false" emptySpanXL="3" emptySpanL="3" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
+						singleContainerFullSize="false">
+						<f:content>
+							<Label text="Centro"/>
+							<SearchField id="idCentroIni" placeholder="Digite Código ou Nome do Centro" enableSuggestions="true" value="{modelParametros>/WerksIni}"
+								suggest="onSuggestCentroIni" suggestionItems="{ path: 'modelCentros>/', sorter: { path: 'Werks', ascending: true }}">
+								<suggestionItems>
+									<SuggestionItem text="{modelCentros>Werks}" description="{modelCentros>NomeCentro}" key="{modelCentros>Werks}"/>
+								</suggestionItems>
+							</SearchField>
+							<SearchField id="idCentroFim" placeholder="Digite Código ou Nome do Centro" enableSuggestions="true" value="{modelParametros>/WerksFim}"
+								suggest="onSuggestCentroFim" suggestionItems="{ path: 'modelCentros>/', sorter: { path: 'Werks', ascending: true }}">
+								<suggestionItems>
+									<SuggestionItem text="{modelCentros>Werks}" description="{modelCentros>NomeCentro}" key="{modelCentros>Werks}"/>
+								</suggestionItems>
+							</SearchField>
+							<Label text="Cliente"/>
+							<SearchField id="idClienteIni" placeholder="Digite Código ou Nome do Cliente" enableSuggestions="true" value="{modelParametros>/KunnrIni}"
+								suggest="onSuggestClienteIni" suggestionItems="{ path: 'modelClientes>/', sorter: { path: 'Kunnr', ascending: true }}">
+								<suggestionItems>
+									<SuggestionItem text="{modelClientes>Kunnr}" description="{modelClientes>Name1}" key="{modelClientes>Kunnr}"/>
+								</suggestionItems>
+							</SearchField>
+							<SearchField id="idClienteFim" placeholder="Digite Código ou Nome do Cliente" enableSuggestions="true" value="{modelParametros>/KunnrFim}"
+								suggest="onSuggestClienteFim" suggestionItems="{ path: 'modelClientes>/', sorter: { path: 'Kunnr', ascending: true }}">
+								<suggestionItems>
+									<SuggestionItem text="{modelClientes>Kunnr}" description="{modelClientes>Name1}" key="{modelClientes>Kunnr}"/>
+								</suggestionItems>
+							</SearchField>
+							<Label text="Rede"/>
+							<SearchField id="idRedeIni" placeholder="Digite Código ou Nome da Rede" enableSuggestions="true" value="{modelParametros>/Kvgr4Ini}"
+								suggest="onSuggestRedeIni" suggestionItems="{ path: 'modelRedes>/', sorter: { path: 'Kvgr4', ascending: true }}">
+								<suggestionItems>
+									<SuggestionItem text="{modelRedes>Kvgr4}" description="{modelRedes>DescKvgr4}" key="{modelRedes>Kvgr4}"/>
+								</suggestionItems>
+							</SearchField>
+							<SearchField id="idRedeFim" placeholder="Digite Código ou Nome da Rede" enableSuggestions="true" value="{modelParametros>/Kvgr4Fim}"
+								suggest="onSuggestRedeFim" suggestionItems="{ path: 'modelRedes>/', sorter: { path: 'Kvgr4', ascending: true }}">
+								<suggestionItems>
+									<SuggestionItem text="{modelRedes>Kvgr4}" description="{modelRedes>DescKvgr4}" key="{modelRedes>Kvgr4}"/>
+								</suggestionItems>
+							</SearchField>
+							<Label text="Bandeira"/>
+							<SearchField id="idBandeiraIni" placeholder="Digite Código ou Nome da Bandeira" enableSuggestions="true" value="{modelParametros>/Kvgr5Ini}"
+								suggest="onSuggestBandeiraIni" suggestionItems="{ path: 'modelBandeiras>/', sorter: { path: 'Kvgr5', ascending: true }}">
+								<suggestionItems>
+									<SuggestionItem text="{modelBandeiras>Kvgr4}" description="{modelBandeiras>DescKvgr4}" key="{modelBandeiras>Kvgr5}"/>
+								</suggestionItems>
+							</SearchField>
+							<SearchField id="idBandeiraFim" placeholder="Digite Código ou Nome da Bandeira" enableSuggestions="true" value="{modelParametros>/Kvgr5Fim}"
+								suggest="onSuggestBandeiraFim" suggestionItems="{ path: 'modelBandeiras>/', sorter: { path: 'Kvgr5', ascending: true }}">
+								<suggestionItems>
+									<SuggestionItem text="{modelBandeiras>Kvgr5}" description="{modelBandeiras>DescKvgr5}" key="{modelBandeiras>Kvgr5}"/>
+								</suggestionItems>
+							</SearchField>
+							<Label text="Representante"/>
+							<SearchField id="idRepreIni" placeholder="Digite Código ou Nome do Representante" enableSuggestions="true"
+								value="{modelParametros>/LifnrIni}" suggest="onSuggestRepresIni"
+								suggestionItems="{ path: 'modelRepres>/', sorter: { path: 'Lifnr', ascending: true }}">
+								<suggestionItems>
+									<SuggestionItem text="{modelRepres>Lifnr}" description="{modelRepres>Name1Rep}" key="{modelRepres>Lifnr}"/>
+								</suggestionItems>
+							</SearchField>
+							<SearchField id="idRepreFim" placeholder="Digite Código ou Nome do Representante" enableSuggestions="true"
+								value="{modelParametros>/LifnrFim}" suggest="onSuggestRepresFim"
+								suggestionItems="{ path: 'modelRepres>/', sorter: { path: 'Lifnr', ascending: true }}">
+								<suggestionItems>
+									<SuggestionItem text="{modelRepres>Lifnr}" description="{modelRepres>Name1Rep}" key="{modelRepres>Lifnr}"/>
+								</suggestionItems>
+							</SearchField>
+							<Label text="Material"/>
+							<SearchField id="idMaterialIni" placeholder="Digite Código ou Descrição do Material" enableSuggestions="true"
+								value="{modelParametros>/MatnrIni}" suggest="onSuggestMaterialIni"
+								suggestionItems="{ path: 'modelMaterial>/', sorter: { path: 'Matnr', ascending: true }}">
+								<suggestionItems>
+									<SuggestionItem text="{modelMaterial>Matnr}" description="{modelMaterial>Maktx}" key="{modelMaterial>Matnr}"/>
+								</suggestionItems>
+							</SearchField>
+							<SearchField id="idMaterialFim" placeholder="Digite Código ou Descrição do Material" enableSuggestions="true"
+								value="{modelParametros>/MatnrFim}" suggest="onSuggestMaterialFim"
+								suggestionItems="{ path: 'modelMaterial>/', sorter: { path: 'Matnr', ascending: true }}">
+								<suggestionItems>
+									<SuggestionItem text="{modelMaterial>Matnr}" description="{modelMaterial>Maktx}" key="{modelMaterial>Matnr}"/>
+								</suggestionItems>
+							</SearchField>
+							<Label text="Categoria"/>
+							<SearchField id="idCategoriaIni" placeholder="Digite Código ou Descrição da Categoria" enableSuggestions="true"
+								value="{modelParametros>/Mvgr1Ini}" suggest="onSuggestCategoriaIni"
+								suggestionItems="{ path: 'modelCategoria>/', sorter: { path: 'Mvgr1', ascending: true }}">
+								<suggestionItems>
+									<SuggestionItem text="{modelCategoria>Mvgr1}" description="{modelCategoria>DescMvgr1}" key="{modelCategoria>Mvgr1}"/>
+								</suggestionItems>
+							</SearchField>
+							<SearchField id="idCategoriaFim" placeholder="Digite Código ou Descrição da Categoria" enableSuggestions="true"
+								value="{modelParametros>/Mvgr1Fim}" suggest="onSuggestCategoriaFim"
+								suggestionItems="{ path: 'modelCategoria>/', sorter: { path: 'Mvgr1', ascending: true }}">
+								<suggestionItems>
+									<SuggestionItem text="{modelCategoria>Mvgr1}" description="{modelCategoria>DescMvgr1}" key="{modelCategoria>Mvgr1}"/>
+								</suggestionItems>
+							</SearchField>
+							<Label text="SubCategoria"/>
+							<SearchField id="idSubCategoriaIni" placeholder="Digite Código ou Descrição da SubCategoria" enableSuggestions="true"
+								value="{modelParametros>/Mvgr2Ini}" suggest="onSuggestSubCategoriaIni"
+								suggestionItems="{ path: 'modelSubCategoria>/', sorter: { path: 'Mvgr2', ascending: true }}">
+								<suggestionItems>
+									<SuggestionItem text="{modelSubCategoria>Mvgr2}" description="{modelSubCategoria>DescMvgr2}" key="{modelSubCategoria>Mvgr2}"/>
+								</suggestionItems>
+							</SearchField>
+							<SearchField id="idSubCategoriaFim" placeholder="Digite Código ou Descrição da SubCategoria" enableSuggestions="true"
+								value="{modelParametros>/Mvgr2Fim}" suggest="onSuggestSubCategoriaFim"
+								suggestionItems="{ path: 'modelSubCategoria>/', sorter: { path: 'Mvgr2', ascending: true }}">
+								<suggestionItems>
+									<SuggestionItem text="{modelSubCategoria>Mvgr2}" description="{modelSubCategoria>DescMvgr2}" key="{modelSubCategoria>Mvgr2}"/>
+								</suggestionItems>
+							</SearchField>
+							<Label text="Família"/>
+							<SearchField id="idFamiliaIni" placeholder="Digite Código ou Descrição da Família" enableSuggestions="true"
+								value="{modelParametros>/Mvgr3Ini}" suggest="onSuggestFamiliaIni"
+								suggestionItems="{ path: 'modelFamilia>/', sorter: { path: 'Mvgr3', ascending: true }}">
+								<suggestionItems>
+									<SuggestionItem text="{modelFamilia>Mvgr3}" description="{modelFamilia>DescMvgr3}" key="{modelFamilia>Mvgr3}"/>
+								</suggestionItems>
+							</SearchField>
+							<SearchField id="idFamiliaFim" placeholder="Digite Código ou Descrição da Família" enableSuggestions="true"
+								value="{modelParametros>/Mvgr3Fim}" suggest="onSuggestFamiliaFim"
+								suggestionItems="{ path: 'modelFamilia>/', sorter: { path: 'Mvgr3', ascending: true }}">
+								<suggestionItems>
+									<SuggestionItem text="{modelFamilia>Mvgr3}" description="{modelFamilia>DescMvgr3}" key="{modelFamilia>Mvgr3}"/>
+								</suggestionItems>
+							</SearchField>
+							<Label text="Marca"/>
+							<SearchField id="idMarcaIni" placeholder="Digite Código ou Descrição da Marca" enableSuggestions="true" value="{modelParametros>/Mvgr5Ini}"
+								suggest="onSuggestMarcaIni" suggestionItems="{ path: 'modelMarca>/', sorter: { path: 'Mvgr5', ascending: true }}">
+								<suggestionItems>
+									<SuggestionItem text="{modelMarca>Mvgr5}" description="{modelMarca>DescMvgr5}" key="{modelMarca>Mvgr5}"/>
+								</suggestionItems>
+							</SearchField>
+							<SearchField id="idMarcaFim" placeholder="Digite Código ou Descrição da Marca" enableSuggestions="true" value="{modelParametros>/Mvgr5Fim}"
+								suggest="onSuggestMarcaFim" suggestionItems="{ path: 'modelMarca>/', sorter: { path: 'Mvgr5', ascending: true }}">
+								<suggestionItems>
+									<SuggestionItem text="{modelMarca>Mvgr5}" description="{modelMarca>DescMvgr5}" key="{modelMarca>Mvgr5}"/>
+								</suggestionItems>
+							</SearchField>
+							<Label id="idPeriodo" text="Período"/>
+							<DateRangeSelection displayFormat="dd/MM/yyyy" id="idCDateRange" value="{modelParametros>/Periodo}" placeholder="Período" width="100%"/>
+							<Button id="idBtnFiltrar" text="Filtrar" type="Emphasized" press="onPressBtnFiltrar" icon="sap-icon://filter" tooltip="Filtrar Dados"/>
+						</f:content>
+						<!--<ToolbarSpacer width="90%"/>-->
+						<Button icon="sap-icon://excel-attachment" press="onExport" type="Emphasized" text="Exportar" tooltip="Exportar Dados"/>
+					</f:SimpleForm>
+				</content>
+			</Panel>
+			<table:TreeTable id="treeTable" selectionMode="None" enableColumnReordering="false" enableSelectAll="false" expandFirstLevel="false"
+				visibleRowCountMode="Auto"
+				rows="{ path:'modelFatItens>/', parameters : { countMode: 'Inline', treeAnnotationProperties : { hierarchyLevelFor : 'Hierarchylevel', hierarchyNodeFor : 'NodeID', hierarchyParentNodeFor : 'ParentNodeID', hierarchyDrillStateFor : 'DrillState' } } }">
+				<table:columns>
+					<table:Column width="600px">
+						<table:template>
+							<Text text="{modelFatItens>Description}" wrapping="false"/>
+						</table:template>
+					</table:Column>
+					<table:Column label="SubCategoria" width="130px">
+						<table:template>
+							<Text text="{modelFatItens>Mvgr2Text}" wrapping="false"/>
+						</table:template>
+					</table:Column>
+					<table:Column label="Família" width="130px">
+						<table:template>
+							<Text text="{modelFatItens>Mvgr3Text}" wrapping="false"/>
+						</table:template>
+					</table:Column>
+					<table:Column label="Marca" width="130px">
+						<table:template>
+							<Text text="{modelFatItens>Mvgr5Text}" wrapping="false"/>
+						</table:template>
+					</table:Column>
+					<table:Column label="UM" width="40px">
+						<table:template>
+							<Text text="{modelFatItens>Meins}" wrapping="false"/>
+						</table:template>
+					</table:Column>
+					<table:Column label="Qtd Faturada" width="100px" hAlign="Right">
+						<table:template>
+							<Text
+								text="{path: 'modelFatItens>Menge', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+								wrapping="false"/>
+						</table:template>
+					</table:Column>
+					<table:Column label="Vlr Faturado" width="100px" hAlign="Right">
+						<table:template>
+							<Text
+								text="{path: 'modelFatItens>Netwrt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+								wrapping="false"/>
+						</table:template>
+					</table:Column>
+					<table:Column label="%Partic" width="68px" hAlign="Right">
+						<table:template>
+							<Text
+								text="{path: 'modelFatItens>PctPartic', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+								wrapping="false"/>
+						</table:template>
+					</table:Column>
+					<table:Column label="Qt.Ped." width="68px" hAlign="Right">
+						<table:template>
+							<Text text="{modelFatItens>QtdPedidos}" wrapping="false"/>
+						</table:template>
+					</table:Column>
+					<table:Column label="%Rent" width="65px" hAlign="Right">
+						<table:template>
+							<Text
+								text="{path: 'modelFatItens>PctRentab', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+								wrapping="false"/>
+						</table:template>
+					</table:Column>
+					<table:Column label="Últ.Preço" width="65px" hAlign="Right">
+						<table:template>
+							<Text
+								text="{path: 'modelFatItens>UltPreco', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+								wrapping="false"/>
+						</table:template>
+					</table:Column>
+					<table:Column label="Méd.Preço" width="65px" hAlign="Right">
+						<table:template>
+							<Text
+								text="{path: 'modelFatItens>MedPreco', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+								wrapping="false"/>
+						</table:template>
+					</table:Column>
+				</table:columns>
+			</table:TreeTable>
+			<Table class="centralizaGroup" id="idtableFatItens" growing="false" growingScrollToLoad="false" growingThreshold="5" fixedLayout="Strict"
+				noDataText="Nenhum registro encontrado" alternateRowColors="true" backgroundDesign="Solid" width="100%"
+				growingTriggerText="Próximo &gt;&gt;&gt;" items="{ path: 'modelFatItensExcel>/', sorter: { path: 'Lifnr', descending: true}}"
+				showNoData="true" visible="false">
 				<headerToolbar>
 					<OverflowToolbar/>
-					<Toolbar height="100%" class="backGround">
-						<Panel id="idPanelFiltro" headerText="Ocultar Filtros" expandable="true" expanded="true" expand="onExpandFiltro">
-							<content>
-								<f:SimpleForm id="SimpleFormChange471" editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="2" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="3" emptySpanL="3" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1" singleContainerFullSize="false">
-									<f:content>
-										<Label text="Centro"/>
-										<SearchField id="idCentroIni" placeholder="Digite Código ou Nome do Centro" enableSuggestions="true" value="{modelParametros>/WerksIni}" suggest="onSuggestCentroIni" suggestionItems="{ path: 'modelCentros>/', sorter: { path: 'Werks', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelCentros>Werks}" description="{modelCentros>NomeCentro}" key="{modelCentros>Werks}"/>
-											</suggestionItems>
-										</SearchField>
-										<SearchField id="idCentroFim" placeholder="Digite Código ou Nome do Centro" enableSuggestions="true" value="{modelParametros>/WerksFim}" suggest="onSuggestCentroFim" suggestionItems="{ path: 'modelCentros>/', sorter: { path: 'Werks', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelCentros>Werks}" description="{modelCentros>NomeCentro}" key="{modelCentros>Werks}"/>
-											</suggestionItems>
-										</SearchField>
-										<Label text="Cliente"/>
-										<SearchField id="idClienteIni" placeholder="Digite Código ou Nome do Cliente" enableSuggestions="true" value="{modelParametros>/KunnrIni}" suggest="onSuggestClienteIni" suggestionItems="{ path: 'modelClientes>/', sorter: { path: 'Kunnr', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelClientes>Kunnr}" description="{modelClientes>Name1}" key="{modelClientes>Kunnr}"/>
-											</suggestionItems>
-										</SearchField>
-										<SearchField id="idClienteFim" placeholder="Digite Código ou Nome do Cliente" enableSuggestions="true" value="{modelParametros>/KunnrFim}" suggest="onSuggestClienteFim" suggestionItems="{ path: 'modelClientes>/', sorter: { path: 'Kunnr', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelClientes>Kunnr}" description="{modelClientes>Name1}" key="{modelClientes>Kunnr}"/>
-											</suggestionItems>
-										</SearchField>
-										<Label text="Rede"/>
-										<SearchField id="idRedeIni" placeholder="Digite Código ou Nome da Rede" enableSuggestions="true" value="{modelParametros>/Kvgr4Ini}" suggest="onSuggestRedeIni" suggestionItems="{ path: 'modelRedes>/', sorter: { path: 'Kvgr4', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelRedes>Kvgr4}" description="{modelRedes>DescKvgr4}" key="{modelRedes>Kvgr4}"/>
-											</suggestionItems>
-										</SearchField>
-										<SearchField id="idRedeFim" placeholder="Digite Código ou Nome da Rede" enableSuggestions="true" value="{modelParametros>/Kvgr4Fim}" suggest="onSuggestRedeFim" suggestionItems="{ path: 'modelRedes>/', sorter: { path: 'Kvgr4', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelRedes>Kvgr4}" description="{modelRedes>DescKvgr4}" key="{modelRedes>Kvgr4}"/>
-											</suggestionItems>
-										</SearchField>
-										<Label text="Bandeira"/>
-										<SearchField id="idBandeiraIni" placeholder="Digite Código ou Nome da Bandeira" enableSuggestions="true" value="{modelParametros>/Kvgr5Ini}" suggest="onSuggestBandeiraIni" suggestionItems="{ path: 'modelBandeiras>/', sorter: { path: 'Kvgr5', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelBandeiras>Kvgr4}" description="{modelBandeiras>DescKvgr4}" key="{modelBandeiras>Kvgr5}"/>
-											</suggestionItems>
-										</SearchField>
-										<SearchField id="idBandeiraFim" placeholder="Digite Código ou Nome da Bandeira" enableSuggestions="true" value="{modelParametros>/Kvgr5Fim}" suggest="onSuggestBandeiraFim" suggestionItems="{ path: 'modelBandeiras>/', sorter: { path: 'Kvgr5', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelBandeiras>Kvgr5}" description="{modelBandeiras>DescKvgr5}" key="{modelBandeiras>Kvgr5}"/>
-											</suggestionItems>
-										</SearchField>
-										<Label text="Representante"/>
-										<SearchField id="idRepreIni" placeholder="Digite Código ou Nome do Representante" enableSuggestions="true" value="{modelParametros>/LifnrIni}" suggest="onSuggestRepresIni" suggestionItems="{ path: 'modelRepres>/', sorter: { path: 'Lifnr', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelRepres>Lifnr}" description="{modelRepres>Name1Rep}" key="{modelRepres>Lifnr}"/>
-											</suggestionItems>
-										</SearchField>
-										<SearchField id="idRepreFim" placeholder="Digite Código ou Nome do Representante" enableSuggestions="true" value="{modelParametros>/LifnrFim}" suggest="onSuggestRepresFim" suggestionItems="{ path: 'modelRepres>/', sorter: { path: 'Lifnr', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelRepres>Lifnr}" description="{modelRepres>Name1Rep}" key="{modelRepres>Lifnr}"/>
-											</suggestionItems>
-										</SearchField>
-										<Label text="Material"/>
-										<SearchField id="idMaterialIni" placeholder="Digite Código ou Descrição do Material" enableSuggestions="true" value="{modelParametros>/MatnrIni}" suggest="onSuggestMaterialIni" suggestionItems="{ path: 'modelMaterial>/', sorter: { path: 'Matnr', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelMaterial>Matnr}" description="{modelMaterial>Maktx}" key="{modelMaterial>Matnr}"/>
-											</suggestionItems>
-										</SearchField>
-										<SearchField id="idMaterialFim" placeholder="Digite Código ou Descrição do Material" enableSuggestions="true" value="{modelParametros>/MatnrFim}" suggest="onSuggestMaterialFim" suggestionItems="{ path: 'modelMaterial>/', sorter: { path: 'Matnr', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelMaterial>Matnr}" description="{modelMaterial>Maktx}" key="{modelMaterial>Matnr}"/>
-											</suggestionItems>
-										</SearchField>
-										
-										<Label text="Categoria"/>
-										<SearchField id="idCategoriaIni" placeholder="Digite Código ou Descrição da Categoria" enableSuggestions="true" value="{modelParametros>/Mvgr1Ini}" suggest="onSuggestCategoriaIni" suggestionItems="{ path: 'modelCategoria>/', sorter: { path: 'Mvgr1', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelCategoria>Mvgr1}" description="{modelCategoria>DescMvgr1}" key="{modelCategoria>Mvgr1}"/>
-											</suggestionItems>
-										</SearchField>
-										<SearchField id="idCategoriaFim" placeholder="Digite Código ou Descrição da Categoria" enableSuggestions="true" value="{modelParametros>/Mvgr1Fim}" suggest="onSuggestCategoriaFim" suggestionItems="{ path: 'modelCategoria>/', sorter: { path: 'Mvgr1', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelCategoria>Mvgr1}" description="{modelCategoria>DescMvgr1}" key="{modelCategoria>Mvgr1}"/>
-											</suggestionItems>
-										</SearchField>
-										
-										<Label text="SubCategoria"/>
-										<SearchField id="idSubCategoriaIni" placeholder="Digite Código ou Descrição da SubCategoria" enableSuggestions="true" value="{modelParametros>/Mvgr2Ini}" suggest="onSuggestSubCategoriaIni" suggestionItems="{ path: 'modelSubCategoria>/', sorter: { path: 'Mvgr2', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelSubCategoria>Mvgr2}" description="{modelSubCategoria>DescMvgr2}" key="{modelSubCategoria>Mvgr2}"/>
-											</suggestionItems>
-										</SearchField>
-										<SearchField id="idSubCategoriaFim" placeholder="Digite Código ou Descrição da SubCategoria" enableSuggestions="true" value="{modelParametros>/Mvgr2Fim}" suggest="onSuggestSubCategoriaFim" suggestionItems="{ path: 'modelSubCategoria>/', sorter: { path: 'Mvgr2', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelSubCategoria>Mvgr2}" description="{modelSubCategoria>DescMvgr2}" key="{modelSubCategoria>Mvgr2}"/>
-											</suggestionItems>
-										</SearchField>
-										
-										<Label text="Família"/>
-										<SearchField id="idFamiliaIni" placeholder="Digite Código ou Descrição da Família" enableSuggestions="true" value="{modelParametros>/Mvgr3Ini}" suggest="onSuggestFamiliaIni" suggestionItems="{ path: 'modelFamilia>/', sorter: { path: 'Mvgr3', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelFamilia>Mvgr3}" description="{modelFamilia>DescMvgr3}" key="{modelFamilia>Mvgr3}"/>
-											</suggestionItems>
-										</SearchField>
-										<SearchField id="idFamiliaFim" placeholder="Digite Código ou Descrição da Família" enableSuggestions="true" value="{modelParametros>/Mvgr3Fim}" suggest="onSuggestFamiliaFim" suggestionItems="{ path: 'modelFamilia>/', sorter: { path: 'Mvgr3', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelFamilia>Mvgr3}" description="{modelFamilia>DescMvgr3}" key="{modelFamilia>Mvgr3}"/>
-											</suggestionItems>
-										</SearchField>
-										
-										<Label text="Marca"/>
-										<SearchField id="idMarcaIni" placeholder="Digite Código ou Descrição da Marca" enableSuggestions="true" value="{modelParametros>/Mvgr5Ini}" suggest="onSuggestMarcaIni" suggestionItems="{ path: 'modelMarca>/', sorter: { path: 'Mvgr5', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelMarca>Mvgr5}" description="{modelMarca>DescMvgr5}" key="{modelMarca>Mvgr5}"/>
-											</suggestionItems>
-										</SearchField>
-										<SearchField id="idMarcaFim" placeholder="Digite Código ou Descrição da Marca" enableSuggestions="true" value="{modelParametros>/Mvgr5Fim}" suggest="onSuggestMarcaFim" suggestionItems="{ path: 'modelMarca>/', sorter: { path: 'Mvgr5', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelMarca>Mvgr5}" description="{modelMarca>DescMvgr5}" key="{modelMarca>Mvgr5}"/>
-											</suggestionItems>
-										</SearchField>
-										
-										<Label id="idPeriodo" text="Período"/>
-										<DateRangeSelection displayFormat="dd/MM/yyyy" id="idCDateRange" value="{modelParametros>/Periodo}" placeholder="Período" width="100%"/>
-										<Button id="idBtnFiltrar" text="Filtrar" type="Emphasized" press="onPressBtnFiltrar" icon="sap-icon://filter" tooltip="Filtrar Dados"/>
-									</f:content>
-									<!--<ToolbarSpacer width="90%"/>-->
-									<Button icon="sap-icon://excel-attachment" press="onExport" type="Emphasized" text="Exportar" tooltip="Exportar Dados"/>
-								</f:SimpleForm>
-							</content>
-						</Panel>
-					</Toolbar>
+					<Toolbar height="100%" class="backGround"></Toolbar>
 				</headerToolbar>
 				<columns>
 					<Column minScreenWidth="320px" demandPopin="true" width="65px" popinDisplay="Inline">
-						<Text text="Item"/>
-					</Column>
-					<Column minScreenWidth="900px" demandPopin="true" popinDisplay="Inline" width="320px">
-						<Text text="Descrição"/>
-					</Column>
-					<Column minScreenWidth="610px" demandPopin="true" popinDisplay="Inline" width="45px">
-						<Text text="UM"/>
-					</Column>
-					<!--<Column minScreenWidth="520px" demandPopin="true" popinDisplay="Inline" width="110px">-->
-					<!--	<Text text="Categoria"/>-->
-					<!--</Column>-->
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="200px">
-						<Text text="Desc.Categoria"/>
-					</Column>
-					<!--<Column minScreenWidth="520px" demandPopin="true" popinDisplay="Inline" width="40px">-->
-					<!--	<Text text="SubCategoria"/>-->
-					<!--</Column>-->
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="220px">
-						<Text text="Desc.SubCategoria"/>
-					</Column>
-					<!--<Column minScreenWidth="520px" demandPopin="true" popinDisplay="Inline" width="40px">-->
-					<!--	<Text text="Família"/>-->
-					<!--</Column>-->
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="200px">
-						<Text text="Desc.Família"/>
-					</Column>
-					<!--<Column minScreenWidth="520px" demandPopin="true" popinDisplay="Inline" width="40px">-->
-					<!--	<Text text="Marca"/>-->
-					<!--</Column>-->
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="100px">
-						<Text text="Desc.Marca"/>
-					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="110px" hAlign="Right">
-						<Text text="Qtd Fatur."/>
-					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="110px" hAlign="Right">
-						<Text text="Vlr Fatur."/>
-					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="60px" hAlign="Right">
-						<Text text="%Part."/>
-					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="55px" hAlign="Right">
-						<Text text="Qt.Pd"/>
-					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="60px" hAlign="Right">
-						<Text text="%Rent"/>
-					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="60px" hAlign="Right">
-						<Text text="Ult.Preço"/>
-					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="60px" hAlign="Right">
-						<Text text="Méd.Preço"/>
+						<Text text="Repres"/>
 					</Column>
 				</columns>
-				<items>
+				<items visible="false">
 					<ColumnListItem type="Inactive">
 						<cells>
-						<Text text="{modelFatItens>Matnr}"/>
-							<Text text="{modelFatItens>Maktx}"/>
-							<Text text="{modelFatItens>Meins}"/>
-							<!--<Text text="{modelFatItens>Mvgr1}"/>-->
-							<Text text="{modelFatItens>Mvgr1Text}"/>
-							<!--<Text text="{modelFatItens>Mvgr2}"/>-->
-							<Text text="{modelFatItens>Mvgr2Text}"/>
-							<!--<Text text="{modelFatItens>Mvgr3}"/>-->
-							<Text text="{modelFatItens>Mvgr3Text}"/>
-							<!--<Text text="{modelFatItens>Mvgr5}"/>-->
-							<Text text="{modelFatItens>Mvgr5Text}"/>
-							<Text text="{path: 'modelFatItens>QtdFaturada', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
-							<Text text="{path: 'modelFatItens>ValFaturado', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
-							<Text text="{path: 'modelFatItens>PctPartic', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
-							<Text text="{modelFatItens>QtdPedidos}"/>
-							<Text text="{path: 'modelFatItens>PctRentab', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
-							<Text text="{path: 'modelFatItens>UltPreco', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
-							<Text text="{path: 'modelFatItens>MedPreco', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
+							<Text text="{modelFatItensExcel>Lifnr}"/>
 						</cells>
 					</ColumnListItem>
 				</items>
 			</Table>
-			<f:SimpleForm id="SimpleFormChange472" editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="3" labelSpanS="1" adjustLabelSpan="false" emptySpanXL="3" emptySpanL="3" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1" singleContainerFullSize="false">
-				<f:content>
-					<Label/>
-					<Table class="centralizaGroup" id="idtableResumoEmpresa" growing="false" growingScrollToLoad="false" growingThreshold="5" noDataText="Nenhum registro encontrado" items="{ path: 'modelResumoEmpresa>/' }">
-						<columns>
-							<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" styleClass="">
-								<Text text="Resumo Representante"/>
-							</Column>
-							<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" hAlign="Right">
-								<Text text="Valor Total Faturado"/>
-							</Column>
-						</columns>
-						<items>
-							<ColumnListItem type="Inactive">
-								<cells>
-									<Text text="{modelResumoEmpresa>Bukrs} - {modelResumoEmpresa>Butxt}"/>
-									<Text text="{path: 'modelResumoEmpresa>ValFaturado', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
-								</cells>
-							</ColumnListItem>
-						</items>
-					</Table>
-				</f:content>
-			</f:SimpleForm>
 		</content>
 	</Page>
 </mvc:View>

@@ -108,6 +108,9 @@ sap.ui.define([
 									that.byId("table_pedidos").setBusy(false);
 									that.getModelGlobal("modelAux").setProperty("/NrPedido", Pedido.NrPedido);
 
+									that.getModelGlobal("modelAux").setProperty("/NrPedido", Ped.NrPedido);
+									sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
+
 								}).catch(function (error) {
 
 									that.byId("table_pedidos").setBusy(false);

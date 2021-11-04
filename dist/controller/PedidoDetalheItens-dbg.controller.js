@@ -381,6 +381,20 @@ sap.ui.define([
 
 						that.getModelGlobal("modelItem").setData(Item);
 						that.byId("idItens").setBusy(false);
+
+						if (Item.PercLucro <= -3) {
+
+							that.byId("idRentabilidade").setVisible(false);
+
+						} else if (Item.PercLucro >= 3) {
+
+							that.byId("idRentabilidade").setVisible(false);
+
+						} else if (Item.PercLucro < 3 && Item.PercLucro > -3) {
+
+							that.byId("idRentabilidade").setVisible(true);
+						}
+
 					}
 				},
 				error: function (oError) {
