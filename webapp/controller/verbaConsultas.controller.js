@@ -20,12 +20,24 @@ sap.ui.define([
 		_onLoadFields: function () {
 
 			var that = this;
-			
+
 			that.onInicializaModels();
 
-			// open.onsuccess = function () {
+			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
+			that.oModel = that.getModelGlobal("modelAux").getProperty("/DBModel");
 
-			// new Promise(function (resolve, reject) {
+			that.oModel.read("/Centros", {
+				urlParameters: {
+					"$filter": "IvUsuario eq '" + repres + "'"
+				},
+				success: function (retorno) {
+					var vetorCentros = [];
+					that.vetorCentros = retorno.results;
+					var oModelCentros = new JSONModel(that.vetorCentros);
+					that.setModel(oModelCentros, "modelCentros");
+					that.onAbrirCentros();
+				},
+				error: function (error) {
 
 				// 	var transCentro = db.transaction("Centros", "readwrite");
 				// 	var objCentro = transCentro.objectStore("Centros");
@@ -57,82 +69,58 @@ sap.ui.define([
 				// 	});
 				// });
 
-			// };
+					that.onMensagemErroODATA(error);
+				}
+			});
 		},
 
 		onChangeEmpresa: function () {
 
 			var that = this;
+			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
 			var Bukrs = this.getModel("modelTela").getProperty("/Bukrs");
 
 			that.onDialogCancelar();
 
-			var open = indexedDB.open("PRED");
+			that.byId("detail").setBusy(true);
 
-			open.onerror = function () {
-				alert(open.error.mensage);
-			};
+			that.oModel.read("/SaldoVerbas", {
+				urlParameters: {
+					"$filter": "IvUsuario eq '" + repres + "'"
+				},
+				success: function (retorno) {
 
-			open.onsuccess = function () {
+					var result = retorno.results[0];
+					var aux = that.getModel("modelTela").getData();
 
-				var db = open.result;
+					aux.Cod = result.Lifnr;
+					aux.Nome = result.Name1Rep;
+					// aux.Email = result.Email;
 
-				var str = db.transaction("SaldoVerbas", "readwrite");
-				var objVerba = str.objectStore("SaldoVerbas");
-				var indexVerba = objVerba.index("Bukrs");
+					var oModel = new JSONModel(aux);
+					that.setModel(oModel, "modelTela");
 
-				var request = indexVerba.getAll(Bukrs);
+					that.vetorVerbasAux = retorno.results;
+					that.vetorVerbas = [];
 
-				request.onsuccess = function (e) {
-					var aux = e.target.result;
-					
-					if(aux !== undefined){
-						
-						var oItemSaldoVerbas = [];
-						
-						for(var j=0; j<aux.length; j++){
-							
-							aux[j].NomEmpresa = "";
-	
-							for (var i = 0; i < that.vetorCentros.length; i++) {
-								if (that.vetorCentros[i].Bukrs == Bukrs) {
-									aux[j].NomEmpresa = that.vetorCentros[i].NomeCentro;
-									break;
-								}
-							}
-							
-							oItemSaldoVerbas.push(aux[j]);
+					for (var i = 0; i < that.vetorVerbasAux.length; i++) {
+
+						if (that.vetorVerbasAux[i].Bukrs == Bukrs) {
+
+							that.vetorVerbas.push(that.vetorVerbasAux[i]);
+
 						}
 					}
-					
-					var oModel = new JSONModel(oItemSaldoVerbas);
-					that.setModel(oModel, "Verbas");
 
-				};
+					that.byId("detail").setBusy(false);
+					that.getModel("Verbas").setData(that.vetorVerbas);
 
-				var store1 = db.transaction("Aux", "readwrite");
-				var objUsuarios = store1.objectStore("Aux");
-
-				var request = objUsuarios.getAll();
-
-				request.onsuccess = function (e) {
-
-					var result = e.target.result[0];
-
-					if (result !== undefined) {
-
-						var aux = that.getModel("modelTela").getData();
-
-						aux.Cod = result.CodRepres;
-						aux.Nome = result.NomeRepres;
-						aux.Email = result.Email;
-
-						var oModel = new JSONModel(aux);
-						that.setModel(oModel, "modelTela");
-
-					}
-				};
-			};
+				},
+				error: function (error) {
+					that.byId("detail").setBusy(false);
+					that.onMensagemErroODATA(error);
+				}
+			});
 		},
 
 		onInicializaModels: function () {
@@ -147,17 +135,16 @@ sap.ui.define([
 			var oModel = new JSONModel(aux);
 			this.setModel(oModel, "modelTela");
 
-
 			var oModelVerbas = new JSONModel();
 			this.setModel(oModelVerbas, "Verbas");
-			
+
 			var aux2 = {
 				Bukrs: "",
 				DatUltMovto: "",
 				IdSaldo: "",
 				IvUsuario: "",
 				Lifnr: "",
-				NomEmpresa: "",
+				Butxt: "",
 				Periodo: "",
 				Usuario: "",
 				ValSdoCr: "",
@@ -202,7 +189,7 @@ sap.ui.define([
 			var sValue = oEvent.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [
-				new sap.ui.model.Filter("Reprs", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Repres", sap.ui.model.FilterOperator.Contains, sValue),
 				new sap.ui.model.Filter("Name", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 

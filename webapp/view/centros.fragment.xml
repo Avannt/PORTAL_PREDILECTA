@@ -1,0 +1,28 @@
+<core:FragmentDefinition id="idCentros" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:f="sap.ui.layout.form"
+	xmlns:layout="sap.ui.layout">
+	<Dialog id="idDialog" initialFocus="idFunc" title="Empresa / Centro" busy="{modelDelay>/dialog}" afterOpen="onBuscarOperadores"
+		busyIndicatorDelay="0">
+		<content>
+			<f:SimpleForm minWidth="1024" maxContainerCols="3" editable="true" layout="ResponsiveGridLayout" labelSpanL="3" labelSpanM="3"
+				labelSpanXL="1" emptySpanL="0" emptySpanM="0" emptySpanXL="1" columnsL="3" columnsXL="3" columnsM="3">
+				<f:toolbar>
+					<Toolbar width="100%" id="toolbar1">
+						<content>
+							<Select id="idEstabelecimento" forceSelection="false" selectedKey="{modelTela>/Bukrs}" showSecondaryValues="false"
+								items="{ path: 'modelCentros>/' }" change="onChangeEmpresa" busyIndicatorDelay="0">
+								<core:Item xmlns:core="sap.ui.core" key="{modelCentros>Bukrs}" text="{modelCentros>Bukrs} - {modelCentros>NomeCentro}" />
+								<layoutData>
+									<layout:GridData xmlns:layout="sap.ui.layout" span="L2 M2" linebreakM="true" id="data98"/>
+								</layoutData>
+							</Select>
+						</content>
+					</Toolbar>
+				</f:toolbar>
+			</f:SimpleForm>
+		</content>
+		<endButton>
+			<Button id="idCancelar" text="Cancelar" press="onDialogCancelar" type="Reject" busyIndicatorDelay="0" busy="{modelAux>btnDialogCancel}"
+				icon="sap-icon://decline"/>
+		</endButton>
+	</Dialog>
+</core:FragmentDefinition>
