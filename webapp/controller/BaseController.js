@@ -17,7 +17,7 @@ sap.ui.define([
 
 			this.getRouter().initialize();
 		},
-
+ 
 		getModel: function (sName) {
 			return this.getView().getModel(sName);
 		},
