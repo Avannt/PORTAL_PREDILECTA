@@ -68,12 +68,17 @@ sap.ui.define([
 				},
 				success: function (retorno) {
 
-					var vetorProdutos = [];
-
-					that.vetorProdutos = retorno.results;
-					var oModelProdutos = new JSONModel(that.vetorProdutos);
+					that.vetorProdutosAux = retorno.results;
+					that.vetorProdutos = [];
+					// var oModelProdutos = new JSONModel(that.vetorProdutos);
 					
-					for (var i = 0; i < that.vetorProdutos.length; i++) {
+					for (var i = 0; i < that.vetorProdutosAux.length; i++) {
+						
+							if (that.vetorProdutosAux[i].Werks == werks) {
+
+							that.vetorProdutos.push(that.vetorProdutosAux[i]);
+
+						}
 						
 						//that.vetorProdutos[i].PathImg = "http://189.57.15.163:81/predilecta/images_produtos/" + that.vetorProdutos[i].Matnr + ".png";
 						
@@ -82,7 +87,8 @@ sap.ui.define([
 					}
 
 					that.byId("masterProdutos").setBusy(false);
-					that.setModel(oModelProdutos, "modelProdutos");
+					that.getModel("modelProdutos").setData(that.vetorProdutos);
+					// that.setModel(oModelProdutos, "modelProdutos");
 					that.onFilterCentro(werks);
 					
 				},
@@ -139,8 +145,7 @@ sap.ui.define([
 			var sValue = oEvent.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Matnr", sap.ui.model.FilterOperator.StartsWith, sValue),
-				new sap.ui.model.Filter("Maktx", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Werks", sap.ui.model.FilterOperator.Contains, werks)
+				new sap.ui.model.Filter("Maktx", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);

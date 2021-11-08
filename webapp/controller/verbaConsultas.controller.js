@@ -39,36 +39,6 @@ sap.ui.define([
 				},
 				error: function (error) {
 
-				// 	var transCentro = db.transaction("Centros", "readwrite");
-				// 	var objCentro = transCentro.objectStore("Centros");
-
-				// 	var requestCentro = objCentro.getAll();
-
-				// 	requestCentro.onsuccess = function (event) {
-				// 		that.vetorCentros = event.target.result;
-
-				// 		var modelCentros = new JSONModel(that.vetorCentros);
-				// 		that.setModel(modelCentros, "modelCentros");
-
-				// 		resolve();
-				// 	};
-
-				// }).then(function (resolve) {
-
-				// 	that.onAbrirCentros();
-
-				// }).catch(function (msg) {
-
-				// 	sap.m.MessageBox.show(msg, {
-				// 		icon: sap.m.MessageBox.Icon.ERROR,
-				// 		title: "Falha ao carregar os centros!",
-				// 		actions: [MessageBox.Action.OK],
-				// 		onClose: function () {
-
-				// 		}
-				// 	});
-				// });
-
 					that.onMensagemErroODATA(error);
 				}
 			});

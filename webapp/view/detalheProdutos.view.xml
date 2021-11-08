@@ -22,13 +22,14 @@
 					</Toolbar>
 				</subHeader>
 				<content>
-					<List id="list" items="{ path: 'modelProdutos>/' }" noDataText="{masterView>/noDataText}" mode="SingleSelectMaster" growing="true" growingScrollToLoad="true" updateFinished="onUpdateFinished" selectionChange="onSelectionChange">
+					<List id="list" items="{ path: 'modelProdutos>/' }" noDataText="{masterView>/noDataText}" mode="SingleSelectMaster" growing="true"
+						growingScrollToLoad="true" updateFinished="onUpdateFinished" selectionChange="onSelectionChange">
 						<items>
 							<ObjectListItem icon="{modelProdutos>PathImg}" type="Active" press="onSelectionChange" title="Cód. {modelProdutos>Matnr}">
 								<attributes>
 									<ObjectAttribute text="{modelProdutos>Maktx}"/>
-									<ObjectAttribute text="Categ.: {modelProdutos>Mvgr1}-{modelProdutos&gt;DescMvgr1}"/>
-									<ObjectAttribute text="SubCateg.: {modelProdutos>Mvgr2}-{modelProdutos&gt;DescMvgr2}"/>
+									<ObjectAttribute text="Categ.: {modelProdutos>Mvgr1}-{modelProdutos>DescMvgr1}"/>
+									<ObjectAttribute text="SubCateg.: {modelProdutos>Mvgr2}-{modelProdutos>DescMvgr2}"/>
 								</attributes>
 								<!--<firstStatus>-->
 								<!--	<ObjectStatus text=""/>-->
@@ -38,7 +39,10 @@
 						<headerToolbar>
 							<Toolbar width="100%" id="toolbar2">
 								<content>
-									<SearchField xmlns:mvc="sap.ui.core.mvc" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" xmlns:form="sap.ui.layout.form" xmlns:layout="sap.ui.layout" xmlns:course="opensap.manageproducts.control" xmlns="sap.m" id="searchField" showRefreshButton="false" placeholder="Digite Desc./Cód. Produto" tooltip="Pesquisar Clientes pelo Nome." width="100%" liveChange="onSearch" search="onSearch">
+									<SearchField xmlns:mvc="sap.ui.core.mvc" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+										xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" xmlns:form="sap.ui.layout.form" xmlns:layout="sap.ui.layout"
+										xmlns:course="opensap.manageproducts.control" xmlns="sap.m" id="searchField" showRefreshButton="false"
+										placeholder="Digite Desc./Cód. Produto" tooltip="Pesquisar Clientes pelo Nome." width="100%" liveChange="onSearch" search="onSearch">
 										<layoutData>
 											<layout:GridData xmlns:layout="sap.ui.layout" span="L2 M2" linebreakM="true" id="data97"/>
 										</layoutData>
@@ -47,6 +51,31 @@
 							</Toolbar>
 						</headerToolbar>
 					</List>
+					<!--<List id="list" items="{ path: 'modelProdutos>/' }" noDataText="{masterView>/noDataText}" mode="SingleSelectMaster" growing="true" growingScrollToLoad="true" updateFinished="onUpdateFinished" selectionChange="onSelectionChange">-->
+					<!--	<items>-->
+					<!--		<ObjectListItem icon="{modelProdutos>PathImg}" type="Active" press="onSelectionChange" title="Cód. {modelProdutos>Matnr}">-->
+					<!--			<attributes>-->
+					<!--				<ObjectAttribute text="{modelProdutos>Maktx}"/>-->
+					<!--				<ObjectAttribute text="Categ.: {modelProdutos>Mvgr1}-{modelProdutos&gt;DescMvgr1}"/>-->
+					<!--				<ObjectAttribute text="SubCateg.: {modelProdutos>Mvgr2}-{modelProdutos&gt;DescMvgr2}"/>-->
+					<!--			</attributes>-->
+								<!--<firstStatus>-->
+								<!--	<ObjectStatus text=""/>-->
+								<!--</firstStatus>-->
+					<!--		</ObjectListItem>-->
+					<!--	</items>-->
+					<!--	<headerToolbar>-->
+					<!--		<Toolbar width="100%" id="toolbar2">-->
+					<!--			<content>-->
+					<!--				<SearchField xmlns:mvc="sap.ui.core.mvc" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" xmlns:form="sap.ui.layout.form" xmlns:layout="sap.ui.layout" xmlns:course="opensap.manageproducts.control" xmlns="sap.m" id="searchField" showRefreshButton="false" placeholder="Digite Desc./Cód. Produto" tooltip="Pesquisar Clientes pelo Nome." width="100%" liveChange="onSearch" search="onSearch">-->
+					<!--					<layoutData>-->
+					<!--						<layout:GridData xmlns:layout="sap.ui.layout" span="L2 M2" linebreakM="true" id="data97"/>-->
+					<!--					</layoutData>-->
+					<!--				</SearchField>-->
+					<!--			</content>-->
+					<!--		</Toolbar>-->
+					<!--	</headerToolbar>-->
+					<!--</List>-->
 				</content>
 			</Page>
 		</masterPages>
