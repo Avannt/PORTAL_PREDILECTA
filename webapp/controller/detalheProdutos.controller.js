@@ -70,12 +70,13 @@ sap.ui.define([
 
 					that.vetorProdutosAux = retorno.results;
 					that.vetorProdutos = [];
-					// var oModelProdutos = new JSONModel(that.vetorProdutos);
 					
 					for (var i = 0; i < that.vetorProdutosAux.length; i++) {
 						
 							if (that.vetorProdutosAux[i].Werks == werks) {
-
+							
+							that.vetorProdutosAux[i].PathImg = "http://189.57.15.163:81/predilecta/images_produtos/" + that.vetorProdutosAux[i].Matnr + ".png";
+						
 							that.vetorProdutos.push(that.vetorProdutosAux[i]);
 
 						}
@@ -88,7 +89,6 @@ sap.ui.define([
 
 					that.byId("masterProdutos").setBusy(false);
 					that.getModel("modelProdutos").setData(that.vetorProdutos);
-					// that.setModel(oModelProdutos, "modelProdutos");
 					that.onFilterCentro(werks);
 					
 				},
@@ -115,7 +115,7 @@ sap.ui.define([
 		onSelectionChange: function (oEvent) {
 
 			var that = this;
-			that.byId("detailProdutos").setBusy(true);
+			// that.byId("detailProdutos").setBusy(true);
 
 			var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
 			var Produto = oItem.getBindingContext("modelProdutos").getObject();
@@ -124,7 +124,7 @@ sap.ui.define([
 			that.getSplitContObj().toDetail(this.createId("detail"));
 
 			this.getSplitContObj().toDetail(this.createId("detail"));
-			that.byId("detailProdutos").setBusy(false);
+			// that.byId("detailProdutos").setBusy(false);
 		},
 
 		onNavBack: function () {
