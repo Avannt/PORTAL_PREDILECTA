@@ -31,9 +31,6 @@
 									<ObjectAttribute text="Categ.: {modelProdutos>Mvgr1}-{modelProdutos>DescMvgr1}"/>
 									<ObjectAttribute text="SubCateg.: {modelProdutos>Mvgr2}-{modelProdutos>DescMvgr2}"/>
 								</attributes>
-								<!--<firstStatus>-->
-								<!--	<ObjectStatus text=""/>-->
-								<!--</firstStatus>-->
 							</ObjectListItem>
 						</items>
 						<headerToolbar>
@@ -51,31 +48,6 @@
 							</Toolbar>
 						</headerToolbar>
 					</List>
-					<!--<List id="list" items="{ path: 'modelProdutos>/' }" noDataText="{masterView>/noDataText}" mode="SingleSelectMaster" growing="true" growingScrollToLoad="true" updateFinished="onUpdateFinished" selectionChange="onSelectionChange">-->
-					<!--	<items>-->
-					<!--		<ObjectListItem icon="{modelProdutos>PathImg}" type="Active" press="onSelectionChange" title="Cód. {modelProdutos>Matnr}">-->
-					<!--			<attributes>-->
-					<!--				<ObjectAttribute text="{modelProdutos>Maktx}"/>-->
-					<!--				<ObjectAttribute text="Categ.: {modelProdutos>Mvgr1}-{modelProdutos&gt;DescMvgr1}"/>-->
-					<!--				<ObjectAttribute text="SubCateg.: {modelProdutos>Mvgr2}-{modelProdutos&gt;DescMvgr2}"/>-->
-					<!--			</attributes>-->
-								<!--<firstStatus>-->
-								<!--	<ObjectStatus text=""/>-->
-								<!--</firstStatus>-->
-					<!--		</ObjectListItem>-->
-					<!--	</items>-->
-					<!--	<headerToolbar>-->
-					<!--		<Toolbar width="100%" id="toolbar2">-->
-					<!--			<content>-->
-					<!--				<SearchField xmlns:mvc="sap.ui.core.mvc" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" xmlns:form="sap.ui.layout.form" xmlns:layout="sap.ui.layout" xmlns:course="opensap.manageproducts.control" xmlns="sap.m" id="searchField" showRefreshButton="false" placeholder="Digite Desc./Cód. Produto" tooltip="Pesquisar Clientes pelo Nome." width="100%" liveChange="onSearch" search="onSearch">-->
-					<!--					<layoutData>-->
-					<!--						<layout:GridData xmlns:layout="sap.ui.layout" span="L2 M2" linebreakM="true" id="data97"/>-->
-					<!--					</layoutData>-->
-					<!--				</SearchField>-->
-					<!--			</content>-->
-					<!--		</Toolbar>-->
-					<!--	</headerToolbar>-->
-					<!--</List>-->
 				</content>
 			</Page>
 		</masterPages>
@@ -84,7 +56,7 @@
 				<content>
 					<IconTabBar id="idTopLevelIconTabBar">
 						<items>
-							<IconTabFilter id="tabInfoProduto" text="Dados Produtos" key="tab1" icon="sap-icon://hint">
+							<IconTabFilter id="tabInfoProduto" text="Dados Produto" key="tab1" icon="sap-icon://hint">
 								<content>
 									<VBox class="sapUiSmallMargin">
 										<f:SimpleForm id="SimpleFormChange471" editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="4" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="3" emptySpanL="3" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1" singleContainerFullSize="false">
@@ -93,8 +65,6 @@
 												<Input id="idCodigoProduto" value="{modelProduto>/Matnr}" enabled="false"/>
 												<Label text="Nome Produto"/>
 												<Input id="idNomeProduto" value="{modelProduto>/Maktx}" enabled="false"/>
-												<!--<Label text="Grupo de Mercadorias"/>-->
-												<!--<Input id="idGrupoEstoque" value="{modelProduto>/Extwg} - {modelProduto>/DescExtwg}" enabled="false" />-->
 												<Label text="Categoria"/>
 												<Input id="idCategoria" value="{modelProduto>/Mvgr1} - {modelProduto>/DescMvgr1}" enabled="false"/>
 												<Label text="SubCategoria"/>
@@ -103,13 +73,10 @@
 												<Input id="idFamilia" value="{modelProduto>/Mvgr3} - {modelProduto>/DescMvgr3}" enabled="false"/>
 												<Label text="Gramatura"/>
 												<Input id="idGramatura" value="{modelProduto>/DescMvgr4}" enabled="false"/>
-												<!--{modelProduto>/Mvgr4} - -->
 												<Label text="Marca"/>
 												<Input id="idMarca" value="{modelProduto>/Mvgr5} - {modelProduto>/DescMvgr5}" enabled="false"/>
 												<Label text="Classificação Fiscal"/>
 												<Input id="idClassificacaoFiscal" value="{modelProduto>/Steuc}" enabled="false"/>
-												<!--<Label text="Unidade Negócio" />-->
-												<!--<Input id="idUnidadeNegocio" enabled="false" />-->
 												<Label text="Peso Bruto"/>
 												<Input id="idPesoBruto" value="{path: 'modelProduto>/Brgew', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} {modelProduto>/Gewei}" enabled="false"/>
 												<Label text="Peso Liquido"/>
@@ -139,7 +106,8 @@
 							</IconTabFilter>
 							<IconTabFilter id="tabMovimentacao" text="Ilustração" key="tab2" icon="sap-icon://picture">
 								<VBox alignItems="Center">
-									<Image id="idPictureSrc" src="{modelProduto>/PathImg}" densityAware="false"/>
+									<!--<Image id="idPictureSrc" src="{modelProduto>/PathImg}" densityAware="false"/>-->
+									<!--<Image id="idPictureSrc" src="https://www.castgroup.com.br/wp-content/uploads/2020/07/logo-ok.png" densityAware="false"/>-->
 								</VBox>
 							</IconTabFilter>
 						</items>

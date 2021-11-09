@@ -140,8 +140,6 @@ sap.ui.define([
 
 			var that = this;
 
-			var werks = that.getModel("modelTela").getProperty("/Werks");
-
 			var sValue = oEvent.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Matnr", sap.ui.model.FilterOperator.StartsWith, sValue),
