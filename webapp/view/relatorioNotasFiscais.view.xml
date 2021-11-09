@@ -81,14 +81,17 @@
 					</Toolbar>
 				</headerToolbar>
 				<columns>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="35px">
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="30px">
 						<Text text="Cen"/>
 					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="35px">
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="30px">
 						<Text text="Sér"/>
 					</Column>
-					<Column minScreenWidth="500px" demandPopin="true" popinDisplay="Inline" width="80px">
+					<Column minScreenWidth="500px" demandPopin="true" popinDisplay="Inline" width="65px">
 						<Text text="Nota Fiscal"/>
+					</Column>
+					<Column minScreenWidth="610px" demandPopin="true" popinDisplay="Inline" width="70px" hAlign="Right">
+						<Text text="Doc.Vendas"/>
 					</Column>
 					<Column minScreenWidth="610px" demandPopin="true" popinDisplay="Inline" width="80px">
 						<Text text="Ref.Cliente"/>
@@ -133,6 +136,7 @@
 							<Text text="{modelNotasFiscais>Werks}"/>
 							<Text text="{modelNotasFiscais>Series}"/>
 							<Text text="{modelNotasFiscais>Nfenum}"/>
+							<Text text="{modelNotasFiscais>Vbeln}"/>
 							<Text text="{modelNotasFiscais>Bstkd}"/>
 							<Text text="{path: 'modelNotasFiscais>Docdat', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' , strictParsing: true , UTC: true }}"/>
 							<Text text="{modelNotasFiscais>Kunnr}"/>

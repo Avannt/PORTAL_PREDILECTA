@@ -196,6 +196,12 @@ sap.ui.define([
 				property: "Nfenum",
 				type: EdmType.String
 			});
+			
+			aCols.push({
+				label: "Doc.Vendas",
+				property: "Vbeln",
+				type: EdmType.String
+			});
 
 			aCols.push({
 				label: "Referência Cliente",
