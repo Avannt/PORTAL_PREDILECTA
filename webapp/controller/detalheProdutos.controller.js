@@ -75,7 +75,7 @@ sap.ui.define([
 						
 							if (that.vetorProdutosAux[i].Werks == werks) {
 							
-							that.vetorProdutosAux[i].PathImg = "http://189.57.15.163:81/predilecta/images_produtos/" + that.vetorProdutosAux[i].Matnr + ".png";
+							// that.vetorProdutosAux[i].PathImg = "http://189.57.15.163:81/predilecta/images_produtos/" + that.vetorProdutosAux[i].Matnr + ".png";
 						
 							that.vetorProdutos.push(that.vetorProdutosAux[i]);
 
@@ -137,8 +137,6 @@ sap.ui.define([
 		},
 
 		onSearch: function (oEvent) {
-
-			var that = this;
 
 			var sValue = oEvent.getSource().getValue();
 			var aFilters = [];
