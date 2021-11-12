@@ -378,7 +378,6 @@ sap.ui.define([
 			if (this._ItemDialog) {
 				this._ItemDialog.destroy(true);
 			}
-
 		},
 
 		onDialogEnvioDanfe: function () {

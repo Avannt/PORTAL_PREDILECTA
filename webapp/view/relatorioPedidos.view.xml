@@ -1,7 +1,7 @@
 <mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:layout="sap.ui.layout" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" xmlns="sap.m" xmlns:semantic="sap.m.semantic" height="100%" controllerName="application.controller.relatorioPedidos">
 	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Relatório de Pedidos" showFooter="false" busyIndicatorDelay="0">
 		<content>
-			<Table class="centralizaGroup" id="idtableNotasFiscais" growing="false" growingScrollToLoad="false" growingThreshold="5" noDataText="Nenhum registro encontrado" alternateRowColors="true" backgroundDesign="Solid" width="100%" growingTriggerText="Próximo &gt;&gt;&gt;" items="{ path: 'modelPedidos>/', sorter : [{ path: 'Bukrs', ascending: true, group: '.ongetHeaderGroupBukrs' }] }">
+			<Table class="centralizaGroup" id="idtablePedidos" growing="false" growingScrollToLoad="false" growingThreshold="5" noDataText="Nenhum registro encontrado" alternateRowColors="true" backgroundDesign="Solid" width="100%" growingTriggerText="Próximo &gt;&gt;&gt;" items="{ path: 'modelPedidos>/', sorter : [{ path: 'Bukrs', ascending: true, group: '.ongetHeaderGroupBukrs' }] }">
 				<headerToolbar>
 					<OverflowToolbar/>
 					<Toolbar height="100%" class="backGround">
@@ -45,7 +45,7 @@
 										<Label text="Bandeira"/>
 										<SearchField id="idBandeiraIni" placeholder="Digite Código ou Nome da Bandeira" enableSuggestions="true" value="{modelParametros>/Kvgr5Ini}" suggest="onSuggestBandeiraIni" suggestionItems="{ path: 'modelBandeiras>/', sorter: { path: 'Kvgr5', ascending: true }}">
 											<suggestionItems>
-												<SuggestionItem text="{modelBandeiras>Kvgr4}" description="{modelBandeiras>DescKvgr4}" key="{modelBandeiras>Kvgr5}"/>
+												<SuggestionItem text="{modelBandeiras>Kvgr5}" description="{modelBandeiras>DescKvgr5}" key="{modelBandeiras>Kvgr5}"/>
 											</suggestionItems>
 										</SearchField>
 										<SearchField id="idBandeiraFim" placeholder="Digite Código ou Nome da Bandeira" enableSuggestions="true" value="{modelParametros>/Kvgr5Fim}" suggest="onSuggestBandeiraFim" suggestionItems="{ path: 'modelBandeiras>/', sorter: { path: 'Kvgr5', ascending: true }}">
@@ -81,13 +81,13 @@
 					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="30px">
 						<Text text="Cen"/>
 					</Column>
-					<Column minScreenWidth="610px" demandPopin="true" popinDisplay="Inline" width="70px" hAlign="Right">
+					<Column minScreenWidth="410px" demandPopin="true" popinDisplay="Inline" width="60px" hAlign="Right">
 						<Text text="Doc.Vendas"/>
 					</Column>
-					<Column minScreenWidth="610px" demandPopin="true" popinDisplay="Inline" width="80px">
+					<Column minScreenWidth="410px" demandPopin="true" popinDisplay="Inline" width="90px">
 						<Text text="Ref.Cliente"/>
 					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="80px">
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="55px">
 						<Text text="Emissão"/>
 					</Column>
 					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="65px">
@@ -97,16 +97,28 @@
 						<Text text="Razão Social"/>
 					</Column>
 					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="110px">
-						<Text text="CNPJ"/>
+						<Text text="Rede"/>
 					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="40px">
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="30px">
 						<Text text="UF"/>
 					</Column>
 					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="100px">
 						<Text text="Cidade"/>
 					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="95px" hAlign="Right">
-						<Text text="Vl.Tot"/>
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="75px" hAlign="Right">
+						<Text text="Volume(CX)"/>
+					</Column>
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="75px" hAlign="Right">
+						<Text text="Sdo.Volume(CX)"/>
+					</Column>
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="75px" hAlign="Right">
+						<Text text="Valor S/ST"/>
+					</Column>
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="75px" hAlign="Right">
+						<Text text="Vl Saldo S/ST"/>
+					</Column>
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="80px">
+						<Text text="Status"/>
 					</Column>
 				</columns>
 				<items>
@@ -115,41 +127,44 @@
 							<Text text="{modelPedidos>Werks}"/>
 							<Text text="{modelPedidos>Vbeln}"/>
 							<Text text="{modelPedidos>Bstkd}"/>
-							<Text text="{path: 'modelPedidos>Docdat', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' , strictParsing: true , UTC: true }}"/>
+							<Text text="{path: 'modelPedidos>Audat', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' , strictParsing: true , UTC: true }}"/>
 							<Text text="{modelPedidos>Kunnr}"/>
 							<Text text="{modelPedidos>Name1Cli}"/>
-							<Text text="{modelPedidos>Stcd1}"/>
+							<Text text="{modelPedidos>Kvgr4Text}"/>
 							<Text text="{modelPedidos>Region}"/>
 							<Text text="{modelPedidos>City1}"/>
-							<Text text="{path: 'modelPedidos>Netwrt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
-							
+							<Text text="{path: 'modelPedidos>Kwmeng', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
+							<Text text="{path: 'modelPedidos>QtdSdoPed', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
+							<Text text="{path: 'modelPedidos>ValSSt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
+							<Text text="{path: 'modelPedidos>ValSdoSSt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
+							<Text text="{modelPedidos>StatusRemessa}"/>
 						</cells>
 					</ColumnListItem>
 				</items>
 			</Table>
-			<f:SimpleForm id="SimpleFormChange472" editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="3" labelSpanS="1" adjustLabelSpan="false" emptySpanXL="3" emptySpanL="3" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1" singleContainerFullSize="false">
-				<f:content>
-					<Label/>
-					<Table class="centralizaGroup" id="idtableResumoEmpresa" growing="false" growingScrollToLoad="false" growingThreshold="5" noDataText="Nenhum registro encontrado" items="{ path: 'modelResumoEmpresa>/' }">
-						<columns>
-							<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" styleClass="">
-								<Text text="Resumo Representante"/>
-							</Column>
-							<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" hAlign="Right">
-								<Text text="Valor Total Faturado"/>
-							</Column>
-						</columns>
-						<items>
-							<ColumnListItem type="Inactive">
-								<cells>
-									<Text text="{modelResumoEmpresa>Bukrs} - {modelResumoEmpresa>Butxt}"/>
-									<Text text="{path: 'modelResumoEmpresa>Netwrt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
-								</cells>
-							</ColumnListItem>
-						</items>
-					</Table>
-				</f:content>
-			</f:SimpleForm>
+			<!--<f:SimpleForm id="SimpleFormChange472" editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="3" labelSpanS="1" adjustLabelSpan="false" emptySpanXL="3" emptySpanL="3" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1" singleContainerFullSize="false">-->
+			<!--	<f:content>-->
+			<!--		<Label/>-->
+			<!--		<Table class="centralizaGroup" id="idtableResumoEmpresa" growing="false" growingScrollToLoad="false" growingThreshold="5" noDataText="Nenhum registro encontrado" items="{ path: 'modelResumoEmpresa>/' }">-->
+			<!--			<columns>-->
+			<!--				<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" styleClass="">-->
+			<!--					<Text text="Resumo Representante"/>-->
+			<!--				</Column>-->
+			<!--				<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" hAlign="Right">-->
+			<!--					<Text text="Valor Total Faturado"/>-->
+			<!--				</Column>-->
+			<!--			</columns>-->
+			<!--			<items>-->
+			<!--				<ColumnListItem type="Inactive">-->
+			<!--					<cells>-->
+			<!--						<Text text="{modelResumoEmpresa>Bukrs} - {modelResumoEmpresa>Butxt}"/>-->
+			<!--						<Text text="{path: 'modelResumoEmpresa>Netwrt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>-->
+			<!--					</cells>-->
+			<!--				</ColumnListItem>-->
+			<!--			</items>-->
+			<!--		</Table>-->
+			<!--	</f:content>-->
+			<!--</f:SimpleForm>-->
 		</content>
 	</Page>
 </mvc:View>

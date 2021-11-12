@@ -47,8 +47,8 @@ sap.ui.define([
 			var omodelParametros = new JSONModel(vAux);
 			that.setModel(omodelParametros, "modelParametros");
 
-			that.vetorNotasFiscais = [];
-			var omodelPedidos = new JSONModel(that.vetorNotasFiscais);
+			that.vetorPedidos = [];
+			var omodelPedidos = new JSONModel(that.vetorPedidos);
 			that.setModel(omodelPedidos, "modelPedidos");
 
 			that.vetorResumoEmpresa = [];
@@ -162,16 +162,10 @@ sap.ui.define([
 				property: "Name1Rep",
 				type: EdmType.String
 			});
-
+			
 			aCols.push({
-				label: "Empresa",
-				property: "Bukrs",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Nome Empresa",
-				property: "Butxt",
+				label: "Vocativo",
+				property: "TitleLet",
 				type: EdmType.String
 			});
 
@@ -192,10 +186,16 @@ sap.ui.define([
 				property: "Bstkd",
 				type: EdmType.String
 			});
+			
+			aCols.push({
+				label: "Força Vendas",
+				property: "Bname",
+				type: EdmType.String
+			});
 
 			aCols.push({
 				label: "Dt Docto",
-				property: "Docdat",
+				property: "Audat",
 				type: EdmType.DateTime,
 				format: 'dd/mm/yyyy'
 			});
@@ -211,16 +211,28 @@ sap.ui.define([
 				property: "Name1Cli",
 				type: EdmType.String
 			});
-
+			
 			aCols.push({
-				label: "CNPJ",
-				property: "Stcd1",
+				label: "Rede",
+				property: "Kvgr4",
 				type: EdmType.String
 			});
 
 			aCols.push({
-				label: "CPF",
-				property: "Stcd2",
+				label: "Descrição Rede",
+				property: "Kvgr4Text",
+				type: EdmType.String
+			});
+
+			aCols.push({
+				label: "Bandeira",
+				property: "Kvgr5",
+				type: EdmType.String
+			});
+
+			aCols.push({
+				label: "Descrição Bandeira",
+				property: "Kvgr5Text",
 				type: EdmType.String
 			});
 
@@ -237,40 +249,32 @@ sap.ui.define([
 			});
 
 			aCols.push({
-				label: "Cód.Transp",
-				property: "ParidTransp",
-				type: EdmType.String
+				label: "Volume(CX)",
+				property: "Kwmeng",
+				type: EdmType.Number,
+				scale: 2,
+				delimiter: true
 			});
-
+			
 			aCols.push({
-				label: "Nom.Transp",
-				property: "Name1Transp",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Cód.Redesp",
-				property: "ParidRedesp",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Nom.Redesp",
-				property: "Name1Redesp",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Vl.Tot.NF",
-				property: "Netwrt",
+				label: "Saldo Volume(CX)",
+				property: "QtdSdoPed",
 				type: EdmType.Number,
 				scale: 2,
 				delimiter: true
 			});
 
 			aCols.push({
-				label: "%Rentab",
-				property: "PctRentab",
+				label: "Valor S/ST",
+				property: "ValSSt",
+				type: EdmType.Number,
+				scale: 2,
+				delimiter: true
+			});
+			
+			aCols.push({
+				label: "Vl Saldo S/ST",
+				property: "ValSSt",
 				type: EdmType.Number,
 				scale: 2,
 				delimiter: true
@@ -359,41 +363,6 @@ sap.ui.define([
 
 		},
 
-		onDialogEnvioDanfe: function () {
-
-			var that = this;
-
-			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
-			var Name1 = that.getModelGlobal("modelAux").getProperty("/NomeRepres").replaceAll(" ", "_");
-			var Docnum = that.getModel("modelParamDialog").getProperty("/Docnum");
-			var Nfenum = that.getModel("modelParamDialog").getProperty("/Nfenum");
-			var Series = that.getModel("modelParamDialog").getProperty("/Series");
-			var Email = that.getModelGlobal("modelAux").getProperty("/Email");
-
-			sap.ui.getCore().byId("idDialogEmail").setBusy(true);
-
-			that.oModel.read("/EnviaEmailDanfe(IvUsuario='" + repres +
-				"',IvDocnum='" + Docnum +
-				"',IvEmail='" + Email +
-				"',IvName1='" + Name1 + "')", {
-					success: function (data) {
-
-						sap.ui.getCore().byId("idDialogEmail").setBusy(false);
-						MessageBox.show("NF-e " + Nfenum + " -" + Series + " enviada para o e-mail " + Email, {
-							icon: MessageBox.Icon.SUCCESS,
-							title: "Envio de Notas Fiscais",
-							actions: [sap.m.MessageBox.Action.OK]
-						});
-						that.onDialogClose();
-					},
-					error: function (error) {
-
-						sap.ui.getCore().byId("idDialogEmail").setBusy(false);
-						that.onMensagemErroODATA(error);
-					}
-				});
-		},
-
 		onPressBtnFiltrar: function () {
 
 			var that = this;
@@ -428,23 +397,23 @@ sap.ui.define([
 				},
 				success: function (retorno) {
 
-					that.vetorNotasFiscais = [];
+					that.vetorPedidos = [];
 					that.vetorResumoEmpresa = [];
 
-					that.vetorNotasFiscais = retorno.results;
+					that.vetorPedidos = retorno.results;
 
-					that.getModel("modelPedidos").setData(that.vetorNotasFiscais);
+					that.getModel("modelPedidos").setData(that.vetorPedidos);
 
 					var vTotalEmp = 0;
-					for (var i = 0; i < that.vetorNotasFiscais.length; i++) {
+					for (var i = 0; i < that.vetorPedidos.length; i++) {
 						var vAchouEmpresa = false;
 						for (var j = 0; j < that.vetorResumoEmpresa.length; j++) {
 
-							if (that.vetorNotasFiscais[i].Bukrs == that.vetorResumoEmpresa[j].Bukrs) {
+							if (that.vetorPedidos[i].Bukrs == that.vetorResumoEmpresa[j].Bukrs) {
 
 								vAchouEmpresa = true;
 
-								that.vetorResumoEmpresa[j].Netwrt = parseFloat(that.vetorResumoEmpresa[j].Netwrt) + Math.round(parseFloat(that.vetorNotasFiscais[
+								that.vetorResumoEmpresa[j].Netwrt = parseFloat(that.vetorResumoEmpresa[j].Netwrt) + Math.round(parseFloat(that.vetorPedidos[
 									i].Netwrt) * 100) / 100;
 								that.vetorResumoEmpresa[j].Netwrt = parseFloat(that.vetorResumoEmpresa[j].Netwrt).toFixed(2);
 
@@ -452,15 +421,15 @@ sap.ui.define([
 						}
 						if (vAchouEmpresa == false) {
 							var vAux = {
-								Bukrs: that.vetorNotasFiscais[i].Bukrs,
-								Butxt: that.vetorNotasFiscais[i].Butxt,
-								Netwrt: parseFloat(that.vetorNotasFiscais[i].Netwrt)
+								Bukrs: that.vetorPedidos[i].Bukrs,
+								Butxt: that.vetorPedidos[i].Butxt,
+								Netwrt: parseFloat(that.vetorPedidos[i].Netwrt)
 							};
 
 							that.vetorResumoEmpresa.push(vAux);
 
 						}
-						vTotalEmp += parseFloat(that.vetorNotasFiscais[i].Netwrt);
+						vTotalEmp += parseFloat(that.vetorPedidos[i].Netwrt);
 					}
 
 					if (vTotalEmp > 0) {
