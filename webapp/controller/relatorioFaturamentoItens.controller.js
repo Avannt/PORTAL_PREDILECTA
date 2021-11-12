@@ -265,6 +265,12 @@ sap.ui.define([
 				property: "Name1Rep",
 				type: EdmType.String
 			});
+			
+			aCols.push({
+				label: "Vocativo",
+				property: "TitleLet",
+				type: EdmType.String
+			});
 
 			aCols.push({
 				label: "Empresa",
@@ -457,7 +463,7 @@ sap.ui.define([
 
 			that.byId("master").setBusy(true);
 
-			that.oModel.read("/FatItens", {
+			that.oModel.read("/P_RelFatItens", {
 				urlParameters: {
 
 					"$filter": "Usuario eq '" + repres +

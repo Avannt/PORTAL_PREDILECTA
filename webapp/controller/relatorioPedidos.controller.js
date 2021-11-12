@@ -409,7 +409,7 @@ sap.ui.define([
 
 			that.byId("master").setBusy(true);
 
-			that.oModel.read("/RelPedidos", {
+			that.oModel.read("/P_RelPedidos", {
 				urlParameters: {
 
 					"$filter": "Usuario eq '" + repres +
