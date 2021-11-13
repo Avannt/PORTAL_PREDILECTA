@@ -41,7 +41,10 @@ sap.ui.define([
 				LifnrFim: "",
 				MatnrIni: "",
 				MatnrFim: "",
-				Periodo: ""
+				Periodo: "",
+				StatusNaoFornecido: true,
+				StatusParcialmConcluido: true,
+				StatusConcluido: true
 			};
 
 			var omodelParametros = new JSONModel(vAux);
@@ -162,7 +165,7 @@ sap.ui.define([
 				property: "Name1Rep",
 				type: EdmType.String
 			});
-			
+
 			aCols.push({
 				label: "Vocativo",
 				property: "TitleLet",
@@ -174,7 +177,7 @@ sap.ui.define([
 				property: "Werks",
 				type: EdmType.String
 			});
-			
+
 			aCols.push({
 				label: "Doc.Vendas",
 				property: "Vbeln",
@@ -186,7 +189,7 @@ sap.ui.define([
 				property: "Bstkd",
 				type: EdmType.String
 			});
-			
+
 			aCols.push({
 				label: "Força Vendas",
 				property: "Bname",
@@ -211,7 +214,7 @@ sap.ui.define([
 				property: "Name1Cli",
 				type: EdmType.String
 			});
-			
+
 			aCols.push({
 				label: "Rede",
 				property: "Kvgr4",
@@ -255,7 +258,7 @@ sap.ui.define([
 				scale: 2,
 				delimiter: true
 			});
-			
+
 			aCols.push({
 				label: "Saldo Volume(CX)",
 				property: "QtdSdoPed",
@@ -271,13 +274,19 @@ sap.ui.define([
 				scale: 2,
 				delimiter: true
 			});
-			
+
 			aCols.push({
 				label: "Vl Saldo S/ST",
 				property: "ValSSt",
 				type: EdmType.Number,
 				scale: 2,
 				delimiter: true
+			});
+
+			aCols.push({
+				label: "Status Remessa",
+				property: "StatusRemessa",
+				type: EdmType.String
 			});
 
 			return aCols;
@@ -325,36 +334,6 @@ sap.ui.define([
 			this.byId("idCentroIni").suggest();
 		},
 
-		onDialogOpen: function (evt) {
-
-			var that = this;
-
-			var vAux = {
-				Docnum: evt.getSource().getBindingContext("modelPedidos").getObject().Docnum,
-				Nfenum: evt.getSource().getBindingContext("modelPedidos").getObject().Nfenum,
-				Series: evt.getSource().getBindingContext("modelPedidos").getObject().Series
-			};
-
-			var omodelParamDialog = new JSONModel(vAux);
-			that.setModel(omodelParamDialog, "modelParamDialog");
-
-			if (that._ItemDialog) {
-				that._ItemDialog.destroy(true);
-			}
-
-			if (!that._CreateMaterialFragment) {
-
-				that._ItemDialog = sap.ui.xmlfragment(
-					"application.view.DialogEmail",
-					that
-				);
-				that.getView().addDependent(that._ItemDialog);
-			}
-
-			that._ItemDialog.open();
-
-		},
-
 		onDialogClose: function () {
 
 			if (this._ItemDialog) {
@@ -398,52 +377,22 @@ sap.ui.define([
 				success: function (retorno) {
 
 					that.vetorPedidos = [];
-					that.vetorResumoEmpresa = [];
 
-					that.vetorPedidos = retorno.results;
+					that.vetorPedidosAux = retorno.results;
+
+					for (var i = 0; i < that.vetorPedidosAux.length; i++) {
+
+						if ((that.vetorPedidosAux[i].Lfgsk == "A" && parametros.StatusNaoFornecido == true) ||
+						    (that.vetorPedidosAux[i].Lfgsk == "B" && parametros.StatusParcialmConcluido == true) ||
+						    (that.vetorPedidosAux[i].Lfgsk == "C" && parametros.StatusConcluido == true)){
+
+							that.vetorPedidos.push(that.vetorPedidosAux[i]);
+
+						}
+					}
 
 					that.getModel("modelPedidos").setData(that.vetorPedidos);
-
-					var vTotalEmp = 0;
-					for (var i = 0; i < that.vetorPedidos.length; i++) {
-						var vAchouEmpresa = false;
-						for (var j = 0; j < that.vetorResumoEmpresa.length; j++) {
-
-							if (that.vetorPedidos[i].Bukrs == that.vetorResumoEmpresa[j].Bukrs) {
-
-								vAchouEmpresa = true;
-
-								that.vetorResumoEmpresa[j].Netwrt = parseFloat(that.vetorResumoEmpresa[j].Netwrt) + Math.round(parseFloat(that.vetorPedidos[
-									i].Netwrt) * 100) / 100;
-								that.vetorResumoEmpresa[j].Netwrt = parseFloat(that.vetorResumoEmpresa[j].Netwrt).toFixed(2);
-
-							}
-						}
-						if (vAchouEmpresa == false) {
-							var vAux = {
-								Bukrs: that.vetorPedidos[i].Bukrs,
-								Butxt: that.vetorPedidos[i].Butxt,
-								Netwrt: parseFloat(that.vetorPedidos[i].Netwrt)
-							};
-
-							that.vetorResumoEmpresa.push(vAux);
-
-						}
-						vTotalEmp += parseFloat(that.vetorPedidos[i].Netwrt);
-					}
-
-					if (vTotalEmp > 0) {
-						var vAuxTot = {
-							Bukrs: "",
-							Butxt: "TOTAL",
-							Netwrt: parseFloat(vTotalEmp).toFixed(2)
-						};
-
-						that.vetorResumoEmpresa.push(vAuxTot);
-					}
-
 					that.byId("master").setBusy(false);
-					that.getModel("modelResumoEmpresa").setData(that.vetorResumoEmpresa);
 				},
 				error: function (error) {
 					that.byId("master").setBusy(false);

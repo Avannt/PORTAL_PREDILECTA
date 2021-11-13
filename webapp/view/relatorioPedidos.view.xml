@@ -6,8 +6,7 @@
 					<OverflowToolbar/>
 					<Toolbar height="100%" class="backGround">
 						<Panel id="idPanelFiltro" headerText="Ocultar Filtros" expandable="true" expanded="true" expand="onExpandFiltro">
-							<content>
-								<f:SimpleForm id="SimpleFormChange471" editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="2" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="3" emptySpanL="3" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1" singleContainerFullSize="false">
+							<content><f:SimpleForm id="SimpleFormChange471" editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="2" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="3" emptySpanL="3" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1" singleContainerFullSize="false">
 									<f:content>
 										<Label text="Centro"/>
 										<SearchField id="idCentroIni" placeholder="Digite Código ou Nome do Centro" enableSuggestions="true" value="{modelParametros>/WerksIni}" suggest="onSuggestCentroIni" suggestionItems="{ path: 'modelCentros>/', sorter: { path: 'Werks', ascending: true }}">
@@ -70,8 +69,13 @@
 										<Label id="idPeriodo" text="Período"/>
 										<DateRangeSelection displayFormat="dd/MM/yyyy" id="idCDateRange" value="{modelParametros>/Periodo}" placeholder="Período" width="100%"/>
 										<Button id="idBtnFiltrar" text="Filtrar" type="Emphasized" press="onPressBtnFiltrar" icon="sap-icon://filter" tooltip="Filtrar Dados"/>
+										
 									</f:content>
 									<Button icon="sap-icon://excel-attachment" press="onExport" type="Emphasized" text="Exportar" tooltip="Exportar Dados"/>
+									<Label text="Status Remessa"/>
+										<CheckBox id="idCheckNaoFornecido" text="Não fornecido" selected="{modelParametros>/StatusNaoFornecido}"/>
+										<CheckBox id="idCheckParcialmConcluido" text="Parcialm.concluído" selected="{modelParametros>/StatusParcialmConcluido}"/>
+										<CheckBox id="idCheckConcluido" text="Concluído" selected="{modelParametros>/StatusConcluido}"/>
 								</f:SimpleForm>
 							</content>
 						</Panel>
@@ -118,7 +122,7 @@
 						<Text text="Vl Saldo S/ST"/>
 					</Column>
 					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="80px">
-						<Text text="Status"/>
+						<Text text="Status Remessa"/>
 					</Column>
 				</columns>
 				<items>
