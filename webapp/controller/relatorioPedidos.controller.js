@@ -214,6 +214,18 @@ sap.ui.define([
 				property: "Name1Cli",
 				type: EdmType.String
 			});
+			
+			aCols.push({
+				label: "CNPJ",
+				property: "Stcd1",
+				type: EdmType.String
+			});
+
+			aCols.push({
+				label: "CPF",
+				property: "Stcd2",
+				type: EdmType.String
+			});
 
 			aCols.push({
 				label: "Rede",
