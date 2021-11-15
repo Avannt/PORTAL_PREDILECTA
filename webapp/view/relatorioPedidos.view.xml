@@ -1,5 +1,5 @@
 <mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:layout="sap.ui.layout" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" xmlns="sap.m" xmlns:semantic="sap.m.semantic" height="100%" controllerName="application.controller.relatorioPedidos">
-	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Relatório de Pedidos" showFooter="false" busyIndicatorDelay="0">
+	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Relatório de Posição de Pedidos" showFooter="false" busyIndicatorDelay="0">
 		<content>
 			<Table class="centralizaGroup" id="idtablePedidos" growing="false" growingScrollToLoad="false" growingThreshold="5" noDataText="Nenhum registro encontrado" alternateRowColors="true" backgroundDesign="Solid" width="100%" growingTriggerText="Próximo &gt;&gt;&gt;" items="{ path: 'modelPedidos>/', sorter : [{ path: 'Bukrs', ascending: true, group: '.ongetHeaderGroupBukrs' }] }">
 				<headerToolbar>
