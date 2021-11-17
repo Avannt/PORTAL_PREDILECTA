@@ -35,6 +35,10 @@ sap.ui.define([
 				WerksFim: "",
 				KunnrIni: "",
 				KunnrFim: "",
+				Kvgr4Ini: "",
+				Kvgr4Fim: "",
+				Kvgr5Ini: "",
+				Kvgr5Fim: "",
 				VbelnIni: "",
 				VbelnFim: "",
 				LifnrIni: "",
@@ -122,6 +126,96 @@ sap.ui.define([
 
 				var oModelRepres = new JSONModel(vetorRepres);
 				that.setModel(oModelRepres, "modelRepres");
+
+			}).catch(function (error) {
+
+				that.onMensagemErroODATA(error);
+			});
+			
+			new Promise(function (res, rej) {
+
+				that.onBuscarProdutos(repres, res, rej, that);
+
+			}).then(function (retorno) {
+
+				var vetorMaterial = retorno;
+				var vetorCategoria = [];
+				var vetorSubCategoria = [];
+				var vetorFamilia = [];
+				var vetorMarca = [];
+
+				for (var i = 0; i < vetorMaterial.length; i++) {
+					var vAchouCategoria = false;
+					var vAchouSubCategoria = false;
+					var vAchouFamilia = false;
+					var vAchouMarca = false;
+
+					for (var j = 0; j < vetorCategoria.length; j++) {
+
+						if ((vetorMaterial[i].Mvgr1 == vetorCategoria[j].Mvgr1) || vetorMaterial[i].Mvgr1 == "") {
+							vAchouCategoria = true;
+
+							break;
+						}
+					}
+
+					for (var k = 0; k < vetorSubCategoria.length; k++) {
+
+						if ((vetorMaterial[i].Mvgr2 == vetorSubCategoria[k].Mvgr2) || vetorMaterial[i].Mvgr2 == "") {
+							vAchouSubCategoria = true;
+
+							break;
+						}
+					}
+
+					for (var l = 0; l < vetorFamilia.length; l++) {
+
+						if ((vetorMaterial[i].Mvgr3 == vetorFamilia[l].Mvgr3) || vetorMaterial[i].Mvgr3 == "") {
+							vAchouFamilia = true;
+
+							break;
+						}
+					}
+
+					for (var m = 0; m < vetorMarca.length; m++) {
+
+						if ((vetorMaterial[i].Mvgr5 == vetorMarca[m].Mvgr5) || vetorMaterial[i].Mvgr5 == "") {
+							vAchouMarca = true;
+
+							break;
+						}
+					}
+
+					if (vAchouCategoria == false) {
+						vetorCategoria.push(vetorMaterial[i]);
+					}
+
+					if (vAchouSubCategoria == false) {
+						vetorSubCategoria.push(vetorMaterial[i]);
+					}
+
+					if (vAchouFamilia == false) {
+						vetorFamilia.push(vetorMaterial[i]);
+					}
+
+					if (vAchouMarca == false) {
+						vetorMarca.push(vetorMaterial[i]);
+					}
+				}
+				var oModelMaterial = new JSONModel(vetorMaterial);
+				that.setModel(oModelMaterial, "modelMaterial");
+
+				var oModelCategoria = new JSONModel(vetorCategoria);
+				that.setModel(oModelCategoria, "modelCategoria");
+
+				var oModelSubCategoria = new JSONModel(vetorSubCategoria);
+				that.setModel(oModelSubCategoria, "modelSubCategoria");
+
+				var oModelFamilia = new JSONModel(vetorFamilia);
+				that.setModel(oModelFamilia, "modelFamilia");
+
+				var oModelMarca = new JSONModel(vetorMarca);
+				that.setModel(oModelMarca, "modelMarca");
 
 			}).catch(function (error) {
 
@@ -377,6 +471,10 @@ sap.ui.define([
 						"' and WerksFim eq '" + parametros.WerksFim +
 						"' and KunnrIni eq '" + parametros.KunnrIni +
 						"' and KunnrFim eq '" + parametros.KunnrFim +
+						"' and Kvgr4Ini eq '" + parametros.Kvgr4Ini +
+						"' and Kvgr4Fim eq '" + parametros.Kvgr4Fim +
+						"' and Kvgr5Ini eq '" + parametros.Kvgr5Ini +
+						"' and Kvgr5Fim eq '" + parametros.Kvgr5Fim +
 						"' and VbelnIni eq '" + parametros.VbelnIni +
 						"' and VbelnFim eq '" + parametros.VbelnFim +
 						"' and RepreIni eq '" + parametros.LifnrIni +
@@ -562,6 +660,38 @@ sap.ui.define([
 			this.byId("idRepreFim").getBinding("suggestionItems").filter(aFilters);
 
 			this.byId("idRepreFim").suggest();
+		},
+		
+		onSuggestMaterialIni: function (evt) {
+
+			var sValue = evt.getSource().getValue();
+			var aFilters = [];
+			var oFilter = [new sap.ui.model.Filter("Matnr", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Maktx", sap.ui.model.FilterOperator.Contains, sValue)
+			];
+
+			var allFilters = new sap.ui.model.Filter(oFilter, false);
+
+			aFilters.push(allFilters);
+			this.byId("idMaterialIni").getBinding("suggestionItems").filter(aFilters);
+
+			this.byId("idMaterialIni").suggest();
+		},
+
+		onSuggestMaterialFim: function (evt) {
+
+			var sValue = evt.getSource().getValue();
+			var aFilters = [];
+			var oFilter = [new sap.ui.model.Filter("Matnr", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Maktx", sap.ui.model.FilterOperator.Contains, sValue)
+			];
+
+			var allFilters = new sap.ui.model.Filter(oFilter, false);
+
+			aFilters.push(allFilters);
+			this.byId("idMaterialFim").getBinding("suggestionItems").filter(aFilters);
+
+			this.byId("idMaterialFim").suggest();
 		},
 	});
 });
