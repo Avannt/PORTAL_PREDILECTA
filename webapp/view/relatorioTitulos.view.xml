@@ -99,22 +99,16 @@
 				</headerToolbar>
 				<columns>
 					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="30px">
-						<Text text="Cen"/>
+						<Text text="Emp"/>
 					</Column>
 					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="30px">
-						<Text text="Sér"/>
+						<Text text="Nome Emp"/>
 					</Column>
 					<Column minScreenWidth="500px" demandPopin="true" popinDisplay="Inline" width="65px">
-						<Text text="Nota Fiscal"/>
+						<Text text="Nº docto"/>
 					</Column>
 					<Column minScreenWidth="610px" demandPopin="true" popinDisplay="Inline" width="70px" hAlign="Right">
-						<Text text="Doc.Vendas"/>
-					</Column>
-					<Column minScreenWidth="610px" demandPopin="true" popinDisplay="Inline" width="80px">
-						<Text text="Ref.Cliente"/>
-					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="80px">
-						<Text text="Emissão"/>
+						<Text text="Lançto"/>
 					</Column>
 					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="65px">
 						<Text text="Cliente"/>
@@ -122,43 +116,44 @@
 					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="200px">
 						<Text text="Razão Social"/>
 					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="110px">
-						<Text text="CNPJ"/>
-					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="40px">
-						<Text text="UF"/>
-					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="100px">
-						<Text text="Cidade"/>
-					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="100px">
-						<Text text="Transporte"/>
-					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="100px">
-						<Text text="Transp.Redesp"/>
-					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="95px" hAlign="Right">
-						<Text text="Vl.Tot.NF"/>
-					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="60px" hAlign="Right">
-						<Text text="%Rent"/>
-					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="60px" hAlign="Right">
-						<Text text="DANFe"/>
-					</Column>
+					<!--<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="110px">-->
+					<!--	<Text text="CNPJ"/>-->
+					<!--</Column>-->
+					<!--<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="40px">-->
+					<!--	<Text text="UF"/>-->
+					<!--</Column>-->
+					<!--<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="100px">-->
+					<!--	<Text text="Cidade"/>-->
+					<!--</Column>-->
+					<!--<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="100px">-->
+					<!--	<Text text="Transporte"/>-->
+					<!--</Column>-->
+					<!--<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="100px">-->
+					<!--	<Text text="Transp.Redesp"/>-->
+					<!--</Column>-->
+					<!--<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="95px" hAlign="Right">-->
+					<!--	<Text text="Vl.Tot.NF"/>-->
+					<!--</Column>-->
+					<!--<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="60px" hAlign="Right">-->
+					<!--	<Text text="%Rent"/>-->
+					<!--</Column>-->
+					<!--<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="60px" hAlign="Right">-->
+					<!--	<Text text="DANFe"/>-->
+					<!--</Column>-->
 				</columns>
 				<items>
 					<ColumnListItem type="Inactive">
 						<cells>
 							<Text text="{modelTitulos>Bukrs}"/>
+							<Text text="{modelTitulos>Butxt}"/>
+							<Text text="{modelTitulos>Belnr}"/>
+							<text="{path: 'modelTitulos>Budat', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' , strictParsing: true , UTC: true }}"/>
+							<Text text="{modelTitulos>Kunnr}"/>
+							<Text text="{modelTitulos>Name1Cli}"/>
 							<!--<Text text="{modelTitulos>Series}"/>-->
 							<!--<Text text="{modelTitulos>Nfenum}"/>-->
 							<!--<Text text="{modelTitulos>Vbeln}"/>-->
 							<!--<Text text="{modelTitulos>Bstkd}"/>-->
-							<!--<Text-->
-							<!--	text="{path: 'modelTitulos>Docdat', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' , strictParsing: true , UTC: true }}"/>-->
-							<!--<Text text="{modelTitulos>Kunnr}"/>-->
-							<!--<Text text="{modelTitulos>Name1Cli}"/>-->
 							<!--<Text text="{modelTitulos>Stcd1}"/>-->
 							<!--<Text text="{modelTitulos>Region}"/>-->
 							<!--<Text text="{modelTitulos>City1}"/>-->

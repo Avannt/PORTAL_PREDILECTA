@@ -1,4 +1,4 @@
-<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:layout="sap.ui.layout"
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:layout="sap.ui.layout" 
 	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" xmlns="sap.m" xmlns:semantic="sap.m.semantic" height="100%"
 	controllerName="application.controller.relatorioPedidos">
 	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Relatório de Posição de Pedidos" showFooter="false"
@@ -13,7 +13,7 @@
 					<Toolbar height="100%" class="backGround">
 						<Panel id="idPanelFiltro" headerText="Ocultar Filtros" expandable="true" expanded="true" expand="onExpandFiltro">
 							<content>
-								<f:SimpleForm id="SimpleFormChange471" editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="2"
+								<f:SimpleForm id="SimpleFormChange471" editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="1"
 									labelSpanS="12" adjustLabelSpan="false" emptySpanXL="3" emptySpanL="3" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
 									singleContainerFullSize="false">
 									<f:content>
@@ -107,10 +107,88 @@
 										<Button id="idBtnFiltrar" text="Filtrar" type="Emphasized" press="onPressBtnFiltrar" icon="sap-icon://filter" tooltip="Filtrar Dados"/>
 									</f:content>
 									<Button icon="sap-icon://excel-attachment" press="onExport" type="Emphasized" text="Exportar" tooltip="Exportar Dados"/>
-									<Label text="Status Remessa"/>
-									<CheckBox id="idCheckNaoFornecido" text="Não fornecido" selected="{modelParametros>/StatusNaoFornecido}"/>
-									<CheckBox id="idCheckParcialmConcluido" text="Parcialm.concluído" selected="{modelParametros>/StatusParcialmConcluido}"/>
-									<CheckBox id="idCheckConcluido" text="Concluído" selected="{modelParametros>/StatusConcluido}"/>
+								</f:SimpleForm>
+								<f:SimpleForm id="SimpleFormChange472" editable="true" layout="ResponsiveGridLayout" labelSpanXL="2" labelSpanL="2" labelSpanM="1"
+									labelSpanS="12" adjustLabelSpan="false" emptySpanXL="2" emptySpanL="2" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
+									singleContainerFullSize="false">
+									<f:content>
+										<Label text="Status"/>
+										<CheckBox id="idCheckAberto" text="Aberto" selected="{modelParametros>/StatusAberto}">
+											<layoutData>
+												<layout:GridData span="L2 M1" linebreakM="false"/>
+											</layoutData>
+										</CheckBox>
+										<Label text="">
+											<layoutData>
+												<layout:GridData span="L1 M1" linebreakM="false"/>
+											</layoutData>
+										</Label>
+										<CheckBox id="idCheckAbertoCredito" text="Aberto Crédito" selected="{modelParametros>/StatusAbertoCredito}">
+											<layoutData>
+												<layout:GridData span="L1 M1" linebreakM="false"/>
+											</layoutData>
+										</CheckBox>
+										<Label text="">
+											<layoutData>
+												<layout:GridData span="L1 M1" linebreakM="false"/>
+											</layoutData>
+										</Label>
+										<CheckBox id="idCheckAtendParcial" text="Atend.Parcial" selected="{modelParametros>/StatusAtendParcial}">
+											<layoutData>
+												<layout:GridData span="L1 M1" linebreakM="false"/>
+											</layoutData>
+										</CheckBox>
+										<Label text="">
+											<layoutData>
+												<layout:GridData span="L1 M1" linebreakM="false"/>
+											</layoutData>
+										</Label>
+										<CheckBox id="idCheckAtendParcialPendCred" text="Atend.Parcial - Pendente Crédito" selected="{modelParametros>/StatusAtendParcialPendCred}">
+											<layoutData>
+												<layout:GridData span="L2 M1" linebreakM="false"/>
+											</layoutData>
+										</CheckBox>
+										<Label text="">
+											<layoutData>
+												<layout:GridData span="L2 M1" linebreakM="true" linebreakL="true"/>
+											</layoutData>
+										</Label>
+										<CheckBox id="idCheckAtendParcialCancel" text="Atend.Parcial - Com Cancelamento" selected="{modelParametros>/StatusAtendParcialCancel}">
+											<layoutData>
+												<layout:GridData span="L2 M1" linebreakM="false"/>
+											</layoutData>
+										</CheckBox>
+										<Label text="">
+											<layoutData>
+												<layout:GridData span="L1 M1" linebreakM="false"/>
+											</layoutData>
+										</Label>
+										<CheckBox id="idCheckAtendTotal" text="Atend. Total" selected="{modelParametros>/StatusAtendTotal}">
+											<layoutData>
+												<layout:GridData span="L1 M1" linebreakM="false"/>
+											</layoutData>
+										</CheckBox>
+										<Label text="">
+											<layoutData>
+												<layout:GridData span="L1 M1" linebreakM="false"/>
+											</layoutData>
+										</Label>
+										<CheckBox id="idCheckSuspenso" text="Suspenso" selected="{modelParametros>/StatusSuspenso}">
+											<layoutData>
+												<layout:GridData span="L1 M1" linebreakM="false"/>
+											</layoutData>
+										</CheckBox>
+										<Label text="">
+											<layoutData>
+												<layout:GridData span="L1 M1" linebreakM="false"/>
+											</layoutData>
+										</Label>
+										<CheckBox id="idCheckCancelado" text="Cancelado" selected="{modelParametros>/StatusCancelado}">
+											<layoutData>
+												<layout:GridData span="L1 M1" linebreakM="false"/>
+											</layoutData>
+										</CheckBox>
+									</f:content>
 								</f:SimpleForm>
 							</content>
 						</Panel>
@@ -157,7 +235,7 @@
 						<Text text="Vl Saldo S/ST"/>
 					</Column>
 					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="80px">
-						<Text text="Status Remessa"/>
+						<Text text="Status"/>
 					</Column>
 				</columns>
 				<items>
@@ -181,34 +259,11 @@
 								text="{path: 'modelPedidos>ValSSt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
 							<Text
 								text="{path: 'modelPedidos>ValSdoSSt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
-							<Text text="{modelPedidos>StatusRemessa}"/>
+							<Text text="{modelPedidos>DescStatus}"/>
 						</cells>
 					</ColumnListItem>
 				</items>
 			</Table>
-			<!--<f:SimpleForm id="SimpleFormChange472" editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="3" labelSpanS="1" adjustLabelSpan="false" emptySpanXL="3" emptySpanL="3" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1" singleContainerFullSize="false">-->
-			<!--	<f:content>-->
-			<!--		<Label/>-->
-			<!--		<Table class="centralizaGroup" id="idtableResumoEmpresa" growing="false" growingScrollToLoad="false" growingThreshold="5" noDataText="Nenhum registro encontrado" items="{ path: 'modelResumoEmpresa>/' }">-->
-			<!--			<columns>-->
-			<!--				<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" styleClass="">-->
-			<!--					<Text text="Resumo Representante"/>-->
-			<!--				</Column>-->
-			<!--				<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" hAlign="Right">-->
-			<!--					<Text text="Valor Total Faturado"/>-->
-			<!--				</Column>-->
-			<!--			</columns>-->
-			<!--			<items>-->
-			<!--				<ColumnListItem type="Inactive">-->
-			<!--					<cells>-->
-			<!--						<Text text="{modelResumoEmpresa>Bukrs} - {modelResumoEmpresa>Butxt}"/>-->
-			<!--						<Text text="{path: 'modelResumoEmpresa>Netwrt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>-->
-			<!--					</cells>-->
-			<!--				</ColumnListItem>-->
-			<!--			</items>-->
-			<!--		</Table>-->
-			<!--	</f:content>-->
-			<!--</f:SimpleForm>-->
 		</content>
 	</Page>
 </mvc:View>

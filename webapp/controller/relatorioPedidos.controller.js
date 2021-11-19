@@ -46,9 +46,14 @@ sap.ui.define([
 				MatnrIni: "",
 				MatnrFim: "",
 				Periodo: "",
-				StatusNaoFornecido: true,
-				StatusParcialmConcluido: true,
-				StatusConcluido: true
+				StatusAberto: true,
+				StatusAbertoCredito: true,
+				StatusAtendParcial: true,
+				StatusAtendParcialPendCred: true,
+				StatusAtendParcialCancel: true,
+				StatusAtendTotal: true,
+				StatusSuspenso: true,
+				StatusCancelado: true,
 			};
 
 			var omodelParametros = new JSONModel(vAux);
@@ -291,7 +296,7 @@ sap.ui.define([
 			});
 
 			aCols.push({
-				label: "Dt Docto",
+				label: "Emissão",
 				property: "Audat",
 				type: EdmType.DateTime,
 				format: 'dd/mm/yyyy'
@@ -388,10 +393,46 @@ sap.ui.define([
 				scale: 2,
 				delimiter: true
 			});
+			
+			aCols.push({
+				label: "Status",
+				property: "DescStatus",
+				type: EdmType.String
+			});
 
 			aCols.push({
+				label: "Status Recusa",
+				property: "Abstk",
+				type: EdmType.String
+			});
+			
+			aCols.push({
+				label: "Status Crédito",
+				property: "Cmgst",
+				type: EdmType.String
+			});
+			
+			aCols.push({
+				label: "Status Global",
+				property: "Gbstk",
+				type: EdmType.String
+			});
+			
+			aCols.push({
+				label: "Status Global Remessa",
+				property: "Lfgsk",
+				type: EdmType.String
+			});
+			
+			aCols.push({
 				label: "Status Remessa",
-				property: "StatusRemessa",
+				property: "Lfstk",
+				type: EdmType.String
+			});
+			
+				aCols.push({
+				label: "Status Global Bloqueio",
+				property: "Lsstk",
 				type: EdmType.String
 			});
 
@@ -492,9 +533,14 @@ sap.ui.define([
 
 					for (var i = 0; i < that.vetorPedidosAux.length; i++) {
 
-						if ((that.vetorPedidosAux[i].Lfgsk == "A" && parametros.StatusNaoFornecido == true) ||
-						    (that.vetorPedidosAux[i].Lfgsk == "B" && parametros.StatusParcialmConcluido == true) ||
-						    (that.vetorPedidosAux[i].Lfgsk == "C" && parametros.StatusConcluido == true)){
+						if ((that.vetorPedidosAux[i].Status == "A" && parametros.StatusAberto == true) ||
+						    (that.vetorPedidosAux[i].Status == "B" && parametros.StatusAbertoCredito == true) ||
+						    (that.vetorPedidosAux[i].Status == "C" && parametros.StatusAtendParcial == true) ||
+						    (that.vetorPedidosAux[i].Status == "D" && parametros.StatusAtendParcialPendCred == true) ||
+						    (that.vetorPedidosAux[i].Status == "E" && parametros.StatusAtendParcialCancel == true) ||
+						    (that.vetorPedidosAux[i].Status == "F" && parametros.StatusAtendTotal == true) ||
+						    (that.vetorPedidosAux[i].Status == "G" && parametros.StatusSuspenso == true) ||
+						    (that.vetorPedidosAux[i].Status == "H" && parametros.StatusCancelado == true)){
 
 							that.vetorPedidos.push(that.vetorPedidosAux[i]);
 
