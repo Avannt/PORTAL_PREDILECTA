@@ -46,7 +46,7 @@ sap.ui.define([
 			that.setModel(model, "modelTela");
 
 			var modelProduto = new JSONModel();
-			that.setModel(modelProduto, "modelProduto");
+			that.setModelGlobal(modelProduto, "modelProduto");
 			that.setModel(modelProduto, "modelProdutos");
 
 		},
@@ -82,9 +82,7 @@ sap.ui.define([
 						}
 						
 						//that.vetorProdutos[i].PathImg = "http://189.57.15.163:81/predilecta/images_produtos/" + that.vetorProdutos[i].Matnr + ".png";
-						
 						//that.vetorProdutos[i].PathImg = sap.ui.require.toUrl("http://189.57.15.163:81/predilecta/images_produtos/0300.png");
-
 					}
 
 					that.byId("masterProdutos").setBusy(false);
@@ -117,13 +115,19 @@ sap.ui.define([
 			var that = this;
 			// that.byId("detailProdutos").setBusy(true);
 
+			// that.getModelGlobal("Cliente_G").setData(Cliente);
+			// this.getModelGlobal("modelAux").setProperty("/Usuario", Cliente.Lifnr);
+
+			// //Atualiza o Lifnr para fazer a integração do pedido com o código do fornecedor.
+			// this.getModelGlobal("modelAux").setProperty("/Lifnr", Cliente.Lifnr);
+			// this.getSplitContObj().toDetail(this.createId("detail"));
+
 			var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
 			var Produto = oItem.getBindingContext("modelProdutos").getObject();
 
-			that.getModel("modelProduto").setData(Produto);
-			that.getSplitContObj().toDetail(this.createId("detail"));
-
+			this.getModel("modelProduto").setData(Produto);
 			this.getSplitContObj().toDetail(this.createId("detail"));
+			
 			// that.byId("detailProdutos").setBusy(false);
 		},
 

@@ -1,63 +1,130 @@
+/*eslint-disable no-console, no-alert */
+/*eslint-disable eqeqeq, no-alert */
+/*eslint-disable sap-no-hardcoded-url, no-alert */
+/*eslint-disable no-shadow, no-alert */
+/*eslint-disable consistent-return, no-alert */
 sap.ui.define([
 	"application/controller/BaseController",
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageBox",
-	"application/model/formatter",
 	"sap/ui/core/util/Export",
-	"sap/ui/core/util/ExportTypeCSV"
+	"sap/ui/core/util/ExportTypeCSV",
+	"sap/m/MessageBox"
 
-], function(BaseController, MessageBox, ExportTypeCSV, Export) {
+], function (BaseController, JSONModel, MessageBox, Export, ExportTypeCSV) {
 	"use strict";
-	var oTabelasRelatorio = [];
-	var oItemLoadVencimento = [];
-	var oItemLoadVencimento2 = [];
-	var oItemLoadVencimento3 = [];
-	var oItemLoadEstabelecimento = [];
-	var oItemVencimentoContrato = [];
-	var oItemVencimentoContrato2 = [];
-	var oItemVencimentoContrato3 = [];
-	var indice1 = 0;
-	var indice2 = 0;
-	var indice3 = 0;
+
 	return BaseController.extend("application.controller.relatorioTabelas", {
 
-		onInit: function() {
+		onInit: function () {
 
 			//FORÇA FAZER O INIT DA PÁGINA .. MESMO QUE JÁ FOI INICIADA.
 			this.getRouter().getRoute("relatorioTabelas").attachPatternMatched(this._onLoadFields, this);
 		},
 
-		_handleValueHelpSearch: function(oEvent) {
-			var sValue = oEvent.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("CodCliente", sap.ui.model.FilterOperator.StartsWith, sValue), new sap.ui.model.Filter(
-				"NomeEmit", sap.ui.model.FilterOperator.Contains, sValue)];
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-			aFilters.push(allFilters);
-			this.byId("idtabClienteRelatorio").getBinding("suggestionItems").filter(aFilters);
-			this.byId("idtabClienteRelatorio").suggest();
+		_onLoadFields: function () {
+
+			var that = this;
+			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
+			that.oModel = that.getModelGlobal("modelAux").getProperty("/DBModel");
+
+			this.onInicializarModels();
+			
+			that.oModel.read("/Centros", {
+				urlParameters: {
+					"$filter": "IvUsuario eq '" + repres + "'"
+				},
+				success: function (retorno) {
+					var vetorCentros = retorno.results;
+					var oModelCentros = new JSONModel(vetorCentros);
+					that.setModel(oModelCentros, "modelCentros");
+				},
+				error: function (error) {
+					that.onMensagemErroODATA(error);
+				}
+			});
+
+			// open1.onsuccess = function () {
+			// 	var db = open1.result;
+
+			// 	var transCentro = db.transaction("Centros", "readwrite");
+			// 	var objCentro = transCentro.objectStore("Centros");
+			// 	var requestCentro = objCentro.getAll();
+
+			// 	requestCentro.onsuccess = function (event) {
+
+			// 		that.vetorCentros = event.target.result;
+			// 		that.getModel("modelCentros").setData(that.vetorCentros);
+			// 	};
+
+			// 	var transVencs = db.transaction("Vencimentos", "readwrite");
+			// 	var objVenc = transVencs.objectStore("Vencimentos");
+			// 	var requestVenc = objVenc.getAll();
+
+			// 	requestVenc.onsuccess = function (event) {
+
+			// 		that.vetorVencimentos = event.target.result;
+			// 		that.getModel("modelVencimentos").setData(that.vetorVencimentos);
+			// 	};
+
+			// 	var transFretes = db.transaction("Fretes", "readwrite");
+			// 	var objFrete = transFretes.objectStore("Fretes");
+			// 	var requestFrete = objFrete.getAll();
+
+			// 	requestFrete.onsuccess = function (event) {
+
+			// 		that.vetorFretes = event.target.result;
+			// 		that.getModel("modelFretes").setData(that.vetorFretes);
+			// 	};
+			// };
 		},
 
-		_onLoadFields: function() {
+		onInicializarModels: function () {
+
 			var that = this;
-			var oclientes = [];
-			oTabelasRelatorio = [];
-			oItemLoadVencimento = [];
-			oItemLoadVencimento2 = [];
-			oItemLoadVencimento3 = [];
-			oItemLoadEstabelecimento = [];
+
+			var aux = {
+				Exibicao: "1", //Caixa = 1 / Unidade  = 2
+				Pltyp: "",
+				Indice: "",
+				Contrato: "",
+				Vencimento: "",
+				Werks: "",
+				Kunnr: "",
+				Inco1: ""
+			};
+
+			var modelTela = new JSONModel(aux);
+			this.setModelGlobal(modelTela, "modelTela");
+
+			this.vetorFretes = [];
+			this.vetorCentros = [];
+			this.vetorClientes = [];
+			this.vetorTabPrecos = [];
+			this.vetorContratos = [];
+			this.vetorVencimentos = [];
+			this.vetorUnidadeMedida = [];
+			this.vetorEstabelecimento = [];
+
 			var ComboExibicao = [];
 
-			that.byId("idIndice").setValue();
-			that.byId("idtabClienteRelatorio").setValue();
-			that.byId("idEstabelecimento").setSelectedKey();
-			that.getView().byId("idVencimento1").setSelectedKey();
-			that.getView().byId("idVencimento2").setSelectedKey();
-			that.getView().byId("idVencimento3").setSelectedKey();
+			var modelCentros = new JSONModel(this.vetorVencimentos);
+			this.setModel(modelCentros, "modelCentros");
 
-			var oModel = new sap.ui.model.json.JSONModel(oTabelasRelatorio);
-			that.getView().setModel(oModel);
-			that.getOwnerComponent().setModel(oModel, "modelRelatorioTabela");
+			var modelCentro = new JSONModel(this.vetorVencimentos);
+			this.setModelGlobal(modelCentro, "modelCentro");
+
+			var modelVenc = new JSONModel(this.vetorVencimentos);
+			this.setModel(modelVenc, "modelVencimentos");
+
+			var modelTabprecos = new JSONModel(that.vetorTabPrecos);
+			that.setModel(modelTabprecos, "modelTabPrecos");
+
+			var modelContratos = new JSONModel(that.vetorContratos);
+			that.setModelGlobal(modelContratos, "modelContratos");
+
+			var modelFretes = new JSONModel(that.vetorFretes);
+			that.setModel(modelFretes, "modelFretes");
 
 			var aux = {
 				idExibicao: 1,
@@ -71,505 +138,420 @@ sap.ui.define([
 
 			ComboExibicao.push(aux);
 			ComboExibicao.push(aux1);
-			oModel = new sap.ui.model.json.JSONModel(ComboExibicao);
+			var oModel = new sap.ui.model.json.JSONModel(ComboExibicao);
 			that.getOwnerComponent().setModel(oModel, "ComboExibicao");
-			that.getOwnerComponent().getModel("modelRelatorioTabela").setProperty("/exibicao", ComboExibicao[0].idExibicao);
-			that.byId("idExibicao").setSelectedKey(ComboExibicao[0].idExibicao);
 
-			var open1 = indexedDB.open("VB_DataBase");
-
-			open1.onerror = function() {
-				MessageBox.show(open1.error.mensage, {
-					icon: MessageBox.Icon.ERROR,
-					title: "Banco não encontrado!",
-					actions: [MessageBox.Action.OK]
-				});
-			};
-
-			open1.onsuccess = function() {
-				var db = open1.result;
-				var IdBase = that.getOwnerComponent().getModel("modelAux").getProperty("/IdBase");
-
-				//CARREGA OS CAMPOS DO LOCAL DE ENTREGA
-				var store = db.transaction("Clientes").objectStore("Clientes");
-				store.openCursor().onsuccess = function(event) {
-					var cursor = event.target.result;
-					if (cursor) {
-						if (cursor.value.IdBase == IdBase) {
-							oclientes.push(cursor.value);
-
-						}
-
-						cursor.continue();
-					} else {
-						oModel = new sap.ui.model.json.JSONModel(oclientes);
-						that.getView().setModel(oModel, "tabCliente");
-
-						//CARREGA OS CAMPOS DO ESTABELECIMENTO
-						store = db.transaction("Estabelecimento").objectStore("Estabelecimento");
-						store.openCursor().onsuccess = function(event) {
-							cursor = event.target.result;
-							if (cursor) {
-
-								if (cursor.value.IdBase == IdBase) {
-									oItemLoadEstabelecimento.push(cursor.value);
-								}
-								cursor.continue();
-							} else {
-								oModel = new sap.ui.model.json.JSONModel(oItemLoadEstabelecimento);
-								that.getView().setModel(oModel, "ComboEstabelecimento");
-							}
-						};
-					}
-				};
-			};
 		},
 
-		myFormatterDataVencimento: function(fValue) {
+		onCarregarPrecos: function () {
+
+			var that = this;
+			var parametros = this.getModelGlobal("modelTela").getData();
+
+			if (parametros.Werks == "") {
+
+				sap.m.MessageBox.show("Escolha o estabelecimento!", {
+					icon: sap.m.MessageBox.Icon.ERROR,
+					title: "Preecher campo(s)",
+					actions: [MessageBox.Action.OK],
+					onClose: function () {
+
+						that.byId("idEstabelecimento").focus();
+
+					}
+				});
+
+			} else if (parametros.Kunnr == "") {
+
+				sap.m.MessageBox.show("Preencher o cliente!", {
+					icon: sap.m.MessageBox.Icon.ERROR,
+					title: "Preecher campo(s)",
+					actions: [MessageBox.Action.OK],
+					onClose: function () {
+
+						that.byId("idCliente").focus();
+
+					}
+				});
+
+			} else if (parametros.Pltyp == "") {
+
+				sap.m.MessageBox.show("Preencher a tabela de preço!", {
+					icon: sap.m.MessageBox.Icon.ERROR,
+					title: "Preecher campo(s)",
+					actions: [MessageBox.Action.OK],
+					onClose: function () {
+
+						that.byId("idTabelaPreco").focus();
+
+					}
+				});
+
+			} else if (parametros.Vencimento == "") {
+
+				sap.m.MessageBox.show("Preencher a data pagamento!", {
+					icon: sap.m.MessageBox.Icon.ERROR,
+					title: "Preecher campo(s)",
+					actions: [MessageBox.Action.OK],
+					onClose: function () {
+
+						that.byId("idTabelaPreco").focus();
+
+					}
+				});
+
+			} else if (parametros.Inco1 == "") {
+
+				sap.m.MessageBox.show("Preencher o Tipo de Transporte!", {
+					icon: sap.m.MessageBox.Icon.ERROR,
+					title: "Preecher campo(s)",
+					actions: [MessageBox.Action.OK],
+					onClose: function () {
+
+						that.byId("idTipoTransporte").focus();
+
+					}
+				});
+
+			} else {
+
+				sap.m.MessageBox.show("O tipo de frete escolhido é " + parametros.Inco1 + ". Deseja continuar?", {
+					icon: sap.m.MessageBox.Icon.WARNING,
+					title: "Confirmação de campo(s)",
+					actions: [MessageBox.Action.YES, MessageBox.Action.CANCEL],
+					onClose: function (Action) {
+						if (Action == MessageBox.Action.YES) {
+							sap.ui.core.UIComponent.getRouterFor(that).navTo("detalhesRelatorioTabelas");
+						}
+					}
+				});
+			}
+		},
+
+		myFormatterDataVencimento: function (fValue) {
+
 			if (fValue.length === 1) {
 				fValue = "0" + fValue;
 			}
+
 		},
 
-		onChangeEstabelecimento: function() {
-			var that = this;
-			oItemLoadVencimento = [];
-			oItemLoadVencimento2 = [];
-			oItemLoadVencimento3 = [];
-			//CARREGA OS CAMPOS DO VENCIMENTO
-			var estabelecimento = that.byId("idEstabelecimento").getSelectedKey();
-			that.getOwnerComponent().getModel("modelRelatorioTabela").setProperty("/estabelecimento", estabelecimento);
-			var IdBase = that.getOwnerComponent().getModel("modelAux").getProperty("/IdBase");
-
-			var open1 = indexedDB.open("VB_DataBase");
-
-			open1.onerror = function() {
-				MessageBox.show(open1.error.mensage, {
-					icon: MessageBox.Icon.ERROR,
-					title: "Banco não encontrado!",
-					actions: [MessageBox.Action.OK]
-				});
-			};
-
-			open1.onsuccess = function() {
-				var db = open1.result;
-
-				var store = db.transaction("Vencimento").objectStore("Vencimento");
-				store.openCursor().onsuccess = function(event) {
-					var cursor = event.target.result;
-					if (cursor) {
-						if (cursor.value.CodEstabel == estabelecimento && cursor.value.IdBase == IdBase) {
-							oItemLoadVencimento.push(cursor.value);
-
-						}
-						cursor.continue();
-					} else {
-						var oModel = new sap.ui.model.json.JSONModel(oItemLoadVencimento);
-						that.getView().setModel(oModel, "ComboVencimento1");
-					}
-				};
-			};
-
-			for (var i = 0; i < oItemLoadEstabelecimento.length; i++) {
-				if (estabelecimento == oItemLoadEstabelecimento[i].CodEstabel) {
-					that.getOwnerComponent().getModel("modelRelatorioTabela").setProperty("/origEstabel", oItemLoadEstabelecimento[i].Estado);
-				}
-			}
-		},
-
-		onChangeExibicao: function() {
-			var exibicao = this.byId("idExibicao").getSelectedKey();
-			this.getOwnerComponent().getModel("modelRelatorioTabela").setProperty("/exibicao", exibicao);
-		},
-
-		onClienteChange: function(oEvent) {
+		onChangeEstabelecimento: function (e) {
 
 			var that = this;
-			oTabelasRelatorio = [];
-			oItemLoadEstabelecimento = [];
-			oItemVencimentoContrato = [];
-			oItemVencimentoContrato2 = [];
-			oItemVencimentoContrato3 = [];
-			that.getView().byId("idVencimento1").setSelectedKey();
-			that.getView().byId("idVencimento2").setSelectedKey();
-			that.getView().byId("idVencimento3").setSelectedKey();
-			that.getView().byId("idIndice").setValue();
+			var centro = e.getSource().getSelectedKey();
 
-			var oModel = new sap.ui.model.json.JSONModel(oItemLoadVencimento);
-			that.getView().setModel(oModel, "ComboVencimento1");
+			for (var i = 0; i < this.vetorCentros.length; i++) {
 
-			var fValue = this.byId("idtabClienteRelatorio").getValue();
-			that.getOwnerComponent().getModel("modelRelatorioTabela").setProperty("/cliente", fValue);
+				if (centro == this.vetorCentros[i].Werks) {
 
-			var open = indexedDB.open("VB_DataBase");
+					this.getModelGlobal("modelCentro").setData(this.vetorCentros[i]);
+				}
+			}
 
-			open.onerror = function() {
-				console.log("não foi possivel encontrar e/ou carregar a base de clientes");
-			};
+			// var open1 = indexedDB.open("PRED");
 
-			open.onsuccess = function() {
-				var db = open.result;
-				var IdBase = that.getOwnerComponent().getModel("modelAux").getProperty("/IdBase");
-				var estabelecimento = that.byId("idEstabelecimento").getSelectedKey();
+			// open1.onerror = function () {
+			// 	MessageBox.show(open1.error.mensage, {
+			// 		icon: MessageBox.Icon.ERROR,
+			// 		title: "Banco não encontrado!",
+			// 		actions: [MessageBox.Action.OK]
+			// 	});
+			// };
 
-				var store = db.transaction("TabPrecoCliente").objectStore("TabPrecoCliente");
-				store.openCursor().onsuccess = function(event) {
+			// open1.onsuccess = function () {
+			// 	var db = open1.result;
 
-					var cursor = event.target.result;
-					if (cursor) {
-						if (cursor.value.CodCliente == fValue && cursor.value.IdBase == IdBase && cursor.value.CodEstabel == estabelecimento) {
-							oTabelasRelatorio.push(cursor.value);
+			// 	var store = db.transaction("Clientes").objectStore("Clientes");
+			// 	var req = store.getAll();
 
-						}
-						cursor.continue();
+			// 	req.onsuccess = function (e) {
 
-					} else {
-						var oModel = new sap.ui.model.json.JSONModel(oTabelasRelatorio);
-						that.getView().setModel(oModel);
-						that.byId("idTabelaPreco").setSelectedKey(oTabelasRelatorio[0].NrTabPreco);
-						that.getOwnerComponent().getModel("modelRelatorioTabela").setProperty("/tabelaPreco", oTabelasRelatorio[0].NrTabPreco);
-						var tabelaPreco = oTabelasRelatorio[0].NrTabPreco;
+			// 		that.vetorClientes = e.target.result;
 
-						//CARREGA OS CAMPOS DO VENCIMENTO
-						store = db.transaction("TabelaPreco").objectStore("TabelaPreco");
-						store.openCursor().onsuccess = function(event2) {
-							var cursor2 = event2.target.result;
-							if (cursor2) {
-								if (cursor2.value.NrTabPreco == tabelaPreco && cursor2.value.IdBase == IdBase) {
-									that.getOwnerComponent().getModel("modelRelatorioTabela").setProperty("/canal", cursor2.value.PctDescCanal);
-								}
-								cursor2.continue();
+			// 		var oModel = new sap.ui.model.json.JSONModel(that.vetorClientes);
+			// 		that.setModelGlobal(oModel, "modelClientes");
 
-							} else {
-								store = db.transaction("ContratoCliente").objectStore("ContratoCliente");
-								store.openCursor().onsuccess = function(event) {
-									var cursor1 = event.target.result;
-									if (cursor1) {
-										if (cursor1.value.CodCliente == fValue && cursor1.value.CodEstabel == estabelecimento && cursor1.value.IdBase == IdBase) {
-											that.getOwnerComponent().getModel("modelRelatorioTabela").setProperty("/contrato", cursor1.value.PctDescContrato);
-											that.getOwnerComponent().getModel("modelRelatorioTabela").setProperty("/indice", cursor1.value.PctDescFinan);
+			// 		that.getModelGlobal("modelTela").setProperty("/Kunnr", "");
+			// 		that.getModelGlobal("modelTela").setProperty("/Vencimento", "");
+			// 		that.getModelGlobal("modelTela").setProperty("/Indice", "");
+			// 		that.getModelGlobal("modelTela").setProperty("/Contrato", "");
+			// 		that.getModelGlobal("modelTela").setProperty("/Pltype", "");
 
-											var aux = {
-												CodCliente: cursor1.value.CodCliente,
-												CodContrato: cursor1.value.CodContrato,
-												CodEstabel: cursor1.value.CodEstabel,
-												CodUnidNegoc: cursor1.value.CodUnidNegoc,
-												IdBase: cursor1.value.IdBase,
-												NomEstabel: cursor1.value.NomEstabel,
-												PctDescContrato: cursor1.value.PctDescContrato,
-												PctDescFinan: cursor1.value.PctDescFinan,
-												QtdDias: cursor1.value.QtdDias1,
-												QtdDias1: cursor1.value.QtdDias1,
-												QtdDias2: cursor1.value.QtdDias2,
-												QtdDias3: cursor1.value.QtdDias3,
-												UnidadeNegocio: cursor1.value.UnidadeNegocio,
-												idContratoCliente: cursor1.value.idContratoCliente
-											};
+			// 		that.byId("idCliente").focus();
+			// 	};
+			// };
 
-											oItemVencimentoContrato.push(aux);
-
-											aux = {
-												CodCliente: cursor1.value.CodCliente,
-												CodContrato: cursor1.value.CodContrato,
-												CodEstabel: cursor1.value.CodEstabel,
-												CodUnidNegoc: cursor1.value.CodUnidNegoc,
-												IdBase: cursor1.value.IdBase,
-												NomEstabel: cursor1.value.NomEstabel,
-												PctDescContrato: cursor1.value.PctDescContrato,
-												PctDescFinan: cursor1.value.PctDescFinan,
-												QtdDias: cursor1.value.QtdDias2,
-												QtdDias1: cursor1.value.QtdDias1,
-												QtdDias2: cursor1.value.QtdDias2,
-												QtdDias3: cursor1.value.QtdDias3,
-												UnidadeNegocio: cursor1.value.UnidadeNegocio,
-												idContratoCliente: cursor1.value.idContratoCliente
-											};
-
-											oItemVencimentoContrato2.push(aux);
-
-											aux = {
-												CodCliente: cursor1.value.CodCliente,
-												CodContrato: cursor1.value.CodContrato,
-												CodEstabel: cursor1.value.CodEstabel,
-												CodUnidNegoc: cursor1.value.CodUnidNegoc,
-												IdBase: cursor1.value.IdBase,
-												NomEstabel: cursor1.value.NomEstabel,
-												PctDescContrato: cursor1.value.PctDescContrato,
-												PctDescFinan: cursor1.value.PctDescFinan,
-												QtdDias: cursor1.value.QtdDias3,
-												QtdDias1: cursor1.value.QtdDias1,
-												QtdDias2: cursor1.value.QtdDias2,
-												QtdDias3: cursor1.value.QtdDias3,
-												UnidadeNegocio: cursor1.value.UnidadeNegocio,
-												idContratoCliente: cursor1.value.idContratoCliente
-											};
-											oItemVencimentoContrato3.push(aux);
-
-											// oModel = new sap.ui.model.json.JSONModel(oItemVencimentoContrato);
-											// that.getView().setModel(oModel, "ComboVencimento1");
-
-											// oModel = new sap.ui.model.json.JSONModel(oItemVencimentoContrato2);
-											// that.getView().setModel(oModel, "ComboVencimento2");
-
-											// oModel = new sap.ui.model.json.JSONModel(oItemVencimentoContrato3);
-											// that.getView().setModel(oModel, "ComboVencimento3");
-
-											if (oItemVencimentoContrato[0].QtdDias == 1 && oItemVencimentoContrato2[0].QtdDias == 2 && oItemVencimentoContrato3[0].QtdDias == 3) {
-												
-												oItemVencimentoContrato = [];
-												oItemVencimentoContrato2 = [];
-												oItemVencimentoContrato3 = [];
-												var oModel = new sap.ui.model.json.JSONModel(oItemLoadVencimento);
-												that.getView().setModel(oModel, "ComboVencimento1");
-
-											} else {
-												
-												oModel = new sap.ui.model.json.JSONModel(oItemVencimentoContrato);
-												that.getView().setModel(oModel, "ComboVencimento1");
-
-												oModel = new sap.ui.model.json.JSONModel(oItemVencimentoContrato2);
-												that.getView().setModel(oModel, "ComboVencimento2");
-
-												oModel = new sap.ui.model.json.JSONModel(oItemVencimentoContrato3);
-												that.getView().setModel(oModel, "ComboVencimento3");
-												
-												that.getView().byId("idVencimento1").setSelectedKey(oItemVencimentoContrato[0].QtdDias);
-												that.getView().byId("idVencimento2").setSelectedKey(oItemVencimentoContrato2[0].QtdDias);
-												that.getView().byId("idVencimento3").setSelectedKey(oItemVencimentoContrato3[0].QtdDias);
-												
-												that.getOwnerComponent().getModel("modelRelatorioTabela").setProperty("/vencimento1", oItemVencimentoContrato[0].QtdDias);
-												that.getOwnerComponent().getModel("modelRelatorioTabela").setProperty("/vencimento2", oItemVencimentoContrato2[0].QtdDias);
-												that.getOwnerComponent().getModel("modelRelatorioTabela").setProperty("/vencimento3", oItemVencimentoContrato3[0].QtdDias);
-												that.getView().byId("idIndice").setValue(that.getOwnerComponent().getModel("modelRelatorioTabela").getProperty(
-													"/indice"));
-											}
-
-										}
-										cursor1.continue();
-									}
-								};
-							}
-						};
-
-						that.byId("idLoadTabelaPreco").focus();
-
-					}
-				};
-			};
 		},
 
-		onChangeTabelaPreco: function(oEvent) {
+		onChangeCliente: function (oEvent) {
+
 			var that = this;
-			that.byId("idLoadTabelaPreco").focus();
 
-			var open1 = indexedDB.open("VB_DataBase");
+			var Cliente = this.getModelGlobal("modelTela").getProperty("/Kunnr");
 
-			open1.onerror = function() {
-				MessageBox.show(open1.error.mensage, {
-					icon: MessageBox.Icon.ERROR,
-					title: "Banco não encontrado!",
-					actions: [MessageBox.Action.OK]
-				});
-			};
+			// open.onsuccess = function () {
 
-			open1.onsuccess = function() {
+			// 	var db = open.result;
 
-				var db = open1.result;
-				var IdBase = that.getOwnerComponent().getModel("modelAux").getProperty("/IdBase");
-				var estabelecimento = that.byId("idEstabelecimento").getSelectedKey();
+			// 	var store = db.transaction("Clientes").objectStore("Clientes");
 
-				var tabelaPreco = that.byId("idTabelaPreco").getSelectedKey();
-				that.getOwnerComponent().getModel("modelRelatorioTabela").setProperty("/tabelaPreco", tabelaPreco);
+			// 	new Promise(function (resolve, reject) {
 
-				//CARREGA OS CAMPOS DO VENCIMENTO
-				var store = db.transaction("TabelaPreco").objectStore("TabelaPreco");
-				store.openCursor().onsuccess = function(event) {
-					var cursor = event.target.result;
-					if (cursor) {
-						if (cursor.value.NrTabPreco == tabelaPreco && cursor.value.IdBase == IdBase) {
-							that.getOwnerComponent().getModel("modelRelatorioTabela").setProperty("/canal", cursor.value.PctDescCanal);
-						}
-						cursor.continue();
+			// 		var req = store.get(Cliente);
 
-					}
-				};
-			};
+			// 		req.onsuccess = function (e) {
+
+			// 			var cliente = e.target.result;
+
+			// 			var oModel = new JSONModel(cliente);
+			// 			that.setModelGlobal(oModel, "modelCliente");
+
+			// 			var trans = db.transaction("TabPrecos", "readwrite");
+			// 			var objTabPreco = trans.objectStore("TabPrecos");
+			// 			var request = objTabPreco.getAll();
+
+			// 			request.onsuccess = function (event) {
+
+			// 				that.vetorTabPrecos = [];
+
+			// 				var tabPreco = event.target.result;
+
+			// 				for (var i = 0; i < tabPreco.length; i++) {
+
+			// 					if (tabPreco[i].Pltyp == that.getModelGlobal("modelCliente").getProperty("/Pltyp")) {
+			// 						that.vetorTabPrecos.push(tabPreco[i]);
+			// 					}
+			// 				}
+
+			// 				that.getModel("modelTabPrecos").setData(that.vetorTabPrecos);
+							
+			// 				if (that.vetorTabPrecos.length > 0) {
+			// 					that.getModelGlobal("modelTela").setProperty("/Pltyp", that.vetorTabPrecos[0].Pltyp);
+			// 				}
+
+			// 				resolve();
+			// 			};
+			// 		};
+
+			// 	}).then(function (resolve) {
+
+			// 		that.onCarregarContrato(db);
+
+			// 	});
+			// };
 		},
 
-		onChangeVencimento1: function() {
-			indice1 = 0;
-			indice2 = 0;
-			indice3 = 0;
-			this.byId("idLoadTabelaPreco").focus();
+		onCarregarContrato: function (db) {
 
-			oItemLoadVencimento2 = [];
-			oItemLoadVencimento3 = [];
-			this.getView().byId("idVencimento2").setSelectedKey();
-			this.getView().byId("idVencimento3").setSelectedKey();
-			var vencimento1 = this.byId("idVencimento1").getSelectedKey();
-			this.getOwnerComponent().getModel("modelRelatorioTabela").setProperty("/vencimento1", vencimento1);
-			this.getOwnerComponent().getModel("modelRelatorioTabela").setProperty("/vencimento2", 0);
-			this.getOwnerComponent().getModel("modelRelatorioTabela").setProperty("/vencimento3", 0);
-			this.getOwnerComponent().getModel("modelRelatorioTabela").setProperty("/indice", 0);
+			var that = this;
+			var chaveContrato = that.getModelGlobal("modelCentro").getProperty("/Bukrs") + "." + that.getModelGlobal("modelCliente").getProperty("/Kvgr4");
 
-			for (var i = 0; i < oItemLoadVencimento.length; i++) {
-				//ADICIONA A LISTA DE VENCIMENTOS 2
-				if (parseFloat(this.getView().byId("idVencimento1").getSelectedKey()) == 1) {
-					indice1 = parseFloat(oItemLoadVencimento[i].PctDescFinan);
-					this.getOwnerComponent().getModel("modelRelatorioTabela").setProperty("/indice", indice1);
-					break;
-				} else {
-					if (parseInt(oItemLoadVencimento[i].QtdDias) > this.getOwnerComponent().getModel("modelRelatorioTabela").getProperty(
-							"/vencimento1")) {
-						this.byId("idVencimento2").setProperty("enabled", true);
-						oItemLoadVencimento2.push(oItemLoadVencimento[i]);
-					}
-					// //ADICIONA O INDICE 
-					if (this.getOwnerComponent().getModel("modelRelatorioTabela").getProperty("/vencimento1") == parseInt(oItemLoadVencimento[i].QtdDias)) {
-						indice1 = parseFloat(oItemLoadVencimento[i].PctDescFinan);
-						this.getOwnerComponent().getModel("modelRelatorioTabela").setProperty("/indice", Math.round(parseFloat(indice1) * 100) / 100);
-					}
+			that.vetorContratos = [];
+
+			// var trans = db.transaction("Contratos", "readwrite");
+			// var objContrato = trans.objectStore("Contratos");
+			// var indexContrato = objContrato.index("ChavePesq");
+
+			// var requestContrato = indexContrato.getAll(chaveContrato);
+
+			// requestContrato.onsuccess = function (event) {
+
+			// 	that.vetorContratos = event.target.result;
+			// 	that.getModelGlobal("modelContratos").setData(that.vetorContratos);
+
+			// 	var vetorVenc = that.getModel("modelVencimentos").getData();
+
+			// 	//Set default a forma de pagamento do contrato.
+			// 	if (that.vetorContratos.length > 0) {
+
+			// 		var encontrou = false;
+
+			// 		for (var i = 0; i < vetorVenc.length; i++) {
+
+			// 			if (that.vetorContratos[0].Zterm == vetorVenc[i].Zterm) {
+			// 				encontrou = true;
+
+			// 				if (that.vetorContratos[0].AtlOrdem == "true") {
+
+			// 					that.getModelGlobal("modelTela").setProperty("/Indice", that.vetorContratos[0].IndiceContrato);
+
+			// 				} else {
+
+			// 					that.getModelGlobal("modelTela").setProperty("/Indice", vetorVenc[i].Kbetr);
+			// 				}
+
+			// 				break;
+			// 			}
+			// 		}
+
+			// 		if (!encontrou) {
+
+			// 			var aux = {
+			// 				Zterm: that.vetorContratos[0].Zterm,
+			// 				IdVencimento: that.vetorContratos[0].Zterm,
+			// 				DescCond: that.vetorContratos[0].DescCond,
+			// 				Contrato: true
+			// 			};
+
+			// 			vetorVenc.push(aux);
+			// 			that.getModel("modelVencimentos").setData(vetorVenc);
+			// 		}
+
+			// 		var aux = that.vetorContratos.sort(
+			// 			function (a, b) {
+
+			// 				if (a.Compo === b.Compo) {
+
+			// 					return a.Kunnr - b.Kunnr ? 1 : -1;
+			// 				}
+			// 				if (a.Compo === b.Compo && a.Kunnr == b.Kunnr) {
+
+			// 					return a.Versg - b.Versg ? 1 : -1;
+			// 				}
+			// 				if (a.Compo === b.Compo && a.Kunnr == b.Kunnr && a.Versg == b.Versg) {
+
+			// 					return a.Mvgr1 - b.Mvgr1 ? 1 : -1;
+			// 				}
+			// 				if (a.Compo === b.Compo && a.Kunnr == b.Kunnr && a.Versg == b.Versg && a.Mvgr1 == b.Mvgr1) {
+
+			// 					return a.Mvgr5 - b.Mvgr5 ? 1 : -1;
+			// 				}
+			// 				if (a.Compo === b.Compo && a.Kunnr == b.Kunnr && a.Versg == b.Versg && a.Mvgr1 == b.Mvgr1 && a.Mvgr5 == b.Mvgr5) {
+
+			// 					return a.Kvgr5 - b.Kvgr5 ? 1 : -1;
+			// 				}
+
+			// 				return a.Compo > b.Compo ? 1 : -1;
+			// 			});
+
+			// 		that.byId("idLabelContrato").setVisible(true);
+			// 		that.byId("idContrato").setVisible(true);
+
+			// 		that.getModelGlobal("modelTela").setProperty("/Vencimento", that.vetorContratos[0].Zterm);
+			// 		that.getModelGlobal("modelTela").setProperty("/Contrato", that.vetorContratos[0].ContratoInterno);
+
+			// 		if (that.getModel("modelTela").getProperty("/Vencimento") == "") {
+
+			// 			that.byId("idVencimento").setEnabled(true);
+
+			// 		} else {
+
+			// 			that.byId("idVencimento").setEnabled(false);
+			// 		}
+
+			// 		that.byId("idContrato").setVisible(true);
+			// 		that.byId("idLabelContrato").setVisible(true);
+
+			// 	} else {
+
+			// 		that.getModelGlobal("modelTela").setProperty("/Vencimento", "");
+			// 		that.getModelGlobal("modelTela").setProperty("/Indice", "");
+			// 		that.getModelGlobal("modelTela").setProperty("/Contrato", "");
+
+			// 		that.byId("idContrato").setVisible(false);
+			// 		that.byId("idLabelContrato").setVisible(false);
+			// 		that.byId("idVencimento").setEnabled(true);
+
+			// 	}
+			// };
+		},
+
+		onChangeVencimento: function (e) {
+
+			var that = this;
+
+			var selectedValue = e.getSource().getSelectedKey();
+
+			for (var i = 0; i < that.vetorVencimentos.length; i++) {
+
+				if (that.vetorVencimentos[i].Zterm == selectedValue) {
+					that.getModelGlobal("modelTela").setProperty("/Indice", parseFloat(that.vetorVencimentos[i].Kbetr));
 				}
 			}
-
-			var oModel = new sap.ui.model.json.JSONModel(oItemLoadVencimento2);
-			this.getView().setModel(oModel, "ComboVencimento2");
-			this.byId("idIndice").setValue(this.getOwnerComponent().getModel("modelRelatorioTabela").getProperty("/indice"));
 		},
 
-		onChangeVencimento2: function() {
-			indice2 = 0;
-			indice3 = 0;
-			oItemLoadVencimento3 = [];
-			this.byId("idLoadTabelaPreco").focus();
-			this.getView().byId("idVencimento3").setSelectedKey();
-			var DiasVenc2 = parseInt(this.getView().byId("idVencimento2").getSelectedKey());
-			this.getOwnerComponent().getModel("modelRelatorioTabela").setProperty("/vencimento3", 0);
-			this.getOwnerComponent().getModel("modelRelatorioTabela").setProperty("/vencimento2", DiasVenc2);
+		// onDataExport: sap.m.Table.prototype.exportData || function (oEvent) {
 
-			for (var i = 0; i < oItemLoadVencimento2.length; i++) {
-				if (parseInt(oItemLoadVencimento2[i].QtdDias) > DiasVenc2) {
-					this.byId("idVencimento2").setProperty("enabled", true);
-					oItemLoadVencimento3.push(oItemLoadVencimento2[i]);
-				}
-				//ADICIONA O INDICE (%)
-				if (parseInt(oItemLoadVencimento2[i].QtdDias) == parseInt(DiasVenc2)) {
-					indice2 = parseFloat(oItemLoadVencimento2[i].PctDescFinan);
-					var Desconto = (indice1 + indice2) / 2;
-					this.getOwnerComponent().getModel("modelRelatorioTabela").setProperty("/indice", Math.round(parseFloat(Desconto) * 100) / 100);
-				}
+		// 	this.vetorItensRelatorio = [];
+		// 	var oModel = new JSONModel(this.vetorItensRelatorio);
+		// 	this.getView().setModel(oModel);
+
+		// 	var oExport = new sap.ui.core.util.Export({
+
+		// 		// Type that will be used to generate the content. Own ExportType's can be created to support other formats
+		// 		exportType: new sap.ui.core.util.ExportTypeCSV({
+		// 			separatorChar: ";"
+		// 		}),
+
+		// 		// Pass in the model created above
+		// 		models: oModel,
+		// 		// binding information for the rows aggregation
+		// 		rows: {
+		// 			path: "/"
+		// 		},
+
+		// 		// column definitions with column name and binding info for the content
+
+		// 		columns: [{
+		// 			name: "Cod Cliente",
+		// 			template: {
+		// 				content: "{CodCliente}"
+		// 			}
+		// 		}, {
+		// 			name: "Cod Estabel",
+		// 			template: {
+		// 				content: "{CodEstabel}"
+		// 			}
+		// 		}, {
+		// 			name: "Nome Estabel",
+		// 			template: {
+		// 				content: "{NomEstabel}"
+		// 			}
+		// 		}, {
+		// 			name: "Nº Tab Preço",
+		// 			template: {
+		// 				content: "{NrTabPreco}"
+		// 			}
+		// 		}, {
+		// 			name: "Desc. Tabela",
+		// 			template: {
+		// 				content: "{DescTabela}"
+		// 			}
+		// 		}, {
+		// 			name: "Juros",
+		// 			template: {
+		// 				content: "{ValSdoTitAcr}"
+		// 			}
+		// 		}]
+		// 	});
+
+		// 	// download exported file
+		// 	oExport.saveFile().catch(function (oError) {
+		// 		MessageBox.error("Error when downloading data. Browser might not be supported!\n\n" + oError);
+		// 	}).then(function () {
+		// 		oExport.destroy();
+		// 	});
+		// },
+
+		_handleValueHelpSearch: function (oEvent) {
+
+			var sValue = oEvent.getSource().getValue();
+
+			var aFilters = [];
+			var oFilter = [new sap.ui.model.Filter("Kunnr", sap.ui.model.FilterOperator.StartsWith, sValue),
+				new sap.ui.model.Filter("Name1", sap.ui.model.FilterOperator.Contains, sValue)
+			];
+
+			var allFilters = new sap.ui.model.Filter(oFilter, false);
+
+			aFilters.push(allFilters);
+
+			if (this.byId("idCliente").getBinding("suggestionItems") != undefined) {
+
+				this.byId("idCliente").getBinding("suggestionItems").filter(aFilters);
+				this.byId("idCliente").suggest();
 			}
-			this.byId("idVencimento3").setProperty("enabled", true);
-
-			var oModel = new sap.ui.model.json.JSONModel(oItemLoadVencimento3);
-			this.getView().setModel(oModel, "ComboVencimento3");
-			this.byId("idIndice").setValue(this.getOwnerComponent().getModel("modelRelatorioTabela").getProperty("/indice"));
-		},
-
-		onChangeVencimento3: function() {
-			indice3 = 0;
-			this.byId("idLoadTabelaPreco").focus();
-			var DiasVenc1 = parseInt(this.byId("idVencimento1").getSelectedKey());
-			var DiasVenc2 = parseInt(this.byId("idVencimento2").getSelectedKey());
-			var DiasVenc3 = parseInt(this.byId("idVencimento3").getSelectedKey());
-
-			this.getOwnerComponent().getModel("modelRelatorioTabela").setProperty("/vencimento3", DiasVenc3);
-
-			for (var i = 0; i < oItemLoadVencimento.length; i++) {
-				if (parseInt(oItemLoadVencimento[i].QtdDias) == parseInt(DiasVenc1)) {
-					indice1 = parseFloat(oItemLoadVencimento[i].PctDescFinan);
-					var Dias = oItemLoadVencimento[i].QtdDias;
-					var CodEstabel = oItemLoadVencimento[i].CodEstabel;
-				}
-				if (parseInt(oItemLoadVencimento[i].QtdDias) == parseInt(DiasVenc2)) {
-					indice2 = parseFloat(oItemLoadVencimento[i].PctDescFinan);
-					var Dias2 = oItemLoadVencimento[i].QtdDias;
-					var CodEstabel2 = oItemLoadVencimento[i].CodEstabel;
-				}
-				if (parseInt(oItemLoadVencimento[i].QtdDias) == parseInt(DiasVenc3)) {
-					indice3 = parseFloat(oItemLoadVencimento[i].PctDescFinan);
-					var Dias3 = oItemLoadVencimento[i].QtdDias;
-					var CodEstabel3 = oItemLoadVencimento[i].CodEstabel;
-				}
-			}
-			var DescontoTotal = (indice1 + indice2 + indice3) / 3;
-			this.getOwnerComponent().getModel("modelRelatorioTabela").setProperty("/indice", Math.round(parseFloat(DescontoTotal) * 100) / 100);
-			this.byId("idIndice").setValue(this.getOwnerComponent().getModel("modelRelatorioTabela").getProperty("/indice"));
-
-		},
-
-		loadTabelaPreco: function() {
-			console.log(this.getOwnerComponent().getModel("modelRelatorioTabela").getProperty("/indice"));
-			console.log(this.getOwnerComponent().getModel("modelRelatorioTabela").getProperty("/vencimento1"));
-			console.log(this.getOwnerComponent().getModel("modelRelatorioTabela").getProperty("/vencimento2"));
-			console.log(this.getOwnerComponent().getModel("modelRelatorioTabela").getProperty("/vencimento3"));
-			console.log(this.getOwnerComponent().getModel("modelRelatorioTabela").getProperty("/cliente"));
-			console.log(this.getOwnerComponent().getModel("modelRelatorioTabela").getProperty("/estabelecimento"));
-			console.log(this.getOwnerComponent().getModel("modelRelatorioTabela").getProperty("/tabelaPreco"));
-			console.log(this.getOwnerComponent().getModel("modelRelatorioTabela").getProperty("/canal"));
-			sap.ui.core.UIComponent.getRouterFor(this).navTo("detalhesRelatorioTabelas");
-
-		},
-
-		onDataExport: sap.m.Table.prototype.exportData || function(oEvent) {
-			var oModel = new sap.ui.model.json.JSONModel(oTabelasRelatorio);
-			this.getView().setModel(oModel);
-
-			var oExport = new sap.ui.core.util.Export({
-
-				// Type that will be used to generate the content. Own ExportType's can be created to support other formats
-				exportType: new sap.ui.core.util.ExportTypeCSV({
-					separatorChar: ";"
-				}),
-
-				// Pass in the model created above
-				models: oModel,
-				// binding information for the rows aggregation
-				rows: {
-					path: "/"
-				},
-
-				// column definitions with column name and binding info for the content
-
-				columns: [{
-					name: "Cod Cliente",
-					template: {
-						content: "{CodCliente}"
-					}
-				}, {
-					name: "Cod Estabel",
-					template: {
-						content: "{CodEstabel}"
-					}
-				}, {
-					name: "Nome Estabel",
-					template: {
-						content: "{NomEstabel}"
-					}
-				}, {
-					name: "Nº Tab Preço",
-					template: {
-						content: "{NrTabPreco}"
-					}
-				}, {
-					name: "Desc. Tabela",
-					template: {
-						content: "{DescTabela}"
-					}
-				}, {
-					name: "Juros",
-					template: {
-						content: "{ValSdoTitAcr}"
-					}
-				}]
-			});
-
-			// download exported file
-			oExport.saveFile().catch(function(oError) {
-				MessageBox.error("Error when downloading data. Browser might not be supported!\n\n" + oError);
-			}).then(function() {
-				oExport.destroy();
-			});
 		}
 	});
 });

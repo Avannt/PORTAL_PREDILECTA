@@ -30,8 +30,8 @@
 												<Input id="idEndereco" enabled="false" value="{modelCliente>/Stras}"/>
 												<Label text="Cidade / UF"/>
 												<Input id="idCidade" enabled="false" value="{modelCliente>/Ort01} - {modelCliente>/Regio}"/>
-												<Label text="Data Cadastro Cliente"/>
-												<Input id="idDataCadastroCliente" enabled="false" value="{path : 'modelCliente>/Crdat', formatter: '.myFormatterDataMobile'}"/>
+												<Label text="Data Fundação"/>
+												<Input id="idDataCadastroCliente" enabled="false" value="{path : 'modelCliente>/FoundDat', formatter: '.myFormatterDataMobile'}"/>
 												<Label text="Email"/>
 												<Input id="idEmail" enabled="false" value="{modelCliente>/EmailNf}"/>
 												<Label text="Email Envio XML"/>
