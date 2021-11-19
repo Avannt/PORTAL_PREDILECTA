@@ -1,14 +1,14 @@
 <mvc:View height="100%" xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:layout="sap.ui.layout" 
 	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" controllerName="application.controller.relatorioTabelas"
 	xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic">
-	<Page title="Relatório de Tabelas" showNavButton="true" navButtonPress="onNavBack">
+	<Page title="Relatório de Tabelas de Preço" showNavButton="true" navButtonPress="onNavBack">
 		<content>
 			<VBox>
 				<form:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
 					emptySpanL="0" emptySpanM="0" columnsL="2" columnsM="2">
 					<form:content>
 						<core:Title/>
-						<Label text="Estabelecimento *"/>
+						<Label text="Centro *"/>
 						
 						<Select id="idEstabelecimento" forceSelection="false" selectedKey="{modelTela>/Werks}" showSecondaryValues="false"
 							items="{ path: 'modelCentros>/' }" change="onChangeEstabelecimento" busyIndicatorDelay="0" busy="{modelBusy>Centro}">
