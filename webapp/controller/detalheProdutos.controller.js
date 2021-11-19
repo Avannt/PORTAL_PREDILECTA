@@ -46,8 +46,10 @@ sap.ui.define([
 			that.setModel(model, "modelTela");
 
 			var modelProduto = new JSONModel();
-			that.setModelGlobal(modelProduto, "modelProduto");
-			that.setModel(modelProduto, "modelProdutos");
+			that.setModel(modelProduto, "modelProduto");
+			
+			var modelProdutos = new JSONModel();
+			that.setModel(modelProdutos, "modelProdutos");
 
 		},
 

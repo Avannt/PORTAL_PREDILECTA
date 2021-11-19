@@ -24,7 +24,7 @@ sap.ui.define([
 				sap.ui.core.UIComponent.getRouterFor(this).navTo("relatorioPedidos");
 				break;
 			case "R02":
-				sap.ui.core.UIComponent.getRouterFor(this).navTo("verbaConsultas");
+				sap.ui.core.UIComponent.getRouterFor(this).navTo("relatorioTabelas");
 				break;
 			case "R03":
 				sap.ui.core.UIComponent.getRouterFor(this).navTo("relatorioTitulos");
