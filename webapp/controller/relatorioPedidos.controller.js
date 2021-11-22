@@ -388,7 +388,7 @@ sap.ui.define([
 
 			aCols.push({
 				label: "Vl Saldo S/ST",
-				property: "ValSSt",
+				property: "ValSdoSSt",
 				type: EdmType.Number,
 				scale: 2,
 				delimiter: true
