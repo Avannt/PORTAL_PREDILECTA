@@ -369,6 +369,14 @@ sap.ui.define([
 				scale: 2,
 				delimiter: true
 			});
+			
+			aCols.push({
+				label: "Vol. Faturado(CX)",
+				property: "Fkimg",
+				type: EdmType.Number,
+				scale: 2,
+				delimiter: true
+			});
 
 			aCols.push({
 				label: "Saldo Volume(CX)",
