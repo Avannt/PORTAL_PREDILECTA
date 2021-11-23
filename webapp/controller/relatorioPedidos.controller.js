@@ -136,7 +136,7 @@ sap.ui.define([
 
 				that.onMensagemErroODATA(error);
 			});
-			
+
 			new Promise(function (res, rej) {
 
 				that.onBuscarProdutos(repres, res, rej, that);
@@ -313,7 +313,7 @@ sap.ui.define([
 				property: "Name1Cli",
 				type: EdmType.String
 			});
-			
+
 			aCols.push({
 				label: "CNPJ",
 				property: "Stcd1",
@@ -369,7 +369,7 @@ sap.ui.define([
 				scale: 2,
 				delimiter: true
 			});
-			
+
 			aCols.push({
 				label: "Vol. Faturado(CX)",
 				property: "Fkimg",
@@ -395,13 +395,21 @@ sap.ui.define([
 			});
 
 			aCols.push({
+				label: "Vl Faturado S/ST",
+				property: "ValFatSSt",
+				type: EdmType.Number,
+				scale: 2,
+				delimiter: true
+			});
+
+			aCols.push({
 				label: "Vl Saldo S/ST",
 				property: "ValSdoSSt",
 				type: EdmType.Number,
 				scale: 2,
 				delimiter: true
 			});
-			
+
 			aCols.push({
 				label: "Status",
 				property: "DescStatus",
@@ -413,32 +421,32 @@ sap.ui.define([
 				property: "Abstk",
 				type: EdmType.String
 			});
-			
+
 			aCols.push({
 				label: "Status Crédito",
 				property: "Cmgst",
 				type: EdmType.String
 			});
-			
+
 			aCols.push({
 				label: "Status Global",
 				property: "Gbstk",
 				type: EdmType.String
 			});
-			
+
 			aCols.push({
 				label: "Status Global Remessa",
 				property: "Lfgsk",
 				type: EdmType.String
 			});
-			
+
 			aCols.push({
 				label: "Status Remessa",
 				property: "Lfstk",
 				type: EdmType.String
 			});
-			
-				aCols.push({
+
+			aCols.push({
 				label: "Status Global Bloqueio",
 				property: "Lsstk",
 				type: EdmType.String
@@ -542,13 +550,13 @@ sap.ui.define([
 					for (var i = 0; i < that.vetorPedidosAux.length; i++) {
 
 						if ((that.vetorPedidosAux[i].Status == "A" && parametros.StatusAberto == true) ||
-						    (that.vetorPedidosAux[i].Status == "B" && parametros.StatusAbertoCredito == true) ||
-						    (that.vetorPedidosAux[i].Status == "C" && parametros.StatusAtendParcial == true) ||
-						    (that.vetorPedidosAux[i].Status == "D" && parametros.StatusAtendParcialPendCred == true) ||
-						    (that.vetorPedidosAux[i].Status == "E" && parametros.StatusAtendParcialCancel == true) ||
-						    (that.vetorPedidosAux[i].Status == "F" && parametros.StatusAtendTotal == true) ||
-						    (that.vetorPedidosAux[i].Status == "G" && parametros.StatusSuspenso == true) ||
-						    (that.vetorPedidosAux[i].Status == "H" && parametros.StatusCancelado == true)){
+							(that.vetorPedidosAux[i].Status == "B" && parametros.StatusAbertoCredito == true) ||
+							(that.vetorPedidosAux[i].Status == "C" && parametros.StatusAtendParcial == true) ||
+							(that.vetorPedidosAux[i].Status == "D" && parametros.StatusAtendParcialPendCred == true) ||
+							(that.vetorPedidosAux[i].Status == "E" && parametros.StatusAtendParcialCancel == true) ||
+							(that.vetorPedidosAux[i].Status == "F" && parametros.StatusAtendTotal == true) ||
+							(that.vetorPedidosAux[i].Status == "G" && parametros.StatusSuspenso == true) ||
+							(that.vetorPedidosAux[i].Status == "H" && parametros.StatusCancelado == true)) {
 
 							that.vetorPedidos.push(that.vetorPedidosAux[i]);
 
@@ -715,7 +723,7 @@ sap.ui.define([
 
 			this.byId("idRepreFim").suggest();
 		},
-		
+
 		onSuggestMaterialIni: function (evt) {
 
 			var sValue = evt.getSource().getValue();
