@@ -48,10 +48,12 @@ sap.ui.define([
 				Periodo: "",
 				StatusAberto: true,
 				StatusAbertoCredito: true,
+				StatusAbertoCancel: true,
 				StatusAtendParcial: true,
 				StatusAtendParcialPendCred: true,
 				StatusAtendParcialCancel: true,
 				StatusAtendTotal: true,
+				StatusAtendTotalCancel: true,
 				StatusSuspenso: true,
 				StatusCancelado: true,
 			};
@@ -551,12 +553,14 @@ sap.ui.define([
 
 						if ((that.vetorPedidosAux[i].Status == "A" && parametros.StatusAberto == true) ||
 							(that.vetorPedidosAux[i].Status == "B" && parametros.StatusAbertoCredito == true) ||
-							(that.vetorPedidosAux[i].Status == "C" && parametros.StatusAtendParcial == true) ||
-							(that.vetorPedidosAux[i].Status == "D" && parametros.StatusAtendParcialPendCred == true) ||
-							(that.vetorPedidosAux[i].Status == "E" && parametros.StatusAtendParcialCancel == true) ||
-							(that.vetorPedidosAux[i].Status == "F" && parametros.StatusAtendTotal == true) ||
-							(that.vetorPedidosAux[i].Status == "G" && parametros.StatusSuspenso == true) ||
-							(that.vetorPedidosAux[i].Status == "H" && parametros.StatusCancelado == true)) {
+							(that.vetorPedidosAux[i].Status == "C" && parametros.StatusAbertoCancel == true) ||
+							(that.vetorPedidosAux[i].Status == "D" && parametros.StatusAtendParcial == true) ||
+							(that.vetorPedidosAux[i].Status == "E" && parametros.StatusAtendParcialPendCred == true) ||
+							(that.vetorPedidosAux[i].Status == "F" && parametros.StatusAtendParcialCancel == true) ||
+							(that.vetorPedidosAux[i].Status == "G" && parametros.StatusAtendTotal == true) ||
+							(that.vetorPedidosAux[i].Status == "H" && parametros.StatusAtendTotalCancel == true) ||
+							(that.vetorPedidosAux[i].Status == "I" && parametros.StatusSuspenso == true) ||
+							(that.vetorPedidosAux[i].Status == "J" && parametros.StatusCancelado == true)) {
 
 							that.vetorPedidos.push(that.vetorPedidosAux[i]);
 

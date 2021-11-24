@@ -112,7 +112,7 @@
 									labelSpanS="12" adjustLabelSpan="false" emptySpanXL="2" emptySpanL="2" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
 									singleContainerFullSize="false">
 									<f:content>
-										<Label text="Status"/>
+										<Label text=""/>
 										<CheckBox id="idCheckAberto" text="Aberto" selected="{modelParametros>/StatusAberto}">
 											<layoutData>
 												<layout:GridData span="L2 M1" linebreakM="false"/>
@@ -123,9 +123,9 @@
 												<layout:GridData span="L1 M1" linebreakM="false"/>
 											</layoutData>
 										</Label>
-										<CheckBox id="idCheckAbertoCredito" text="Aberto Crédito" selected="{modelParametros>/StatusAbertoCredito}">
+										<CheckBox id="idCheckAbertoCredito" text="Aberto - Pendente Crédito" selected="{modelParametros>/StatusAbertoCredito}">
 											<layoutData>
-												<layout:GridData span="L1 M1" linebreakM="false"/>
+												<layout:GridData span="L3 M1" linebreakM="false"/>
 											</layoutData>
 										</CheckBox>
 										<Label text="">
@@ -133,9 +133,9 @@
 												<layout:GridData span="L1 M1" linebreakM="false"/>
 											</layoutData>
 										</Label>
-										<CheckBox id="idCheckAtendParcial" text="Atend.Parcial" selected="{modelParametros>/StatusAtendParcial}">
+										<CheckBox id="idCheckAbertoCancel" text="Aberto - Com Cancelamento" selected="{modelParametros>/StatusAbertoCancel}">
 											<layoutData>
-												<layout:GridData span="L1 M1" linebreakM="false"/>
+												<layout:GridData span="L3 M1" linebreakM="false"/>
 											</layoutData>
 										</CheckBox>
 										<Label text="">
@@ -143,17 +143,8 @@
 												<layout:GridData span="L1 M1" linebreakM="false"/>
 											</layoutData>
 										</Label>
-										<CheckBox id="idCheckAtendParcialPendCred" text="Atend.Parcial - Pendente Crédito" selected="{modelParametros>/StatusAtendParcialPendCred}">
-											<layoutData>
-												<layout:GridData span="L2 M1" linebreakM="false"/>
-											</layoutData>
-										</CheckBox>
-										<Label text="">
-											<layoutData>
-												<layout:GridData span="L2 M1" linebreakM="true" linebreakL="true"/>
-											</layoutData>
-										</Label>
-										<CheckBox id="idCheckAtendParcialCancel" text="Atend.Parcial - Com Cancelamento" selected="{modelParametros>/StatusAtendParcialCancel}">
+										<Label text=""/>
+										<CheckBox id="idCheckAtendParcial" text="Atendido Parcial" selected="{modelParametros>/StatusAtendParcial}">
 											<layoutData>
 												<layout:GridData span="L2 M1" linebreakM="false"/>
 											</layoutData>
@@ -163,9 +154,40 @@
 												<layout:GridData span="L1 M1" linebreakM="false"/>
 											</layoutData>
 										</Label>
-										<CheckBox id="idCheckAtendTotal" text="Atend. Total" selected="{modelParametros>/StatusAtendTotal}">
+										<CheckBox id="idCheckAtendParcialPendCred" text="Atendido Parcial - Pendente Crédito" selected="{modelParametros>/StatusAtendParcialPendCred}">
+											<layoutData>
+												<layout:GridData span="L3 M1" linebreakM="false"/>
+											</layoutData>
+										</CheckBox>
+										<Label text="">
 											<layoutData>
 												<layout:GridData span="L1 M1" linebreakM="false"/>
+											</layoutData>
+										</Label>
+										<CheckBox id="idCheckAtendParcialCancel" text="Atendido Parcial - Com Cancelamento" selected="{modelParametros>/StatusAtendParcialCancel}">
+											<layoutData>
+												<layout:GridData span="L3 M1" linebreakM="false"/>
+											</layoutData>
+										</CheckBox>
+										<Label text="">
+											<layoutData>
+												<layout:GridData span="L1 M1" linebreakM="false"/>
+											</layoutData>
+										</Label>
+										<Label text=""/>
+										<CheckBox id="idCheckAtendTotal" text="Atendido Total" selected="{modelParametros>/StatusAtendTotal}">
+											<layoutData>
+												<layout:GridData span="L2 M1" linebreakM="false"/>
+											</layoutData>
+										</CheckBox>
+										<Label text="">
+											<layoutData>
+												<layout:GridData span="L1 M1" linebreakM="false"/>
+											</layoutData>
+										</Label>
+										<CheckBox id="idCheckAtendTotalCancel" text="Atendido Total - Com Cancelamento" selected="{modelParametros>/StatusAtendTotalCancel}">
+											<layoutData>
+												<layout:GridData span="L3 M1" linebreakM="false"/>
 											</layoutData>
 										</CheckBox>
 										<Label text="">
@@ -175,7 +197,7 @@
 										</Label>
 										<CheckBox id="idCheckSuspenso" text="Suspenso" selected="{modelParametros>/StatusSuspenso}">
 											<layoutData>
-												<layout:GridData span="L1 M1" linebreakM="false"/>
+												<layout:GridData span="L3 M1" linebreakM="false"/>
 											</layoutData>
 										</CheckBox>
 										<Label text="">
@@ -183,11 +205,19 @@
 												<layout:GridData span="L1 M1" linebreakM="false"/>
 											</layoutData>
 										</Label>
+										
+										<Label text=""/>
 										<CheckBox id="idCheckCancelado" text="Cancelado" selected="{modelParametros>/StatusCancelado}">
+											<layoutData>
+												<layout:GridData span="L2 M1" linebreakM="false"/>
+											</layoutData>
+										</CheckBox>
+										<Label text="">
 											<layoutData>
 												<layout:GridData span="L1 M1" linebreakM="false"/>
 											</layoutData>
-										</CheckBox>
+										</Label>
+										
 									</f:content>
 								</f:SimpleForm>
 							</content>
