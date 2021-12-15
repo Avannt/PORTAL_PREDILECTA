@@ -134,6 +134,8 @@ sap.ui.define([
 		onCarregarPrecos: function () {
 
 			var that = this;
+			
+			sap.ui.core.UIComponent.getRouterFor(that).navTo("detalhesRelatorioTabelas");
 			var parametros = this.getModelGlobal("modelTela").getData();
 
 			if (parametros.Werks == "") {

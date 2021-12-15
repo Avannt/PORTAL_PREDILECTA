@@ -1,0 +1,98 @@
+<mvc:View height="100%" xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:layout="sap.ui.layout" 
+	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" controllerName="application.controller.relatorioTabelas"
+	xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic">
+	<Page title="Relatório de Tabelas" showNavButton="true" navButtonPress="onNavBack">
+		<content>
+			<VBox>
+				<form:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
+					emptySpanL="0" emptySpanM="0" columnsL="2" columnsM="2">
+					<form:content>
+						<core:Title/>
+						<Label text="Estabelecimento *"/>
+						
+						<Select id="idEstabelecimento" forceSelection="false" selectedKey="{modelTela>/Werks}" showSecondaryValues="false"
+							items="{ path: 'modelCentros>/' }" change="onChangeEstabelecimento" busyIndicatorDelay="0" busy="{modelBusy>Centro}">
+							<core:Item key="{modelCentros>Werks}" text="{modelCentros>NomeCentro}"/>
+							<layoutData>
+								<layout:GridData span="L4 M4"/>
+							</layoutData>
+						</Select>
+						
+						<Label text="Cliente *"/>
+						<SearchField class="camposDialog" id="idCliente" placeholder="Digite código do cliente" enableSuggestions="true"
+							search="onChangeCliente" suggest="_handleValueHelpSearch" width="100%" value="{modelTela>/Kunnr}"
+							suggestionItems="{ path: 'modelClientes>/', sorter: { path: 'Kunnr' }, parameters: {operationMode: 'Client'} }">
+							<suggestionItems>
+								<SuggestionItem text="{modelClientes>Kunnr}" key="{modelClientes>Kunnr}" description="{modelClientes>Name1}" />
+							
+							</suggestionItems>
+							<layoutData>
+								<layout:GridData span="L4 M4"/>
+							</layoutData>
+						</SearchField>
+						
+						<Label text="Tabela de Preço *"/>
+						
+						<Select id="idTabelaPreco" showSecondaryValues="false" forceSelection="false" items="{ path: 'modelTabPrecos>/' }"
+							selectedKey="{modelTela>/Pltyp}" change="onChangeTabelaPreco" busyIndicatorDelay="0" busy="{modelBusy>TabPreco}">
+							<core:Item key="{modelTabPrecos>Pltyp}" text="{modelTabPrecos>Pltyp} - {modelTabPrecos>Ptext}" />
+							<layoutData>
+								<layout:GridData span="L4 M4"/>
+							</layoutData>
+						</Select>
+						
+						<Label text="Vencimento *"/>
+						<Select id="idVencimento" showSecondaryValues="false" forceSelection="false" busyIndicatorDelay="0" busy="{modelDelay>/Vencimento1}"
+							items="{ path: 'modelVencimentos>/', sorter: 'Zterm', ascending: true}" selectedKey="{modelTela>/Vencimento}"
+							change="onChangeVencimento">
+							<core:Item key="{modelVencimentos>Zterm}" text="{path: 'modelVencimentos>DescCond'}"/>
+							<layoutData>
+								<layout:GridData span="L4 M4" />
+							</layoutData>
+						</Select>
+						
+						<Label id="idLabelContrato" text="Contrato *" visible="false" />
+						<Input id="idContrato" visible="false" enabled="false" value="{path: 'modelTela>/Contrato'}">
+							<layoutData>
+								<layout:GridData span="L4 M4" />
+							</layoutData>
+						</Input>
+						
+						<Label text="Índice *" />
+						<Input id="idIndice" value="{path: 'modelTela>/Indice', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} %" enabled="false">
+							<layoutData>
+								<layout:GridData span="L4 M4" />
+							</layoutData>
+						</Input>
+						
+						<Label text="Tipo transporte *" />
+						<Select id="idTipoTransporte" forceSelection="false" items="{ path: 'modelFretes>/' }" showSecondaryValues="true"
+							selectedKey="{modelTela>/Inco1}" busyIndicatorDelay="0" busy="{modelDelay>/Frete}" change="onChangeInfo">
+							<core:Item key="{modelFretes>Inco1}" text="{modelFretes>Inco1} - {modelFretes>Bezei}"/>
+							<layoutData>
+								<layout:GridData span="L4 M4" />
+							</layoutData>
+						</Select>
+						
+						<Label text="Exibição *" />
+						<Select id="idExibicao" forceSelection="true" showSecondaryValues="false" items="{ path: 'ComboExibicao>/' }" selectedKey="{modelTela>/Exibicao}">
+							<core:Item key="{ComboExibicao>idExibicao}" text="{ComboExibicao>descricao}" />
+							<layoutData>
+								<layout:GridData span="L4 M4" />
+							</layoutData>
+						</Select>
+						
+						
+						<Label text="" />
+						<Button id="idLoadTabelaPreco" text="Carregar Itens" type="Accept" press="onCarregarPrecos">
+							<layoutData>
+								<layout:GridData span="L4 M4" />
+							</layoutData>
+						</Button>
+						<!--<Button text="Cancelar" press="onCancelarPedido"/>-->
+					</form:content>
+				</form:SimpleForm>
+			</VBox>
+		</content>
+	</Page>
+</mvc:View>

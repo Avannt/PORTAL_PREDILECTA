@@ -26,6 +26,10 @@ sap.ui.define([
 			var Bukrs = that.getModelGlobal("modelPedido").getProperty("/Bukrs");
 
 			that.getView().byId("IdItemPedido").setBusy(true);
+			
+			that.vetorProdutos = [];
+			var modelProdutos = new JSONModel(that.vetorProdutos);
+			this.setModel(modelProdutos, "modelProdutos");
 
 			that.onInicializaCamposItens();
 
@@ -35,17 +39,14 @@ sap.ui.define([
 
 			}).then(function (data) {
 
-				var vetorProdutos = [];
-
-				vetorProdutos = data.filter(function (a, b) {
+				that.vetorProdutos = data.filter(function (a, b) {
 					if (a.Vkorg == Bukrs) {
 						delete a.__metadata;
 						return a;
 					}
 				});
 
-				var oModelProdutos = new JSONModel(vetorProdutos);
-				that.setModel(oModelProdutos, "modelProdutos");
+				that.getModel("modelProdutos").setData(that.vetorProdutos);
 				that.getView().byId("IdItemPedido").setBusy(false);
 				that.getView().byId("IdItemPedido").focus();
 
@@ -71,8 +72,8 @@ sap.ui.define([
 				Meins: "",
 				ValPrecoInform: 0,
 				ValPrecoInformAntigo: 0,
-				ValPrecoUnit: 0,
 				ValPrecoUnitSt: 0,
+				ValPrecoUnit: 0,
 				ValPrecoUnitStFat: 0,
 				ValorTotal: 0,
 				ValPrecoOrig: 0,
@@ -148,6 +149,7 @@ sap.ui.define([
 				ValFrete: 0,
 				ValVerbaOrig: 0,
 				ValPrecoTabela: 0,
+				ValPrecoTabelaMin: 0,
 				ValPrecoMinBase: 0,
 				PctDescContrato: 0,
 				Ntgew: 0,
@@ -175,7 +177,7 @@ sap.ui.define([
 
 			setTimeout(function () {
 				that.getView().byId("IdItemPedido").focus();
-			}, 500);
+			}, 1000);
 		},
 
 		onSuggestProdutos: function (evt) {
@@ -211,7 +213,40 @@ sap.ui.define([
 
 			if (oParameters.Matnr != "") {
 
-				if (oParameters.QtdPedida > 0) {
+				var encontrou = false;
+
+				for (var i = 0; i < that.vetorProdutos.length; i++) {
+					if (that.vetorProdutos[i].Matnr == oParameters.Matnr) {
+						encontrou = true;
+						break;
+					}
+				}
+
+				if (encontrou === false) {
+
+					MessageBox.show("Item não permitido para digitação!", {
+						icon: MessageBox.Icon.WARNING,
+						title: "Não Permitido",
+						actions: [MessageBox.Action.OK],
+						onClose: function () {
+							
+							that.getModelGlobal("modelItem").setProperty("/Matnr", "");
+							that.getView().byId("IdItemPedido").focus();
+						}
+					});
+
+				} else if (oParameters.QtdPedida < 0) {
+
+					MessageBox.show("A quantidade de itens deve ser maior que 0", {
+						icon: MessageBox.Icon.WARNING,
+						title: "Não Permitido",
+						actions: [MessageBox.Action.OK],
+						onClose: function () {
+							that.getView().byId("idQuantidade").focus();
+						}
+					});
+
+				} else {
 
 					that.byId("idItens").setBusy(true);
 
@@ -220,23 +255,12 @@ sap.ui.define([
 					setTimeout(function () {
 						that.getView().byId("idQuantidade").focus();
 					}, 500);
-
-				} else {
-
-					MessageBox.show("A quantidade de itens deve ser maior que 0", {
-						icon: MessageBox.Icon.WARNING,
-						title: "Não Permitido",
-						actions: [MessageBox.Action.OK],
-						onClose: function () {
-
-							that.getView().byId("idQuantidade").focus();
-						}
-					});
 				}
+				
 			} else {
 
 				that.onInicializaCamposItens();
-				that.byId("IdItemPedido").suggest();
+				that.getView().byId("IdItemPedido").suggest();
 			}
 		},
 
@@ -277,7 +301,7 @@ sap.ui.define([
 
 			} else {
 
-				this.byId("IdItemPedido").suggest();
+				that.getView().byId("IdItemPedido").suggest();
 			}
 		},
 
@@ -317,7 +341,7 @@ sap.ui.define([
 
 			} else {
 
-				this.byId("IdItemPedido").suggest();
+				that.getView().byId("IdItemPedido").suggest();
 			}
 		},
 
@@ -382,18 +406,18 @@ sap.ui.define([
 						that.getModelGlobal("modelItem").setData(Item);
 						that.byId("idItens").setBusy(false);
 
-						if (Item.PercLucro <= -3) {
+						// if (Item.PercLucro <= -3) {
 
-							that.byId("idRentabilidade").setVisible(false);
+						// 	that.byId("idRentabilidade").setVisible(false);
 
-						} else if (Item.PercLucro >= 3) {
+						// } else if (Item.PercLucro >= 3) {
 
-							that.byId("idRentabilidade").setVisible(false);
+						// 	that.byId("idRentabilidade").setVisible(false);
 
-						} else if (Item.PercLucro < 3 && Item.PercLucro > -3) {
+						// } else if (Item.PercLucro < 3 && Item.PercLucro > -3) {
 
-							that.byId("idRentabilidade").setVisible(true);
-						}
+						// 	that.byId("idRentabilidade").setVisible(false);
+						// }
 
 					}
 				},

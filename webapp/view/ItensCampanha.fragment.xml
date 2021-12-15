@@ -39,7 +39,7 @@
 		</Table>
 		<!--</content>-->
 		<endButton>
-			<Button id="idCancelar" text="Cancelar" press="onDialogCancelar" type="Reject" busyIndicatorDelay="0" busy="{modelAux>btnDialogCancel}"
+			<Button id="idCancelar" text="Fechar" press="onDialogCancelar" type="Reject" busyIndicatorDelay="0" busy="{modelAux>btnDialogCancel}"
 				icon="sap-icon://decline"/>
 		</endButton>
 	</Dialog>

@@ -17,7 +17,7 @@ sap.ui.define([
 
 			this.getRouter().initialize();
 		},
- 
+
 		getModel: function (sName) {
 			return this.getView().getModel(sName);
 		},
@@ -170,6 +170,21 @@ sap.ui.define([
 					rej(error);
 				}
 			});
+		},
+
+		onBuscarTipoPedido: function (Usuario, Kunnr, Centro, Kvgr4, Kvgr5, res, rej, that) {
+
+			that.oModel.read("/P_TipoPedidosR(IvRepres='" + Usuario + "',IvCliente='" + Kunnr + "',IvCentro='" + Centro + "',IvKvgr4='" +
+				Kvgr4 + "',IvKvgr5='" + Kvgr5 + "')", {
+					success: function (retorno) {
+
+						res(retorno);
+					},
+					error: function (error) {
+
+						rej(error);
+					}
+				});
 		},
 
 		onBuscarPedido: function (NrPedido, res, rej, that) {
