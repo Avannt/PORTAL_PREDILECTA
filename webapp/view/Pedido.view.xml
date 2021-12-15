@@ -21,7 +21,7 @@
 					</Toolbar>
 				</content>
 				<content>
-					<Table id="table_pedidos" backgroundDesign="Translucent" items="{ path:'Pedidos>/', sorter: [{ path: 'IdStatusPedido', ascending: true }, { path: 'Vbeln', descending: true }] }" mode="Delete" delete="onExcluirPedido" itemPress="onItemPress"
+					<Table id="table_pedidos" backgroundDesign="Translucent" items="{ path:'Pedidos>/', sorter: { path: 'DataIniConv', descending: true }}" mode="Delete" delete="onExcluirPedido" itemPress="onItemPress"
 						growingThreshold="99" growingTriggerText="Proximos Pedidos >>" growing="true" noDataText="Nenhum pedido cadastrado para o cliente" busyIndicatorDelay="0" fixedLayout="false">
 						<headerToolbar>
 							<Toolbar id="lineItemsToolbar">
@@ -36,7 +36,10 @@
 								<Text text="Data" />
 							</Column>
 							<Column minScreenWidth="550px" demandPopin="true" popinDisplay="Inline">
-								<Text text="Valor total" />
+								<Text text="Valor total S/ST" />
+							</Column>
+							<Column minScreenWidth="750px" demandPopin="true" popinDisplay="Inline">
+								<Text text="Valor total C/ST" />
 							</Column>
 							<Column minScreenWidth="Desktop" demandPopin="true" popinDisplay="Inline">
 								<Text text="Pedido SAP" />
@@ -65,11 +68,12 @@
 								<cells>
 									<Text text="{path : 'Pedidos>DataFim', formatter:'.myFormatterData'} - {path : 'Pedidos>HoraFim', formatter:'.myFormatterHora'}" />
 									<Text text="R$: {path : 'Pedidos>ValorTotal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" />
+									<Text text="R$: {path : 'Pedidos>ValTotItemSt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" />
 									<Text text="{path : 'Pedidos>Vbeln', type: 'sap.ui.model.type.Integer'}" />
 									<Text text="{Pedidos>Lifnr} - {Pedidos>NrPedido}" />
 									<Text text="{path : 'Pedidos>TotalItens'}" />
 									<Text text="R$: {path :'Pedidos>TotalVerba', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" />
-									<ObjectListItem number="{path: 'Pedidos>RentTotal', formatter: '.formatRentabilidade'} %" numberState="{= ${Pedidos>RentTotal} >= 0 ? 'Success' : 'Error' }" />
+									<ObjectListItem number="{path: 'Pedidos>RentTotal', formatter: '.formatRentabilidade'}" numberState="{= ${Pedidos>RentTotal} >= 0 ? 'Success' : 'Error' }" />
 									<Image id="idRentabilidadePedidoImg" src="{path : 'Pedidos>RentTotalImg'}" width="20%" />
 									<Text text="{path :'Pedidos>IdStatusPedido', type: 'sap.ui.model.type.Integer'}-{path :'Pedidos>SituacaoPedido'}" />
 								</cells>

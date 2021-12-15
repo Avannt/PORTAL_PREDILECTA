@@ -14,7 +14,7 @@
 									<form:content>
 										<Label text="Item">
 											<layoutData>
-												<layout:GridData span="L2 M2"/>
+												<layout:GridData span="L2 M2" />
 											</layoutData>
 										</Label>
 										<SearchField class="camposDialog" id="IdItemPedido" placeholder="Digite Código ou Nome do Produto" enableSuggestions="true"
@@ -100,8 +100,8 @@
 												<layout:GridData span="L2 M2"/>
 											</layoutData>
 										</Label>
-										<Input id="idPrecoVenda" value="{modelItem>/ValPrecoInform}" class="camposDialog" editable="true" change="onPrecoVendaChange"
-											liveChange="onBloquearInput" submit="onFocusVenda" type="Number">
+										<Input id="idPrecoVenda" value="{path: 'modelItem>/ValPrecoInform'}" 
+											class="camposDialog" editable="true" change="onPrecoVendaChange" liveChange="onBloquearInput" submit="onFocusVenda" type="Number">
 											<layoutData>
 												<layout:GridData span="L2 M2"/>
 											</layoutData>
@@ -332,7 +332,7 @@
 							<Column minScreenWidth="420px" width="30px" hAlign="Left" visible="false">
 								<Text text="Id" textAlign="Left"/>
 							</Column>
-							<Column minScreenWidth="320px" hAlign="Left" width="80px">
+							<Column minScreenWidth="320px" hAlign="Left" width="100px">
 								<Text text="Item" textAlign="Left"/>
 							</Column>
 							<Column minScreenWidth="665px" demandPopin="false" hAlign="Left">
@@ -341,19 +341,19 @@
 							<Column minScreenWidth="420px" demandPopin="false" hAlign="Left" width="40px">
 								<Text text="UM" textAlign="Left"/>
 							</Column>
-							<Column minScreenWidth="320px" hAlign="Left" width="60px">
+							<Column minScreenWidth="320px" hAlign="Left">
 								<Text text="Qnt" textAlign="Left"/>
 							</Column>
-							<Column minScreenWidth="815px" demandPopin="false" hAlign="Left" width="100px">
-								<Text text="P. Tab." textAlign="Left"/>
+							<Column minScreenWidth="815px" demandPopin="false" hAlign="Left">
+								<Text text="P. Tab. Líq" textAlign="Left"/>
 							</Column>
-							<Column minScreenWidth="320px" demandPopin="false" hAlign="Left" width="100px">
+							<Column minScreenWidth="320px" demandPopin="false" hAlign="Left">
 								<Text text="P. Vend." textAlign="Left"/>
 							</Column>
-							<Column minScreenWidth="360px" demandPopin="false" hAlign="Left" width="110px">
+							<Column minScreenWidth="360px" demandPopin="false" hAlign="Left">
 								<Text text="Vlr Total" textAlign="Left"/>
 							</Column>
-							<Column minScreenWidth="740px" demandPopin="false" hAlign="Left" width="110px">
+							<Column minScreenWidth="740px" demandPopin="false" hAlign="Left">
 								<Text text="T + ST" textAlign="Left"/>
 							</Column>
 							<Column minScreenWidth="470px" demandPopin="false" width="60px" hAlign="Center">
@@ -363,24 +363,24 @@
 						<items class="margins">
 							<ColumnListItem type="Active">
 								<cells>
-									<Text text="{path : 'modelItensPedidoGrid>IndexItem', type: 'sap.ui.model.type.Integer'}" visible="true" textAlign="Left"/>
-									<Text text="{modelItensPedidoGrid>Matnr}" textAlign="Left"/>
+									<Text text="{path : 'modelItensPedidoGrid>IndexItem', type: 'sap.ui.model.type.Integer'}" visible="true" textAlign="Left" />
+									<Text text="{modelItensPedidoGrid>Matnr}" textAlign="Left" />
 									<Text text="{path: 'modelItensPedidoGrid>Maktx'}" textAlign="Left" />
-									<Text text="{modelItensPedidoGrid>Meins}" textAlign="Left"/>
+									<Text text="{modelItensPedidoGrid>Vrkme}" textAlign="Left" />
 									<Text text="{modelItensPedidoGrid>QtdPedida}" textAlign="Left" />
 									<Text
-										text="R$: {path: 'modelItensPedidoGrid>ValPrecoOrig', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
-										textAlign="Left"/>
+										text="R$: {path: 'modelItensPedidoGrid>ValPrecoTabelaMin', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+										textAlign="Left" />
 									<Text
 										text="R$: {path: 'modelItensPedidoGrid>ValPrecoInform', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
-										textAlign="Left"/>
+										textAlign="Left" />
 									<Text
 										text="R$: {path: 'modelItensPedidoGrid>ValorTotal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
-										textAlign="Left"/>
+										textAlign="Left" />
 									<Text
 										text="R$: {path: 'modelItensPedidoGrid>ValTotItemSt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
-										textAlign="Left"/>
-									<Image src="{path : 'modelItensPedidoGrid>RentImg'}" width="30px" backgroundPosition="Center"/>
+										textAlign="Left" />
+									<Image src="{path : 'modelItensPedidoGrid>RentImg'}" width="30px" backgroundPosition="Center" />
 								</cells>
 							</ColumnListItem>
 						</items>
