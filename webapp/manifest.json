@@ -292,7 +292,9 @@
 				},
 				"detalhesRelatorioTabelas": {
 					"viewName": "detalhesRelatorioTabelas",
-					"viewLevel": 3
+					"viewLevel": 3,
+					"controlId": "app",
+					"controlAggregation": "pages"
 				},
 				"relatorioTabelas": {
 					"viewName": "relatorioTabelas",
