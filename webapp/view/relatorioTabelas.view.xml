@@ -33,9 +33,9 @@
 						
 						<Label text="Tabela de Preço *"/>
 						
-						<Select id="idTabelaPreco" showSecondaryValues="false" forceSelection="false" items="{ path: 'modelTabPrecos>/' }"
+						<Select id="idTabelaPreco" showSecondaryValues="false" forceSelection="false" items="{ path: 'modelTbPreco>/' }"
 							selectedKey="{modelTela>/Pltyp}" change="onChangeTabelaPreco" busyIndicatorDelay="0" busy="{modelBusy>TabPreco}">
-							<core:Item key="{modelTabPrecos>Pltyp}" text="{modelTabPrecos>Pltyp} - {modelTabPrecos>Ptext}" />
+							<core:Item key="{modelTbPreco>Pltyp}" text="{modelTbPreco>Pltyp} - {modelTbPreco>Ptext}" />
 							<layoutData>
 								<layout:GridData span="L4 M4"/>
 							</layoutData>

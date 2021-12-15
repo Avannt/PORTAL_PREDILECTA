@@ -3,10 +3,13 @@ sap.ui.define([
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageBox",
 	"application/model/formatter",
-	"sap/ui/core/util/Export",
-	"sap/ui/core/util/ExportTypeCSV"
+	"sap/ui/core/util/MockServer",
+	"sap/ui/export/library",
+	"sap/ui/export/Spreadsheet",
+	"sap/ui/model/odata/v2/ODataModel",
+	"sap/m/MessageBox"
 
-], function(BaseController, MessageBox, ExportTypeCSV, Export) {
+], function (BaseController, JSONModel, MessageBox, formatter, MockServer, exportLibrary, Spreadsheet, ODataModel) {
 	"use strict";
 
 	var oProdutosTemplate = [];
@@ -60,37 +63,50 @@ sap.ui.define([
 		},
 
 		_onLoadFields: function() {
-			var that = this;
-			oProdutosTemplate = "";
-			oItemTabPrecoTemplate = "";
-			oItemContrato = "";
-			oProdutosTemplateGrid = "";
-			substItem = "";
-			filtroGrid = "";
-			oProdutosTemplateGridAux = "";
-			this.byId("idtablePrecos").setGrowingTriggerText("Próximo >>>");
-	
-			oProdutosTemplate = [];
-			oItemTabPrecoTemplate = [];
-			oItemContrato = [];
-			oProdutosTemplateGrid = [];
-			substItem = [];
-			filtroGrid = [];
-			oProdutosTemplateGridAux = [];
 			
-			var possueContrato = false;
-			that.byId("idtablePrecos").setBusy(true);
+			var that = this;
 
-			var cliente = this.getOwnerComponent().getModel("modelRelatorioTabela").getProperty("/cliente");
-			var estabelecimento = this.getOwnerComponent().getModel("modelRelatorioTabela").getProperty("/estabelecimento");
-			var origEstabel = that.getOwnerComponent().getModel("modelRelatorioTabela").getProperty("/origEstabel");
+			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
+			that.oModel = that.getModelGlobal("modelAux").getProperty("/DBModel");
 
-			var oModel = new sap.ui.model.json.JSONModel(oProdutosTemplateGridAux);
-			this.getOwnerComponent().setModel(oModel, "produtoRenatorio");
+			var vAux = {
+				Empresa: "",
+				TabPreco: "",
+				Frete: ""
+			};
 
-			oModel = new sap.ui.model.json.JSONModel(oProdutosTemplateGrid);
-			this.getOwnerComponent().setModel(oModel, "relatorioTabelas");
+			var omodelParametros = new JSONModel(vAux);
+			that.setModel(omodelParametros, "modelParametros");
+			
+			that.vetorTabPrecoExcel = [];
+			var oModelTabPrecoExcel = new JSONModel(that.vetorTabPrecoExcel);
+			that.setModel(oModelTabPrecoExcel, "modelTabPrecoExcel");
 
+			var parametros = that.getModel("modelParametros").getData();
+			
+			that.byId("master").setBusy(true);
+
+			that.oModel.read("/P_RelTabPreco", {
+				urlParameters: {
+
+					"$filter": "Usuario eq '" + repres +
+						"' and Empresa eq '" + parametros.Empresa +
+						"' and TabPreco eq '" + parametros.TabPreco +
+						"' and Frete eq '" + parametros.Frete + "'"
+				},
+				success: function (retorno) {
+
+					that.vetorTabPreco = retorno.results;
+					
+					that.byId("master").setBusy(false);
+					that.getModel("modelTabPreco").setData(that.vetorTabPreco);
+					that.getModel("modelTabPrecoExcel").setData(that.vetorTabPrecoExcel);
+				},
+				error: function (error) {
+					that.byId("master").setBusy(false);
+					that.onMensagemErroODATA(error);
+				}
+			});
 		}
 	});
 });

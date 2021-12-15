@@ -35,15 +35,15 @@ sap.ui.define([
 					"$filter": "IvUsuario eq '" + repres + "'"
 				},
 				success: function (retorno) {
-					var vetorCentros = retorno.results;
-					var oModelCentros = new JSONModel(vetorCentros);
+					that.vetorCentros = retorno.results;
+					var oModelCentros = new JSONModel(that.vetorCentros);
 					that.setModel(oModelCentros, "modelCentros");
 				},
 				error: function (error) {
 					that.onMensagemErroODATA(error);
 				}
 			});
-			
+
 			that.oModel.read("/Vencimentos", {
 				success: function (retorno) {
 					var vetorVencimentos = retorno.results;
@@ -54,7 +54,7 @@ sap.ui.define([
 					that.onMensagemErroODATA(error);
 				}
 			});
-			
+
 			that.oModel.read("/Fretes", {
 				success: function (retorno) {
 					var vetorFretes = retorno.results;
@@ -87,6 +87,8 @@ sap.ui.define([
 
 			this.vetorFretes = [];
 			this.vetorCentros = [];
+
+			this.vetorCentro = {};
 			this.vetorClientes = [];
 			this.vetorTabPrecos = [];
 			this.vetorContratos = [];
@@ -96,10 +98,10 @@ sap.ui.define([
 
 			var ComboExibicao = [];
 
-			var modelCentros = new JSONModel(this.vetorVencimentos);
+			var modelCentros = new JSONModel(this.vetorCentros);
 			this.setModel(modelCentros, "modelCentros");
 
-			var modelCentro = new JSONModel(this.vetorVencimentos);
+			var modelCentro = new JSONModel(this.vetorCentro);
 			this.setModelGlobal(modelCentro, "modelCentro");
 
 			var modelVenc = new JSONModel(this.vetorVencimentos);
@@ -236,6 +238,7 @@ sap.ui.define([
 				if (centro == this.vetorCentros[i].Werks) {
 
 					this.getModelGlobal("modelCentro").setData(this.vetorCentros[i]);
+					break;
 				}
 			}
 
@@ -269,185 +272,145 @@ sap.ui.define([
 
 			var that = this;
 
-			var Cliente = this.getModelGlobal("modelTela").getProperty("/Kunnr");
+			new Promise(function (res, rej) {
 
-			that.oModel.read("/TabPrecos", {
-				success: function (retorno) {
-					var vetorTabPrecos = retorno.results;
-					var oModelTabPrecos = new JSONModel(vetorTabPrecos);
-					that.setModel(oModelTabPrecos, "modelTabPrecos");
-				},
-				error: function (error) {
-					that.onMensagemErroODATA(error);
-				}
+				var Repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
+				var Cliente = that.getModelGlobal("modelTela").getProperty("/Kunnr");
+
+				that.oModel.read("/ClienteR(IvUsuario='" + Repres + "',IvCliente='" + Cliente + "')", {
+					success: function (retorno) {
+
+						that.vetorCliente = retorno;
+						var oModelCliente = new JSONModel(that.vetorCliente);
+
+						that.setModelGlobal(oModelCliente, "modelCliente");
+
+						var oModelTbPreco = new JSONModel(that.vetorTabPrecos);
+						that.setModel(oModelTbPreco, "modelTbPreco");
+
+						var vAux = {
+							Kunnr: retorno.Kunnr,
+							Name1: retorno.Name1,
+							Pltyp: retorno.Pltyp,
+							Ptext: retorno.DescPltyp
+						};
+
+						that.vetorTabPrecos.push(vAux);
+
+						that.getModel("modelTbPreco").setData(that.vetorTabPrecos);
+						that.getModelGlobal("modelTela").setProperty("/Pltyp", that.vetorTabPrecos[0].Pltyp);
+
+						 res();
+
+					},
+					error: function (error) {
+						that.onMensagemErroODATA(error);
+						 rej();
+					}
+				});
+
+			}).then(function (data) {
+
+				that.onBuscarContrato();
+
+			}).catch(function (error) {
+
+				that.onMensagemErroODATA(error);
 			});
-
-			// open.onsuccess = function () {
-
-			// 	var db = open.result;
-
-			// 	var store = db.transaction("Clientes").objectStore("Clientes");
-
-			// 	new Promise(function (resolve, reject) {
-
-			// 		var req = store.get(Cliente);
-
-			// 		req.onsuccess = function (e) {
-
-			// 			var cliente = e.target.result;
-
-			// 			var oModel = new JSONModel(cliente);
-			// 			that.setModelGlobal(oModel, "modelCliente");
-
-			// 			var trans = db.transaction("TabPrecos", "readwrite");
-			// 			var objTabPreco = trans.objectStore("TabPrecos");
-			// 			var request = objTabPreco.getAll();
-
-			// 			request.onsuccess = function (event) {
-
-			// 				that.vetorTabPrecos = [];
-
-			// 				var tabPreco = event.target.result;
-
-			// 				for (var i = 0; i < tabPreco.length; i++) {
-
-			// 					if (tabPreco[i].Pltyp == that.getModelGlobal("modelCliente").getProperty("/Pltyp")) {
-			// 						that.vetorTabPrecos.push(tabPreco[i]);
-			// 					}
-			// 				}
-
-			// 				that.getModel("modelTabPrecos").setData(that.vetorTabPrecos);
-
-			// 				if (that.vetorTabPrecos.length > 0) {
-			// 					that.getModelGlobal("modelTela").setProperty("/Pltyp", that.vetorTabPrecos[0].Pltyp);
-			// 				}
-
-			// 				resolve();
-			// 			};
-			// 		};
-
-			// 	}).then(function (resolve) {
-
-			// 		that.onCarregarContrato(db);
-
-			// 	});
-			// };
 		},
 
-		onCarregarContrato: function (db) {
+		onBuscarContrato: function () {
 
 			var that = this;
-			var chaveContrato = that.getModelGlobal("modelCentro").getProperty("/Bukrs") + "." + that.getModelGlobal("modelCliente").getProperty(
-				"/Kvgr4");
+
+			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
 
 			that.vetorContratos = [];
 
-			// var trans = db.transaction("Contratos", "readwrite");
-			// var objContrato = trans.objectStore("Contratos");
-			// var indexContrato = objContrato.index("ChavePesq");
+			var aa = that.getModelGlobal("modelCentro").getProperty("/Bukrs");
+			var bb = that.getModelGlobal("modelCliente").getProperty("/Kvgr4");
 
-			// var requestContrato = indexContrato.getAll(chaveContrato);
+			that.oModel.read("/P_ContratoR(IvBukrs='" + that.getModelGlobal("modelCentro").getProperty("/Bukrs") + "',IvKvgr4='" + that.getModelGlobal(
+				"modelCliente").getProperty("/Kvgr4") + "')", {
 
-			// requestContrato.onsuccess = function (event) {
+				success: function (result) {
 
-			// 	that.vetorContratos = event.target.result;
-			// 	that.getModelGlobal("modelContratos").setData(that.vetorContratos);
+					that.byId("idContrato").setBusy(false);
+					that.byId("idVencimento").setBusy(false);
 
-			// 	var vetorVenc = that.getModel("modelVencimentos").getData();
+					var vetorVenc = that.getModel("modelVencimentos").getData();
+					var vetorVencContrato = [];
 
-			// 	//Set default a forma de pagamento do contrato.
-			// 	if (that.vetorContratos.length > 0) {
+					if (result.ContratoInterno != "") {
 
-			// 		var encontrou = false;
+						var encontrou = "false";
+						var indiceVec = 0;
 
-			// 		for (var i = 0; i < vetorVenc.length; i++) {
+						for (var j = 0; j < vetorVenc.length; j++) {
 
-			// 			if (that.vetorContratos[0].Zterm == vetorVenc[i].Zterm) {
-			// 				encontrou = true;
+							if (vetorVenc[j].Zterm == result.Zterm) {
+								encontrou = "true";
 
-			// 				if (that.vetorContratos[0].AtlOrdem == "true") {
+								if (String(result.AtlOrdem) == "true") {
 
-			// 					that.getModelGlobal("modelTela").setProperty("/Indice", that.vetorContratos[0].IndiceContrato);
+									that.getModel("modelTela").setProperty("/Indice", result.IndiceContrato);
+								} else {
 
-			// 				} else {
+									that.getModel("modelTela").setProperty("/Indice", vetorVenc[j].Kbetr);
+								}
 
-			// 					that.getModelGlobal("modelTela").setProperty("/Indice", vetorVenc[i].Kbetr);
-			// 				}
+								break;
+							}
+						}
 
-			// 				break;
-			// 			}
-			// 		}
+						if (encontrou == "false") {
 
-			// 		if (!encontrou) {
+							var aux = {
+								Zterm: result.Zterm,
+								IdVencimento: result.Zterm,
+								DescCond: result.DescCond
+							};
 
-			// 			var aux = {
-			// 				Zterm: that.vetorContratos[0].Zterm,
-			// 				IdVencimento: that.vetorContratos[0].Zterm,
-			// 				DescCond: that.vetorContratos[0].DescCond,
-			// 				Contrato: true
-			// 			};
+							vetorVencContrato.push(aux);
+							that.getModel("modelVencimentos").setData(vetorVencContrato);
 
-			// 			vetorVenc.push(aux);
-			// 			that.getModel("modelVencimentos").setData(vetorVenc);
-			// 		}
+							if (String(result.AtlOrdem) == "true") {
 
-			// 		var aux = that.vetorContratos.sort(
-			// 			function (a, b) {
+								that.getModel("modelTela").setProperty("/Indice", result.IndiceContrato);
+							} else {
 
-			// 				if (a.Compo === b.Compo) {
+								//Não possui vencimento cadastrado e vinculado para o representante.
+								that.getModel("modelTela").setProperty("/Indice", 0);
+							}
+						}
 
-			// 					return a.Kunnr - b.Kunnr ? 1 : -1;
-			// 				}
-			// 				if (a.Compo === b.Compo && a.Kunnr == b.Kunnr) {
+						if (that.getModel("modelTela").getProperty("/Vencimento") == "") {
 
-			// 					return a.Versg - b.Versg ? 1 : -1;
-			// 				}
-			// 				if (a.Compo === b.Compo && a.Kunnr == b.Kunnr && a.Versg == b.Versg) {
+							that.byId("idVencimento").setEnabled(true);
+							
+						} else {
 
-			// 					return a.Mvgr1 - b.Mvgr1 ? 1 : -1;
-			// 				}
-			// 				if (a.Compo === b.Compo && a.Kunnr == b.Kunnr && a.Versg == b.Versg && a.Mvgr1 == b.Mvgr1) {
+							that.byId("idVencimento").setEnabled(false);
+						}
 
-			// 					return a.Mvgr5 - b.Mvgr5 ? 1 : -1;
-			// 				}
-			// 				if (a.Compo === b.Compo && a.Kunnr == b.Kunnr && a.Versg == b.Versg && a.Mvgr1 == b.Mvgr1 && a.Mvgr5 == b.Mvgr5) {
+						that.getModelGlobal("modelTela").setProperty("/Vencimento", result.Zterm);
+						// that.getModelGlobal("modelTela").setProperty("/Contrato", result.ContratoInterno);
 
-			// 					return a.Kvgr5 - b.Kvgr5 ? 1 : -1;
-			// 				}
+						that.byId("idVencimento").setEnabled(false);
 
-			// 				return a.Compo > b.Compo ? 1 : -1;
-			// 			});
+					} else {
 
-			// 		that.byId("idLabelContrato").setVisible(true);
-			// 		that.byId("idContrato").setVisible(true);
+						// that.getModel("modelTela").setData(that.vetorVencimentos);
+						that.byId("idVencimento").setEnabled(true);
+					}
 
-			// 		that.getModelGlobal("modelTela").setProperty("/Vencimento", that.vetorContratos[0].Zterm);
-			// 		that.getModelGlobal("modelTela").setProperty("/Contrato", that.vetorContratos[0].ContratoInterno);
+				},
+				error: function (error) {
 
-			// 		if (that.getModel("modelTela").getProperty("/Vencimento") == "") {
+					that.onMensagemErroODATA(error);
 
-			// 			that.byId("idVencimento").setEnabled(true);
-
-			// 		} else {
-
-			// 			that.byId("idVencimento").setEnabled(false);
-			// 		}
-
-			// 		that.byId("idContrato").setVisible(true);
-			// 		that.byId("idLabelContrato").setVisible(true);
-
-			// 	} else {
-
-			// 		that.getModelGlobal("modelTela").setProperty("/Vencimento", "");
-			// 		that.getModelGlobal("modelTela").setProperty("/Indice", "");
-			// 		that.getModelGlobal("modelTela").setProperty("/Contrato", "");
-
-			// 		that.byId("idContrato").setVisible(false);
-			// 		that.byId("idLabelContrato").setVisible(false);
-			// 		that.byId("idVencimento").setEnabled(true);
-
-			// 	}
-			// };
+				}
+			});
 		},
 
 		onChangeVencimento: function (e) {
@@ -463,69 +426,6 @@ sap.ui.define([
 				}
 			}
 		},
-
-		// onDataExport: sap.m.Table.prototype.exportData || function (oEvent) {
-
-		// 	this.vetorItensRelatorio = [];
-		// 	var oModel = new JSONModel(this.vetorItensRelatorio);
-		// 	this.getView().setModel(oModel);
-
-		// 	var oExport = new sap.ui.core.util.Export({
-
-		// 		// Type that will be used to generate the content. Own ExportType's can be created to support other formats
-		// 		exportType: new sap.ui.core.util.ExportTypeCSV({
-		// 			separatorChar: ";"
-		// 		}),
-
-		// 		// Pass in the model created above
-		// 		models: oModel,
-		// 		// binding information for the rows aggregation
-		// 		rows: {
-		// 			path: "/"
-		// 		},
-
-		// 		// column definitions with column name and binding info for the content
-
-		// 		columns: [{
-		// 			name: "Cod Cliente",
-		// 			template: {
-		// 				content: "{CodCliente}"
-		// 			}
-		// 		}, {
-		// 			name: "Cod Estabel",
-		// 			template: {
-		// 				content: "{CodEstabel}"
-		// 			}
-		// 		}, {
-		// 			name: "Nome Estabel",
-		// 			template: {
-		// 				content: "{NomEstabel}"
-		// 			}
-		// 		}, {
-		// 			name: "Nº Tab Preço",
-		// 			template: {
-		// 				content: "{NrTabPreco}"
-		// 			}
-		// 		}, {
-		// 			name: "Desc. Tabela",
-		// 			template: {
-		// 				content: "{DescTabela}"
-		// 			}
-		// 		}, {
-		// 			name: "Juros",
-		// 			template: {
-		// 				content: "{ValSdoTitAcr}"
-		// 			}
-		// 		}]
-		// 	});
-
-		// 	// download exported file
-		// 	oExport.saveFile().catch(function (oError) {
-		// 		MessageBox.error("Error when downloading data. Browser might not be supported!\n\n" + oError);
-		// 	}).then(function () {
-		// 		oExport.destroy();
-		// 	});
-		// },
 
 		_handleValueHelpSearch: function (oEvent) {
 
