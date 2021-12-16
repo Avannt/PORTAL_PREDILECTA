@@ -81,9 +81,9 @@ sap.ui.define([
 			var omodelParametros = new JSONModel(vAux);
 			that.setModel(omodelParametros, "modelParametros");
 			
-			that.vetorTabPrecoExcel = [];
-			var oModelTabPrecoExcel = new JSONModel(that.vetorTabPrecoExcel);
-			that.setModel(oModelTabPrecoExcel, "modelTabPrecoExcel");
+			// that.vetorTabPrecoExcel = [];
+			// var oModelTabPrecoExcel = new JSONModel(that.vetorTabPrecoExcel);
+			// that.setModel(oModelTabPrecoExcel, "modelTabPrecoExcel");
 
 			var parametros = that.getModel("modelParametros").getData();
 			
@@ -103,10 +103,10 @@ sap.ui.define([
 				success: function (retorno) {
 
 					that.vetorTabPreco = retorno.results;
-					
 					that.byId("master").setBusy(false);
-					that.getModel("modelTabPreco").setData(that.vetorTabPreco);
-					that.getModel("modelTabPrecoExcel").setData(that.vetorTabPrecoExcel);
+					var oModelTabPreco = new JSONModel(that.vetorTabPreco);
+					that.setModel(oModelTabPreco, "modelTabPreco");
+					
 				},
 				error: function (error) {
 					that.byId("master").setBusy(false);
