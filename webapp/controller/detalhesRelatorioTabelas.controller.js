@@ -70,9 +70,12 @@ sap.ui.define([
 			that.oModel = that.getModelGlobal("modelAux").getProperty("/DBModel");
 
 			var vAux = {
-				Empresa: "",
-				TabPreco: "",
-				Frete: ""
+				Centro: that.getModelGlobal("modelTela").getProperty("/Werks"),
+				Cliente: that.getModelGlobal("modelTela").getProperty("/Kunnr"),
+				TabPreco: that.getModelGlobal("modelTela").getProperty("/Pltyp"),
+				Indice: that.getModelGlobal("modelTela").getProperty("/Indice"),
+				Frete: that.getModelGlobal("modelTela").getProperty("/Inco1"),
+				Exibicao: that.getModelGlobal("modelTela").getProperty("/Exibicao")
 			};
 
 			var omodelParametros = new JSONModel(vAux);
@@ -90,9 +93,12 @@ sap.ui.define([
 				urlParameters: {
 
 					"$filter": "Usuario eq '" + repres +
-						"' and Empresa eq '" + parametros.Empresa +
+						"' and Centro eq '" + parametros.Centro +
+						"' and Cliente eq '" + parametros.Cliente +
 						"' and TabPreco eq '" + parametros.TabPreco +
-						"' and Frete eq '" + parametros.Frete + "'"
+						"' and Indice eq " + parametros.Indice +
+						" and Frete eq '" + parametros.Frete + 
+					    "' and Exibicao eq '" + parametros.Exibicao + "'"
 				},
 				success: function (retorno) {
 

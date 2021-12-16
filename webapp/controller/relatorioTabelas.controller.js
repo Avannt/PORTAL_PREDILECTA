@@ -74,7 +74,7 @@ sap.ui.define([
 			var aux = {
 				Exibicao: "1", //Caixa = 1 / Unidade  = 2
 				Pltyp: "",
-				Indice: "",
+				Indice: 0,
 				Contrato: "",
 				Vencimento: "",
 				Werks: "",
@@ -137,7 +137,6 @@ sap.ui.define([
 
 			var that = this;
 			
-			sap.ui.core.UIComponent.getRouterFor(that).navTo("detalhesRelatorioTabelas");
 			var parametros = this.getModelGlobal("modelTela").getData();
 
 			if (parametros.Werks == "") {
@@ -257,7 +256,7 @@ sap.ui.define([
 
 				that.getModelGlobal("modelTela").setProperty("/Kunnr", "");
 				that.getModelGlobal("modelTela").setProperty("/Vencimento", "");
-				that.getModelGlobal("modelTela").setProperty("/Indice", "");
+				that.getModelGlobal("modelTela").setProperty("/Indice", 0);
 				that.getModelGlobal("modelTela").setProperty("/Contrato", "");
 				that.getModelGlobal("modelTela").setProperty("/Pltype", "");
 
@@ -355,10 +354,10 @@ sap.ui.define([
 
 								if (String(result.AtlOrdem) == "true") {
 
-									that.getModel("modelTela").setProperty("/Indice", result.IndiceContrato);
+									that.getModelGlobal("modelTela").setProperty("/Indice", result.IndiceContrato);
 								} else {
 
-									that.getModel("modelTela").setProperty("/Indice", vetorVenc[j].Kbetr);
+									that.getModelGlobal("modelTela").setProperty("/Indice", vetorVenc[j].Kbetr);
 								}
 
 								break;
@@ -378,15 +377,15 @@ sap.ui.define([
 
 							if (String(result.AtlOrdem) == "true") {
 
-								that.getModel("modelTela").setProperty("/Indice", result.IndiceContrato);
+								that.getModelGlobal("modelTela").setProperty("/Indice", result.IndiceContrato);
 							} else {
 
 								//Não possui vencimento cadastrado e vinculado para o representante.
-								that.getModel("modelTela").setProperty("/Indice", 0);
+								that.getModelGlobal("modelTela").setProperty("/Indice", 0);
 							}
 						}
 
-						if (that.getModel("modelTela").getProperty("/Vencimento") == "") {
+						if (that.getModelGlobal("modelTela").getProperty("/Vencimento") == "") {
 
 							that.byId("idVencimento").setEnabled(true);
 							
