@@ -19,6 +19,8 @@ sap.ui.define([
 	var substItem = [];
 	var filtroGrid = [];
 	var oProdutosTemplateGridAux = [];
+	var EdmType = exportLibrary.EdmType;
+	
 	return BaseController.extend("application.controller.detalhesRelatorioTabelas", {
 
 		onInit: function() {
@@ -61,6 +63,111 @@ sap.ui.define([
 
 			}
 		},
+		
+		createColumnConfig: function () {
+			var aCols = [];
+
+			aCols.push({
+				label: "Material",
+				property: "Matnr",
+				type: EdmType.String
+			});
+
+			aCols.push({
+				label: "Descrição",
+				property: "Maktx",
+				type: EdmType.String
+			});
+			
+			aCols.push({
+				label: "Pallet",
+				property: "QntPallet",
+				type: EdmType.Integer
+			});
+
+			aCols.push({
+				label: "CXs",
+				property: "QntCaixa",
+				type: EdmType.String
+			});
+
+			aCols.push({
+				label: "Preço Bruto",
+				property: "ValPrecoVenda",
+				type: EdmType.Number,
+				scale: 2,
+				delimiter: true
+			});
+			
+			aCols.push({
+				label: "%Canal",
+				property: "PercCanalMax",
+				type: EdmType.Number,
+				scale: 2,
+				delimiter: true
+			});
+			
+			aCols.push({
+				label: "%Promocional",
+				property: "PercPromoMax",
+				type: EdmType.Number,
+				scale: 2,
+				delimiter: true
+			});
+			
+			aCols.push({
+				label: "Preço Líquido",
+				property: "ValPrecoUnitSt",
+				type: EdmType.Number,
+				scale: 2,
+				delimiter: true
+			});
+			
+			aCols.push({
+				label: "%ST",
+				property: "PerSubTri",
+				type: EdmType.Number,
+				scale: 2,
+				delimiter: true
+			});
+			
+			aCols.push({
+				label: "%Contrato",
+				property: "PctDescContrato",
+				type: EdmType.Number,
+				scale: 2,
+				delimiter: true
+			});
+
+			return aCols;
+		},
+		
+		onExport: function () {
+			var aCols, oRowBinding, oSettings, oSheet, oTable;
+
+			if (!this._oTable) {
+				this._oTable = this.byId("idtablePrecos");
+			}
+
+			oTable = this._oTable;
+			oRowBinding = oTable.getBinding("items");
+			aCols = this.createColumnConfig();
+
+			oSettings = {
+				workbook: {
+					columns: aCols,
+					hierarchyLevel: "Level"
+				},
+				dataSource: oRowBinding,
+				fileName: "Rel_Tabela_Preço.xlsx",
+				worker: false // We need to disable worker because we are using a MockServer as OData Service
+			};
+
+			oSheet = new Spreadsheet(oSettings);
+			oSheet.build().finally(function () {
+				oSheet.destroy();
+			});
+		},
 
 		_onLoadFields: function() {
 			
@@ -80,10 +187,6 @@ sap.ui.define([
 
 			var omodelParametros = new JSONModel(vAux);
 			that.setModel(omodelParametros, "modelParametros");
-			
-			// that.vetorTabPrecoExcel = [];
-			// var oModelTabPrecoExcel = new JSONModel(that.vetorTabPrecoExcel);
-			// that.setModel(oModelTabPrecoExcel, "modelTabPrecoExcel");
 
 			var parametros = that.getModel("modelParametros").getData();
 			
