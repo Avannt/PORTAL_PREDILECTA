@@ -22,49 +22,50 @@
 					noDataText="Não possui itens na tabela de preço" updateFinished="onUpdateFinished" width="100%"
 					items="{ path: 'modelTabPreco>/', sorter: { path: 'Matnr', ascending: true}}">
 					<columns>
-						<Column minScreenWidth="320px"  demandPopin="false">
+						<Column demandPopin="false" minScreenWidth="280px" >
 							<Text text="Cod"/>
 						</Column>
-						<Column minScreenWidth="960px" demandPopin="true" >
-							<Text text="Desc"/>
+						<Column demandPopin="true" minScreenWidth="960px" >
+							<Text text="Descrição"/>
 						</Column>
 						<Column demandPopin="true" minScreenWidth="460px" >
 							<Text text="Pallet"/>
 						</Column>
+						<Column demandPopin="true" minScreenWidth="320px" >
+							<Text text="CXs"/>
+						</Column>
 						<Column demandPopin="true" minScreenWidth="380px" >
-							<Text text="P. Tab"/>
+							<Text text="Preço Bruto"/>
 						</Column>
 						<Column demandPopin="true" minScreenWidth="320px" >
-							<Text text="P + ST"/>
-						</Column>
-						<Column demandPopin="true" minScreenWidth="525px" >
 							<Text text="Canal"/>
 						</Column>
-						<Column minScreenWidth="600px" demandPopin="false" >
-							<Text text="Promoção"/>
+						<Column demandPopin="true" minScreenWidth="320px" >
+							<Text text="Promocional"/>
+						</Column>
+						<Column demandPopin="false" minScreenWidth="320px" >
+							<Text text="Preço c/ST"/>
 						</Column>
 						<Column demandPopin="true" minScreenWidth="320px" >
-							<Text text="P. Liq"/>
+							<Text text="ST"/>
+						</Column>
+						<Column demandPopin="true" minScreenWidth="320px" >
+							<Text text="Contrato"/>
 						</Column>
 					</columns>
 					<items>
-						<ColumnListItem type="Navigation">
-							<!--press="onSelectionChange"-->
+						<ColumnListItem >
 							<cells>
 								<Text text="{modelTabPreco>Matnr}" />
 								<Text text="{modelTabPreco>Maktx}" />
 								<Text text="{modelTabPreco>QntPallet}" />
 								<Text text="{modelTabPreco>QntCaixa}" />
 								<Text text="R$: {modelTabPreco>ValPrecoVenda}" />
-								<Text text="R$: {modelTabPreco>ValPrecoUnitSt}" />
 								<Text text="{modelTabPreco>PercCanalMax} %" />
 								<Text text="{modelTabPreco>PercPromoMax} %" />
-								<Text text="R$: {modelTabPreco>ValLiqItem}" />
-								<!--<Text text="{CodPedVda}"/>-->
-								<!--<Text text="{path: 'DatEmisDocto'}"/>-->
-								<!--<ObjectListItem number="{DiasAtraso}" numberState="{= ${DiasAtraso} >= 0 ? 'Error' : 'None' }"/>-->
-								<!--<Text text="R$ {ValOriginTitAcr}" />-->
-								<!--<Text text="R$ {ValSdoTitAcr}" />-->
+								<Text text="R$: {modelTabPreco>ValPrecoUnitSt}" />
+								<Text text="{modelTabPreco>PerSubTri} %" />
+								<Text text="{modelTabPreco>PctDescContrato} %" />
 							</cells>
 						</ColumnListItem>
 					</items>
