@@ -80,6 +80,42 @@ sap.ui.define([
 			});
 			
 			aCols.push({
+				label: "Categoria",
+				property: "Mvgr1",
+				type: EdmType.String
+			});
+			
+			aCols.push({
+				label: "Descrição Categoria",
+				property: "Mvgr1Text",
+				type: EdmType.String
+			});
+			
+			aCols.push({
+				label: "SubCategoria",
+				property: "Mvgr2",
+				type: EdmType.String
+			});
+			
+			aCols.push({
+				label: "Descrição SubCategoria",
+				property: "Mvgr2Text",
+				type: EdmType.String
+			});
+			
+			aCols.push({
+				label: "Família",
+				property: "Mvgr3",
+				type: EdmType.String
+			});
+			
+			aCols.push({
+				label: "Descrição Família",
+				property: "Mvgr3Text",
+				type: EdmType.String
+			});
+			
+			aCols.push({
 				label: "Pallet",
 				property: "QntPallet",
 				type: EdmType.Integer
@@ -101,7 +137,7 @@ sap.ui.define([
 			
 			aCols.push({
 				label: "%Canal",
-				property: "PercCanalMax",
+				property: "PercCanal",
 				type: EdmType.Number,
 				scale: 2,
 				delimiter: true
@@ -117,6 +153,14 @@ sap.ui.define([
 			
 			aCols.push({
 				label: "Preço Líquido",
+				property: "ValLiqItem",
+				type: EdmType.Number,
+				scale: 2,
+				delimiter: true
+			});
+			
+			aCols.push({
+				label: "Preço c/ST",
 				property: "ValPrecoUnitSt",
 				type: EdmType.Number,
 				scale: 2,
