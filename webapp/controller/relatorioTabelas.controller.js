@@ -46,8 +46,8 @@ sap.ui.define([
 
 			that.oModel.read("/Vencimentos", {
 				success: function (retorno) {
-					var vetorVencimentos = retorno.results;
-					var oModelVencimentos = new JSONModel(vetorVencimentos);
+					that.vetorVencimentos = retorno.results;
+					var oModelVencimentos = new JSONModel(that.vetorVencimentos);
 					that.setModel(oModelVencimentos, "modelVencimentos");
 				},
 				error: function (error) {
@@ -334,8 +334,23 @@ sap.ui.define([
 			var that = this;
 
 			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
-
+			
+			that.getModelGlobal("modelTela").setProperty("/Vencto", "");
+			that.getModelGlobal("modelTela").setProperty("/Indice", 0);
+			
+			that.vetorVencimentos = [];
 			that.vetorContratos = [];
+			
+			that.oModel.read("/Vencimentos", {
+				success: function (retorno) {
+					that.vetorVencimentos = retorno.results;
+					var oModelVencimentos = new JSONModel(that.vetorVencimentos);
+					that.setModel(oModelVencimentos, "modelVencimentos");
+				},
+				error: function (error) {
+					that.onMensagemErroODATA(error);
+				}
+			});
 
 			that.oModel.read("/P_ContratoR(IvBukrs='" + that.getModelGlobal("modelCentro").getProperty("/Bukrs") + "',IvKvgr4='" + that.getModelGlobal(
 				"modelCliente").getProperty("/Kvgr4") + "')", {
@@ -425,11 +440,14 @@ sap.ui.define([
 			var that = this;
 
 			var selectedValue = e.getSource().getSelectedKey();
+			
+			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
+			that.oModel = that.getModelGlobal("modelAux").getProperty("/DBModel");
 
-			for (var i = 0; i < that.vetorVencimentos.length; i++) {
+			for (var i = 0; i < this.vetorVencimentos.length; i++) {
 
-				if (that.vetorVencimentos[i].Zterm == selectedValue) {
-					that.getModelGlobal("modelTela").setProperty("/Indice", parseFloat(that.vetorVencimentos[i].Kbetr));
+				if (this.vetorVencimentos[i].Zterm == selectedValue) {
+					that.getModelGlobal("modelTela").setProperty("/Indice", parseFloat(this.vetorVencimentos[i].Kbetr));
 				}
 			}
 		},
