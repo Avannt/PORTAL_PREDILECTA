@@ -18,6 +18,13 @@
 							</layoutData>
 						</Select>
 						
+						<Label text="UF Origem *" />
+						<Input id="idUFOrigem" value="{path: 'modelTela>/UFOrigem'}" enabled="false" class="desabilitado">
+							<layoutData>
+								<layout:GridData span="L4 M4" />
+							</layoutData>
+						</Input>
+						
 						<Label text="Cliente *"/>
 						<SearchField class="camposDialog" id="idCliente" placeholder="Digite código do cliente" enableSuggestions="true"
 							search="onChangeCliente" suggest="_handleValueHelpSearch" width="100%" value="{modelTela>/Kunnr}"
@@ -31,8 +38,21 @@
 							</layoutData>
 						</SearchField>
 						
-						<Label text="Tabela de Preço *"/>
+						<Label text="UF Destino *" />
+						<Input id="idUFDestino" value="{path: 'modelTela>/UFDestino'}" enabled="false" class="desabilitado">
+							<layoutData>
+								<layout:GridData span="L4 M4" />
+							</layoutData>
+						</Input>
 						
+						<Label text="Canal Atuação *" />
+						<Input id="idKvgr2" value="{path: 'modelTela>/DescKvgr2'}" enabled="false" class="desabilitado">
+							<layoutData>
+								<layout:GridData span="L4 M4" />
+							</layoutData>
+						</Input>
+						
+						<Label text="Tabela de Preço *"/>
 						<Select id="idTabelaPreco" showSecondaryValues="false" forceSelection="false" items="{ path: 'modelTbPreco>/' }"
 							selectedKey="{modelTela>/Pltyp}" change="onChangeTabelaPreco" busyIndicatorDelay="0" busy="{modelBusy>TabPreco}">
 							<core:Item key="{modelTbPreco>Pltyp}" text="{modelTbPreco>Pltyp} - {modelTbPreco>Ptext}" />

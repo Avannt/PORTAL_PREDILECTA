@@ -81,36 +81,18 @@ sap.ui.define([
 			
 			aCols.push({
 				label: "Categoria",
-				property: "Mvgr1",
-				type: EdmType.String
-			});
-			
-			aCols.push({
-				label: "Descrição Categoria",
 				property: "Mvgr1Text",
 				type: EdmType.String
 			});
 			
 			aCols.push({
 				label: "SubCategoria",
-				property: "Mvgr2",
-				type: EdmType.String
-			});
-			
-			aCols.push({
-				label: "Descrição SubCategoria",
 				property: "Mvgr2Text",
 				type: EdmType.String
 			});
 			
 			aCols.push({
 				label: "Família",
-				property: "Mvgr3",
-				type: EdmType.String
-			});
-			
-			aCols.push({
-				label: "Descrição Família",
 				property: "Mvgr3Text",
 				type: EdmType.String
 			});

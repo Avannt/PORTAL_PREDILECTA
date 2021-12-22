@@ -79,7 +79,11 @@ sap.ui.define([
 				Vencimento: "",
 				Werks: "",
 				Kunnr: "",
-				Inco1: ""
+				Inco1: "",
+				UFOrigem: "",
+				UFDestino: "",
+				Kvgr2: "",
+				DescKvgr2: ""
 			};
 
 			var modelTela = new JSONModel(aux);
@@ -224,7 +228,6 @@ sap.ui.define([
 			if (fValue.length === 1) {
 				fValue = "0" + fValue;
 			}
-
 		},
 
 		onChangeEstabelecimento: function (e) {
@@ -239,6 +242,7 @@ sap.ui.define([
 				if (centro == this.vetorCentros[i].Werks) {
 
 					this.getModelGlobal("modelCentro").setData(this.vetorCentros[i]);
+					that.getModelGlobal("modelTela").setProperty("/UFOrigem", this.vetorCentros[i].Regio);
 					break;
 				}
 			}
@@ -259,6 +263,9 @@ sap.ui.define([
 				that.getModelGlobal("modelTela").setProperty("/Indice", 0);
 				that.getModelGlobal("modelTela").setProperty("/Contrato", "");
 				that.getModelGlobal("modelTela").setProperty("/Pltype", "");
+				that.getModelGlobal("modelTela").setProperty("/UFDestino", "");
+				that.getModelGlobal("modelTela").setProperty("/Kvgr2", "");
+				that.getModelGlobal("modelTela").setProperty("/DescKvgr2", "");
 
 				that.byId("idCliente").focus();
 
@@ -283,7 +290,6 @@ sap.ui.define([
 
 						that.vetorCliente = retorno;
 						var oModelCliente = new JSONModel(that.vetorCliente);
-
 						that.setModelGlobal(oModelCliente, "modelCliente");
 
 						var oModelTbPreco = new JSONModel(that.vetorTabPrecos);
@@ -300,6 +306,9 @@ sap.ui.define([
 
 						that.getModel("modelTbPreco").setData(that.vetorTabPrecos);
 						that.getModelGlobal("modelTela").setProperty("/Pltyp", that.vetorTabPrecos[0].Pltyp);
+						that.getModelGlobal("modelTela").setProperty("/UFDestino", retorno.Regio);
+						that.getModelGlobal("modelTela").setProperty("/Kvgr2", retorno.Kvgr2);
+						that.getModelGlobal("modelTela").setProperty("/DescKvgr2", retorno.Kvgr2 + " - " + retorno.DescKvgr2);
 
 						 res();
 
@@ -327,9 +336,6 @@ sap.ui.define([
 			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
 
 			that.vetorContratos = [];
-
-			var aa = that.getModelGlobal("modelCentro").getProperty("/Bukrs");
-			var bb = that.getModelGlobal("modelCliente").getProperty("/Kvgr4");
 
 			that.oModel.read("/P_ContratoR(IvBukrs='" + that.getModelGlobal("modelCentro").getProperty("/Bukrs") + "',IvKvgr4='" + that.getModelGlobal(
 				"modelCliente").getProperty("/Kvgr4") + "')", {
