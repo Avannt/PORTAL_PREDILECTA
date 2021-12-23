@@ -8,13 +8,13 @@
 					emptySpanL="0" emptySpanM="0" columnsL="2" columnsM="2">
 					<form:content>
 						<core:Title/>
-						<Label text="Estabelecimento *"/>
+						<Label text="Representante *" />
 						
 						<Select id="idEstabelecimento" forceSelection="false" selectedKey="{modelTela>/Werks}" showSecondaryValues="false"
 							items="{ path: 'modelCentros>/' }" change="onChangeEstabelecimento" busyIndicatorDelay="0" busy="{modelBusy>Centro}">
 							<core:Item key="{modelCentros>Werks}" text="{modelCentros>NomeCentro}"/>
 							<layoutData>
-								<layout:GridData span="L4 M4"/>
+								<layout:GridData span="L4 M4" />
 							</layoutData>
 						</Select>
 						
@@ -27,7 +27,7 @@
 							
 							</suggestionItems>
 							<layoutData>
-								<layout:GridData span="L4 M4"/>
+								<layout:GridData span="L4 M4" />
 							</layoutData>
 						</SearchField>
 						
@@ -37,7 +37,7 @@
 							selectedKey="{modelTela>/Pltyp}" change="onChangeTabelaPreco" busyIndicatorDelay="0" busy="{modelBusy>TabPreco}">
 							<core:Item key="{modelTabPrecos>Pltyp}" text="{modelTabPrecos>Pltyp} - {modelTabPrecos>Ptext}" />
 							<layoutData>
-								<layout:GridData span="L4 M4"/>
+								<layout:GridData span="L4 M4" />
 							</layoutData>
 						</Select>
 						
@@ -45,7 +45,7 @@
 						<Select id="idVencimento" showSecondaryValues="false" forceSelection="false" busyIndicatorDelay="0" busy="{modelDelay>/Vencimento1}"
 							items="{ path: 'modelVencimentos>/', sorter: 'Zterm', ascending: true}" selectedKey="{modelTela>/Vencimento}"
 							change="onChangeVencimento">
-							<core:Item key="{modelVencimentos>Zterm}" text="{path: 'modelVencimentos>DescCond'}"/>
+							<core:Item key="{modelVencimentos>Zterm}" text="{path: 'modelVencimentos>DescCond'}" />
 							<layoutData>
 								<layout:GridData span="L4 M4" />
 							</layoutData>

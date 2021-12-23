@@ -1,79 +1,196 @@
-<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:layout="sap.ui.layout" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic" height="100%" controllerName="application.controller.relatorioTitulos">
-	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Relatório de Títulos" showFooter="false">
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:layout="sap.ui.layout"
+	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" xmlns="sap.m" xmlns:semantic="sap.m.semantic" height="100%"
+	controllerName="application.controller.relatorioTitulos">
+	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Relatório de Títulos Abertos" showFooter="false"
+		busyIndicatorDelay="0">
 		<content>
-			<Table id="idtableTitulos" growing="true" growingScrollToLoad="false" growingThreshold="5" noDataText="Nenhuma duplicatas em aberto" updateFinished="onUpdateFinished" width="100%" selectionChange="onSelectionChange" alternateRowColors="true" growingTriggerText="Próximo &gt;&gt;&gt;" items="{ path: 'TitulosAbertos>/', sorter: { path: 'Zfbdt', descending: true}}">
+			<Table class="centralizaGroup" id="idtableTitulos" growing="false" growingScrollToLoad="false" growingThreshold="5"
+				noDataText="Nenhum registro encontrado" alternateRowColors="true" backgroundDesign="Solid" width="100%"
+				growingTriggerText="Próximo &gt;&gt;&gt;"
+				items="{ path: 'modelTitulos>/', sorter : [{ path: 'Bukrs', ascending: true, group: '.ongetHeaderGroupBukrs' }] }">
 				<headerToolbar>
+					<OverflowToolbar/>
 					<Toolbar height="100%" class="backGround">
-						<Panel xmlns="sap.m" expandable="true" expanded="true" id="panel0" >
+						<Panel id="idPanelFiltro" headerText="Ocultar Filtros" expandable="true" expanded="true" expand="onExpandFiltro">
 							<content>
-								<f:SimpleForm id="SimpleFormChange471" editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="2" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="3" emptySpanL="3" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1" singleContainerFullSize="false">
+								<f:SimpleForm id="SimpleFormChange471" editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="2"
+									labelSpanS="12" adjustLabelSpan="false" emptySpanXL="3" emptySpanL="3" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
+									singleContainerFullSize="false">
 									<f:content>
+										<Label text="Empresa"/>
+										<SearchField id="idEmpresaIni" placeholder="Digite Código ou Nome da Empresa" enableSuggestions="true" value="{modelParametros>/BukrsIni}"
+											suggest="onSuggestEmpresaIni" suggestionItems="{ path: 'modelEmpresas>/', sorter: { path: 'Bukrs', ascending: true }}">
+											<suggestionItems>
+												<SuggestionItem text="{modelEmpresas>Bukrs}" description="{modelEmpresas>Butxt}" key="{modelEmpresas>Bukrs}"/>
+											</suggestionItems>
+										</SearchField>
+										<SearchField id="idEmpresaFim" placeholder="Digite Código ou Nome da Empresa" enableSuggestions="true" value="{modelParametros>/BukrsFim}"
+											suggest="onSuggestEmpresaFim" suggestionItems="{ path: 'modelEmpresas>/', sorter: { path: 'Bukrs', ascending: true }}">
+											<suggestionItems>
+												<SuggestionItem text="{modelEmpresas>Bukrs}" description="{modelEmpresas>Butxt}" key="{modelEmpresas>Bukrs}"/>
+											</suggestionItems>
+										</SearchField>
 										<Label text="Cliente"/>
-										<SearchField id="idClientesRelatorio1" placeholder="Digite Código ou Nome do Cliente" enableSuggestions="true" value="{modelItem>/Matnr}" search="onItemChange" suggest="onSuggestClientes" suggestionItems="{ path: 'modelClientes>/', sorter: { path: 'Kunnr', ascending: true }}">
+										<SearchField id="idClienteIni" placeholder="Digite Código ou Nome do Cliente" enableSuggestions="true" value="{modelParametros>/KunnrIni}"
+											suggest="onSuggestClienteIni" suggestionItems="{ path: 'modelClientes>/', sorter: { path: 'Kunnr', ascending: true }}">
 											<suggestionItems>
 												<SuggestionItem text="{modelClientes>Kunnr}" description="{modelClientes>Name1}" key="{modelClientes>Kunnr}"/>
 											</suggestionItems>
 										</SearchField>
-										<Label text="Cliente"/>
-										<SearchField id="idClientesRelatorio" placeholder="Digite Código ou Nome do Cliente" enableSuggestions="true" value="{modelItem>/Matnr}" search="onItemChange" suggest="onSuggestClientes" suggestionItems="{ path: 'modelClientes>/', sorter: { path: 'Kunnr', ascending: true }}">
+										<SearchField id="idClienteFim" placeholder="Digite Código ou Nome do Cliente" enableSuggestions="true" value="{modelParametros>/KunnrFim}"
+											suggest="onSuggestClienteFim" suggestionItems="{ path: 'modelClientes>/', sorter: { path: 'Kunnr', ascending: true }}">
 											<suggestionItems>
 												<SuggestionItem text="{modelClientes>Kunnr}" description="{modelClientes>Name1}" key="{modelClientes>Kunnr}"/>
 											</suggestionItems>
 										</SearchField>
-										<Label id="idVencimento" text="Vencimento "/>
-										<DatePicker id="idCDatePicker" change="onItemChange" placeholder="Vencimento" width="100%"/>
+										<Label text="Rede"/>
+										<SearchField id="idRedeIni" placeholder="Digite Código ou Nome da Rede" enableSuggestions="true" value="{modelParametros>/Kvgr4Ini}"
+											suggest="onSuggestRedeIni" suggestionItems="{ path: 'modelRedes>/', sorter: { path: 'Kvgr4', ascending: true }}">
+											<suggestionItems>
+												<SuggestionItem text="{modelRedes>Kvgr4}" description="{modelRedes>DescKvgr4}" key="{modelRedes>Kvgr4}"/>
+											</suggestionItems>
+										</SearchField>
+										<SearchField id="idRedeFim" placeholder="Digite Código ou Nome da Rede" enableSuggestions="true" value="{modelParametros>/Kvgr4Fim}"
+											suggest="onSuggestRedeFim" suggestionItems="{ path: 'modelRedes>/', sorter: { path: 'Kvgr4', ascending: true }}">
+											<suggestionItems>
+												<SuggestionItem text="{modelRedes>Kvgr4}" description="{modelRedes>DescKvgr4}" key="{modelRedes>Kvgr4}"/>
+											</suggestionItems>
+										</SearchField>
+										<Label text="Bandeira"/>
+										<SearchField id="idBandeiraIni" placeholder="Digite Código ou Nome da Bandeira" enableSuggestions="true" value="{modelParametros>/Kvgr5Ini}"
+											suggest="onSuggestBandeiraIni" suggestionItems="{ path: 'modelBandeiras>/', sorter: { path: 'Kvgr5', ascending: true }}">
+											<suggestionItems>
+												<SuggestionItem text="{modelBandeiras>Kvgr4}" description="{modelBandeiras>DescKvgr4}" key="{modelBandeiras>Kvgr5}"/>
+											</suggestionItems>
+										</SearchField>
+										<SearchField id="idBandeiraFim" placeholder="Digite Código ou Nome da Bandeira" enableSuggestions="true" value="{modelParametros>/Kvgr5Fim}"
+											suggest="onSuggestBandeiraFim" suggestionItems="{ path: 'modelBandeiras>/', sorter: { path: 'Kvgr5', ascending: true }}">
+											<suggestionItems>
+												<SuggestionItem text="{modelBandeiras>Kvgr5}" description="{modelBandeiras>DescKvgr5}" key="{modelBandeiras>Kvgr5}"/>
+											</suggestionItems>
+										</SearchField>
+										<Label text="Nº docto"/>
+										<Input id="idBelnrIni" placeholder="Digite o número do documento contábil" value="{modelParametros>/BelnrIni}"/>
+										<Input id="idBelnrFim" placeholder="Digite o número do documento contábil" value="{modelParametros>/BelnrFim}"/>
+										<Label text="Representante"/>
+										<SearchField id="idRepreIni" placeholder="Digite Código ou Nome do Representante" enableSuggestions="true"
+											value="{modelParametros>/LifnrIni}" suggest="onSuggestRepresIni"
+											suggestionItems="{ path: 'modelRepres>/', sorter: { path: 'Lifnr', ascending: true }}">
+											<suggestionItems>
+												<SuggestionItem text="{modelRepres>Lifnr}" description="{modelRepres>Name1Rep}" key="{modelRepres>Lifnr}"/>
+											</suggestionItems>
+										</SearchField>
+										<SearchField id="idRepreFim" placeholder="Digite Código ou Nome do Representante" enableSuggestions="true"
+											value="{modelParametros>/LifnrFim}" suggest="onSuggestRepresFim"
+											suggestionItems="{ path: 'modelRepres>/', sorter: { path: 'Lifnr', ascending: true }}">
+											<suggestionItems>
+												<SuggestionItem text="{modelRepres>Lifnr}" description="{modelRepres>Name1Rep}" key="{modelRepres>Lifnr}"/>
+											</suggestionItems>
+										</SearchField>
+										<Label id="idPeriodo" text="Período"/>
+										<DateRangeSelection displayFormat="dd/MM/yyyy" id="idCDateRange" value="{modelParametros>/Periodo}" placeholder="Período" width="100%"/>
+										<Button id="idBtnFiltrar" text="Filtrar" type="Emphasized" press="onPressBtnFiltrar" icon="sap-icon://filter" tooltip="Filtrar Dados"/>
 									</f:content>
+									<Button icon="sap-icon://excel-attachment" press="onExport" type="Emphasized" text="Exportar" tooltip="Exportar Dados"/>
 								</f:SimpleForm>
 							</content>
 						</Panel>
 					</Toolbar>
 				</headerToolbar>
 				<columns>
-					<Column minScreenWidth="320px" width="110px">
-						<Text text="Doc. Fat."/>
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="30px">
+						<Text text="Emp"/>
 					</Column>
-					<Column minScreenWidth="900px" demandPopin="true" popinDisplay="Inline" hAlign="Left">
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="30px">
+						<Text text="Nome Emp"/>
+					</Column>
+					<Column minScreenWidth="500px" demandPopin="true" popinDisplay="Inline" width="65px">
+						<Text text="Nº docto"/>
+					</Column>
+					<Column minScreenWidth="610px" demandPopin="true" popinDisplay="Inline" width="70px" hAlign="Right">
+						<Text text="Lançto"/>
+					</Column>
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="65px">
 						<Text text="Cliente"/>
 					</Column>
-					<Column minScreenWidth="610px" demandPopin="true" popinDisplay="Inline" hAlign="Left">
-						<Text text="Emissão"/>
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="200px">
+						<Text text="Razão Social"/>
 					</Column>
-					<Column minScreenWidth="420px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="100px">
-						<Text text="Venc."/>
-					</Column>
+					<!--<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="110px">-->
+					<!--	<Text text="CNPJ"/>-->
 					<!--</Column>-->
-					<Column minScreenWidth="520px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="120px">
-						<Text text="Vlr Orig"/>
-					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="auto">
-						<Text text="Dias Atrs."/>
-					</Column>
-					<Column minScreenWidth="520px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="120px">
-						<Text text="Doc. Num."/>
-					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="80px">
-						<Text text="Status"/>
-					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="50px">
-						<Text text=""/>
-					</Column>
+					<!--<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="40px">-->
+					<!--	<Text text="UF"/>-->
+					<!--</Column>-->
+					<!--<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="100px">-->
+					<!--	<Text text="Cidade"/>-->
+					<!--</Column>-->
+					<!--<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="100px">-->
+					<!--	<Text text="Transporte"/>-->
+					<!--</Column>-->
+					<!--<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="100px">-->
+					<!--	<Text text="Transp.Redesp"/>-->
+					<!--</Column>-->
+					<!--<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="95px" hAlign="Right">-->
+					<!--	<Text text="Vl.Tot.NF"/>-->
+					<!--</Column>-->
+					<!--<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="60px" hAlign="Right">-->
+					<!--	<Text text="%Rent"/>-->
+					<!--</Column>-->
+					<!--<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="60px" hAlign="Right">-->
+					<!--	<Text text="DANFe"/>-->
+					<!--</Column>-->
 				</columns>
 				<items>
 					<ColumnListItem type="Inactive">
 						<cells>
-							<Text text="{TitulosAbertos>DocFat}"/>
-							<Text text="{TitulosAbertos>Kunnr} - {TitulosAbertos>Name1}"/>
-							<Text text="{path: 'TitulosAbertos>Budat'}"/>
-							<Text text="{path: 'TitulosAbertos>Zfbdt'}"/>
-							<Text text="R$ {path: 'TitulosAbertos>Dmbtr', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
-							<Text text="{TitulosAbertos>DiasAtraso}"/>
-							<Text text="{TitulosAbertos>DocNum}"/>
-							<Text text="{path : 'TitulosAbertos>Status'}"/>
-							<Image src="{path : 'TitulosAbertos>PathImg'}" width="50%" tooltip="{path : 'TitulosAbertos>Status'}"/>
+							<Text text="{modelTitulos>Bukrs}"/>
+							<Text text="{modelTitulos>Butxt}"/>
+							<Text text="{modelTitulos>Belnr}"/>
+							<text="{path: 'modelTitulos>Budat', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' , strictParsing: true , UTC: true }}"/>
+							<Text text="{modelTitulos>Kunnr}"/>
+							<Text text="{modelTitulos>Name1Cli}"/>
+							<!--<Text text="{modelTitulos>Series}"/>-->
+							<!--<Text text="{modelTitulos>Nfenum}"/>-->
+							<!--<Text text="{modelTitulos>Vbeln}"/>-->
+							<!--<Text text="{modelTitulos>Bstkd}"/>-->
+							<!--<Text text="{modelTitulos>Stcd1}"/>-->
+							<!--<Text text="{modelTitulos>Region}"/>-->
+							<!--<Text text="{modelTitulos>City1}"/>-->
+							<!--<Text-->
+							<!--	text="{path: 'modelTitulos>Netwrt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>-->
+						
 						</cells>
 					</ColumnListItem>
 				</items>
 			</Table>
+			<!--<f:SimpleForm id="SimpleFormChange472" editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="3"-->
+			<!--	labelSpanS="1" adjustLabelSpan="false" emptySpanXL="3" emptySpanL="3" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"-->
+			<!--	singleContainerFullSize="false">-->
+			<!--	<f:content>-->
+			<!--		<Label/>-->
+			<!--		<Table class="centralizaGroup" id="idtableResumoEmpresa" growing="false" growingScrollToLoad="false" growingThreshold="5"-->
+			<!--			noDataText="Nenhum registro encontrado" items="{ path: 'modelResumoEmpresa>/' }">-->
+			<!--			<columns>-->
+			<!--				<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" styleClass="">-->
+			<!--					<Text text="Resumo Representante"/>-->
+			<!--				</Column>-->
+			<!--				<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" hAlign="Right">-->
+			<!--					<Text text="Valor Total Faturado"/>-->
+			<!--				</Column>-->
+			<!--			</columns>-->
+			<!--			<items>-->
+			<!--				<ColumnListItem type="Inactive">-->
+			<!--					<cells>-->
+			<!--						<Text text="{modelResumoEmpresa>Bukrs} - {modelResumoEmpresa>Butxt}"/>-->
+			<!--						<Text-->
+			<!--							text="{path: 'modelResumoEmpresa>Netwrt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>-->
+			<!--					</cells>-->
+			<!--				</ColumnListItem>-->
+			<!--			</items>-->
+			<!--		</Table>-->
+			<!--	</f:content>-->
+			<!--</f:SimpleForm>-->
 		</content>
 	</Page>
 </mvc:View>

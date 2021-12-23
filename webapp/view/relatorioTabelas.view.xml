@@ -87,7 +87,7 @@
 						
 						<Label text="Tipo transporte *" />
 						<Select id="idTipoTransporte" forceSelection="false" items="{ path: 'modelFretes>/' }" showSecondaryValues="true"
-							selectedKey="{modelTela>/Inco1}" busyIndicatorDelay="0" busy="{modelDelay>/Frete}" change="onChangeTipoFrete">
+							selectedKey="{modelTela>/Inco1}" busyIndicatorDelay="0" busy="{modelDelay>/Frete}" change="onChangeInfo">
 							<core:Item key="{modelFretes>Inco1}" text="{modelFretes>Inco1} - {modelFretes>Bezei}"/>
 							<layoutData>
 								<layout:GridData span="L4 M4" />

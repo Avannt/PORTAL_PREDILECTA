@@ -172,6 +172,21 @@ sap.ui.define([
 			});
 		},
 
+		onBuscarTipoPedido: function (Usuario, Kunnr, Centro, Kvgr4, Kvgr5, res, rej, that) {
+
+			that.oModel.read("/P_TipoPedidosR(IvRepres='" + Usuario + "',IvCliente='" + Kunnr + "',IvCentro='" + Centro + "',IvKvgr4='" +
+				Kvgr4 + "',IvKvgr5='" + Kvgr5 + "')", {
+					success: function (retorno) {
+
+						res(retorno);
+					},
+					error: function (error) {
+
+						rej(error);
+					}
+				});
+		},
+
 		onBuscarPedido: function (NrPedido, res, rej, that) {
 
 			that.oModel.read("/P_PedidoPR(NrPedido='" + NrPedido + "')", {
@@ -202,14 +217,14 @@ sap.ui.define([
 		},
 
 		onBuscarVencimentos: function (res, rej, that) {
-			
+
 			that.oModel.read("/Vencimentos", {
 				success: function (result) {
-					
+
 					res(result.results);
 				},
 				error: function (error) {
-					
+
 					rej(error);
 				}
 			});
@@ -549,6 +564,13 @@ sap.ui.define([
 					}
 				}
 			);
+		},
+
+		onDialogCancelar: function () {
+
+			if (this._ItemDialog) {
+				this._ItemDialog.destroy(true);
+			}
 		},
 
 		setLog: function (sLog, sClasse) {

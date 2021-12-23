@@ -197,13 +197,13 @@ sap.ui.define([
 						name: 'Parâmetros de Seleção',
 						items: [{
 							key: 'Centro',
-							value: parametros.DescCentro
+							value: parametros.Centro
 						}, {
 							key: 'UF Origem',
 							value: parametros.UFOrigem
 						}, {
 							key: 'Cliente',
-							value: parametros.NomeCliente
+							value: parametros.Cliente
 						}, {
 							key: 'UF Destino',
 							value: parametros.UFDestino
@@ -212,16 +212,16 @@ sap.ui.define([
 							value: parametros.CanalAtuacao
 						}, {
 							key: 'Tabela de Preço',
-							value: parametros.DescTabelaPreco
+							value: parametros.TabPreco
 						}, {
 							key: 'Vencimento',
-							value: parametros.DescVencto
+							value: parametros.Vencimento
 						}, {
 							key: 'Índice',
-							value: parametros.Indice + " %"
+							value: parametros.Indice
 						}, {
 							key: 'Tipo Transporte',
-							value: parametros.DescTipoFrete
+							value: parametros.Frete
 						}, {
 							key: 'Exibição',
 							value: parametros.Exibicao 
@@ -250,18 +250,13 @@ sap.ui.define([
 				Centro: that.getModelGlobal("modelTela").getProperty("/Werks"),
 				UFOrigem: that.getModelGlobal("modelTela").getProperty("/UFOrigem"),
 				Cliente: that.getModelGlobal("modelTela").getProperty("/Kunnr"),
-				NomeCliente: that.getModelGlobal("modelTela").getProperty("/NomeCliente"),
 				UFDestino: that.getModelGlobal("modelTela").getProperty("/UFDestino"),
 				CanalAtuacao: that.getModelGlobal("modelTela").getProperty("/DescKvgr2"),
 				TabPreco: that.getModelGlobal("modelTela").getProperty("/Pltyp"),
 				Vencimento: that.getModelGlobal("modelTela").getProperty("/Vencimento"),
-				DescVencto: that.getModelGlobal("modelTela").getProperty("/DescVencto"),
 				Indice: that.getModelGlobal("modelTela").getProperty("/Indice"),
 				Frete: that.getModelGlobal("modelTela").getProperty("/Inco1"),
-				Exibicao: that.getModelGlobal("modelTela").getProperty("/Exibicao"),
-				DescCentro: that.getModelGlobal("modelTela").getProperty("/DescCentro"),
-				DescTabelaPreco: that.getModelGlobal("modelTela").getProperty("/DescTabelaPreco"),
-				DescTipoFrete: that.getModelGlobal("modelTela").getProperty("/DescTipoFrete")
+				Exibicao: that.getModelGlobal("modelTela").getProperty("/Exibicao")
 			};
 
 			var omodelParametros = new JSONModel(vAux);

@@ -120,7 +120,9 @@
 							</IconTabFilter>
 							<IconTabFilter id="tabMovimentacao" text="Ilustração" key="tab2" icon="sap-icon://picture">
 								<VBox alignItems="Center">
-									<Image id="idPictureSrc" src="{modelProduto>/PathImg}" densityAware="false"/>
+									<!--<Image id="idPictureSrc" src="{modelProduto>/PathImg}" densityAware="false"/>-->
+									<Image id="idPictureSrc" src="https://www.castgroup.com.br/wp-content/uploads/2020/07/logo-ok.png"/>
+									
 								</VBox>
 							</IconTabFilter>
 						</items>

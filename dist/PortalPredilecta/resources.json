@@ -1,14 +1,8 @@
 {
     "resources": [
         {
-            "name": "../i18n/i18n_pt.properties",
-            "raw": "i18n/i18n.properties",
-            "locale": "_pt"
-        },
-        {
-            "name": "../i18n/i18n_en.properties",
-            "raw": "i18n/i18n.properties",
-            "locale": "_en"
+            "name": "../controller/cadastroRebaixa-dbg.controller.js",
+            "isDebug": true
         },
         {
             "name": "../i18n/i18n_pt_BR.properties",
@@ -16,7 +10,16 @@
             "locale": "_pt_BR"
         },
         {
-            "name": "../controller/relatorioPedidos.controller.js"
+            "name": "../i18n/i18n_en.properties",
+            "raw": "i18n/i18n.properties",
+            "locale": "_en"
+        },
+        {
+            "name": "../i18n/i18n.properties",
+            "raw": "i18n/i18n.properties"
+        },
+        {
+            "name": "../controller/detalhesRelatorioTabelas.controller.js"
         },
         {
             "name": "../manifest.json"
@@ -40,7 +43,7 @@
             "name": "../controller/relatorioTabelas.controller.js"
         },
         {
-            "name": "../model/Menu.json"
+            "name": "../controller/relatorioPedidos.controller.js"
         },
         {
             "name": "../controller/relatorioNotasFiscais.controller.js"
@@ -58,7 +61,7 @@
             "name": "../controller/enviarPedidos.controller.js"
         },
         {
-            "name": "../controller/detalhesRelatorioTabelas.controller.js"
+            "name": "../model/Menu.json"
         },
         {
             "name": "../controller/detalheProdutos.controller.js"
@@ -83,6 +86,9 @@
         },
         {
             "name": "../controller/NotFound.controller.js"
+        },
+        {
+            "name": "../controller/MovVerbas.controller.js"
         },
         {
             "name": "../controller/MenuRelatorios.controller.js"
@@ -116,7 +122,7 @@
             "merged": true
         },
         {
-            "name": "../controller/clienteConsultasDetalhe-dbg.controller.js",
+            "name": "../controller/NotFound-dbg.controller.js",
             "isDebug": true
         },
         {
@@ -176,16 +182,17 @@
             "isDebug": true
         },
         {
-            "name": "../i18n/i18n.properties",
-            "raw": "i18n/i18n.properties"
+            "name": "../controller/clienteConsultasDetalhe-dbg.controller.js",
+            "isDebug": true
         },
         {
             "name": "../controller/clienteConsultas-dbg.controller.js",
             "isDebug": true
         },
         {
-            "name": "../controller/cadastroRebaixa-dbg.controller.js",
-            "isDebug": true
+            "name": "../i18n/i18n_pt.properties",
+            "raw": "i18n/i18n.properties",
+            "locale": "_pt"
         },
         {
             "name": "../controller/PedidoDetalheItens-dbg.controller.js",
@@ -200,7 +207,7 @@
             "isDebug": true
         },
         {
-            "name": "../controller/NotFound-dbg.controller.js",
+            "name": "../controller/MovVerbas-dbg.controller.js",
             "isDebug": true
         },
         {
@@ -296,6 +303,9 @@
             "name": "../view/clienteConsultas.view.xml"
         },
         {
+            "name": "../view/centros.fragment.xml"
+        },
+        {
             "name": "../view/cadastroRebaixa.view.xml"
         },
         {
@@ -317,6 +327,9 @@
             "name": "../view/NotFound.view.xml"
         },
         {
+            "name": "../view/MovVerbas.view.xml"
+        },
+        {
             "name": "../view/MenuRelatorios.view.xml"
         },
         {
@@ -327,6 +340,9 @@
         },
         {
             "name": "../view/Login.view.xml"
+        },
+        {
+            "name": "../view/ItensCampanha.fragment.xml"
         },
         {
             "name": "../view/ItemDialog.fragment.xml"

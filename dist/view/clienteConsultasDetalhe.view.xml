@@ -13,12 +13,10 @@
 											labelSpanS="12" adjustLabelSpan="false" emptySpanXL="3" emptySpanL="3" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
 											singleContainerFullSize="false">
 											<f:content>
-												<Label text="Código"/>
-												<Input id="idCodigo" enabled="false" value="{modelCliente>/Kunnr}"/>
-												<Label text="Código Repres."/>
-												<Input id="idCodRepres" enabled="false" value="{modelAux>/CodRepres}"/>
-												<Label text="Nome"/>
-												<Input id="idNome" enabled="false" value="{modelCliente>/Name1}"/>
+												<Label text="Representante"/>
+												<Input id="idCodRepres" enabled="false" value="{modelCliente>/Lifnr} - {modelCliente>/Name1Rep}"/>
+												<Label text="Cliente"/>
+												<Input id="idCodigo" enabled="false" value="{modelCliente>/Kunnr} - {modelCliente>/Name1}"/>
 												<Label text="CNPJ"/>
 												<Input id="idCNPJ" enabled="false"
 													value="{path: 'modelCliente>/Stcd1', formatter:'.onFormatCnpj'}{path: 'modelCliente>/Stcd2', formatter:'.onFormatCpf'}"/>
@@ -32,8 +30,8 @@
 												<Input id="idEndereco" enabled="false" value="{modelCliente>/Stras}"/>
 												<Label text="Cidade / UF"/>
 												<Input id="idCidade" enabled="false" value="{modelCliente>/Ort01} - {modelCliente>/Regio}"/>
-												<Label text="Data Cadastro Cliente"/>
-												<Input id="idDataCadastroCliente" enabled="false" value="{path : 'modelCliente>/Crdat', formatter: '.myFormatterDataMobile'}"/>
+												<Label text="Data Fundação"/>
+												<Input id="idDataCadastroCliente" enabled="false" value="{path : 'modelCliente>/FoundDat', formatter: '.myFormatterDataMobile'}"/>
 												<Label text="Email"/>
 												<Input id="idEmail" enabled="false" value="{modelCliente>/EmailNf}"/>
 												<Label text="Email Envio XML"/>

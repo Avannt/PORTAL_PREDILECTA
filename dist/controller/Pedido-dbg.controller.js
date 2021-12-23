@@ -61,15 +61,6 @@ sap.ui.define([
 					actions: [MessageBox.Action.OK]
 				});
 
-			} else if (Ped.Usuario != that.getModelGlobal("modelAux").getProperty("/CodRepres")) {
-
-				MessageBox.show("Não é possível realizar a edição. Usuario criação: " + Ped.Usuario + ", Usuario edição: " + that.getModelGlobal(
-					"modelAux").getProperty("/CodRepres") + ".", {
-					icon: MessageBox.Icon.ERROR,
-					title: "Ação não permitida!",
-					actions: [MessageBox.Action.OK]
-				});
-
 			} else if (Ped.IdStatusPedido == 2) {
 
 				MessageBox.show("Deseja reabrir o pedido?", {
@@ -80,33 +71,54 @@ sap.ui.define([
 
 						/* Caso afirmativo, altero o status do pedido para 1 (Em digitação) (IdStatusPedido = 2)*/
 						if (oAction == "Reabrir") {
-							new Promise(function (res, rej) {
 
-								that.byId("table_pedidos").setBusy(true);
-								that.onBuscarPedido(Ped.NrPedido, res, rej, that);
+							if (Ped.Usuario != that.getModelGlobal("modelAux").getProperty("/CodRepres")) {
 
-							}).then(function (Pedido) {
+								MessageBox.show("Não é possível realizar a edição. Usuario criação: " + Ped.Usuario + ", Usuario edição: " + that.getModelGlobal(
+									"modelAux").getProperty("/CodRepres") + ".", {
+									icon: MessageBox.Icon.ERROR,
+									title: "Ação não permitida!",
+									actions: [MessageBox.Action.OK]
+								});
 
-								var data = that.onDataHora();
-
-								Pedido.SituacaoPedido = "EM DIGITAÇÃO";
-								Pedido.IdStatusPedido = 1;
-								Pedido.DataFim = data[0];
-								Pedido.HoraFim = data[1];
-								Pedido.Completo = false;
-
-								Pedido = that.onFormatNumberPedido(Pedido);
-
-								delete Pedido.__metadata;
-
+							} else {
+								
 								new Promise(function (res, rej) {
 
-									that.onInserirPedido(Pedido, res, rej, that);
+									that.byId("table_pedidos").setBusy(true);
+									that.onBuscarPedido(Ped.NrPedido, res, rej, that);
 
-								}).then(function (dataPed) {
+								}).then(function (Pedido) {
 
-									that.byId("table_pedidos").setBusy(false);
-									that.getModelGlobal("modelAux").setProperty("/NrPedido", Pedido.NrPedido);
+									var data = that.onDataHora();
+
+									Pedido.SituacaoPedido = "EM DIGITAÇÃO";
+									Pedido.IdStatusPedido = 1;
+									Pedido.DataFim = data[0];
+									Pedido.HoraFim = data[1];
+									Pedido.Completo = false;
+
+									Pedido = that.onFormatNumberPedido(Pedido);
+
+									delete Pedido.__metadata;
+
+									new Promise(function (res, rej) {
+
+										that.onInserirPedido(Pedido, res, rej, that);
+
+									}).then(function (dataPed) {
+
+										that.byId("table_pedidos").setBusy(false);
+										that.getModelGlobal("modelAux").setProperty("/NrPedido", Pedido.NrPedido);
+
+										that.getModelGlobal("modelAux").setProperty("/NrPedido", Ped.NrPedido);
+										sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
+
+									}).catch(function (error) {
+
+										that.byId("table_pedidos").setBusy(false);
+										that.onMensagemErroODATA(error);
+									});
 
 								}).catch(function (error) {
 
@@ -114,11 +126,7 @@ sap.ui.define([
 									that.onMensagemErroODATA(error);
 								});
 
-							}).catch(function (error) {
-
-								that.byId("table_pedidos").setBusy(false);
-								that.onMensagemErroODATA(error);
-							});
+							}
 
 						} else if (oAction == "Visualizar") {
 
@@ -172,18 +180,21 @@ sap.ui.define([
 		},
 
 		formatRentabilidade: function (Value) {
+			
 			if (Value == 0) {
 
-				this.byId("table_pedidos").getColumns()[6].setVisible(false);
+				this.byId("table_pedidos").getColumns()[7].setVisible(false);
 				return Value;
+				
 			} else if (Value > -3) {
 
-				this.byId("table_pedidos").getColumns()[6].setVisible(false);
-				return "";
+				this.byId("table_pedidos").getColumns()[7].setVisible(false);
+				return "" ;
+				
 			} else {
 
-				this.byId("table_pedidos").getColumns()[6].setVisible(true);
-				return Value;
+				this.byId("table_pedidos").getColumns()[7].setVisible(true);
+				return Value + "%";
 			}
 		},
 
@@ -191,17 +202,23 @@ sap.ui.define([
 
 			var oSplitCont = this.getSplitContObj(),
 				ref = oSplitCont.getDomRef() && oSplitCont.getDomRef().parentNode;
-			// set all parent elements to 100% height, this should be done by app developer, but just in case
+				
 			if (ref && !ref._sapui5_heightFixed) {
+				
 				ref._sapui5_heightFixed = true;
+				
 				while (ref && ref !== document.documentElement) {
+					
 					var $ref = jQuery(ref);
+					
 					if ($ref.attr("data-sap-ui-root-content")) { // Shell as parent does this already
 						break;
 					}
+					
 					if (!ref.style.height) {
 						ref.style.height = "100%";
 					}
+					
 					ref = ref.parentNode;
 				}
 			}
@@ -325,7 +342,7 @@ sap.ui.define([
 
 								MessageBox.show("O Pedido: " + Pedido.NrPedido + ", Cliente: " + Pedido.Kunnr + " está em aberto.", {
 									icon: MessageBox.Icon.ERROR,
-									details: "<li> Curioso! </li>",
+									// details: "<li> Curioso! </li>",
 									title: "Pedido em aberto",
 									actions: [MessageBox.Action.OK]
 								});
@@ -397,12 +414,15 @@ sap.ui.define([
 
 			var that = this;
 			var naoDeletar = false;
-			var oNumeroPedido = oEvent.getParameter("listItem") || oEvent.getSource();
-			var NrPedido = oNumeroPedido.getBindingContext("Pedidos").getProperty("NrPedido");
-			var Bukrs = oNumeroPedido.getBindingContext("Pedidos").getProperty("Bukrs");
-			var statusPedido = oNumeroPedido.getBindingContext("Pedidos").getProperty("IdStatusPedido");
 
-			if (statusPedido == 3) {
+			var oList = oEvent.getParameter("listItem") || oEvent.getSource();
+			var Ped = oList.getBindingContext("Pedidos").getObject();
+
+			// var NrPedido = oNumeroPedido.getBindingContext("Pedidos").getProperty("NrPedido");
+			// var Bukrs = oNumeroPedido.getBindingContext("Pedidos").getProperty("Bukrs");
+			// var statusPedido = oNumeroPedido.getBindingContext("Pedidos").getProperty("IdStatusPedido");
+
+			if (Ped.IdStatusPedido == 3) {
 
 				var msg = "Não é possível deletar pedidos que já foram integrados!";
 
@@ -410,6 +430,15 @@ sap.ui.define([
 					icon: MessageBox.Icon.ERROR,
 					title: "Deleção de pedido.",
 					actions: [sap.m.MessageBox.Action.OK]
+				});
+
+			} else if (Ped.Usuario != that.getModelGlobal("modelAux").getProperty("/CodRepres")) {
+
+				MessageBox.show("Não é possível realizar a edição. Usuario criação: " + Ped.Usuario + ", Usuario edição: " + that.getModelGlobal(
+					"modelAux").getProperty("/CodRepres") + ".", {
+					icon: MessageBox.Icon.ERROR,
+					title: "Ação não permitida!",
+					actions: [MessageBox.Action.OK]
 				});
 
 			} else {
@@ -426,7 +455,7 @@ sap.ui.define([
 
 							new Promise(function (res, rej) {
 
-								that.onExcluirPed(NrPedido, res, rej);
+								that.onExcluirPed(Ped.NrPedido, res, rej);
 
 							}).then(function () {
 

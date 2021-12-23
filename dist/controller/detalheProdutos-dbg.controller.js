@@ -47,7 +47,9 @@ sap.ui.define([
 
 			var modelProduto = new JSONModel();
 			that.setModel(modelProduto, "modelProduto");
-			that.setModel(modelProduto, "modelProdutos");
+			
+			var modelProdutos = new JSONModel();
+			that.setModel(modelProdutos, "modelProdutos");
 
 		},
 
@@ -68,21 +70,25 @@ sap.ui.define([
 				},
 				success: function (retorno) {
 
-					var vetorProdutos = [];
-
-					that.vetorProdutos = retorno.results;
-					var oModelProdutos = new JSONModel(that.vetorProdutos);
+					that.vetorProdutosAux = retorno.results;
+					that.vetorProdutos = [];
 					
-					for (var i = 0; i < that.vetorProdutos.length; i++) {
+					for (var i = 0; i < that.vetorProdutosAux.length; i++) {
+						
+							if (that.vetorProdutosAux[i].Werks == werks) {
+							
+							// that.vetorProdutosAux[i].PathImg = "http://189.57.15.163:81/predilecta/images_produtos/" + that.vetorProdutosAux[i].Matnr + ".png";
+						
+							that.vetorProdutos.push(that.vetorProdutosAux[i]);
+
+						}
 						
 						//that.vetorProdutos[i].PathImg = "http://189.57.15.163:81/predilecta/images_produtos/" + that.vetorProdutos[i].Matnr + ".png";
-						
 						//that.vetorProdutos[i].PathImg = sap.ui.require.toUrl("http://189.57.15.163:81/predilecta/images_produtos/0300.png");
-
 					}
 
 					that.byId("masterProdutos").setBusy(false);
-					that.setModel(oModelProdutos, "modelProdutos");
+					that.getModel("modelProdutos").setData(that.vetorProdutos);
 					that.onFilterCentro(werks);
 					
 				},
@@ -109,16 +115,22 @@ sap.ui.define([
 		onSelectionChange: function (oEvent) {
 
 			var that = this;
-			that.byId("detailProdutos").setBusy(true);
+			// that.byId("detailProdutos").setBusy(true);
+
+			// that.getModelGlobal("Cliente_G").setData(Cliente);
+			// this.getModelGlobal("modelAux").setProperty("/Usuario", Cliente.Lifnr);
+
+			// //Atualiza o Lifnr para fazer a integração do pedido com o código do fornecedor.
+			// this.getModelGlobal("modelAux").setProperty("/Lifnr", Cliente.Lifnr);
+			// this.getSplitContObj().toDetail(this.createId("detail"));
 
 			var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
 			var Produto = oItem.getBindingContext("modelProdutos").getObject();
 
-			that.getModel("modelProduto").setData(Produto);
-			that.getSplitContObj().toDetail(this.createId("detail"));
-
+			this.getModel("modelProduto").setData(Produto);
 			this.getSplitContObj().toDetail(this.createId("detail"));
-			that.byId("detailProdutos").setBusy(false);
+			
+			// that.byId("detailProdutos").setBusy(false);
 		},
 
 		onNavBack: function () {
@@ -132,15 +144,10 @@ sap.ui.define([
 
 		onSearch: function (oEvent) {
 
-			var that = this;
-
-			var werks = that.getModel("modelTela").getProperty("/Werks");
-
 			var sValue = oEvent.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Matnr", sap.ui.model.FilterOperator.StartsWith, sValue),
-				new sap.ui.model.Filter("Maktx", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Werks", sap.ui.model.FilterOperator.Contains, werks)
+				new sap.ui.model.Filter("Maktx", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);

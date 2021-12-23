@@ -58,13 +58,13 @@ sap.ui.define([
 			var omodelParametros = new JSONModel(vAux);
 			that.setModel(omodelParametros, "modelParametros");
 
-			that.vetorFatItems = [];
-			var omodelFatItens = new JSONModel(that.vetorFatItems);
+			that.vetorFatItens = [];
+			var omodelFatItens = new JSONModel(that.vetorFatItens);
 			that.setModel(omodelFatItens, "modelFatItens");
 
-			that.vetorResumoEmpresa = [];
-			var oModelResumoEmpresa = new JSONModel(that.vetorResumoEmpresa);
-			that.setModel(oModelResumoEmpresa, "modelResumoEmpresa");
+			that.vetorFatItensExcel = [];
+			var oModelFatItensExcel = new JSONModel(that.vetorFatItensExcel);
+			that.setModel(oModelFatItensExcel, "modelFatItensExcel");
 
 			new Promise(function (res, rej) {
 
@@ -172,7 +172,7 @@ sap.ui.define([
 							break;
 						}
 					}
-					
+
 					for (var l = 0; l < vetorFamilia.length; l++) {
 
 						if ((vetorMaterial[i].Mvgr3 == vetorFamilia[l].Mvgr3) || vetorMaterial[i].Mvgr3 == "") {
@@ -181,7 +181,7 @@ sap.ui.define([
 							break;
 						}
 					}
-					
+
 					for (var m = 0; m < vetorMarca.length; m++) {
 
 						if ((vetorMaterial[i].Mvgr5 == vetorMarca[m].Mvgr5) || vetorMaterial[i].Mvgr5 == "") {
@@ -198,11 +198,11 @@ sap.ui.define([
 					if (vAchouSubCategoria == false) {
 						vetorSubCategoria.push(vetorMaterial[i]);
 					}
-					
+
 					if (vAchouFamilia == false) {
 						vetorFamilia.push(vetorMaterial[i]);
 					}
-					
+
 					if (vAchouMarca == false) {
 						vetorMarca.push(vetorMaterial[i]);
 					}
@@ -212,13 +212,13 @@ sap.ui.define([
 
 				var oModelCategoria = new JSONModel(vetorCategoria);
 				that.setModel(oModelCategoria, "modelCategoria");
-				
+
 				var oModelSubCategoria = new JSONModel(vetorSubCategoria);
 				that.setModel(oModelSubCategoria, "modelSubCategoria");
-				
+
 				var oModelFamilia = new JSONModel(vetorFamilia);
 				that.setModel(oModelFamilia, "modelFamilia");
-				
+
 				var oModelMarca = new JSONModel(vetorMarca);
 				that.setModel(oModelMarca, "modelMarca");
 
@@ -263,6 +263,12 @@ sap.ui.define([
 			aCols.push({
 				label: "Nome Repres",
 				property: "Name1Rep",
+				type: EdmType.String
+			});
+			
+			aCols.push({
+				label: "Vocativo",
+				property: "TitleLet",
 				type: EdmType.String
 			});
 
@@ -325,7 +331,7 @@ sap.ui.define([
 				property: "Mvgr3",
 				type: EdmType.String
 			});
- 
+
 			aCols.push({
 				label: "Descrição Família",
 				property: "Mvgr3Text",
@@ -346,7 +352,7 @@ sap.ui.define([
 
 			aCols.push({
 				label: "Qtd Faturada",
-				property: "QtdFaturada",
+				property: "Menge",
 				type: EdmType.Number,
 				scale: 2,
 				delimiter: true
@@ -354,7 +360,7 @@ sap.ui.define([
 
 			aCols.push({
 				label: "Vlr Faturado",
-				property: "ValFaturado",
+				property: "Netwrt",
 				type: EdmType.Number,
 				scale: 2,
 				delimiter: true
@@ -450,15 +456,14 @@ sap.ui.define([
 			that.oModel = that.getModelGlobal("modelAux").getProperty("/DBModel");
 
 			var parametros = that.getModel("modelParametros").getData();
-			
 			var PerioAux = that.getModel("modelParametros").getProperty("/Periodo");
 			var PerioSplit = PerioAux.split(" - ");
 			var PerioIni = PerioSplit[0];
 			var PerioFim = PerioSplit[1];
-			
+
 			that.byId("master").setBusy(true);
 
-			that.oModel.read("/FatItens", {
+			that.oModel.read("/P_RelFatItens", {
 				urlParameters: {
 
 					"$filter": "Usuario eq '" + repres +
@@ -487,53 +492,168 @@ sap.ui.define([
 				},
 				success: function (retorno) {
 
-					that.vetorFatItems = [];
-					that.vetorResumoEmpresa = [];
+					that.vetorTreeRepres = [];
+					that.vetorTreeEmpresa = [];
+					that.vetorTreeCategoria = [];
+					that.vetorTreeItem = [];
 
-					that.vetorFatItems = retorno.results;
+					that.vetorFatItens = [];
+					that.vetorFatItens = retorno.results;
 
-					that.getModel("modelFatItens").setData(that.vetorFatItems);
+					for (var i = 0; i < that.vetorFatItens.length; i++) {
 
-					var vTotalEmp = 0;
-					for (var i = 0; i < that.vetorFatItems.length; i++) {
-						var vAchouEmpresa = false;
-						for (var j = 0; j < that.vetorResumoEmpresa.length; j++) {
+						if (that.vetorFatItens[i].HierarchyLevel == 0) {
 
-							if (that.vetorFatItems[i].Bukrs == that.vetorResumoEmpresa[j].Bukrs) {
+							var vAuxRepres = {
+								Lifnr: that.vetorFatItens[i].Lifnr,
+								Name1Rep: that.vetorFatItens[i].Name1Rep,
+								Menge: parseFloat(that.vetorFatItens[i].Menge),
+								Netwrt: parseFloat(that.vetorFatItens[i].Netwrt),
+								PctPartic: parseFloat(that.vetorFatItens[i].PctPartic),
+								QtdPedidos: parseFloat(that.vetorFatItens[i].QtdPedidos),
+								PctRentab: parseFloat(that.vetorFatItens[i].PctRentab),
+								NodeID: that.vetorFatItens[i].NodeID,
+								HierarchyLevel: [],
+								Description: that.vetorFatItens[i].Description,
+								ParentNodeID: that.vetorFatItens[i].ParentNodeID
+							};
+							that.vetorTreeRepres.push(vAuxRepres);
+						}
 
-								vAchouEmpresa = true;
+						if (that.vetorFatItens[i].HierarchyLevel == 1) {
 
-								that.vetorResumoEmpresa[j].ValFaturado = parseFloat(that.vetorResumoEmpresa[j].ValFaturado) + Math.round(parseFloat(that.vetorFatItems[
-									i].ValFaturado) * 100) / 100;
-								that.vetorResumoEmpresa[j].ValFaturado = parseFloat(that.vetorResumoEmpresa[j].ValFaturado).toFixed(2);
+							var vAuxEmpresa = {
+								Lifnr: that.vetorFatItens[i].Lifnr,
+								Name1Rep: that.vetorFatItens[i].Name1Rep,
+								Bukrs: that.vetorFatItens[i].Bukrs,
+								Butxt: that.vetorFatItens[i].Butxt,
+								Menge: parseFloat(that.vetorFatItens[i].Menge),
+								Netwrt: parseFloat(that.vetorFatItens[i].Netwrt),
+								PctPartic: parseFloat(that.vetorFatItens[i].PctPartic),
+								QtdPedidos: parseFloat(that.vetorFatItens[i].QtdPedidos),
+								PctRentab: parseFloat(that.vetorFatItens[i].PctRentab),
+								NodeID: that.vetorFatItens[i].NodeID,
+								HierarchyLevel: [],
+								Description: that.vetorFatItens[i].Description,
+								ParentNodeID: that.vetorFatItens[i].ParentNodeID
+							};
+							that.vetorTreeEmpresa.push(vAuxEmpresa);
+						}
 
+						if (that.vetorFatItens[i].HierarchyLevel == 2) {
+
+							var vAuxCategoria = {
+								Lifnr: that.vetorFatItens[i].Lifnr,
+								Name1Rep: that.vetorFatItens[i].Name1Rep,
+								Bukrs: that.vetorFatItens[i].Bukrs,
+								Butxt: that.vetorFatItens[i].Butxt,
+								Matnr: that.vetorFatItens[i].Matnr,
+								Maktx: that.vetorFatItens[i].Maktx,
+								Mvgr1: that.vetorFatItens[i].Mvgr1,
+								Mvgr1Text: that.vetorFatItens[i].Mvgr1Text,
+								Menge: parseFloat(that.vetorFatItens[i].Menge),
+								Netwrt: parseFloat(that.vetorFatItens[i].Netwrt),
+								PctPartic: parseFloat(that.vetorFatItens[i].PctPartic),
+								QtdPedidos: parseFloat(that.vetorFatItens[i].QtdPedidos),
+								PctRentab: parseFloat(that.vetorFatItens[i].PctRentab),
+								NodeID: that.vetorFatItens[i].NodeID,
+								HierarchyLevel: [],
+								Description: that.vetorFatItens[i].Description,
+								ParentNodeID: that.vetorFatItens[i].ParentNodeID
+							};
+							that.vetorTreeCategoria.push(vAuxCategoria);
+						}
+
+						if (that.vetorFatItens[i].HierarchyLevel == 3) {
+
+							var vAuxItem = {
+								Lifnr: that.vetorFatItens[i].Lifnr,
+								Name1Rep: that.vetorFatItens[i].Name1Rep,
+								Bukrs: that.vetorFatItens[i].Bukrs,
+								Butxt: that.vetorFatItens[i].Butxt,
+								Matnr: that.vetorFatItens[i].Matnr,
+								Maktx: that.vetorFatItens[i].Maktx,
+								Meins: that.vetorFatItens[i].Meins,
+								Mvgr1: that.vetorFatItens[i].Mvgr1,
+								Mvgr1Text: that.vetorFatItens[i].Mvgr1Text,
+								Mvgr2: that.vetorFatItens[i].Mvgr2,
+								Mvgr2Text: that.vetorFatItens[i].Mvgr2Text,
+								Mvgr3: that.vetorFatItens[i].Mvgr3,
+								Mvgr3Text: that.vetorFatItens[i].Mvgr3Text,
+								Mvgr5: that.vetorFatItens[i].Mvgr5,
+								Mvgr5Text: that.vetorFatItens[i].Mvgr5Text,
+								Menge: parseFloat(that.vetorFatItens[i].Menge),
+								Netwrt: parseFloat(that.vetorFatItens[i].Netwrt),
+								PctPartic: parseFloat(that.vetorFatItens[i].PctPartic),
+								QtdPedidos: parseFloat(that.vetorFatItens[i].QtdPedidos),
+								PctRentab: parseFloat(that.vetorFatItens[i].PctRentab),
+								UltPreco: parseFloat(that.vetorFatItens[i].UltPreco),
+								MedPreco: parseFloat(that.vetorFatItens[i].MedPreco),
+								NodeID: that.vetorFatItens[i].NodeID,
+								HierarchyLevel: [],
+								Description: that.vetorFatItens[i].Description,
+								ParentNodeID: that.vetorFatItens[i].ParentNodeID
+							};
+							that.vetorTreeItem.push(vAuxItem);
+							that.vetorFatItensExcel.push(that.vetorFatItens[i]);
+						}
+					}
+
+					that.vetorFatItens = [];
+
+					for (var k = 0; k < that.vetorTreeRepres.length; k++) {
+
+						that.vetorFatItens.push(that.vetorTreeRepres[k]);
+
+						for (var l = 0; l < that.vetorTreeEmpresa.length; l++) {
+							if (that.vetorTreeEmpresa[l].Lifnr == that.vetorTreeRepres[k].Lifnr) {
+								that.vetorFatItens[k].HierarchyLevel.push(that.vetorTreeEmpresa[l]);
 							}
 						}
-						if (vAchouEmpresa == false) {
-							var vAux = {
-								Bukrs: that.vetorFatItems[i].Bukrs,
-								Butxt: that.vetorFatItems[i].Butxt,
-								ValFaturado: parseFloat(that.vetorFatItems[i].ValFaturado)
-							};
+					}
 
-							that.vetorResumoEmpresa.push(vAux);
+					// debugger;
 
+					for (var k = 0; k < that.vetorFatItens.length; k++) {
+
+						for (var i = 0; i < that.vetorFatItens[k].HierarchyLevel.length; i++) {
+
+							for (var m = 0; m < that.vetorTreeCategoria.length; m++) {
+
+								if ((that.vetorTreeCategoria[m].Lifnr == that.vetorFatItens[k].HierarchyLevel[i].Lifnr) &&
+									(that.vetorTreeCategoria[m].Bukrs == that.vetorFatItens[k].HierarchyLevel[i].Bukrs)) {
+
+									that.vetorFatItens[k].HierarchyLevel[i].HierarchyLevel.push(that.vetorTreeCategoria[m]);
+								}
+							}
 						}
-						vTotalEmp += parseFloat(that.vetorFatItems[i].ValFaturado);
 					}
 
-					if (vTotalEmp > 0) {
-						var vAuxTot = {
-							Bukrs: "",
-							Butxt: "TOTAL",
-							ValFaturado: parseFloat(vTotalEmp).toFixed(2)
-						};
+					for (var k = 0; k < that.vetorFatItens.length; k++) {
 
-						that.vetorResumoEmpresa.push(vAuxTot);
+						for (var i = 0; i < that.vetorFatItens[k].HierarchyLevel.length; i++) {
+
+							for (var m = 0; m < that.vetorFatItens[k].HierarchyLevel[i].HierarchyLevel.length; m++) {
+
+								if ((that.vetorFatItens[k].HierarchyLevel[i].HierarchyLevel[m].Lifnr == that.vetorFatItens[k].HierarchyLevel[i].Lifnr) &&
+									(that.vetorFatItens[k].HierarchyLevel[i].HierarchyLevel[m].Bukrs == that.vetorFatItens[k].HierarchyLevel[i].Bukrs)) {
+
+									for (var n = 0; n < that.vetorTreeItem.length; n++) {
+
+										if ((that.vetorTreeItem[n].Lifnr == that.vetorFatItens[k].HierarchyLevel[i].HierarchyLevel[m].Lifnr) &&
+											(that.vetorTreeItem[n].Bukrs == that.vetorFatItens[k].HierarchyLevel[i].HierarchyLevel[m].Bukrs) &&
+											(that.vetorTreeItem[n].Mvgr1 == that.vetorFatItens[k].HierarchyLevel[i].HierarchyLevel[m].Mvgr1)) {
+
+											that.vetorFatItens[k].HierarchyLevel[i].HierarchyLevel[m].HierarchyLevel.push(that.vetorTreeItem[n]);
+										}
+									}
+								}
+							}
+						}
 					}
-
 					that.byId("master").setBusy(false);
-					that.getModel("modelResumoEmpresa").setData(that.vetorResumoEmpresa);
+					that.getModel("modelFatItens").setData(that.vetorFatItens);
+					that.getModel("modelFatItensExcel").setData(that.vetorFatItensExcel);
 				},
 				error: function (error) {
 					that.byId("master").setBusy(false);
@@ -788,7 +908,7 @@ sap.ui.define([
 
 			this.byId("idSubCategoriaFim").suggest();
 		},
-		
+
 		onSuggestFamiliaIni: function (evt) {
 
 			var sValue = evt.getSource().getValue();
@@ -804,7 +924,7 @@ sap.ui.define([
 
 			this.byId("idFamiliaIni").suggest();
 		},
-		
+
 		onSuggestFamiliaFim: function (evt) {
 
 			var sValue = evt.getSource().getValue();
@@ -820,7 +940,7 @@ sap.ui.define([
 
 			this.byId("idFamiliaFim").suggest();
 		},
-		
+
 		onSuggestMarcaIni: function (evt) {
 
 			var sValue = evt.getSource().getValue();
@@ -836,7 +956,7 @@ sap.ui.define([
 
 			this.byId("idMarcaIni").suggest();
 		},
-		
+
 		onSuggestMarcaFim: function (evt) {
 
 			var sValue = evt.getSource().getValue();

@@ -1,80 +1,295 @@
-<mvc:View height="100%" xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core"
-	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" controllerName="application.controller.relatorioPedidos"
-	xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic">
-	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Relatório de Pedidos" showFooter="false">
-		<subHeader>
-			<Toolbar>
-				<ToolbarSpacer/>
-				<ToolbarSpacer/>	
-				<!--<Button icon="sap-icon://download" press="onDataExport"/>-->
-				<DatePicker visible="false" id="DP6" placeholder="Filtre Data" displayFormat="short" change="handleChange" width="50%"/>
-				<SearchField id="idClientesRelatorio" placeholder="Digite Nº Ped, Cliente, Repres, Status, Tipo Doc, Inconsistente" liveChange="onSearch" width="100%"></SearchField>
-			</Toolbar>
-		</subHeader>
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:layout="sap.ui.layout" 
+	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" xmlns="sap.m" xmlns:semantic="sap.m.semantic" height="100%"
+	controllerName="application.controller.relatorioPedidos">
+	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Relatório de Posição de Pedidos" showFooter="false"
+		busyIndicatorDelay="0">
 		<content>
-			<Table id="table_relatorio_pedidos" busyIndicatorDelay="0" growing="true" growingThreshold="5" growingScrollToLoad="false" mode="None"
-				noDataText="Nenhum pedido encontrado" width="100%" alternateRowColors="true" itemPress="onItemPressPED"
-				growingTriggerText="Próximo >>>" items="{ path: 'pedidoRelatorio>/', sorter: { path: 'Nrpedcli', descending: true}}">
+			<Table class="centralizaGroup" id="idtablePedidos" growing="false" growingScrollToLoad="false" growingThreshold="5"
+				noDataText="Nenhum registro encontrado" alternateRowColors="true" backgroundDesign="Solid" width="100%"
+				growingTriggerText="Próximo &gt;&gt;&gt;"
+				items="{ path: 'modelPedidos>/', sorter : [{ path: 'Bukrs', ascending: true, group: '.ongetHeaderGroupBukrs' }] }">
+				<headerToolbar>
+					<OverflowToolbar/>
+					<Toolbar height="100%" class="backGround">
+						<Panel id="idPanelFiltro" headerText="Ocultar Filtros" expandable="true" expanded="true" expand="onExpandFiltro">
+							<content>
+								<f:SimpleForm id="SimpleFormChange471" editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="1"
+									labelSpanS="12" adjustLabelSpan="false" emptySpanXL="3" emptySpanL="3" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
+									singleContainerFullSize="false">
+									<f:content>
+										<Label text="Centro"/>
+										<SearchField id="idCentroIni" placeholder="Digite Código ou Nome do Centro" enableSuggestions="true" value="{modelParametros>/WerksIni}"
+											suggest="onSuggestCentroIni" suggestionItems="{ path: 'modelCentros>/', sorter: { path: 'Werks', ascending: true }}">
+											<suggestionItems>
+												<SuggestionItem text="{modelCentros>Werks}" description="{modelCentros>NomeCentro}" key="{modelCentros>Werks}"/>
+											</suggestionItems>
+										</SearchField>
+										<SearchField id="idCentroFim" placeholder="Digite Código ou Nome do Centro" enableSuggestions="true" value="{modelParametros>/WerksFim}"
+											suggest="onSuggestCentroFim" suggestionItems="{ path: 'modelCentros>/', sorter: { path: 'Werks', ascending: true }}">
+											<suggestionItems>
+												<SuggestionItem text="{modelCentros>Werks}" description="{modelCentros>NomeCentro}" key="{modelCentros>Werks}"/>
+											</suggestionItems>
+										</SearchField>
+										<Label text="Cliente"/>
+										<SearchField id="idClienteIni" placeholder="Digite Código ou Nome do Cliente" enableSuggestions="true" value="{modelParametros>/KunnrIni}"
+											suggest="onSuggestClienteIni" suggestionItems="{ path: 'modelClientes>/', sorter: { path: 'Kunnr', ascending: true }}">
+											<suggestionItems>
+												<SuggestionItem text="{modelClientes>Kunnr}" description="{modelClientes>Name1}" key="{modelClientes>Kunnr}"/>
+											</suggestionItems>
+										</SearchField>
+										<SearchField id="idClienteFim" placeholder="Digite Código ou Nome do Cliente" enableSuggestions="true" value="{modelParametros>/KunnrFim}"
+											suggest="onSuggestClienteFim" suggestionItems="{ path: 'modelClientes>/', sorter: { path: 'Kunnr', ascending: true }}">
+											<suggestionItems>
+												<SuggestionItem text="{modelClientes>Kunnr}" description="{modelClientes>Name1}" key="{modelClientes>Kunnr}"/>
+											</suggestionItems>
+										</SearchField>
+										<Label text="Rede"/>
+										<SearchField id="idRedeIni" placeholder="Digite Código ou Nome da Rede" enableSuggestions="true" value="{modelParametros>/Kvgr4Ini}"
+											suggest="onSuggestRedeIni" suggestionItems="{ path: 'modelRedes>/', sorter: { path: 'Kvgr4', ascending: true }}">
+											<suggestionItems>
+												<SuggestionItem text="{modelRedes>Kvgr4}" description="{modelRedes>DescKvgr4}" key="{modelRedes>Kvgr4}"/>
+											</suggestionItems>
+										</SearchField>
+										<SearchField id="idRedeFim" placeholder="Digite Código ou Nome da Rede" enableSuggestions="true" value="{modelParametros>/Kvgr4Fim}"
+											suggest="onSuggestRedeFim" suggestionItems="{ path: 'modelRedes>/', sorter: { path: 'Kvgr4', ascending: true }}">
+											<suggestionItems>
+												<SuggestionItem text="{modelRedes>Kvgr4}" description="{modelRedes>DescKvgr4}" key="{modelRedes>Kvgr4}"/>
+											</suggestionItems>
+										</SearchField>
+										<Label text="Bandeira"/>
+										<SearchField id="idBandeiraIni" placeholder="Digite Código ou Nome da Bandeira" enableSuggestions="true" value="{modelParametros>/Kvgr5Ini}"
+											suggest="onSuggestBandeiraIni" suggestionItems="{ path: 'modelBandeiras>/', sorter: { path: 'Kvgr5', ascending: true }}">
+											<suggestionItems>
+												<SuggestionItem text="{modelBandeiras>Kvgr5}" description="{modelBandeiras>DescKvgr5}" key="{modelBandeiras>Kvgr5}"/>
+											</suggestionItems>
+										</SearchField>
+										<SearchField id="idBandeiraFim" placeholder="Digite Código ou Nome da Bandeira" enableSuggestions="true" value="{modelParametros>/Kvgr5Fim}"
+											suggest="onSuggestBandeiraFim" suggestionItems="{ path: 'modelBandeiras>/', sorter: { path: 'Kvgr5', ascending: true }}">
+											<suggestionItems>
+												<SuggestionItem text="{modelBandeiras>Kvgr5}" description="{modelBandeiras>DescKvgr5}" key="{modelBandeiras>Kvgr5}"/>
+											</suggestionItems>
+										</SearchField>
+										<Label text="Doc. Vendas"/>
+										<Input id="idVbelnIni" placeholder="Digite o número do documento de vendas" value="{modelParametros>/VbelnIni}"/>
+										<Input id="idVbelnFim" placeholder="Digite o número do documento de vendas" value="{modelParametros>/VbelnFim}"/>
+										<Label text="Representante"/>
+										<SearchField id="idRepreIni" placeholder="Digite Código ou Nome do Representante" enableSuggestions="true"
+											value="{modelParametros>/LifnrIni}" suggest="onSuggestRepresIni"
+											suggestionItems="{ path: 'modelRepres>/', sorter: { path: 'Lifnr', ascending: true }}">
+											<suggestionItems>
+												<SuggestionItem text="{modelRepres>Lifnr}" description="{modelRepres>Name1Rep}" key="{modelRepres>Lifnr}"/>
+											</suggestionItems>
+										</SearchField>
+										<SearchField id="idRepreFim" placeholder="Digite Código ou Nome do Representante" enableSuggestions="true"
+											value="{modelParametros>/LifnrFim}" suggest="onSuggestRepresFim"
+											suggestionItems="{ path: 'modelRepres>/', sorter: { path: 'Lifnr', ascending: true }}">
+											<suggestionItems>
+												<SuggestionItem text="{modelRepres>Lifnr}" description="{modelRepres>Name1Rep}" key="{modelRepres>Lifnr}"/>
+											</suggestionItems>
+										</SearchField>
+										<Label text="Material"/>
+										<SearchField id="idMaterialIni" placeholder="Digite Código ou Descrição do Material" enableSuggestions="true"
+											value="{modelParametros>/MatnrIni}" suggest="onSuggestMaterialIni"
+											suggestionItems="{ path: 'modelMaterial>/', sorter: { path: 'Matnr', ascending: true }}">
+											<suggestionItems>
+												<SuggestionItem text="{modelMaterial>Matnr}" description="{modelMaterial>Maktx}" key="{modelMaterial>Matnr}"/>
+											</suggestionItems>
+										</SearchField>
+										<SearchField id="idMaterialFim" placeholder="Digite Código ou Descrição do Material" enableSuggestions="true"
+											value="{modelParametros>/MatnrFim}" suggest="onSuggestMaterialFim"
+											suggestionItems="{ path: 'modelMaterial>/', sorter: { path: 'Matnr', ascending: true }}">
+											<suggestionItems>
+												<SuggestionItem text="{modelMaterial>Matnr}" description="{modelMaterial>Maktx}" key="{modelMaterial>Matnr}"/>
+											</suggestionItems>
+										</SearchField>
+										<Label id="idPeriodo" text="Período"/>
+										<DateRangeSelection displayFormat="dd/MM/yyyy" id="idCDateRange" value="{modelParametros>/Periodo}" placeholder="Período" width="100%"/>
+										<Button id="idBtnFiltrar" text="Filtrar" type="Emphasized" press="onPressBtnFiltrar" icon="sap-icon://filter" tooltip="Filtrar Dados"/>
+									</f:content>
+									<Button icon="sap-icon://excel-attachment" press="onExport" type="Emphasized" text="Exportar" tooltip="Exportar Dados"/>
+								</f:SimpleForm>
+								<f:SimpleForm id="SimpleFormChange472" editable="true" layout="ResponsiveGridLayout" labelSpanXL="2" labelSpanL="2" labelSpanM="1"
+									labelSpanS="12" adjustLabelSpan="false" emptySpanXL="2" emptySpanL="2" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
+									singleContainerFullSize="false">
+									<f:content>
+										<Label text=""/>
+										<CheckBox id="idCheckAberto" text="Aberto" selected="{modelParametros>/StatusAberto}">
+											<layoutData>
+												<layout:GridData span="L2 M1" linebreakM="false"/>
+											</layoutData>
+										</CheckBox>
+										<Label text="">
+											<layoutData>
+												<layout:GridData span="L1 M1" linebreakM="false"/>
+											</layoutData>
+										</Label>
+										<CheckBox id="idCheckAbertoCredito" text="Aberto - Pendente Crédito" selected="{modelParametros>/StatusAbertoCredito}">
+											<layoutData>
+												<layout:GridData span="L3 M1" linebreakM="false"/>
+											</layoutData>
+										</CheckBox>
+										<Label text="">
+											<layoutData>
+												<layout:GridData span="L1 M1" linebreakM="false"/>
+											</layoutData>
+										</Label>
+										<CheckBox id="idCheckAbertoCancel" text="Aberto - Com Cancelamento" selected="{modelParametros>/StatusAbertoCancel}">
+											<layoutData>
+												<layout:GridData span="L3 M1" linebreakM="false"/>
+											</layoutData>
+										</CheckBox>
+										<Label text="">
+											<layoutData>
+												<layout:GridData span="L1 M1" linebreakM="false"/>
+											</layoutData>
+										</Label>
+										<Label text=""/>
+										<CheckBox id="idCheckAtendParcial" text="Atendido Parcial" selected="{modelParametros>/StatusAtendParcial}">
+											<layoutData>
+												<layout:GridData span="L2 M1" linebreakM="false"/>
+											</layoutData>
+										</CheckBox>
+										<Label text="">
+											<layoutData>
+												<layout:GridData span="L1 M1" linebreakM="false"/>
+											</layoutData>
+										</Label>
+										<CheckBox id="idCheckAtendParcialPendCred" text="Atendido Parcial - Pendente Crédito" selected="{modelParametros>/StatusAtendParcialPendCred}">
+											<layoutData>
+												<layout:GridData span="L3 M1" linebreakM="false"/>
+											</layoutData>
+										</CheckBox>
+										<Label text="">
+											<layoutData>
+												<layout:GridData span="L1 M1" linebreakM="false"/>
+											</layoutData>
+										</Label>
+										<CheckBox id="idCheckAtendParcialCancel" text="Atendido Parcial - Com Cancelamento" selected="{modelParametros>/StatusAtendParcialCancel}">
+											<layoutData>
+												<layout:GridData span="L3 M1" linebreakM="false"/>
+											</layoutData>
+										</CheckBox>
+										<Label text="">
+											<layoutData>
+												<layout:GridData span="L1 M1" linebreakM="false"/>
+											</layoutData>
+										</Label>
+										<Label text=""/>
+										<CheckBox id="idCheckAtendTotal" text="Atendido Total" selected="{modelParametros>/StatusAtendTotal}">
+											<layoutData>
+												<layout:GridData span="L2 M1" linebreakM="false"/>
+											</layoutData>
+										</CheckBox>
+										<Label text="">
+											<layoutData>
+												<layout:GridData span="L1 M1" linebreakM="false"/>
+											</layoutData>
+										</Label>
+										<CheckBox id="idCheckAtendTotalCancel" text="Atendido Total - Com Cancelamento" selected="{modelParametros>/StatusAtendTotalCancel}">
+											<layoutData>
+												<layout:GridData span="L3 M1" linebreakM="false"/>
+											</layoutData>
+										</CheckBox>
+										<Label text="">
+											<layoutData>
+												<layout:GridData span="L1 M1" linebreakM="false"/>
+											</layoutData>
+										</Label>
+										<CheckBox id="idCheckSuspenso" text="Suspenso" selected="{modelParametros>/StatusSuspenso}">
+											<layoutData>
+												<layout:GridData span="L3 M1" linebreakM="false"/>
+											</layoutData>
+										</CheckBox>
+										<Label text="">
+											<layoutData>
+												<layout:GridData span="L1 M1" linebreakM="false"/>
+											</layoutData>
+										</Label>
+										
+										<Label text=""/>
+										<CheckBox id="idCheckCancelado" text="Cancelado" selected="{modelParametros>/StatusCancelado}">
+											<layoutData>
+												<layout:GridData span="L2 M1" linebreakM="false"/>
+											</layoutData>
+										</CheckBox>
+										<Label text="">
+											<layoutData>
+												<layout:GridData span="L1 M1" linebreakM="false"/>
+											</layoutData>
+										</Label>
+										
+									</f:content>
+								</f:SimpleForm>
+							</content>
+						</Panel>
+					</Toolbar>
+				</headerToolbar>
 				<columns>
-					<Column minScreenWidth="320px" demandPopin="false" popinDisplay="Inline" hAlign="Left" width="170px">
-						<Text text="N°Ped"/>
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="30px">
+						<Text text="Cen"/>
 					</Column>
-					<!--<Column minScreenWidth="700px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="100px">-->
-					<!--	<Text text="Cód.Cliente"/>-->
-					<!--</Column>-->
-					<!--<Column minScreenWidth="700px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="100px">-->
-					<!--	<Text text="Cód.Aprovador"/>-->
-					<!--</Column>-->
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="70px">
-						<Text text="Data"/>
+					<Column minScreenWidth="410px" demandPopin="true" popinDisplay="Inline" width="60px" hAlign="Right">
+						<Text text="Doc.Vendas"/>
 					</Column>
-					<Column minScreenWidth="450px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="80px">
-						<Text text="Status"/>
+					<Column minScreenWidth="410px" demandPopin="true" popinDisplay="Inline" width="90px">
+						<Text text="Ref.Cliente"/>
 					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="30px">
-						<Text text=""/>
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="55px">
+						<Text text="Emissão"/>
 					</Column>
-					<Column minScreenWidth="1000px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="auto">
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="65px">
 						<Text text="Cliente"/>
 					</Column>
-					<Column minScreenWidth="1000px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="auto" >
-						<Text text="Aprovador"/>
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="200px">
+						<Text text="Razão Social"/>
 					</Column>
-					<Column minScreenWidth="1000px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="auto" >
-						<Text text="Tipo Doc"/>
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="110px">
+						<Text text="Rede"/>
 					</Column>
-					<Column minScreenWidth="1000px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="auto" >
-						<Text text="Inconsistente"/>
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="30px">
+						<Text text="UF"/>
 					</Column>
-					<Column minScreenWidth="700px" demandPopin="true" popinDisplay="Inline" width="110px">
-						<Text text="Valor Total"/>
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="100px">
+						<Text text="Cidade"/>
 					</Column>
-					<Column minScreenWidth="700px" demandPopin="true" popinDisplay="Inline" width="110px">
-						<Text text="Valor Excedente"/>
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="75px" hAlign="Right">
+						<Text text="Volume(CX)"/>
 					</Column>
-					<Column minScreenWidth="700px" demandPopin="true" popinDisplay="Inline" width="80px">
-						<Text text="DocVenda"/>
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="75px" hAlign="Right">
+						<Text text="Sdo.Volume(CX)"/>
+					</Column>
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="75px" hAlign="Right">
+						<Text text="Valor S/ST"/>
+					</Column>
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="75px" hAlign="Right">
+						<Text text="Vl Saldo S/ST"/>
+					</Column>
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="80px">
+						<Text text="Status"/>
 					</Column>
 				</columns>
 				<items>
-					<ColumnListItem type="Active">
-						<customData>
-							<core:CustomData key="mydataRP" value="{path: 'pedidoRelatorio>PedInconsistente', type: 'sap.ui.model.type.String'}" writeToDom="true"/>
-						</customData>
+					<ColumnListItem type="Inactive">
 						<cells>
-							<Text text="{path : 'pedidoRelatorio>Nrpedcli'}"/>
-							<!--<Text text="{path : 'pedidoRelatorio>Kunnr'}"/>-->
-							<Text text="{path : 'pedidoRelatorio>Erdat'}"/>
-							<Text text="{path : 'pedidoRelatorio>AprovadoDesc'}"/>
-							<Image src="{path : 'pedidoRelatorio>PathImg'}" width="50%" tooltip="{path : 'pedidoRelatorio>AprovadoDesc'}"/>
-							<Text text="{path : 'pedidoRelatorio>Kunnr'} - {path : 'pedidoRelatorio>NameOrg1', formatter:'.myFormatterName'}"/>
-							<!--<Text text="{path : 'pedidoRelatorio>Aprov'}"/>-->
-							<Text text="{path : 'pedidoRelatorio>Aprov'} - {path : 'pedidoRelatorio>AprovNome', formatter:'.myFormatterName'}"/>
-							<Text text="{path : 'pedidoRelatorio>Auart'}"/>
-							<Text text="{path : 'pedidoRelatorio>PedInconsistente'}"/>
-							<Text text="R$: {path :'pedidoRelatorio>Valtotpedido', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
-							<Text text="R$: {path :'pedidoRelatorio>Vlrexc', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
-							<Text text="{path :'pedidoRelatorio>Vbeln'}" />
+							<Text text="{modelPedidos>Werks}"/>
+							<Text text="{modelPedidos>Vbeln}"/>
+							<Text text="{modelPedidos>Bstkd}"/>
+							<Text
+								text="{path: 'modelPedidos>Audat', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' , strictParsing: true , UTC: true }}"/>
+							<Text text="{modelPedidos>Kunnr}"/>
+							<Text text="{modelPedidos>Name1Cli}"/>
+							<Text text="{modelPedidos>Kvgr4Text}"/>
+							<Text text="{modelPedidos>Region}"/>
+							<Text text="{modelPedidos>City1}"/>
+							<Text
+								text="{path: 'modelPedidos>Kwmeng', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
+							<Text
+								text="{path: 'modelPedidos>QtdSdoPed', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
+							<Text
+								text="{path: 'modelPedidos>ValSSt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
+							<Text
+								text="{path: 'modelPedidos>ValSdoSSt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
+							<Text text="{modelPedidos>DescStatus}"/>
 						</cells>
 					</ColumnListItem>
 				</items>

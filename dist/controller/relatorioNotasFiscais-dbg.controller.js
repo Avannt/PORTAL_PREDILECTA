@@ -166,6 +166,12 @@ sap.ui.define([
 				property: "Name1Rep",
 				type: EdmType.String
 			});
+			
+			aCols.push({
+				label: "Vocativo",
+				property: "TitleLet",
+				type: EdmType.String
+			});
 
 			aCols.push({
 				label: "Empresa",
@@ -194,6 +200,12 @@ sap.ui.define([
 			aCols.push({
 				label: "NFe",
 				property: "Nfenum",
+				type: EdmType.String
+			});
+			
+			aCols.push({
+				label: "Doc.Vendas",
+				property: "Vbeln",
 				type: EdmType.String
 			});
 
@@ -366,7 +378,6 @@ sap.ui.define([
 			if (this._ItemDialog) {
 				this._ItemDialog.destroy(true);
 			}
-
 		},
 
 		onDialogEnvioDanfe: function () {
@@ -419,7 +430,7 @@ sap.ui.define([
 
 			that.byId("master").setBusy(true);
 
-			that.oModel.read("/NotasFiscais", {
+			that.oModel.read("/P_RelNotasFiscais", {
 				urlParameters: {
 
 					"$filter": "Usuario eq '" + repres +

@@ -365,7 +365,9 @@
                 },
                 "detalhesRelatorioTabelas": {
                     "viewName": "detalhesRelatorioTabelas",
-                    "viewLevel": 3
+                    "viewLevel": 3,
+                    "controlId": "app",
+                    "controlAggregation": "pages"
                 },
                 "relatorioTabelas": {
                     "viewName": "relatorioTabelas",
@@ -415,7 +417,7 @@
         }
     },
     "sap.platform.abap": {
-        "uri": "/sap/bc/ui5_ui5/sap/zportal_vendas/webapp",
+        "uri": "/sap/bc/ui5_ui5/sap/zportal/webapp",
         "_version": "1.1.0"
     }
 }

@@ -77,8 +77,17 @@ sap.ui.define([
 					"$filter": "IvUsuario eq '" + repres + "'"
 				},
 				success: function (retorno) {
-					var vetorContratos = retorno.results;
-					var oModelContratos = new JSONModel(vetorContratos);
+					that.vetorContratosTotal = retorno.results;
+					
+					var sKvgr4 = that.getModel("modelCliente").getProperty("/Kvgr4");
+					
+					that.vetorContratos = that.vetorContratosTotal.filter(function (a) {
+						if (a.Kvgr4 == sKvgr4) {
+							return a;
+						}
+					});
+					
+					var oModelContratos = new JSONModel(that.vetorContratos);
 					that.setModel(oModelContratos, "modelContratos");
 				},
 				error: function (error) {

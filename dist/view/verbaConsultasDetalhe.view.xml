@@ -12,10 +12,10 @@
 										labelSpanS="12" adjustLabelSpan="false" emptySpanXL="3" emptySpanL="3" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
 										singleContainerFullSize="false" bindingContexts="modelVerba">
 										<f:content>
-											<Label text="Código"/>
-											<Input id="idCodigoCliente" enabled="false" value="{modelVerba>/IvUsuario}" />
-											<Label text="Nome Empresa"/>
-											<Input id="idNomeEmpresa" enabled="false" value="{modelVerba>/NomEmpresa}" />
+											<Label text="Representante"/>
+											<Input id="idCodigoCliente" enabled="false" value="{modelVerba>/Lifnr} - {modelVerba>/Name1Rep}" />
+											<Label text="Empresa"/>
+											<Input id="idNomeEmpresa" enabled="false" value="{modelVerba>/Bukrs} - {modelVerba>/Butxt}" />
 											<Label text="Período"/>
 											<Input id="idPeriodo" enabled="false" value="{path:'modelVerba>/Periodo', formatter: '.formatPeriodo'}" />
 											<Label text="Verba Inicial"/>
@@ -54,7 +54,7 @@
 											<Text text="Data" />
 										</Column>
 										<Column>
-											<Text text="Valr" />
+											<Text text="Valor" />
 										</Column>
 										<Column>
 											<Text text="Saldo" />
@@ -63,7 +63,7 @@
 											<Text text="Descrição" />
 										</Column>
 										<Column minScreenWidth="770px" demandPopin="true" popinDisplay="Inline">
-											<Text text="Nome Cli." />
+											<Text text="Cliente" />
 										</Column>
 										<Column minScreenWidth="400px" demandPopin="true" popinDisplay="Inline" width="80px">
 											<Text text="Pedido" />
@@ -77,10 +77,7 @@
 											<cells>
 												<Image src="{path : 'modelMov>PathImg'}" width="50%" tooltip="{path : 'TitulosAbertos>Status'}" />
 												<Text text="{path: 'modelMov>TipoMovto', formatter: '.formatTipo'}"/>
-												<Text text="{path: 'modelMov>DatMovto'}" />
-												<!--<Text text="{path: 'modelMov>HraMovto'}" />-->
-												<!--, type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' }-->
-												<!--, type: 'sap.ui.model.odata.type.Time', formatOptions: { UTC:true }-->
+												<Text text="{path: 'modelMov>DatMovto', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' , strictParsing: true , UTC: true }}"/>
 												<Text text="R$: {path: 'modelMov>ValMovto', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" />
 												<Text text="R$: {path: 'modelMov>ValSaldo', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" />
 												<Text text="{modelMov>DescMotivo}" />

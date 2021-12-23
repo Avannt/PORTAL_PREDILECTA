@@ -1,69 +1,68 @@
-<mvc:View height="100%" xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core"
-	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" controllerName="application.controller.detalhesRelatorioTabelas"
-	xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic">
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic" height="100%" controllerName="application.controller.detalhesRelatorioTabelas">
 	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Consultar Tabela Preço">
-		<subHeader>
-			<Toolbar>
-				<ToolbarSpacer/>
-				<ToolbarSpacer/>
+		<subHeader><Toolbar>
 				<!--<Button icon="sap-icon://download" press="onDataExport"/>-->
-				<SearchField class="camposDialog" id="idProdutoRelatorio" placeholder="Digite do Produto" enableSuggestions="true"
-					search="onItemChange" suggest="_handleValueHelpSearch" width="100%"
-					suggestionItems="{ path: 'produtosRelatorio>/', sorter: { path: 'ProdutoId' } }">
+				<SearchField class="camposDialog" id="idProdutoRelatorio" placeholder="Digite do Produto" enableSuggestions="true" search="onItemChange" suggest="_handleValueHelpSearch" width="100%" suggestionItems="{ path: 'produtosRelatorio>/', sorter: { path: 'ProdutoId' } }">
 					<suggestionItems>
 						<SuggestionItem text="{produtosRelatorio>ProdutoId}" description="{produtosRelatorio>Descricao}" key="{produtosRelatorio>ProdutoId}"/>
 					</suggestionItems>
 				</SearchField>
+				<Button xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:layout="sap.ui.layout" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" xmlns:semantic="sap.m.semantic" xmlns="sap.m" icon="sap-icon://excel-attachment" press="onExport" type="Emphasized" text="Exportar" tooltip="Exportar Dados" id="button0"/>
+			<content/>
 			</Toolbar>
 		</subHeader>
 		<semantic:FullscreenPage id="page">
 			<semantic:content>
-				<Table id="idtablePrecos" busyIndicatorDelay="2000" growing="true" growingScrollToLoad="false" growingThreshold="10"
-					noDataText="Não possue itens na tabela de preço" updateFinished="onUpdateFinished" width="100%"
-					items="{ path: 'relatorioTabelas>/', sorter: { path: 'ProdutoId', ascending: true}}">
+				<Table id="idtablePrecos" busyIndicatorDelay="2000" growing="true" growingScrollToLoad="false" growingThreshold="10" noDataText="Não possui itens na tabela de preço" updateFinished="onUpdateFinished" width="100%" items="{ path: 'modelTabPreco>/', sorter: { path: 'Matnr', ascending: true}}">
 					<columns>
-						<Column minScreenWidth="320px"  demandPopin="false">
-							<Text text="Cod"/>
+						<Column demandPopin="false" minScreenWidth="280px">
+							<Text text="Código"/>
 						</Column>
-						<Column minScreenWidth="960px" demandPopin="true" >
-							<Text text="Desc"/>
+						<Column demandPopin="false" minScreenWidth="960px">
+							<Text text="Descrição"/>
 						</Column>
-						<Column demandPopin="true" minScreenWidth="460px" >
+						<Column demandPopin="true" minScreenWidth="220px">
 							<Text text="Pallet"/>
 						</Column>
-						<Column demandPopin="true" minScreenWidth="380px" >
-							<Text text="P. Tab"/>
+						<Column demandPopin="true" minScreenWidth="220px">
+							<Text text="CXs"/>
 						</Column>
-						<Column demandPopin="true" minScreenWidth="320px" >
-							<Text text="P + ST"/>
+						<Column demandPopin="true" minScreenWidth="380px">
+							<Text text="Preço Bruto"/>
 						</Column>
-						<Column demandPopin="true" minScreenWidth="525px" >
+						<Column demandPopin="true" minScreenWidth="220px">
 							<Text text="Canal"/>
 						</Column>
-						<Column minScreenWidth="600px" demandPopin="false" >
-							<Text text="Promoção"/>
+						<Column demandPopin="true" minScreenWidth="220px">
+							<Text text="Promocional"/>
 						</Column>
-						<Column demandPopin="true" minScreenWidth="320px" >
-							<Text text="P. Liq"/>
+							<Column demandPopin="true" minScreenWidth="220px">
+							<Text text="Preço Líquido"/>
+						</Column>
+						<Column demandPopin="false" minScreenWidth="320px">
+							<Text text="Preço c/ST"/>
+						</Column>
+						<Column demandPopin="true" minScreenWidth="220px">
+							<Text text="ST"/>
+						</Column>
+						<Column demandPopin="true" minScreenWidth="220px">
+							<Text text="Contrato"/>
 						</Column>
 					</columns>
 					<items>
-						<ColumnListItem type="Navigation">
-							<!--press="onSelectionChange"-->
+						<ColumnListItem>
 							<cells>
-								<Text text="{relatorioTabelas>ProdutoId}" />
-								<Text text="{relatorioTabelas>Descricao}" />
-								<Text text="{relatorioTabelas>QtPallet}" />
-								<Text text="R$: {relatorioTabelas>PrecoVenda}" />
-								<Text text="R$: {relatorioTabelas>PrecoSubstituicao}" />
-								<Text text="{relatorioTabelas>Canal} %" />
-								<Text text="{relatorioTabelas>PctDescPromo} %" />
-								<Text text="R$: {relatorioTabelas>PrecoLiq}" />
-								<!--<Text text="{CodPedVda}"/>-->
-								<!--<Text text="{path: 'DatEmisDocto'}"/>-->
-								<!--<ObjectListItem number="{DiasAtraso}" numberState="{= ${DiasAtraso} >= 0 ? 'Error' : 'None' }"/>-->
-								<!--<Text text="R$ {ValOriginTitAcr}" />-->
-								<!--<Text text="R$ {ValSdoTitAcr}" />-->
+								<Text text="{modelTabPreco>Matnr}"/>
+								<Text text="{modelTabPreco>Maktx}"/>
+								<Text text="{modelTabPreco>QntPallet}" textAlign="Right"/>
+								<Text text="{modelTabPreco>QntCaixa}"  textAlign="Right"/>
+								<Text text="R$ {path: 'modelTabPreco>ValPrecoVenda', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" wrapping="false"/>
+								<Text text="{path: 'modelTabPreco>PercCanal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} %" wrapping="false"/>
+								<Text text="{path: 'modelTabPreco>PercPromoMax', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} %" wrapping="false"/>
+								<Text text="R$ {path: 'modelTabPreco>ValLiqItem', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" wrapping="false"/>
+								<Text text="R$ {path: 'modelTabPreco>ValPrecoUnitSt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" wrapping="false"/>
+								<Text text="{path: 'modelTabPreco>PerSubTri', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} %" wrapping="false"/>
+								<Text text="{path: 'modelTabPreco>PctDescContrato', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} %" wrapping="false"/>
 							</cells>
 						</ColumnListItem>
 					</items>
