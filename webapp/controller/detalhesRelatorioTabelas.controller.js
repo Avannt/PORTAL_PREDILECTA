@@ -20,16 +20,16 @@ sap.ui.define([
 	var filtroGrid = [];
 	var oProdutosTemplateGridAux = [];
 	var EdmType = exportLibrary.EdmType;
-	
+
 	return BaseController.extend("application.controller.detalhesRelatorioTabelas", {
 
-		onInit: function() {
+		onInit: function () {
 
 			//FORÇA FAZER O INIT DA PÁGINA .. MESMO QUE JÁ FOI INICIADA.
 			this.getRouter().getRoute("detalhesRelatorioTabelas").attachPatternMatched(this._onLoadFields, this);
 		},
 
-		_handleValueHelpSearch: function(oEvent) {
+		_handleValueHelpSearch: function (oEvent) {
 			var sValue = oEvent.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("ProdutoId", sap.ui.model.FilterOperator.Contains, sValue), new sap.ui.model.Filter(
@@ -40,8 +40,8 @@ sap.ui.define([
 			this.byId("idProdutoRelatorio").suggest();
 		},
 
-		onItemChange: function(oEvent) {
-			
+		onItemChange: function (oEvent) {
+
 			filtroGrid = [];
 			var codItemSelecionado = oEvent.getSource().getValue();
 
@@ -63,7 +63,7 @@ sap.ui.define([
 
 			}
 		},
-		
+
 		createColumnConfig: function () {
 			var aCols = [];
 
@@ -78,25 +78,25 @@ sap.ui.define([
 				property: "Maktx",
 				type: EdmType.String
 			});
-			
+
 			aCols.push({
 				label: "Categoria",
 				property: "Mvgr1Text",
 				type: EdmType.String
 			});
-			
+
 			aCols.push({
 				label: "SubCategoria",
 				property: "Mvgr2Text",
 				type: EdmType.String
 			});
-			
+
 			aCols.push({
 				label: "Família",
 				property: "Mvgr3Text",
 				type: EdmType.String
 			});
-			
+
 			aCols.push({
 				label: "Pallet",
 				property: "QntPallet",
@@ -116,7 +116,7 @@ sap.ui.define([
 				scale: 2,
 				delimiter: true
 			});
-			
+
 			aCols.push({
 				label: "%Canal",
 				property: "PercCanal",
@@ -124,7 +124,7 @@ sap.ui.define([
 				scale: 2,
 				delimiter: true
 			});
-			
+
 			aCols.push({
 				label: "%Promocional",
 				property: "PercPromoMax",
@@ -132,7 +132,7 @@ sap.ui.define([
 				scale: 2,
 				delimiter: true
 			});
-			
+
 			aCols.push({
 				label: "Preço Líquido",
 				property: "ValLiqItem",
@@ -140,7 +140,7 @@ sap.ui.define([
 				scale: 2,
 				delimiter: true
 			});
-			
+
 			aCols.push({
 				label: "Preço c/ST",
 				property: "ValPrecoUnitSt",
@@ -148,7 +148,7 @@ sap.ui.define([
 				scale: 2,
 				delimiter: true
 			});
-			
+
 			aCols.push({
 				label: "%ST",
 				property: "PerSubTri",
@@ -156,7 +156,7 @@ sap.ui.define([
 				scale: 2,
 				delimiter: true
 			});
-			
+
 			aCols.push({
 				label: "%Contrato",
 				property: "PctDescContrato",
@@ -167,7 +167,7 @@ sap.ui.define([
 
 			return aCols;
 		},
-		
+
 		onExport: function () {
 			var aCols, oRowBinding, oSettings, oSheet, oTable;
 
@@ -178,12 +178,55 @@ sap.ui.define([
 			oTable = this._oTable;
 			oRowBinding = oTable.getBinding("items");
 			aCols = this.createColumnConfig();
+			var parametros = this.getModel("modelParametros").getData();
 
 			oSettings = {
 				workbook: {
 					columns: aCols,
-					hierarchyLevel: "Level"
+					hierarchyLevel: "Level",
+					context: {
+					application: 'Portal Predilecta',
+					version: '1.00.00',
+					title: 'Relatório de Tabela de Preço',
+					modifiedBy: 'Administrador',
+					metaSheetName: 'Parâmetros',
+					metainfo: [{
+						name: 'Parâmetros de Seleção',
+						items: [{
+							key: 'Centro',
+							value: parametros.Centro
+						}, {
+							key: 'UF Origem',
+							value: parametros.UFOrigem
+						}, {
+							key: 'Cliente',
+							value: parametros.Cliente
+						}, {
+							key: 'UF Destino',
+							value: parametros.UFDestino
+						}, {
+							key: 'Canal Atuação',
+							value: parametros.CanalAtuacao
+						}, {
+							key: 'Tabela de Preço',
+							value: parametros.TabPreco
+						}, {
+							key: 'Vencimento',
+							value: parametros.Vencimento
+						}, {
+							key: 'Índice',
+							value: parametros.Indice
+						}, {
+							key: 'Tipo Transporte',
+							value: parametros.Frete
+						}, {
+							key: 'Exibição',
+							value: parametros.Exibicao 
+						}]
+					}]
+				}
 				},
+			
 				dataSource: oRowBinding,
 				fileName: "Rel_Tabela_Preço.xlsx",
 				worker: false // We need to disable worker because we are using a MockServer as OData Service
@@ -195,8 +238,8 @@ sap.ui.define([
 			});
 		},
 
-		_onLoadFields: function() {
-			
+		_onLoadFields: function () {
+
 			var that = this;
 
 			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
@@ -204,8 +247,12 @@ sap.ui.define([
 
 			var vAux = {
 				Centro: that.getModelGlobal("modelTela").getProperty("/Werks"),
+				UFOrigem: that.getModelGlobal("modelTela").getProperty("/UFOrigem"),
 				Cliente: that.getModelGlobal("modelTela").getProperty("/Kunnr"),
+				UFDestino: that.getModelGlobal("modelTela").getProperty("/UFDestino"),
+				CanalAtuacao: that.getModelGlobal("modelTela").getProperty("/DescKvgr2"),
 				TabPreco: that.getModelGlobal("modelTela").getProperty("/Pltyp"),
+				Vencimento: that.getModelGlobal("modelTela").getProperty("/Vencimento"),
 				Indice: that.getModelGlobal("modelTela").getProperty("/Indice"),
 				Frete: that.getModelGlobal("modelTela").getProperty("/Inco1"),
 				Exibicao: that.getModelGlobal("modelTela").getProperty("/Exibicao")
@@ -215,7 +262,7 @@ sap.ui.define([
 			that.setModel(omodelParametros, "modelParametros");
 
 			var parametros = that.getModel("modelParametros").getData();
-			
+
 			that.byId("master").setBusy(true);
 
 			that.oModel.read("/P_RelTabPreco", {
@@ -226,8 +273,8 @@ sap.ui.define([
 						"' and Cliente eq '" + parametros.Cliente +
 						"' and TabPreco eq '" + parametros.TabPreco +
 						"' and Indice eq " + parametros.Indice +
-						" and Frete eq '" + parametros.Frete + 
-					    "' and Exibicao eq '" + parametros.Exibicao + "'"
+						" and Frete eq '" + parametros.Frete +
+						"' and Exibicao eq '" + parametros.Exibicao + "'"
 				},
 				success: function (retorno) {
 
@@ -235,7 +282,7 @@ sap.ui.define([
 					that.byId("master").setBusy(false);
 					var oModelTabPreco = new JSONModel(that.vetorTabPreco);
 					that.setModel(oModelTabPreco, "modelTabPreco");
-					
+
 				},
 				error: function (error) {
 					that.byId("master").setBusy(false);

@@ -35,7 +35,7 @@ sap.ui.define([
 					that.vetorCentros = retorno.results;
 					var oModelCentros = new JSONModel(that.vetorCentros);
 					that.setModel(oModelCentros, "modelCentros");
-					that.onAbrirCentros();
+					// that.onAbrirCentros();
 				},
 				error: function (error) {
 

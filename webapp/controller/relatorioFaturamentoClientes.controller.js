@@ -305,11 +305,53 @@ sap.ui.define([
 			oTable = this._oTable;
 			oRowBinding = oTable.getBinding("items");
 			aCols = this.createColumnConfig();
+			var parametros = this.getModel("modelParametros").getData();
 
 			oSettings = {
 				workbook: {
 					columns: aCols,
-					hierarchyLevel: "Level"
+					hierarchyLevel: "Level",
+					context: {
+					application: 'Portal Predilecta',
+					version: '1.00.00',
+					title: 'Relatório de Faturamento de Clientes',
+					modifiedBy: 'Administrador',
+					metaSheetName: 'Parâmetros',
+					metainfo: [{
+						name: 'Parâmetros de Seleção',
+						items: [{
+							key: 'Centro',
+							value: parametros.Centro
+						}, {
+							key: 'UF Origem',
+							value: parametros.UFOrigem
+						}, {
+							key: 'Cliente',
+							value: parametros.Cliente
+						}, {
+							key: 'UF Destino',
+							value: parametros.UFDestino
+						}, {
+							key: 'Canal Atuação',
+							value: parametros.CanalAtuacao
+						}, {
+							key: 'Tabela de Preço',
+							value: parametros.TabPreco
+						}, {
+							key: 'Vencimento',
+							value: parametros.Vencimento
+						}, {
+							key: 'Índice',
+							value: parametros.Indice
+						}, {
+							key: 'Tipo Transporte',
+							value: parametros.Frete
+						}, {
+							key: 'Exibição',
+							value: parametros.Exibicao 
+						}]
+					}]
+				}
 				},
 				dataSource: oRowBinding,
 				fileName: "Rel_Fat_Cliente.xlsx",
