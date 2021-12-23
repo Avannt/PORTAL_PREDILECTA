@@ -180,6 +180,8 @@ sap.ui.define([
 			aCols = this.createColumnConfig();
 			var parametros = this.getModel("modelParametros").getData();
 
+			var vFileName = "Lista_" + parametros.Centro + "_" + parametros.Cliente + "_Orig_" + parametros.UFOrigem + "_Dest_" + parametros.UFDestino + "_" + parametros.Frete;
+			
 			oSettings = {
 				workbook: {
 					columns: aCols,
@@ -188,6 +190,7 @@ sap.ui.define([
 					application: 'Portal Predilecta',
 					version: '1.00.00',
 					title: 'Relatório de Tabela de Preço',
+					sheetName: 'Lista de Preço',
 					modifiedBy: 'Administrador',
 					metaSheetName: 'Parâmetros',
 					metainfo: [{
@@ -224,11 +227,9 @@ sap.ui.define([
 							value: parametros.Exibicao 
 						}]
 					}]
-				}
-				},
-			
+				}},
 				dataSource: oRowBinding,
-				fileName: "Rel_Tabela_Preço.xlsx",
+				fileName: vFileName,
 				worker: false // We need to disable worker because we are using a MockServer as OData Service
 			};
 
