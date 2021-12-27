@@ -197,13 +197,13 @@ sap.ui.define([
 						name: 'Parâmetros de Seleção',
 						items: [{
 							key: 'Centro',
-							value: parametros.Centro
+							value: parametros.DescCentro
 						}, {
 							key: 'UF Origem',
 							value: parametros.UFOrigem
 						}, {
 							key: 'Cliente',
-							value: parametros.Cliente
+							value: parametros.NomeCliente
 						}, {
 							key: 'UF Destino',
 							value: parametros.UFDestino
@@ -212,16 +212,16 @@ sap.ui.define([
 							value: parametros.CanalAtuacao
 						}, {
 							key: 'Tabela de Preço',
-							value: parametros.TabPreco
+							value: parametros.DescTabelaPreco
 						}, {
 							key: 'Vencimento',
-							value: parametros.Vencimento
+							value: parametros.DescVencto
 						}, {
 							key: 'Índice',
 							value: parametros.Indice
 						}, {
 							key: 'Tipo Transporte',
-							value: parametros.Frete
+							value: parametros.DescTipoFrete
 						}, {
 							key: 'Exibição',
 							value: parametros.Exibicao 
