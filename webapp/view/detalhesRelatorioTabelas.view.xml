@@ -2,7 +2,7 @@
 	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Consultar Tabela Preço">
 		<subHeader><Toolbar>
 				<!--<Button icon="sap-icon://download" press="onDataExport"/>-->
-				<SearchField class="camposDialog" id="idProdutoRelatorio" placeholder="Digite do Produto" enableSuggestions="true" search="onItemChange" suggest="_handleValueHelpSearch" width="100%" suggestionItems="{ path: 'produtosRelatorio>/', sorter: { path: 'ProdutoId' } }">
+				<SearchField class="camposDialog" id="idProdutoRelatorio" placeholder="Digite do Produto" enableSuggestions="true" search="onItemChange" suggest="_handleValueHelpSearch" width="100%" suggestionItems="{ path: 'detalhesRelatorioTabelas>/', sorter: { path: 'Matnr' } }">
 					<suggestionItems>
 						<SuggestionItem text="{produtosRelatorio>ProdutoId}" description="{produtosRelatorio>Descricao}" key="{produtosRelatorio>ProdutoId}"/>
 					</suggestionItems>

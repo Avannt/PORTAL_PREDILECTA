@@ -32,8 +32,8 @@ sap.ui.define([
 		_handleValueHelpSearch: function (oEvent) {
 			var sValue = oEvent.getSource().getValue();
 			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("ProdutoId", sap.ui.model.FilterOperator.Contains, sValue), new sap.ui.model.Filter(
-				"Descricao", sap.ui.model.FilterOperator.Contains, sValue)];
+			var oFilter = [new sap.ui.model.Filter("Matnr", sap.ui.model.FilterOperator.Contains, sValue), new sap.ui.model.Filter(
+				"Maktx", sap.ui.model.FilterOperator.Contains, sValue)];
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
 			aFilters.push(allFilters);
 			this.byId("idProdutoRelatorio").getBinding("suggestionItems").filter(aFilters);
@@ -46,7 +46,7 @@ sap.ui.define([
 			var codItemSelecionado = oEvent.getSource().getValue();
 
 			var oModel = new sap.ui.model.json.JSONModel(filtroGrid);
-			this.getOwnerComponent().setModel(oModel, "relatorioTabelas");
+			this.getOwnerComponent().setModel(oModel, "detalhesRelatorioTabelas");
 
 			for (var i = 0; i < oProdutosTemplateGrid.length; i++) {
 				if (codItemSelecionado == oProdutosTemplateGrid[i].ProdutoId) {
@@ -55,11 +55,11 @@ sap.ui.define([
 			}
 			if (codItemSelecionado == "") {
 				oModel = new sap.ui.model.json.JSONModel(oProdutosTemplateGridAux);
-				this.getOwnerComponent().setModel(oModel, "relatorioTabelas");
+				this.getOwnerComponent().setModel(oModel, "detalhesRelatorioTabelas");
 
 			} else {
 				oModel = new sap.ui.model.json.JSONModel(filtroGrid);
-				this.getOwnerComponent().setModel(oModel, "relatorioTabelas");
+				this.getOwnerComponent().setModel(oModel, "detalhesRelatorioTabelas");
 
 			}
 		},
