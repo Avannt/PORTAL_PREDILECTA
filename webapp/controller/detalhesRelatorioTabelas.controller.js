@@ -248,14 +248,19 @@ sap.ui.define([
 
 			var vAux = {
 				Centro: that.getModelGlobal("modelTela").getProperty("/Werks"),
+				DescCentro: that.getModelGlobal("modelTela").getProperty("/DescCentro"),
 				UFOrigem: that.getModelGlobal("modelTela").getProperty("/UFOrigem"),
 				Cliente: that.getModelGlobal("modelTela").getProperty("/Kunnr"),
+				NomeCliente: that.getModelGlobal("modelTela").getProperty("/NomeCliente"),
 				UFDestino: that.getModelGlobal("modelTela").getProperty("/UFDestino"),
 				CanalAtuacao: that.getModelGlobal("modelTela").getProperty("/DescKvgr2"),
 				TabPreco: that.getModelGlobal("modelTela").getProperty("/Pltyp"),
+				DescTabelaPreco: that.getModelGlobal("modelTela").getProperty("/DescTabelaPreco"),
 				Vencimento: that.getModelGlobal("modelTela").getProperty("/Vencimento"),
+				DescVencto: that.getModelGlobal("modelTela").getProperty("/DescVencto"),
 				Indice: that.getModelGlobal("modelTela").getProperty("/Indice"),
 				Frete: that.getModelGlobal("modelTela").getProperty("/Inco1"),
+				DescTipoFrete: that.getModelGlobal("modelTela").getProperty("/DescTipoFrete"),
 				Exibicao: that.getModelGlobal("modelTela").getProperty("/Exibicao")
 			};
 
