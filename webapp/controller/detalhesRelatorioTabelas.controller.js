@@ -222,7 +222,7 @@ sap.ui.define([
 							value: parametros.DescVencto
 						}, {
 							key: 'Índice',
-							value: parametros.Indice
+							value: parametros.Indice + "%"
 						}, {
 							key: 'Tipo Transporte',
 							value: parametros.DescTipoFrete
