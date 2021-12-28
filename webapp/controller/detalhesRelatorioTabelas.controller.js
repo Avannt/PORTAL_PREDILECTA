@@ -111,7 +111,7 @@ sap.ui.define([
 
 			aCols.push({
 				label: "Preço Bruto",
-				property: "ValPrecoVenda",
+				property: "ValPrecoOrig",
 				type: EdmType.Number,
 				scale: 2,
 				delimiter: true
@@ -135,7 +135,7 @@ sap.ui.define([
 
 			aCols.push({
 				label: "Preço Líquido",
-				property: "ValLiqItem",
+				property: "ValPrecoInform",
 				type: EdmType.Number,
 				scale: 2,
 				delimiter: true
