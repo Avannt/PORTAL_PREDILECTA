@@ -264,6 +264,7 @@ sap.ui.define([
 				var oModelClientes = new JSONModel(vetorClientes);
 				that.setModel(oModelClientes, "modelClientes");
 
+				that.getModelGlobal("modelTela").setProperty("/CodRepres", repres);
 				that.getModelGlobal("modelTela").setProperty("/Kunnr", "");
 				that.getModelGlobal("modelTela").setProperty("/Vencimento", "");
 				that.getModelGlobal("modelTela").setProperty("/Indice", 0);

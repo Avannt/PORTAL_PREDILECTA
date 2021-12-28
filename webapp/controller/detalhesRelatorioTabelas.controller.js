@@ -179,8 +179,12 @@ sap.ui.define([
 			oRowBinding = oTable.getBinding("items");
 			aCols = this.createColumnConfig();
 			var parametros = this.getModel("modelParametros").getData();
-
+			
 			var vFileName = "Lista_" + parametros.Centro + "_" + parametros.Cliente + "_Orig_" + parametros.UFOrigem + "_Dest_" + parametros.UFDestino + "_" + parametros.Frete;
+			var dataAtual = this.onDataHora();
+
+			var data = dataAtual[0].substring(0, 2) + "/" + dataAtual[0].substring(3, 5) + "/" + dataAtual[0].substring(6, 11);
+			var horario = dataAtual[1].substring(0, 2) + ":" + dataAtual[1].substring(3, 5) + ":" + dataAtual[1].substring(6, 8);
 			
 			oSettings = {
 				workbook: {
@@ -223,9 +227,16 @@ sap.ui.define([
 							key: 'Tipo Transporte',
 							value: parametros.DescTipoFrete
 						}, {
-							key: 'Exibição',
-							value: parametros.Exibicao 
-						}]
+							key: 'Exibicao',
+							value: parametros.Exibicao
+						}, {	
+							key: 'RCA',
+							value: parametros.CodRepres 
+						}, {	
+							key: 'Data Emissão Tabela',
+							value: data + " - " + horario 
+						}
+						]
 					}]
 				}},
 				dataSource: oRowBinding,
@@ -247,6 +258,7 @@ sap.ui.define([
 			that.oModel = that.getModelGlobal("modelAux").getProperty("/DBModel");
 
 			var vAux = {
+				CodRepres: that.getModelGlobal("modelTela").getProperty("/CodRepres"),
 				Centro: that.getModelGlobal("modelTela").getProperty("/Werks"),
 				DescCentro: that.getModelGlobal("modelTela").getProperty("/DescCentro"),
 				UFOrigem: that.getModelGlobal("modelTela").getProperty("/UFOrigem"),
