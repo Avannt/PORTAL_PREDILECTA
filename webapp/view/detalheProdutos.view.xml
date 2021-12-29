@@ -39,7 +39,7 @@
 									<SearchField xmlns:mvc="sap.ui.core.mvc" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
 										xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" xmlns:form="sap.ui.layout.form" xmlns:layout="sap.ui.layout"
 										xmlns:course="opensap.manageproducts.control" xmlns="sap.m" id="searchField" showRefreshButton="false"
-										placeholder="Digite Desc./Cód. Produto" tooltip="Pesquisar Clientes pelo Nome." width="100%" liveChange="onSearch" search="onSearch">
+										placeholder="Digite código ou descrição do produto" tooltip="Pesquisar Itens pelo Código/Descrição" width="100%" liveChange="onSearch" search="onSearch">
 										<layoutData>
 											<layout:GridData xmlns:layout="sap.ui.layout" span="L2 M2" linebreakM="true" id="data97"/>
 										</layoutData>

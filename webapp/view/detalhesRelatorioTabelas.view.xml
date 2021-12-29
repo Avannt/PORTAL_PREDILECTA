@@ -1,8 +1,7 @@
 <mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic" height="100%" controllerName="application.controller.detalhesRelatorioTabelas">
-	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Consultar Tabela Preço">
+	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Relatório de Tabelas de Preço">
 		<subHeader><Toolbar>
-				<!--<Button icon="sap-icon://download" press="onDataExport"/>-->
-				<SearchField class="camposDialog" id="idProdutoRelatorio" placeholder="Digite do Produto" enableSuggestions="true" search="onItemChange" suggest="_handleValueHelpSearch" width="100%" suggestionItems="{ path: 'detalhesRelatorioTabelas>/', sorter: { path: 'Matnr' } }">
+				<SearchField class="camposDialog" id="idProdutoRelatorio" placeholder="Digite código ou descrição do produto" tooltip="Pesquisar Itens pelo Código/Descrição" enableSuggestions="true" search="onItemChange" suggest="_handleValueHelpSearch" width="100%" suggestionItems="{ path: 'detalhesRelatorioTabelas>/', sorter: { path: 'Matnr' } }">
 					<suggestionItems>
 						<SuggestionItem text="{modelTabPreco>Matnr}" description="{modelTabPreco>Maktx}" key="{modelTabPreco>Matnr}"/>
 					</suggestionItems>

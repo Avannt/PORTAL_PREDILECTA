@@ -35,6 +35,7 @@ sap.ui.define([
 					that.vetorCentros = retorno.results;
 					var oModelCentros = new JSONModel(that.vetorCentros);
 					that.setModel(oModelCentros, "modelCentros");
+					that.onBuscarDados();
 					// that.onAbrirCentros();
 				},
 				error: function (error) {
@@ -44,6 +45,59 @@ sap.ui.define([
 			});
 		},
 
+		onBuscarDados: function () {
+
+			var that = this;
+			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
+			var Bukrs = this.getModel("modelTela").getProperty("/Bukrs");
+			var Periodo = "0122021";
+
+			that.byId("detail").setBusy(true);
+
+			that.oModel.read("/SaldoVerbas", {
+				urlParameters: {
+					"$filter": "IvUsuario eq '" + repres + "'"
+				},
+				success: function (retorno) {
+
+					var result = retorno.results[0];
+					var aux = that.getModel("modelTela").getData();
+
+					aux.Cod = result.Lifnr;
+					aux.Nome = result.Name1Rep;
+					
+					var oModel = new JSONModel(aux);
+					that.setModel(oModel, "modelTela");
+
+					that.vetorVerbasAux = retorno.results;
+					that.vetorVerbas = [];
+					
+					for (var j = 0; j < that.vetorVerbasAux.length; j++) {
+						
+						Periodo = that.vetorVerbasAux[j].Periodo;
+						break;
+					}
+
+					for (var i = 0; i < that.vetorVerbasAux.length; i++) {
+
+						if (that.vetorVerbasAux[i].Periodo == Periodo) {
+
+							that.vetorVerbas.push(that.vetorVerbasAux[i]);
+
+						}
+					}
+					
+					that.byId("detail").setBusy(false);
+					that.getModel("Verbas").setData(that.vetorVerbas);
+
+				},
+				error: function (error) {
+					that.byId("detail").setBusy(false);
+					that.onMensagemErroODATA(error);
+				}
+			});
+		},
+		
 		onChangeEmpresa: function () {
 
 			var that = this;
@@ -114,6 +168,7 @@ sap.ui.define([
 				IdSaldo: "",
 				IvUsuario: "",
 				Lifnr: "",
+				Name1Rep: "",
 				Butxt: "",
 				Periodo: "",
 				Usuario: "",
