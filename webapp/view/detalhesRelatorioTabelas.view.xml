@@ -13,7 +13,7 @@
 		</subHeader>
 		<semantic:FullscreenPage id="page">
 			<semantic:content>
-				<Table id="idtablePrecos" busyIndicatorDelay="2000" growing="true" growingScrollToLoad="false" growingThreshold="10" noDataText="Não possui itens na tabela de preço" updateFinished="onUpdateFinished" width="100%" items="{ path: 'modelTabPreco>/', sorter: { path: 'Matnr', ascending: true}}">
+				<Table id="idtablePrecos" busyIndicatorDelay="2000" growing="true" sticky="ColumnHeaders" growingScrollToLoad="false" growingThreshold="10" noDataText="Não possui itens na tabela de preço" updateFinished="onUpdateFinished" width="100%" items="{ path: 'modelTabPreco>/', sorter: { path: 'Matnr', ascending: true}}">
 					<columns>
 						<Column demandPopin="false" minScreenWidth="280px">
 							<Text text="Código"/>

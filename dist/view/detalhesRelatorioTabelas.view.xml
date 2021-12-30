@@ -2,9 +2,9 @@
 	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Consultar Tabela Preço">
 		<subHeader><Toolbar>
 				<!--<Button icon="sap-icon://download" press="onDataExport"/>-->
-				<SearchField class="camposDialog" id="idProdutoRelatorio" placeholder="Digite do Produto" enableSuggestions="true" search="onItemChange" suggest="_handleValueHelpSearch" width="100%" suggestionItems="{ path: 'produtosRelatorio>/', sorter: { path: 'ProdutoId' } }">
+				<SearchField class="camposDialog" id="idProdutoRelatorio" placeholder="Digite do Produto" enableSuggestions="true" search="onItemChange" suggest="_handleValueHelpSearch" width="100%" suggestionItems="{ path: 'detalhesRelatorioTabelas>/', sorter: { path: 'Matnr' } }">
 					<suggestionItems>
-						<SuggestionItem text="{produtosRelatorio>ProdutoId}" description="{produtosRelatorio>Descricao}" key="{produtosRelatorio>ProdutoId}"/>
+						<SuggestionItem text="{modelTabPreco>Matnr}" description="{modelTabPreco>Maktx}" key="{modelTabPreco>Matnr}"/>
 					</suggestionItems>
 				</SearchField>
 				<Button xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:layout="sap.ui.layout" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" xmlns:semantic="sap.m.semantic" xmlns="sap.m" icon="sap-icon://excel-attachment" press="onExport" type="Emphasized" text="Exportar" tooltip="Exportar Dados" id="button0"/>
@@ -56,10 +56,10 @@
 								<Text text="{modelTabPreco>Maktx}"/>
 								<Text text="{modelTabPreco>QntPallet}" textAlign="Right"/>
 								<Text text="{modelTabPreco>QntCaixa}"  textAlign="Right"/>
-								<Text text="R$ {path: 'modelTabPreco>ValPrecoVenda', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" wrapping="false"/>
+								<Text text="R$ {path: 'modelTabPreco>ValPrecoOrig', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" wrapping="false"/>
 								<Text text="{path: 'modelTabPreco>PercCanal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} %" wrapping="false"/>
 								<Text text="{path: 'modelTabPreco>PercPromoMax', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} %" wrapping="false"/>
-								<Text text="R$ {path: 'modelTabPreco>ValLiqItem', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" wrapping="false"/>
+								<Text text="R$ {path: 'modelTabPreco>ValPrecoInform', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" wrapping="false"/>
 								<Text text="R$ {path: 'modelTabPreco>ValPrecoUnitSt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" wrapping="false"/>
 								<Text text="{path: 'modelTabPreco>PerSubTri', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} %" wrapping="false"/>
 								<Text text="{path: 'modelTabPreco>PctDescContrato', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} %" wrapping="false"/>

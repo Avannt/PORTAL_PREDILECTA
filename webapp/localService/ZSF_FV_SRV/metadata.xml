@@ -35,18 +35,18 @@
 			<EntityType Name="Contratos" sap:content-version="1">
 				<Key><PropertyRef Name="IvUsuario"/></Key><Property Name="DescKvgr4" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="DescCompo" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="AtlOrdem" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="Mvgr1" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="DescCond" Type="Edm.String" Nullable="false" MaxLength="50" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="ContratoInterno" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="DescVersg" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="DescCond" Type="Edm.String" Nullable="false" MaxLength="50" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="Mvgr1" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="AtlOrdem" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Bukrs" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="DescVersg" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Kvgr4" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="DescKvgr5" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Itmnum" Type="Edm.String" Nullable="false" MaxLength="6" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="DescMvgr1" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="DescMvgr5" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Compo" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="DescMvgr5" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Versg" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Mvgr5" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Kvgr5" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"
@@ -214,14 +214,14 @@
 					sap:sortable="false" sap:filterable="false"/><Property Name="ValorUltFatura" Type="Edm.Decimal" Nullable="false" Precision="16" Scale="3" sap:unicode="false" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
 			<EntityType Name="Menu" sap:content-version="1">
-				<Key><PropertyRef Name="IvSistOper"/><PropertyRef Name="IvUsuario"/></Key><Property Name="IdMenu" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+				<Key><PropertyRef Name="IvSistOper"/><PropertyRef Name="IvUsuario"/></Key><Property Name="Icone" Type="Edm.String" Nullable="false" MaxLength="50" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="IvSistOper" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="Icone" Type="Edm.String" Nullable="false" MaxLength="50" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="DescMenu" Type="Edm.String" Nullable="false" MaxLength="50" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="IdMenu" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="InfoAdic" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="IdGrupo" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="DescMenu" Type="Edm.String" Nullable="false" MaxLength="50" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="TipoDispositivo" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Posicao" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="IdGrupo" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="Posicao" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Ativo" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="IvUsuario" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/></EntityType>
@@ -238,13 +238,13 @@
 					sap:sortable="false" sap:filterable="false"/><Property Name="Ptext" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/></EntityType>
 			<EntityType Name="Centro" sap:content-version="1">
-				<Key><PropertyRef Name="IvUsuario"/></Key><Property Name="Supervisor" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="Usuario" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+				<Key><PropertyRef Name="IvUsuario"/></Key><Property Name="Usuario" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="Supervisor" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Bukrs" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Bzirk" Type="Edm.String" Nullable="false" MaxLength="6" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Butxt" Type="Edm.String" Nullable="false" MaxLength="25" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="Gerencia" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Lifnr" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="Gerencia" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Regio" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Werks" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="NomeCentro" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:creatable="false"
@@ -293,9 +293,9 @@
 					sap:sortable="false" sap:filterable="false"/><Property Name="IvRepres" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/></EntityType>
 			<EntityType Name="PrecoItemQ" sap:content-version="1">
-				<Key><PropertyRef Name="IvUsuario"/></Key><Property Name="Werks" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="Konwa" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+				<Key><PropertyRef Name="IvUsuario"/></Key><Property Name="Konwa" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false" sap:semantics="currency-code"/><Property Name="Kschl" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="Werks" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="TabResult" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Matnr" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Tdt" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:creatable="false" sap:updatable="false"
@@ -320,18 +320,18 @@
 					sap:sortable="false" sap:filterable="false"/><Property Name="IvUsuario" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/></EntityType>
 			<EntityType Name="DescCanalQ" sap:content-version="1">
-				<Key><PropertyRef Name="IvUsuario"/></Key><Property Name="Bzirk" Type="Edm.String" Nullable="false" MaxLength="6" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="Kschl" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="Txjcd" Type="Edm.String" Nullable="false" MaxLength="15" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+				<Key><PropertyRef Name="IvUsuario"/></Key><Property Name="Kschl" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="Bzirk" Type="Edm.String" Nullable="false" MaxLength="6" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Vkorg" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="Matnr" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="Txjcd" Type="Edm.String" Nullable="false" MaxLength="15" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Pltyp" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="Lifnr" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="Matnr" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Kunag" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="Gerencia" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="Lifnr" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Wkreg" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="Supervisor" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="Gerencia" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="TxregSt" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="Supervisor" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Kvgr1" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Kvgr2" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Kvgr3" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"
@@ -344,16 +344,16 @@
 					sap:sortable="false" sap:filterable="false"/><Property Name="IvUsuario" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/></EntityType>
 			<EntityType Name="DescPromoQ" sap:content-version="1">
-				<Key><PropertyRef Name="IvUsuario"/></Key><Property Name="Txjcd" Type="Edm.String" Nullable="false" MaxLength="15" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="Kschl" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="Bzirk" Type="Edm.String" Nullable="false" MaxLength="6" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+				<Key><PropertyRef Name="IvUsuario"/></Key><Property Name="Kschl" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="Txjcd" Type="Edm.String" Nullable="false" MaxLength="15" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Vkorg" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="Gerencia" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="Bzirk" Type="Edm.String" Nullable="false" MaxLength="6" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Pltyp" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="Supervisor" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="Gerencia" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Kunnr" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="Lifnr" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="Supervisor" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Wkreg" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="Lifnr" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="TxregSt" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Kvgr1" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Kvgr2" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"
@@ -515,11 +515,11 @@
 					sap:sortable="false" sap:filterable="false"/><Property Name="Werks" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/></EntityType>
 			<EntityType Name="Item" sap:content-version="1">
-				<Key><PropertyRef Name="IdItem"/><PropertyRef Name="NrPedido"/></Key><Property Name="AliquotaIcm" Type="Edm.Decimal" Nullable="false" Precision="14" Scale="3" sap:unicode="false" sap:creatable="false"
+				<Key><PropertyRef Name="IdItem"/><PropertyRef Name="NrPedido"/></Key><Property Name="QtdMinPed" Type="Edm.Decimal" Nullable="false" Precision="15" Scale="3" sap:unicode="false" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="DataUltCompra" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="QtdMinPed" Type="Edm.Decimal" Nullable="false" Precision="15" Scale="3" sap:unicode="false" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="QntPallet" Type="Edm.Decimal" Nullable="false" Precision="5" Scale="0" sap:unicode="false" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="AliquotaIcm" Type="Edm.Decimal" Nullable="false" Precision="14" Scale="3" sap:unicode="false" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="QtdMaxPed" Type="Edm.Decimal" Nullable="false" Precision="15" Scale="3" sap:unicode="false" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="QntPallet" Type="Edm.Decimal" Nullable="false" Precision="5" Scale="0" sap:unicode="false" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="QtdUltCompra" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Vrkme" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Brgew" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:creatable="false"
@@ -648,13 +648,13 @@
 					sap:sortable="false" sap:filterable="false"/><Property Name="IvUsuario" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/></EntityType>
 			<EntityType Name="P_ItensPedido" sap:content-version="1">
-				<Key><PropertyRef Name="IvNrPedido"/></Key><Property Name="QtdMinPed" Type="Edm.Decimal" Nullable="false" Precision="15" Scale="3" sap:unicode="false" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="DataUltCompra" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false"
+				<Key><PropertyRef Name="IvNrPedido"/></Key><Property Name="ValPrecoTabelaMin" Type="Edm.Decimal" Nullable="false" Precision="14" Scale="3" sap:unicode="false" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="VerbaRepres" Type="Edm.Decimal" Nullable="false" Precision="14" Scale="3" sap:unicode="false" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="QtdMinPed" Type="Edm.Decimal" Nullable="false" Precision="15" Scale="3" sap:unicode="false" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="DataUltCompra" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="AliquotaIcm" Type="Edm.Decimal" Nullable="false" Precision="14" Scale="3" sap:unicode="false" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="ValPrecoTabelaMin" Type="Edm.Decimal" Nullable="false" Precision="14" Scale="3" sap:unicode="false" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="QntPallet" Type="Edm.Decimal" Nullable="false" Precision="5" Scale="0" sap:unicode="false" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="QtdMaxPed" Type="Edm.Decimal" Nullable="false" Precision="15" Scale="3" sap:unicode="false" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="QntPallet" Type="Edm.Decimal" Nullable="false" Precision="5" Scale="0" sap:unicode="false" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="QtdUltCompra" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Vrkme" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Brgew" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:creatable="false"
@@ -869,12 +869,12 @@
 				<Key><PropertyRef Name="IvNrPedido"/></Key><Property Name="IvNrPedido" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
 			<EntityType Name="P_CheckPedidoR" sap:content-version="1">
-				<Key><PropertyRef Name="IvKunnr"/><PropertyRef Name="IvUsuario"/></Key><Property Name="IvKunnr" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+				<Key><PropertyRef Name="IvKunnr"/><PropertyRef Name="IvUsuario"/></Key><Property Name="NrPedido" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="MsgErro" Type="Edm.String" Nullable="false" MaxLength="200" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="NrPedido" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="TipoErro" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="IvKunnr" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="IdStatusPedido" Type="Edm.String" Nullable="false" MaxLength="8" sap:unicode="false" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Kunnr" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="TipoErro" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="Kunnr" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="IvUsuario" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/></EntityType>
 			<EntityType Name="LeadTime" sap:content-version="1">
@@ -890,8 +890,8 @@
 					sap:sortable="false" sap:filterable="false"/><Property Name="IvUsuario" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/></EntityType>
 			<EntityType Name="ItemFaturado" sap:content-version="1">
-				<Key><PropertyRef Name="IvUsuario"/></Key><Property Name="IvUsuario" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="Docnum" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+				<Key><PropertyRef Name="IvUsuario"/></Key><Property Name="Docnum" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="IvUsuario" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Kunnr" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Matnr" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Werks" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
@@ -1401,10 +1401,10 @@
 					sap:sortable="false" sap:filterable="false"/><Property Name="IvUsuario" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/></EntityType>
 			<EntityType Name="P_PercRebaixa" sap:content-version="1">
-				<Key><PropertyRef Name="Kvgr4"/><PropertyRef Name="Mvgr1"/><PropertyRef Name="Mvgr2"/><PropertyRef Name="Mvgr3"/><PropertyRef Name="Mvgr4"/><PropertyRef Name="Mvgr5"/><PropertyRef Name="Kunnr"/><PropertyRef Name="Lifnr"/><PropertyRef Name="Usuario"/><PropertyRef Name="Matnr"/><PropertyRef Name="Vkorg"/></Key><Property Name="Kvgr4" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Customer Grp 4" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="TipoErro" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="Message type"
+				<Key><PropertyRef Name="Kvgr4"/><PropertyRef Name="Mvgr1"/><PropertyRef Name="Mvgr2"/><PropertyRef Name="Mvgr3"/><PropertyRef Name="Mvgr4"/><PropertyRef Name="Mvgr5"/><PropertyRef Name="Kunnr"/><PropertyRef Name="Lifnr"/><PropertyRef Name="Usuario"/><PropertyRef Name="Matnr"/><PropertyRef Name="Vkorg"/></Key><Property Name="TipoErro" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="Message type"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Kvgr4" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Customer Grp 4" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="MsgErro" Type="Edm.String" Nullable="false" MaxLength="220" sap:unicode="false" sap:label="Message Text"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Mvgr1" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="MaterialGroup 1"
-					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="MsgErro" Type="Edm.String" Nullable="false" MaxLength="220" sap:unicode="false" sap:label="Message Text"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Mvgr2" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="MaterialGroup 2"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Mvgr3" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="MaterialGroup 3"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Mvgr4" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="MaterialGroup 4"
@@ -1458,9 +1458,9 @@
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="System" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Logical system"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
 			<EntityType Name="P_ItensCamp" sap:content-version="1">
-				<Key><PropertyRef Name="EvNrPedido"/></Key><Property Name="EvNrPedido" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="CodCampanha" Type="Edm.Int32" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="DescCampanha" Type="Edm.String" Nullable="false" MaxLength="50" sap:unicode="false" sap:creatable="false"
+				<Key><PropertyRef Name="EvNrPedido"/></Key><Property Name="CodCampanha" Type="Edm.Int32" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="EvNrPedido" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="DescCampanha" Type="Edm.String" Nullable="false" MaxLength="50" sap:unicode="false" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="QtdMinima" Type="Edm.Int32" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="QtdMultipla" Type="Edm.Int32" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="QtdPedida" Type="Edm.Int32" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false"
@@ -1469,8 +1469,8 @@
 					sap:sortable="false" sap:filterable="false"/><Property Name="Maktx" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/></EntityType>
 			<EntityType Name="P_RelNotasFiscais" sap:content-version="1">
-				<Key><PropertyRef Name="Usuario"/><PropertyRef Name="WerksIni"/><PropertyRef Name="WerksFim"/><PropertyRef Name="KunnrIni"/><PropertyRef Name="KunnrFim"/><PropertyRef Name="Kvgr4Ini"/><PropertyRef Name="Kvgr4Fim"/><PropertyRef Name="Kvgr5Ini"/><PropertyRef Name="Kvgr5Fim"/><PropertyRef Name="VbelnIni"/><PropertyRef Name="VbelnFim"/><PropertyRef Name="SeriesIni"/><PropertyRef Name="SeriesFim"/><PropertyRef Name="NfenumIni"/><PropertyRef Name="NfenumFim"/><PropertyRef Name="RepreIni"/><PropertyRef Name="RepreFim"/><PropertyRef Name="PerioIni"/><PropertyRef Name="PerioFim"/></Key><Property Name="Usuario" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="TitleLet" Type="Edm.String" Nullable="false" MaxLength="50" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+				<Key><PropertyRef Name="Usuario"/><PropertyRef Name="WerksIni"/><PropertyRef Name="WerksFim"/><PropertyRef Name="KunnrIni"/><PropertyRef Name="KunnrFim"/><PropertyRef Name="Kvgr4Ini"/><PropertyRef Name="Kvgr4Fim"/><PropertyRef Name="Kvgr5Ini"/><PropertyRef Name="Kvgr5Fim"/><PropertyRef Name="VbelnIni"/><PropertyRef Name="VbelnFim"/><PropertyRef Name="SeriesIni"/><PropertyRef Name="SeriesFim"/><PropertyRef Name="NfenumIni"/><PropertyRef Name="NfenumFim"/><PropertyRef Name="RepreIni"/><PropertyRef Name="RepreFim"/><PropertyRef Name="PerioIni"/><PropertyRef Name="PerioFim"/></Key><Property Name="TitleLet" Type="Edm.String" Nullable="false" MaxLength="50" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="Usuario" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="WerksIni" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="WerksFim" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="KunnrIni" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false" sap:updatable="false"
@@ -1659,10 +1659,10 @@
 					sap:sortable="false" sap:filterable="false"/><Property Name="Manst" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/></EntityType>
 			<EntityType Name="P_RelPedidos" sap:content-version="1">
-				<Key><PropertyRef Name="Usuario"/><PropertyRef Name="WerksIni"/><PropertyRef Name="WerksFim"/><PropertyRef Name="KunnrIni"/><PropertyRef Name="KunnrFim"/><PropertyRef Name="Kvgr4Ini"/><PropertyRef Name="Kvgr4Fim"/><PropertyRef Name="Kvgr5Ini"/><PropertyRef Name="Kvgr5Fim"/><PropertyRef Name="VbelnIni"/><PropertyRef Name="VbelnFim"/><PropertyRef Name="RepreIni"/><PropertyRef Name="RepreFim"/><PropertyRef Name="MatnrIni"/><PropertyRef Name="MatnrFim"/><PropertyRef Name="PerioIni"/><PropertyRef Name="PerioFim"/></Key><Property Name="ValFatSSt" Type="Edm.Decimal" Nullable="false" Precision="16" Scale="3" sap:unicode="false" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Fkimg" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Usuario" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="WerksIni" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+				<Key><PropertyRef Name="Usuario"/><PropertyRef Name="WerksIni"/><PropertyRef Name="WerksFim"/><PropertyRef Name="KunnrIni"/><PropertyRef Name="KunnrFim"/><PropertyRef Name="Kvgr4Ini"/><PropertyRef Name="Kvgr4Fim"/><PropertyRef Name="Kvgr5Ini"/><PropertyRef Name="Kvgr5Fim"/><PropertyRef Name="VbelnIni"/><PropertyRef Name="VbelnFim"/><PropertyRef Name="RepreIni"/><PropertyRef Name="RepreFim"/><PropertyRef Name="MatnrIni"/><PropertyRef Name="MatnrFim"/><PropertyRef Name="PerioIni"/><PropertyRef Name="PerioFim"/></Key><Property Name="Usuario" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="Fkimg" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="ValFatSSt" Type="Edm.Decimal" Nullable="false" Precision="16" Scale="3" sap:unicode="false" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="WerksIni" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="WerksFim" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="KunnrIni" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="KunnrFim" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false" sap:updatable="false"
@@ -1761,7 +1761,9 @@
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
 			<EntityType Name="P_RelTabPreco" sap:content-version="1">
 				<Key><PropertyRef Name="Usuario"/><PropertyRef Name="Centro"/><PropertyRef Name="Cliente"/><PropertyRef Name="TabPreco"/><PropertyRef Name="Indice"/><PropertyRef Name="Frete"/><PropertyRef Name="Exibicao"/></Key><Property Name="Mvgr1" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="PercCanal" Type="Edm.Decimal" Nullable="false" Precision="14" Scale="3" sap:unicode="false" sap:creatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="ValPrecoInform" Type="Edm.Decimal" Nullable="false" Precision="14" Scale="3" sap:unicode="false" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="PercCanal" Type="Edm.Decimal" Nullable="false" Precision="14" Scale="3" sap:unicode="false" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="ValPrecoOrig" Type="Edm.Decimal" Nullable="false" Precision="14" Scale="3" sap:unicode="false" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Usuario" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Centro" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Mvgr1Text" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:creatable="false" sap:updatable="false"
@@ -1782,14 +1784,23 @@
 					sap:sortable="false" sap:filterable="false"/><Property Name="Mvgr5Text" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="QntPallet" Type="Edm.Decimal" Nullable="false" Precision="5" Scale="0" sap:unicode="false" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="QntCaixa" Type="Edm.Decimal" Nullable="false" Precision="5" Scale="0" sap:unicode="false" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="ValPrecoVenda" Type="Edm.Decimal" Nullable="false" Precision="14" Scale="3" sap:unicode="false" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="ValLiqItem" Type="Edm.Decimal" Nullable="false" Precision="14" Scale="3" sap:unicode="false" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="ValPrecoUnitSt" Type="Edm.Decimal" Nullable="false" Precision="14" Scale="3" sap:unicode="false" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="PercCanalMax" Type="Edm.Decimal" Nullable="false" Precision="14" Scale="3" sap:unicode="false" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="PercPromoMax" Type="Edm.Decimal" Nullable="false" Precision="14" Scale="3" sap:unicode="false" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="PerSubTri" Type="Edm.Decimal" Nullable="false" Precision="14" Scale="3" sap:unicode="false" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="PctDescContrato" Type="Edm.Decimal" Nullable="false" Precision="14" Scale="3" sap:unicode="false" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
+			<EntityType Name="P_TransfRepresQ" sap:content-version="1">
+				<Key><PropertyRef Name="IvBukrsOrig"/><PropertyRef Name="IvRepresOrig"/></Key><Property Name="Lifnr" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="Name1" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="IvBukrsOrig" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="IvRepresOrig" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
+			<EntityType Name="P_TransfSaldoR" sap:content-version="1">
+				<Key><PropertyRef Name="IvBukrs"/><PropertyRef Name="IvRepres"/></Key><Property Name="EvSaldo" Type="Edm.Decimal" Nullable="false" Precision="16" Scale="3" sap:unicode="false" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="IvBukrs" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="IvRepres" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/></EntityType>
 			<ComplexType Name="EsLogin"><Property Name="Usuario" Type="Edm.String" Nullable="false" MaxLength="12" sap:creatable="false" sap:updatable="false" sap:sortable="false"
 				sap:filterable="false"/><Property Name="Senha" Type="Edm.String" Nullable="false" MaxLength="100" sap:creatable="false" sap:updatable="false" sap:sortable="false"
 				sap:filterable="false"/><Property Name="Nome" Type="Edm.String" Nullable="false" MaxLength="100" sap:creatable="false" sap:updatable="false" sap:sortable="false"
@@ -1856,11 +1867,13 @@
 				sap:pageable="false" sap:content-version="1"/><EntitySet Name="P_RelPedidos" EntityType="ZSF_FV_SRV.P_RelPedidos" sap:creatable="false" sap:updatable="false" sap:deletable="false"
 				sap:pageable="false" sap:content-version="1"/><EntitySet Name="Produtos" EntityType="ZSF_FV_SRV.Produto" sap:creatable="false" sap:updatable="false" sap:deletable="false"
 				sap:pageable="false" sap:content-version="1"/><EntitySet Name="P_RelTabPreco" EntityType="ZSF_FV_SRV.P_RelTabPreco" sap:creatable="false" sap:updatable="false" sap:deletable="false"
+				sap:pageable="false" sap:content-version="1"/><EntitySet Name="P_TransfRepresQ" EntityType="ZSF_FV_SRV.P_TransfRepresQ" sap:creatable="false" sap:updatable="false" sap:deletable="false"
+				sap:pageable="false" sap:content-version="1"/><EntitySet Name="P_TransfSaldoR" EntityType="ZSF_FV_SRV.P_TransfSaldoR" sap:creatable="false" sap:updatable="false" sap:deletable="false"
 				sap:pageable="false" sap:content-version="1"/>
-				<FunctionImport Name="P_Get_PrecoItem" ReturnType="ZSF_FV_SRV.P_ItensPedidoPR" EntitySet="P_ItensPedidoPR" m:HttpMethod="POST"><Parameter Name="Editar" Type="Edm.Boolean" Mode="In"/><Parameter Name="Evento" Type="Edm.String" Mode="In" MaxLength="20"/><Parameter Name="NrPedido" Type="Edm.String" Mode="In" MaxLength="30"/><Parameter Name="Matnr" Type="Edm.String" Mode="In" MaxLength="40"/><Parameter Name="PercPromo" Type="Edm.Decimal" Mode="In" Precision="3" Scale="3"/><Parameter Name="QtdPedida" Type="Edm.Int32" Mode="In"/><Parameter Name="ValPrecoInform" Type="Edm.Decimal" Mode="In" Precision="2" Scale="2"/></FunctionImport>
-				<FunctionImport Name="P_Get_PercRebaixa" ReturnType="ZSF_FV_SRV.P_PercRebaixa" EntitySet="P_PercRebaixaCollection" m:HttpMethod="POST"><Parameter Name="Mvgr4" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Mvgr3" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Mvgr2" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Mvgr1" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Kvgr4" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Lifnr" Type="Edm.String" Mode="In" MaxLength="10"/><Parameter Name="Vkorg" Type="Edm.String" Mode="In" MaxLength="4"/><Parameter Name="Mvgr5" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Kunnr" Type="Edm.String" Mode="In" MaxLength="10"/><Parameter Name="Matnr" Type="Edm.String" Mode="In" MaxLength="40"/><Parameter Name="Usuario" Type="Edm.String" Mode="In" MaxLength="12"/></FunctionImport>
+				<FunctionImport Name="P_Get_PrecoItem" ReturnType="ZSF_FV_SRV.P_ItensPedidoPR" EntitySet="P_ItensPedidoPR" m:HttpMethod="POST"><Parameter Name="ValPrecoInform" Type="Edm.Decimal" Mode="In" Precision="2" Scale="2"/><Parameter Name="QtdPedida" Type="Edm.Int32" Mode="In"/><Parameter Name="PercPromo" Type="Edm.Decimal" Mode="In" Precision="3" Scale="3"/><Parameter Name="Matnr" Type="Edm.String" Mode="In" MaxLength="40"/><Parameter Name="NrPedido" Type="Edm.String" Mode="In" MaxLength="30"/><Parameter Name="Evento" Type="Edm.String" Mode="In" MaxLength="20"/><Parameter Name="Editar" Type="Edm.Boolean" Mode="In"/></FunctionImport>
+				<FunctionImport Name="P_Get_PercRebaixa" ReturnType="ZSF_FV_SRV.P_PercRebaixa" EntitySet="P_PercRebaixaCollection" m:HttpMethod="POST"><Parameter Name="Vkorg" Type="Edm.String" Mode="In" MaxLength="4"/><Parameter Name="Lifnr" Type="Edm.String" Mode="In" MaxLength="10"/><Parameter Name="Kvgr4" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Mvgr1" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Mvgr2" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Mvgr3" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Mvgr4" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Mvgr5" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Kunnr" Type="Edm.String" Mode="In" MaxLength="10"/><Parameter Name="Matnr" Type="Edm.String" Mode="In" MaxLength="40"/><Parameter Name="Usuario" Type="Edm.String" Mode="In" MaxLength="12"/></FunctionImport>
 				<FunctionImport Name="P_Set_PercRebaixa" ReturnType="ZSF_FV_SRV.P_PercRebaixa" EntitySet="P_PercRebaixaCollection" m:HttpMethod="POST"><Parameter Name="Kunnr" Type="Edm.String" Mode="In" MaxLength="10"/><Parameter Name="Kvgr4" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Lifnr" Type="Edm.String" Mode="In" MaxLength="10"/><Parameter Name="Matnr" Type="Edm.String" Mode="In" MaxLength="40"/><Parameter Name="Mvgr1" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Mvgr2" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Mvgr3" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Mvgr4" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Mvgr5" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Usuario" Type="Edm.String" Mode="In" MaxLength="12"/><Parameter Name="Vkorg" Type="Edm.String" Mode="In" MaxLength="4"/><Parameter Name="PercCadastrado" Type="Edm.Decimal" Mode="In" Precision="3" Scale="3"/><Parameter Name="PercCadastrar" Type="Edm.Decimal" Mode="In" Precision="3" Scale="3"/></FunctionImport>
-			</EntityContainer><atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="self" href="http://predilectaqas:11443/sap/opu/odata/sap/ZSF_FV_SRV/$metadata"/><atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="latest-version"
-				href="http://predilectaqas:11443/sap/opu/odata/sap/ZSF_FV_SRV/$metadata"/></Schema>
+			</EntityContainer><atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="self" href="http://Predilecta:10443/sap/opu/odata/sap/ZSF_FV_SRV/$metadata"/><atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="latest-version"
+				href="http://Predilecta:10443/sap/opu/odata/sap/ZSF_FV_SRV/$metadata"/></Schema>
 	</edmx:DataServices>
 </edmx:Edmx>

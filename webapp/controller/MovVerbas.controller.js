@@ -25,305 +25,156 @@ sap.ui.define([
 		_onLoadFields: function () {
 
 			var that = this;
-			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
+			var Repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
+			var NomeRepres = that.getModelGlobal("modelAux").getProperty("/NomeRepres");
+
 			that.oModel = that.getModelGlobal("modelAux").getProperty("/DBModel");
 
-			var vAux = {
-				WerksIni: "",
-				WerksFim: "",
-				KunnrIni: "",
-				KunnrFim: "",
-				Kvgr4Ini: "",
-				Kvgr4Fim: "",
-				Kvgr5Ini: "",
-				Kvgr5Fim: "",
-				LifnrIni: "",
-				LifnrFim: "",
-				SeriesIni: "",
-				SeriesFim: "",
-				NfenumIni: "",
-				NfenumFim: "",
-				Periodo: ""
-			};
+			this.onCriarModelTela(Repres, NomeRepres);
 
-			var omodelParametros = new JSONModel(vAux);
-			that.setModel(omodelParametros, "modelParametros");
+			that.vetorCentrosOrig = [];
+			var oModelCentroOrig = new JSONModel(that.vetorCentrosOrig);
+			that.setModel(oModelCentroOrig, "modelCentrosOrig");
 
-			that.vetorNotasFiscais = [];
-			var omodelNotasFiscais = new JSONModel(that.vetorNotasFiscais);
-			that.setModel(omodelNotasFiscais, "modelNotasFiscais");
+			that.vetorCentrosDest = [];
+			var oModelCentroDest = new JSONModel(that.vetorCentrosDest);
+			that.setModel(oModelCentroDest, "modelCentrosDest");
 
-			that.vetorResumoEmpresa = [];
-			var oModelResumoEmpresa = new JSONModel(that.vetorResumoEmpresa);
-			that.setModel(oModelResumoEmpresa, "modelResumoEmpresa");
+			that.vetorRepresDest = [];
+			var oModelRepresDest = new JSONModel(that.vetorRepresDest);
+			that.setModel(oModelRepresDest, "modelRepresDest");
 
 			new Promise(function (res, rej) {
 
-				that.onBuscarClientes(repres, res, rej, that);
+				that.onBuscarCentros(Repres, res, rej, that);
 
 			}).then(function (retorno) {
 
-				var vetorClientes = retorno;
-				var vetorRede = [];
-				var vetorBandeira = [];
-				var vetorRepres = [];
+				that.vetorCentrosOrig = retorno;
+				that.getModel("modelCentrosOrig").setData(that.vetorCentrosOrig);
 
-				for (var i = 0; i < vetorClientes.length; i++) {
-					var vAchouRede = false;
-					var vAchouBandeira = false;
-					var vAchouRepres = false;
+			}).catch(function (error) {
 
-					for (var j = 0; j < vetorRede.length; j++) {
+				that.onMensagemErroODATA(error);
+			});
+		},
 
-						if ((vetorClientes[i].Kvgr4 == vetorRede[j].Kvgr4) || vetorClientes[i].Kvgr4 == "") {
-							vAchouRede = true;
+		onCriarModelTela: function (Repres, NomeRepres) {
 
-							break;
+			var vAux = {
+				RepresOrig: Repres,
+				DescRepres: NomeRepres,
+				BukrsOrig: "",
+				RepresDest: "",
+				BukrsDest: "",
+				Valor: "",
+				SaldoOrig: 0,
+				SaldoDest: 0
+			};
+
+			var omodelParametros = new JSONModel(vAux);
+			this.setModel(omodelParametros, "modelTela");
+		},
+
+		onChangeCentroOrig: function () {
+
+			var that = this;
+
+			that.byId("idRepresDest").setBusy(true);
+			var data = that.getModel("modelTela").getData();
+
+			that.oModel.read("/P_TransfRepresQ", {
+				urlParameters: {
+					"$filter": "IvBukrsOrig eq '" + data.BukrsOrig +
+						"' and IvRepresOrig eq '" + data.RepresOrig + "'"
+				},
+				success: function (retorno) {
+
+					that.vetorRepresDest = retorno.results;
+					that.getModel("modelRepresDest").setData(that.vetorRepresDest);
+					that.byId("idRepresDest").setBusy(false);
+
+					that.oModel.read("/P_TransfSaldoR(IvBukrs='" + data.BukrsOrig + "',IvRepres='" + data.RepresOrig + "')", {
+						success: function (retornoSaldo) {
+
+							that.getModel("modelTela").setProperty("/SaldoOrig", retornoSaldo.EvSaldo);
+							that.byId("idRepresDest").setBusy(false);
+						},
+						error: function (error) {
+
+							that.byId("idRepresDest").setBusy(false);
+							that.onMensagemErroODATA(error);
 						}
-					}
+					});
+				},
+				error: function (error) {
 
-					for (var k = 0; k < vetorBandeira.length; k++) {
-
-						if ((vetorClientes[i].Kvgr5 == vetorBandeira[k].Kvgr5) || vetorClientes[i].Kvgr5 == "") {
-							vAchouBandeira = true;
-
-							break;
-						}
-					}
-
-					for (var m = 0; m < vetorRepres.length; m++) {
-
-						if ((vetorClientes[i].Lifnr == vetorRepres[m].Lifnr) || vetorClientes[i].Lifnr == "") {
-							vAchouRepres = true;
-
-							break;
-						}
-					}
-					if (vAchouRede == false) {
-						vetorRede.push(vetorClientes[i]);
-					}
-					if (vAchouBandeira == false) {
-						vetorBandeira.push(vetorClientes[i]);
-					}
-					if (vAchouRepres == false) {
-						vetorRepres.push(vetorClientes[i]);
-					}
+					that.byId("idRepresDest").setBusy(false);
+					that.onMensagemErroODATA(error);
 				}
+			});
+		},
 
-				var oModelClientes = new JSONModel(vetorClientes);
-				that.setModel(oModelClientes, "modelClientes");
+		onChangeCentroDest: function () {
 
-				var oModelRede = new JSONModel(vetorRede);
-				that.setModel(oModelRede, "modelRedes");
+			var that = this;
 
-				var oModelBandeira = new JSONModel(vetorBandeira);
-				that.setModel(oModelBandeira, "modelBandeiras");
+			that.byId("idSaldoDestino").setBusy(true);
 
-				var oModelRepres = new JSONModel(vetorRepres);
-				that.setModel(oModelRepres, "modelRepres");
+			var data = this.getModel("modelTela").getData();
+
+			that.oModel.read("/P_TransfSaldoR(IvBukrs='" + data.BukrsDest + "',IvRepres='" + data.RepresDest + "')", {
+
+				success: function (retorno) {
+
+					that.getModel("modelTela").setProperty("/SaldoDest", retorno.EvSaldo);
+					that.byId("idSaldoDestino").setBusy(false);
+				},
+				error: function (error) {
+
+					that.byId("idSaldoDestino").setBusy(false);
+					that.onMensagemErroODATA(error);
+				}
+			});
+
+		},
+
+		onChangeRepresDest: function () {
+
+			var that = this;
+
+			var RepresDest = that.getModel("modelTela").getProperty("/RepresDest");
+
+			new Promise(function (res, rej) {
+
+				that.onBuscarCentros(RepresDest, res, rej, that);
+
+			}).then(function (retorno) {
+
+				that.vetorCentrosDest = retorno;
+				that.getModel("modelCentrosDest").setData(that.vetorCentrosDest);
 
 			}).catch(function (error) {
 
 				that.onMensagemErroODATA(error);
 			});
 
-			that.oModel.read("/Centros", {
-				urlParameters: {
-					"$filter": "IvUsuario eq '" + repres + "'"
-				},
-				success: function (retorno) {
-					var vetorCentros = retorno.results;
-					var oModelCentros = new JSONModel(vetorCentros);
-					that.setModel(oModelCentros, "modelCentros");
-				},
-				error: function (error) {
-					that.onMensagemErroODATA(error);
-				}
-			});
 		},
 
-		ongetHeaderGroupLifnr: function (oContext) {
-			return oContext.getProperty("Lifnr");
-		},
+		onSuggestRepresIni: function (evt) {
 
-		ongetHeaderGroupBukrs: function (oContext) {
-			return oContext.getProperty("Bukrs") + ' - ' + oContext.getProperty("Butxt");
-		},
+			var sValue = evt.getSource().getValue();
+			var aFilters = [];
+			var oFilter = [new sap.ui.model.Filter("Lifnr", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Name1Rep", sap.ui.model.FilterOperator.Contains, sValue)
+			];
 
-		createColumnConfig: function () {
-			var aCols = [];
+			var allFilters = new sap.ui.model.Filter(oFilter, false);
 
-			aCols.push({
-				label: "Repres",
-				property: "Lifnr",
-				type: EdmType.Number
-			});
+			aFilters.push(allFilters);
+			this.byId("idRepreIni").getBinding("suggestionItems").filter(aFilters);
 
-			aCols.push({
-				label: "Nome Repres",
-				property: "Name1Rep",
-				type: EdmType.String
-			});
-			
-			aCols.push({
-				label: "Vocativo",
-				property: "TitleLet",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Empresa",
-				property: "Bukrs",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Nome Empresa",
-				property: "Butxt",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Centro",
-				property: "Werks",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Série",
-				property: "Series",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "NFe",
-				property: "Nfenum",
-				type: EdmType.String
-			});
-			
-			aCols.push({
-				label: "Doc.Vendas",
-				property: "Vbeln",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Referência Cliente",
-				property: "Bstkd",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Dt Docto",
-				property: "Docdat",
-				type: EdmType.DateTime,
-				format: 'dd/mm/yyyy'
-			});
-
-			aCols.push({
-				label: "Cliente",
-				property: "Kunnr",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Razão Social",
-				property: "Name1Cli",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "CNPJ",
-				property: "Stcd1",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "CPF",
-				property: "Stcd2",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "UF",
-				property: "Region",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Cidade",
-				property: "City1",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Cód.Transp",
-				property: "ParidTransp",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Nom.Transp",
-				property: "Name1Transp",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Cód.Redesp",
-				property: "ParidRedesp",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Nom.Redesp",
-				property: "Name1Redesp",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Vl.Tot.NF",
-				property: "Netwrt",
-				type: EdmType.Number,
-				scale: 2,
-				delimiter: true
-			});
-
-			aCols.push({
-				label: "%Rentab",
-				property: "PctRentab",
-				type: EdmType.Number,
-				scale: 2,
-				delimiter: true
-			});
-
-			return aCols;
-		},
-
-		onExport: function () {
-			var aCols, oRowBinding, oSettings, oSheet, oTable;
-
-			if (!this._oTable) {
-				this._oTable = this.byId("idtableNotasFiscais");
-			}
-
-			oTable = this._oTable;
-			oRowBinding = oTable.getBinding("items");
-			aCols = this.createColumnConfig();
-
-			oSettings = {
-				workbook: {
-					columns: aCols,
-					hierarchyLevel: "Level"
-				},
-				dataSource: oRowBinding,
-				fileName: "Rel_Notas_Fiscais.xlsx",
-				worker: false // We need to disable worker because we are using a MockServer as OData Service
-			};
-
-			oSheet = new Spreadsheet(oSettings);
-			oSheet.build().finally(function () {
-				oSheet.destroy();
-			});
+			this.byId("idRepreIni").suggest();
 		},
 
 		onSuggestCentroIni: function (evt) {
@@ -378,283 +229,64 @@ sap.ui.define([
 			}
 		},
 
-		onDialogEnvioDanfe: function () {
+		onPressMovVerba: function () {
 
 			var that = this;
+			that.byId("idPage").setBusy(true);
 
-			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
-			var Name1 = that.getModelGlobal("modelAux").getProperty("/NomeRepres").replaceAll(" ", "_");
-			var Docnum = that.getModel("modelParamDialog").getProperty("/Docnum");
-			var Nfenum = that.getModel("modelParamDialog").getProperty("/Nfenum");
-			var Series = that.getModel("modelParamDialog").getProperty("/Series");
-			var Email = that.getModelGlobal("modelAux").getProperty("/Email");
+			var vAux = {
+				RepresOrig: this.getModel("modelTela").getProperty("/RepresOrig"),
+				BukrsOrig: this.getModel("modelTela").getProperty("/BukrsOrig"),
+				RepresDest: this.getModel("modelTela").getProperty("/RepresDest"),
+				BukrsDest: this.getModel("modelTela").getProperty("/BukrsDest"),
+				Valor: this.getModel("modelTela").getProperty("/Valor")
+			};
 
-			sap.ui.getCore().byId("idDialogEmail").setBusy(true);
+			that.oModel.callFunction("/P_Set_Transf_Verba", {
+				method: "POST",
+				urlParameters: vAux,
+				success: function (oData, oResponse) {
 
-			that.oModel.read("/EnviaEmailDanfe(IvUsuario='" + repres +
-				"',IvDocnum='" + Docnum +
-				"',IvEmail='" + Email +
-				"',IvName1='" + Name1 + "')", {
-					success: function (data) {
+					var Item = oData;
 
-						sap.ui.getCore().byId("idDialogEmail").setBusy(false);
-						MessageBox.show("NF-e " + Nfenum + " -" + Series + " enviada para o e-mail " + Email, {
-							icon: MessageBox.Icon.SUCCESS,
-							title: "Envio de Notas Fiscais",
-							actions: [sap.m.MessageBox.Action.OK]
-						});
-						that.onDialogClose();
-					},
-					error: function (error) {
+					if (Item.Type == "E") {
 
-						sap.ui.getCore().byId("idDialogEmail").setBusy(false);
-						that.onMensagemErroODATA(error);
-					}
-				});
-		},
+						MessageBox.show(Item.Message, {
+							icon: MessageBox.Icon.WARNING,
+							title: "Não Permitido",
+							actions: [MessageBox.Action.OK],
+							onClose: function () {
 
-		onPressBtnFiltrar: function () {
-
-			var that = this;
-
-			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
-			that.oModel = that.getModelGlobal("modelAux").getProperty("/DBModel");
-
-			var parametros = that.getModel("modelParametros").getData();
-			var PerioAux = that.getModel("modelParametros").getProperty("/Periodo");
-			var PerioSplit = PerioAux.split(" - ");
-			var PerioIni = PerioSplit[0];
-			var PerioFim = PerioSplit[1];
-
-			that.byId("master").setBusy(true);
-
-			that.oModel.read("/P_RelNotasFiscais", {
-				urlParameters: {
-
-					"$filter": "Usuario eq '" + repres +
-						"' and WerksIni eq '" + parametros.WerksIni +
-						"' and WerksFim eq '" + parametros.WerksFim +
-						"' and KunnrIni eq '" + parametros.KunnrIni +
-						"' and KunnrFim eq '" + parametros.KunnrFim +
-						"' and Kvgr4Ini eq '" + parametros.Kvgr4Ini +
-						"' and Kvgr4Fim eq '" + parametros.Kvgr4Fim +
-						"' and Kvgr5Ini eq '" + parametros.Kvgr5Ini +
-						"' and Kvgr5Fim eq '" + parametros.Kvgr5Fim +
-						"' and SeriesIni eq '" + parametros.SeriesIni +
-						"' and SeriesFim eq '" + parametros.SeriesFim +
-						"' and NfenumIni eq '" + parametros.NfenumIni +
-						"' and NfenumFim eq '" + parametros.NfenumFim +
-						"' and RepreIni eq '" + parametros.LifnrIni +
-						"' and RepreFim eq '" + parametros.LifnrFim +
-						"' and PerioIni eq '" + PerioIni +
-						"' and PerioFim eq '" + PerioFim + "'"
-				},
-				success: function (retorno) {
-
-					that.vetorNotasFiscais = [];
-					that.vetorResumoEmpresa = [];
-
-					that.vetorNotasFiscais = retorno.results;
-
-					that.getModel("modelNotasFiscais").setData(that.vetorNotasFiscais);
-
-					var vTotalEmp = 0;
-					for (var i = 0; i < that.vetorNotasFiscais.length; i++) {
-						var vAchouEmpresa = false;
-						for (var j = 0; j < that.vetorResumoEmpresa.length; j++) {
-
-							if (that.vetorNotasFiscais[i].Bukrs == that.vetorResumoEmpresa[j].Bukrs) {
-
-								vAchouEmpresa = true;
-
-								that.vetorResumoEmpresa[j].Netwrt = parseFloat(that.vetorResumoEmpresa[j].Netwrt) + Math.round(parseFloat(that.vetorNotasFiscais[
-									i].Netwrt) * 100) / 100;
-								that.vetorResumoEmpresa[j].Netwrt = parseFloat(that.vetorResumoEmpresa[j].Netwrt).toFixed(2);
-
+								that.byId("idPage").setBusy(false);
 							}
-						}
-						if (vAchouEmpresa == false) {
-							var vAux = {
-								Bukrs: that.vetorNotasFiscais[i].Bukrs,
-								Butxt: that.vetorNotasFiscais[i].Butxt,
-								Netwrt: parseFloat(that.vetorNotasFiscais[i].Netwrt)
-							};
+						});
 
-							that.vetorResumoEmpresa.push(vAux);
+					} else {
 
-						}
-						vTotalEmp += parseFloat(that.vetorNotasFiscais[i].Netwrt);
+						MessageBox.show(Item.Message, {
+							icon: MessageBox.Icon.SUCCESS,
+							title: "Transferido",
+							actions: [MessageBox.Action.OK],
+							onClose: function () {
+
+								// var Repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
+								// var NomeRepres = that.getModelGlobal("modelAux").getProperty("/NomeRepres");
+
+								// that.onCriarModelTela(Repres, NomeRepres);
+								
+								that._onLoadFields();
+								that.byId("idPage").setBusy(false);
+							}
+						});
 					}
-
-					if (vTotalEmp > 0) {
-						var vAuxTot = {
-							Bukrs: "",
-							Butxt: "TOTAL",
-							Netwrt: parseFloat(vTotalEmp).toFixed(2)
-						};
-
-						that.vetorResumoEmpresa.push(vAuxTot);
-					}
-
-					that.byId("master").setBusy(false);
-					that.getModel("modelResumoEmpresa").setData(that.vetorResumoEmpresa);
 				},
-				error: function (error) {
-					that.byId("master").setBusy(false);
-					that.onMensagemErroODATA(error);
+				error: function (oError) {
+
+					that.byId("idPage").setBusy(false);
+					that.onMensagemErroODATA(oError);
 				}
 			});
 
-		},
-
-		onExpandFiltro: function () {
-
-			if (this.byId("idPanelFiltro").getExpanded()) {
-				this.byId("idPanelFiltro").setHeaderText("Ocultar Filtros");
-			} else {
-				this.byId("idPanelFiltro").setHeaderText("Exibir Filtros");
-			}
-		},
-
-		onSuggestCentroFim: function (evt) {
-
-			var sValue = evt.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Werks", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("NomeCentro", sap.ui.model.FilterOperator.Contains, sValue)
-			];
-
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-
-			aFilters.push(allFilters);
-			this.byId("idCentroFim").getBinding("suggestionItems").filter(aFilters);
-			this.byId("idCentroFim").suggest();
-		},
-
-		onSuggestClienteIni: function (evt) {
-
-			var sValue = evt.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Kunnr", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Name1", sap.ui.model.FilterOperator.Contains, sValue)
-			];
-
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-
-			aFilters.push(allFilters);
-			this.byId("idClienteIni").getBinding("suggestionItems").filter(aFilters);
-			this.byId("idClienteIni").suggest();
-		},
-
-		onSuggestClienteFim: function (evt) {
-
-			var sValue = evt.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Kunnr", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Name1", sap.ui.model.FilterOperator.Contains, sValue)
-			];
-
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-
-			aFilters.push(allFilters);
-			this.byId("idClienteFim").getBinding("suggestionItems").filter(aFilters);
-			this.byId("idClienteFim").suggest();
-		},
-
-		onSuggestRedeIni: function (evt) {
-
-			var sValue = evt.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Kvgr4", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("DescKvgr4", sap.ui.model.FilterOperator.Contains, sValue)
-			];
-
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-
-			aFilters.push(allFilters);
-			this.byId("idRedeIni").getBinding("suggestionItems").filter(aFilters);
-
-			this.byId("idRedeIni").suggest();
-		},
-
-		onSuggestRedeFim: function (evt) {
-
-			var sValue = evt.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Kvgr4", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("DescKvgr4", sap.ui.model.FilterOperator.Contains, sValue)
-			];
-
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-
-			aFilters.push(allFilters);
-			this.byId("idRedeFim").getBinding("suggestionItems").filter(aFilters);
-
-			this.byId("idRedeFim").suggest();
-		},
-
-		onSuggestBandeiraIni: function (evt) {
-
-			var sValue = evt.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Kvgr5", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("DescKvgr5", sap.ui.model.FilterOperator.Contains, sValue)
-			];
-
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-
-			aFilters.push(allFilters);
-			this.byId("idBandeiraIni").getBinding("suggestionItems").filter(aFilters);
-
-			this.byId("idBandeiraIni").suggest();
-		},
-
-		onSuggestBandeiraFim: function (evt) {
-
-			var sValue = evt.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Kvgr5", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("DescKvgr5", sap.ui.model.FilterOperator.Contains, sValue)
-			];
-
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-
-			aFilters.push(allFilters);
-			this.byId("idBandeiraFim").getBinding("suggestionItems").filter(aFilters);
-
-			this.byId("idBandeiraFim").suggest();
-		},
-
-		onSuggestRepresIni: function (evt) {
-
-			var sValue = evt.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Lifnr", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Name1Rep", sap.ui.model.FilterOperator.Contains, sValue)
-			];
-
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-
-			aFilters.push(allFilters);
-			this.byId("idRepreIni").getBinding("suggestionItems").filter(aFilters);
-
-			this.byId("idRepreIni").suggest();
-		},
-
-		onSuggestRepresFim: function (evt) {
-
-			var sValue = evt.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Lifnr", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Name1Rep", sap.ui.model.FilterOperator.Contains, sValue)
-			];
-
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-
-			aFilters.push(allFilters);
-			this.byId("idRepreFim").getBinding("suggestionItems").filter(aFilters);
-
-			this.byId("idRepreFim").suggest();
-		},
+		}
 	});
 });

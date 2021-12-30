@@ -296,9 +296,22 @@
 					"target": [
 						"detalheProdutos"
 					]
+				},
+				{
+					"name": "MovVerbas",
+					"pattern": "MovVerbas",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"MovVerbas"
+					]
 				}
 			],
 			"targets": {
+				"MovVerbas": {
+					"viewName": "MovVerbas",
+					"viewLevel": 1
+				},
 				"login": {
 					"viewName": "Login",
 					"viewLevel": 1

@@ -5,7 +5,7 @@
 			<Page id="idItens" title="Itens do Pedido WEB" contentOnlyBusy="true" busy="false" floatingFooter="false" navButtonPress="onNavBack"
 				showNavButton="true" busyIndicatorDelay="1">
 				<content>
-					<Table id="idTableItens" inset="false" noDataText="Nenhum item inserido!" mode="Delete" delete="onDeletarItem" alternateRowColors="true"
+					<Table id="idTableItens" growingScrollToLoad="true" inset="false" noDataText="Nenhum item inserido!" mode="Delete" delete="onDeletarItem" alternateRowColors="true"
 						busyIndicatorDelay="0" items="{ path: 'modelItensPedidoGrid>/', sorter: { path: 'IndexItem', ascending: true }}" itemPress="onEditarItemPress">
 						<headerToolbar>
 							<Toolbar height="100%" class="backGround">
