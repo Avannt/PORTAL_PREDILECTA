@@ -7,7 +7,6 @@
 					<ObjectStatus id="objectStatus_codUsuario" />
 				</statuses>
 				<attributes>
-					<!--<ObjectAttribute id="objectAttribute_email" text="Email: {modelTela>/Email}" />-->
 				</attributes>
 			</ObjectHeader>
 			<Table id="table_Verbas" width="100%" items="{ path:'Verbas>/', sorter: { path: 'Periodo', descending: true }}" updateFinished="onListUpdateFinished" mode="None" itemPress="onItemPress"
@@ -16,10 +15,13 @@
 					<Toolbar id="lineItemsToolbar">
 						<Title id="lineItemsHeader" text="Verbas / Empresas"/>
 						<ToolbarSpacer/>
-						<Button icon="sap-icon://settings" press="onAbrirCentros"/>
+						<!--<Button icon="sap-icon://settings" press="onAbrirCentros"/>-->
 					</Toolbar>
 				</headerToolbar>
 				<columns>
+					<Column>
+						<Text text="Representante" />
+					</Column>
 					<Column hAlign="Left">
 						<Text text="Empresa" />
 					</Column>
@@ -42,6 +44,7 @@
 				<items >
 					<ColumnListItem type="Navigation">
 						<cells>
+							<Text text="{Verbas>Lifnr} ( {Verbas>Name1Rep} )" />
 							<Text text="{Verbas>Butxt} ( {Verbas>Bukrs} )" />
 							<Text text="{path: 'Verbas>Periodo', formatter: '.formatPeriodo'}" />
 							<Text text="R$ {path : 'Verbas>ValSdoIni', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" />

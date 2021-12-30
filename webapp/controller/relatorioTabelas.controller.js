@@ -72,7 +72,7 @@ sap.ui.define([
 			var that = this;
 
 			var aux = {
-				Exibicao: "Caixa", //Caixa ou Unidade
+				Exibicao: "CAIXA", //CAIXA ou UNIDADE
 				Pltyp: "",
 				Indice: 0,
 				Contrato: "",
@@ -126,12 +126,12 @@ sap.ui.define([
 			that.setModel(modelFretes, "modelFretes");
 
 			var aux = {
-				idExibicao: "Caixa",
+				idExibicao: "CAIXA",
 				descricao: "Caixa"
 			};
 
 			var aux1 = {
-				idExibicao: "Unidade",
+				idExibicao: "UNIDADE",
 				descricao: "Unidade"
 			};
 
