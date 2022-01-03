@@ -25,12 +25,13 @@ sap.ui.define([
 		_onLoadFields: function () {
 
 			var that = this;
+
 			var Repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
 			var NomeRepres = that.getModelGlobal("modelAux").getProperty("/NomeRepres");
 
 			that.oModel = that.getModelGlobal("modelAux").getProperty("/DBModel");
 
-			this.onCriarModelTela(Repres, NomeRepres);
+			this.onCriarModelTela(Repres);
 
 			that.vetorCentrosOrig = [];
 			var oModelCentroOrig = new JSONModel(that.vetorCentrosOrig);
@@ -40,30 +41,83 @@ sap.ui.define([
 			var oModelCentroDest = new JSONModel(that.vetorCentrosDest);
 			that.setModel(oModelCentroDest, "modelCentrosDest");
 
+			that.vetorRepresOrig = [];
+			var oModelRepresOrig = new JSONModel(that.vetorRepresOrig);
+			that.setModel(oModelRepresOrig, "modelRepresOrig");
+
 			that.vetorRepresDest = [];
 			var oModelRepresDest = new JSONModel(that.vetorRepresDest);
 			that.setModel(oModelRepresDest, "modelRepresDest");
 
 			new Promise(function (res, rej) {
 
-				that.onBuscarCentros(Repres, res, rej, that);
+				that.byId("idRepresOrig").setBusy(true);
+				var data = that.getModel("modelTela").getData();
+
+				that.oModel.read("/P_TransfRepresQ", {
+					urlParameters: {
+						"$filter": "IvBukrsOrig eq '" + data.BukrsOrig +
+							"' and IvRepresOrig eq '" + Repres +
+							// "' and IvRepresBase eq '" + data.RepresBase +
+							"' and IvRepresTotal eq true"
+					},
+					success: function (retorno) {
+
+						that.vetorRepresOrig = retorno.results;
+						that.getModel("modelRepresOrig").setData(that.vetorRepresOrig);
+						that.byId("idRepresOrig").setBusy(false);
+						res();
+
+					},
+					error: function (error) {
+
+						rej(error);
+					}
+				});
+
+			}).then(function (retorno) {
+
+			}).catch(function (error) {
+
+				that.byId("idRepresOrig").setBusy(false);
+				that.onMensagemErroODATA(error);
+			});
+		},
+
+		onChangeRepresOrig: function () {
+
+			var that = this;
+			var Repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
+
+			new Promise(function (res2, rej2) {
+
+				that.onBuscarCentros(Repres, res2, rej2, that);
 
 			}).then(function (retorno) {
 
 				that.vetorCentrosOrig = retorno;
 				that.getModel("modelCentrosOrig").setData(that.vetorCentrosOrig);
 
+				that.getModel("modelTela").setProperty("/BukrsOrig", "");
+				that.getModel("modelTela").setProperty("/RepresDest", "");
+				that.getModel("modelTela").setProperty("/BukrsDest", "");
+				that.getModel("modelTela").setProperty("/SaldoOrig", "");
+				that.getModel("modelTela").setProperty("/SaldoDest", "");
+				that.getModel("modelTela").setProperty("/Valor", "");
+
 			}).catch(function (error) {
 
 				that.onMensagemErroODATA(error);
 			});
+
 		},
 
-		onCriarModelTela: function (Repres, NomeRepres) {
+		onCriarModelTela: function (Repres) {
 
 			var vAux = {
-				RepresOrig: Repres,
-				DescRepres: NomeRepres,
+				
+				RepresBase: Repres,
+				RepresOrig: "",
 				BukrsOrig: "",
 				RepresDest: "",
 				BukrsDest: "",
@@ -71,7 +125,7 @@ sap.ui.define([
 				SaldoOrig: 0,
 				SaldoDest: 0
 			};
-
+			
 			var omodelParametros = new JSONModel(vAux);
 			this.setModel(omodelParametros, "modelTela");
 		},
@@ -86,7 +140,9 @@ sap.ui.define([
 			that.oModel.read("/P_TransfRepresQ", {
 				urlParameters: {
 					"$filter": "IvBukrsOrig eq '" + data.BukrsOrig +
-						"' and IvRepresOrig eq '" + data.RepresOrig + "'"
+						"' and IvRepresOrig eq '" + data.RepresOrig +
+						// "' and IvRepresBase eq '" + data.RepresBase +
+						"' and IvRepresTotal eq false"
 				},
 				success: function (retorno) {
 
@@ -192,6 +248,36 @@ sap.ui.define([
 			this.byId("idCentroIni").suggest();
 		},
 
+		onSuggestRepresDest: function (evt) {
+
+			var sValue = evt.getSource().getValue();
+			var aFilters = [];
+			var oFilter = [new sap.ui.model.Filter("Lifnr", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Name1", sap.ui.model.FilterOperator.Contains, sValue)
+			];
+
+			var allFilters = new sap.ui.model.Filter(oFilter, false);
+
+			aFilters.push(allFilters);
+			this.byId("idRepresDest").getBinding("suggestionItems").filter(aFilters);
+			this.byId("idRepresDest").suggest();
+		},
+
+		onSuggestRepresOrig: function (evt) {
+
+			var sValue = evt.getSource().getValue();
+			var aFilters = [];
+			var oFilter = [new sap.ui.model.Filter("Lifnr", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Name1", sap.ui.model.FilterOperator.Contains, sValue)
+			];
+
+			var allFilters = new sap.ui.model.Filter(oFilter, false);
+
+			aFilters.push(allFilters);
+			this.byId("idRepresOrig").getBinding("suggestionItems").filter(aFilters);
+			this.byId("idRepresOrig").suggest();
+		},
+
 		onDialogOpen: function (evt) {
 
 			var that = this;
@@ -232,6 +318,7 @@ sap.ui.define([
 		onPressMovVerba: function () {
 
 			var that = this;
+
 			that.byId("idPage").setBusy(true);
 
 			var vAux = {
@@ -269,11 +356,6 @@ sap.ui.define([
 							actions: [MessageBox.Action.OK],
 							onClose: function () {
 
-								// var Repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
-								// var NomeRepres = that.getModelGlobal("modelAux").getProperty("/NomeRepres");
-
-								// that.onCriarModelTela(Repres, NomeRepres);
-								
 								that._onLoadFields();
 								that.byId("idPage").setBusy(false);
 							}

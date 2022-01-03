@@ -8,64 +8,67 @@
 					emptySpanL="0" emptySpanM="0" columnsL="2" columnsM="2">
 					<form:content>
 						<core:Title/>
-						<Label text="Repres Origem*"/>
-						<Input id="idRepresOrig" value="{modelTela>/RepresOrig}" enabled="false">
+						<Label text="Repres Orig*"/>
+						<SearchField id="idRepresOrig" placeholder="Digite Código do Repres" enableSuggestions="true"
+							value="{modelTela>/RepresOrig}" search="onChangeRepresOrig" suggest="onSuggestRepresOrig" busyIndicatorDelay="0"
+							suggestionItems="{ path: 'modelRepresOrig>/', sorter: { path: 'Lifnr', ascending: true }}">
+							<suggestionItems>
+								<SuggestionItem text="{modelRepresOrig>Lifnr}" description="{modelRepresOrig>Name1}" key="{modelRepresOrig>Lifnr}"/>
+							</suggestionItems>
 							<layoutData>
-								<layout:GridData span="L1 M1"/>
+								<layout:GridData span="L4 M4"/>
 							</layoutData>
-						</Input>
-						<!--<Select id="idRepres" forceSelection="false" selectedKey="{modelTela>/Werks}" showSecondaryValues="false" items="{ path: 'modelCentros>/' }"-->
-						<!--	change="onChangeEstabelecimento" busyIndicatorDelay="0" busy="{modelBusy>Centro}">-->
-						<!--	<core:Item key="{modelCentros>Werks}" text="{modelCentros>NomeCentro}"/>-->
-						<Input id="idDescRepresOrig" value="{modelTela>/DescRepres}" enabled="false">
-							<layoutData>
-								<layout:GridData span="L3 M3"/>
-							</layoutData>
-						</Input>
-						<!--</Select>-->
+						</SearchField>
 						<Label text="Centro Origem*"/>
 						<Select id="idCentroOrig" forceSelection="false" selectedKey="{modelTela>/BukrsOrig}" showSecondaryValues="false"
 							items="{ path: 'modelCentrosOrig>/', sorter: { path: 'Werks', ascending: true }}" change="onChangeCentroOrig" busyIndicatorDelay="0">
-							<core:Item key="{modelCentrosOrig>Bukrs}" text="{modelCentrosOrig>Bukrs} - {modelCentrosOrig>NomeCentro}" />
+							<core:Item key="{modelCentrosOrig>Bukrs}" text="{modelCentrosOrig>Bukrs} - {modelCentrosOrig>NomeCentro}"/>
 							<layoutData>
 								<layout:GridData span="L4 M4"/>
 							</layoutData>
 						</Select>
 						<Label text="Repres Destino*"/>
-						<Select id="idRepresDest" forceSelection="false" selectedKey="{modelTela>/RepresDest}" showSecondaryValues="true"
-							items="{ path: 'modelRepresDest>/' }" change="onChangeRepresDest" busyIndicatorDelay="0">
-							<core:Item key="{modelRepresDest>Lifnr}" text="{modelRepresDest>Lifnr} - {modelRepresDest>Name1}" />
+						<SearchField id="idRepresDest" placeholder="Digite Código do Repres" enableSuggestions="true"
+							value="{modelTela>/RepresDest}" search="onChangeRepresDest" suggest="onSuggestRepresDest" busyIndicatorDelay="0"
+							suggestionItems="{ path: 'modelRepresDest>/', sorter: { path: 'Lifnr', ascending: true }}">
+							<suggestionItems>
+								<SuggestionItem text="{modelRepresDest>Lifnr}" description="{modelRepresDest>Name1}" key="{modelRepresDest>Lifnr}"/>
+							</suggestionItems>
 							<layoutData>
 								<layout:GridData span="L4 M4"/>
 							</layoutData>
-						</Select>
-						<Label text="Centro Destino*" />
+						</SearchField>
+						<Label text="Centro Destino*"/>
 						<Select id="idCentroDest" forceSelection="false" selectedKey="{modelTela>/BukrsDest}" showSecondaryValues="false"
 							items="{ path: 'modelCentrosDest>/', sorter: { path: 'Werks', ascending: true }}" change="onChangeCentroDest" busyIndicatorDelay="0">
-							<core:Item key="{modelCentrosDest>Bukrs}" text="{modelCentrosDest>Bukrs} - {modelCentrosDest>NomeCentro}" />
+							<core:Item key="{modelCentrosDest>Bukrs}" text="{modelCentrosDest>Bukrs} - {modelCentrosDest>NomeCentro}"/>
 							<layoutData>
-								<layout:GridData span="L4 M4" />
+								<layout:GridData span="L4 M4"/>
 							</layoutData>
 						</Select>
 						<Label text="Valor *"/>
 						<Input id="idValor" value="{modelTela>/Valor}" type="Number">
 							<layoutData>
-								<layout:GridData span="L2 M2" />
+								<layout:GridData span="L2 M2"/>
 							</layoutData>
 						</Input>
 						<Label text="Saldo Orig *"/>
-						<Input id="idSaldoOrig" value="R$: {path: 'modelTela>/SaldoOrig', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false">
+						<Input id="idSaldoOrig"
+							value="R$: {path: 'modelTela>/SaldoOrig', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+							enabled="false">
 							<layoutData>
-								<layout:GridData span="L2 M2" />
+								<layout:GridData span="L2 M2"/>
 							</layoutData>
 						</Input>
-						<Label text="Saldo Destino" visible="true" />
-						<Input id="idSaldoDestino" value="R$: {path: 'modelTela>/SaldoDest', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false">
+						<Label text="Saldo Destino" visible="true"/>
+						<Input id="idSaldoDestino"
+							value="R$: {path: 'modelTela>/SaldoDest', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+							enabled="false">
 							<layoutData>
-								<layout:GridData span="L2 M2" />
+								<layout:GridData span="L2 M2"/>
 							</layoutData>
 						</Input>
-						<Label text="" visible="true" />
+						<Label text="" visible="true"/>
 						<Button text="Transferir" visible="true" type="Emphasized" press="onPressMovVerba">
 							<layoutData>
 								<layout:GridData span="L4 M4"/>
