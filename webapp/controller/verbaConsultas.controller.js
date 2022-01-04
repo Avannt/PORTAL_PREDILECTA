@@ -49,12 +49,13 @@ sap.ui.define([
 
 			var that = this;
 			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
+			var Name1 = that.getModelGlobal("modelAux").getProperty("/NomeRepres").replaceAll(" ", "_");
 			var Bukrs = this.getModel("modelTela").getProperty("/Bukrs");
 			var Periodo = "0122021";
 
 			that.byId("detail").setBusy(true);
 
-			that.oModel.read("/SaldoVerbas", {
+			that.oModel.read("/P_SaldoVerbas", {
 				urlParameters: {
 					"$filter": "IvUsuario eq '" + repres + "'"
 				},
@@ -63,8 +64,8 @@ sap.ui.define([
 					var result = retorno.results[0];
 					var aux = that.getModel("modelTela").getData();
 
-					aux.Cod = result.Lifnr;
-					aux.Nome = result.Name1Rep;
+					aux.Cod = repres;
+					aux.Nome = Name1;
 					
 					var oModel = new JSONModel(aux);
 					that.setModel(oModel, "modelTela");

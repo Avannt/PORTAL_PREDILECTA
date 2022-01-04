@@ -41,15 +41,12 @@
 										</Toolbar>
 									</headerToolbar>
 									<columns>
-										<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="50px">
-											<Text text=""/>
-										</Column>
+										<!--<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="50px">-->
+										<!--	<Text text=""/>-->
+										<!--</Column>-->
 										<Column>
 											<Text text="Tipo" width="80px"/>
 										</Column>
-										<!--<Column demandPopin="true" popinDisplay="Inline">-->
-										<!--	<Text text="Data" />-->
-										<!--</Column>-->
 										<Column minScreenWidth="850px" demandPopin="true" popinDisplay="Inline">
 											<Text text="Data" />
 										</Column>
@@ -69,13 +66,13 @@
 											<Text text="Pedido" />
 										</Column>
 										<Column minScreenWidth="1150px" demandPopin="true" popinDisplay="Inline">
-											<Text text="Usuár." />
+											<Text text="Usuário" />
 										</Column>
 									</columns>
 									<items >
 										<ColumnListItem type="Inactive">
 											<cells>
-												<Image src="{path : 'modelMov>PathImg'}" width="50%" tooltip="{path : 'TitulosAbertos>Status'}" />
+												<!--<Image src="{path : 'modelMov>PathImg'}" width="50%" tooltip="{path : 'TitulosAbertos>Status'}" />-->
 												<Text text="{path: 'modelMov>TipoMovto', formatter: '.formatTipo'}"/>
 												<Text text="{path: 'modelMov>DatMovto', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' , strictParsing: true , UTC: true }}"/>
 												<Text text="R$: {path: 'modelMov>ValMovto', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" />

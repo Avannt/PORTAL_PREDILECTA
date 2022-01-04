@@ -15,7 +15,7 @@ sap.ui.define([
 			if (sPreviousHash !== undefined) {
 				window.history.go(-1);
 			} else {
-				this.getRouter().navTo("clienteConsultas", {}, true);
+				this.getRouter().navTo("Menu", {}, true);
 			}
 		}
 	});

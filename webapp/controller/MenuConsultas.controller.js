@@ -62,9 +62,6 @@ sap.ui.define([
 				case "C04":
 					sap.ui.core.UIComponent.getRouterFor(this).navTo("cadastroRebaixa");
 					break;
-				case "C05":
-					sap.ui.core.UIComponent.getRouterFor(this).navTo("MovVerbas");
-					break;
 				default:
 					sap.ui.core.UIComponent.getRouterFor(this).navTo("notFound");
 					break;
