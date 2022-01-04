@@ -113,6 +113,9 @@ sap.ui.define([
 			case "P04":
 				sap.ui.core.UIComponent.getRouterFor(this).navTo("menuConsultas");
 				break;
+			case "P05":
+				sap.ui.core.UIComponent.getRouterFor(this).navTo("MsgPortal");
+				break;
 			default:
 				sap.ui.core.UIComponent.getRouterFor(this).navTo("NotFound");
 				break;

@@ -1,0 +1,84 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:layout="sap.ui.layout"
+	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" xmlns="sap.m" xmlns:semantic="sap.m.semantic" height="100%"
+	controllerName="application.controller.MsgPortal">
+	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Relatório de Títulos Abertos" showFooter="false"
+		busyIndicatorDelay="0">
+		<content>
+			<UploadCollection
+				id="UploadCollection"
+				maximumFilenameLength="{settings>/maximumFilenameLength}"
+				maximumFileSize="{settings>/maximumFileSize}"
+				multiple="true"
+				change="onChange"
+				fileDeleted="onFileDeleted"
+				filenameLengthExceed="onFilenameLengthExceed"
+				fileRenamed="onFileRenamed"
+				fileSizeExceed="onFileSizeExceed"
+				fileType="{fileTypes>/selected}"
+				selectionChange="onSelectionChange"
+				typeMissmatch="onTypeMissmatch"
+				uploadComplete="onUploadComplete"
+				beforeUploadStarts="onBeforeUploadStarts"
+				uploadTerminated="onUploadTerminated"
+				items="{
+					path: '/items',
+					templateShareable: false
+				}"
+				numberOfAttachmentsText="Uploaded (8)"
+				showSeparators="{settings>/showSeparators}"
+				uploadEnabled="{settings>/uploadEnabled}"
+				uploadButtonInvisible="{=!${settings>/uploadButtonVisible}}"
+				mode="{settings>/mode}">
+				<toolbar>
+					<OverflowToolbar id="myId">
+						<Title id="attachmentTitle" />
+						<ToolbarSpacer />
+						<SearchField width="10rem" search="onSearch" />
+						<Button
+							id="deleteSelectedButton"
+							text="Delete"
+							press="onDeleteSelectedItems"
+							enabled="false"
+							visible="false"
+							type="Transparent" />
+						<ToggleButton
+							id="selectAllButton"
+							text="Select all"
+							press="onSelectAllPress"
+							enabled="false"
+							visible="false"
+							type="Transparent" />
+						<UploadCollectionToolbarPlaceholder />
+					</OverflowToolbar>
+				</toolbar>
+				<items>
+					<UploadCollectionItem
+						documentId="{documentId}"
+						fileName="{fileName}"
+						mimeType="{mimeType}"
+						thumbnailUrl="{thumbnailUrl}"
+						url="{url}"
+						enableEdit="{settings>/enableEdit}"
+						enableDelete="{settings>/enableDelete}"
+						visibleDelete="{settings>/visibleDelete}"
+						visibleEdit="{settings>/visibleEdit}"
+						attributes="{path : 'attributes', templateShareable : false}"
+						statuses="{path : 'statuses', templateShareable : false}"
+						selected="{selected}">
+						<attributes>
+							<ObjectAttribute title="{title}"
+								text="{path : 'text', formatter : '.formatAttribute'}"
+								active="{active}"
+								press="onAttributePress" />
+						</attributes>
+						<statuses>
+							<ObjectStatus title="{title}"
+								text="{text}"
+								state="{state}" />
+						</statuses>
+					</UploadCollectionItem>
+				</items>
+			</UploadCollection>
+		</content>
+	</Page>
+</mvc:View>

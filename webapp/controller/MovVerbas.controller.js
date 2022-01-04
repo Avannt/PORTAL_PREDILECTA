@@ -57,9 +57,9 @@ sap.ui.define([
 				that.oModel.read("/P_TransfRepresQ", {
 					urlParameters: {
 						"$filter": "IvBukrsOrig eq '" + data.BukrsOrig +
-							"' and IvRepresOrig eq '" + Repres +
+							"' and IvRepresOrig eq '" + Repres + "'"
 							// "' and IvRepresBase eq '" + data.RepresBase +
-							"' and IvRepresTotal eq true"
+							// "' and IvRepresTotal eq true"
 					},
 					success: function (retorno) {
 
@@ -136,17 +136,18 @@ sap.ui.define([
 
 			that.byId("idRepresDest").setBusy(true);
 			var data = that.getModel("modelTela").getData();
+			var Repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
 
 			that.oModel.read("/P_TransfRepresQ", {
 				urlParameters: {
 					"$filter": "IvBukrsOrig eq '" + data.BukrsOrig +
-						"' and IvRepresOrig eq '" + data.RepresOrig +
+						"' and IvRepresOrig eq '" + Repres + "'"
 						// "' and IvRepresBase eq '" + data.RepresBase +
-						"' and IvRepresTotal eq false"
+						// "' and IvRepresTotal eq false"
 				},
 				success: function (retorno) {
 
-					that.vetorRepresDest = retorno.results;
+					that.vetorRepresDest = retorno.results;	
 					that.getModel("modelRepresDest").setData(that.vetorRepresDest);
 					that.byId("idRepresDest").setBusy(false);
 
@@ -209,6 +210,11 @@ sap.ui.define([
 
 				that.vetorCentrosDest = retorno;
 				that.getModel("modelCentrosDest").setData(that.vetorCentrosDest);
+				
+				
+				that.getModel("modelTela").setProperty("/BukrsDest", "");
+				that.getModel("modelTela").setProperty("/SaldoDest", "");
+				that.getModel("modelTela").setProperty("/Valor", "");
 
 			}).catch(function (error) {
 
