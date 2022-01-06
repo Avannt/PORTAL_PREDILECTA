@@ -19,13 +19,13 @@
             "locale": "_pt_BR"
         },
         {
-            "name": "../model/models.js"
-        },
-        {
             "name": "../manifest.json"
         },
         {
             "name": "../model/Menu.json"
+        },
+        {
+            "name": "../model/models.js"
         },
         {
             "name": "../model/formatter.js"
@@ -89,6 +89,12 @@
             "name": "../controller/NotFound.controller.js"
         },
         {
+            "name": "../controller/MsgPortalDetalhe.controller.js"
+        },
+        {
+            "name": "../controller/MsgPortal.controller.js"
+        },
+        {
             "name": "../controller/MovVerbas.controller.js"
         },
         {
@@ -123,7 +129,7 @@
             "merged": true
         },
         {
-            "name": "../controller/Menu-dbg.controller.js",
+            "name": "../controller/relatorioTabelas-dbg.controller.js",
             "isDebug": true
         },
         {
@@ -144,10 +150,6 @@
         },
         {
             "name": "../controller/relatorioTitulos-dbg.controller.js",
-            "isDebug": true
-        },
-        {
-            "name": "../controller/relatorioTabelas-dbg.controller.js",
             "isDebug": true
         },
         {
@@ -211,6 +213,14 @@
             "isDebug": true
         },
         {
+            "name": "../controller/MsgPortalDetalhe-dbg.controller.js",
+            "isDebug": true
+        },
+        {
+            "name": "../controller/MsgPortal-dbg.controller.js",
+            "isDebug": true
+        },
+        {
             "name": "../controller/MovVerbas-dbg.controller.js",
             "isDebug": true
         },
@@ -220,6 +230,10 @@
         },
         {
             "name": "../controller/MenuConsultas-dbg.controller.js",
+            "isDebug": true
+        },
+        {
+            "name": "../controller/Menu-dbg.controller.js",
             "isDebug": true
         },
         {
@@ -325,6 +339,12 @@
         },
         {
             "name": "../view/NotFound.view.xml"
+        },
+        {
+            "name": "../view/MsgPortalDetalhe.view.xml"
+        },
+        {
+            "name": "../view/MsgPortal.view.xml"
         },
         {
             "name": "../view/MovVerbas.view.xml"

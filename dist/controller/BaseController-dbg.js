@@ -5,8 +5,9 @@ sap.ui.define([
 	"sap/ui/core/routing/History",
 	"sap/ui/core/UIComponent",
 	"sap/m/MessageBox",
-	"sap/ui/model/json/JSONModel"
-], function (Controller, History, UIComponent, MessageBox, JSONModel) {
+	"sap/ui/model/json/JSONModel",
+	"sap/ui/core/format/FileSizeFormat"
+], function (Controller, History, UIComponent, MessageBox, JSONModel, FileSizeFormat) {
 	"use strict";
 
 	return Controller.extend("application.controller.BaseController", {
@@ -41,6 +42,20 @@ sap.ui.define([
 		getRouter: function () {
 			return sap.ui.core.UIComponent.getRouterFor(this);
 		},
+		
+		onFormatHora: function (duration) {
+
+			var milliseconds = Math.floor((duration % 1000) / 100),
+				seconds = Math.floor((duration / 1000) % 60),
+				minutes = Math.floor((duration / (1000 * 60)) % 60),
+				hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+
+			hours = (hours < 10) ? "0" + hours : hours;
+			minutes = (minutes < 10) ? "0" + minutes : minutes;
+			seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+			return hours + ":" + minutes + ":" + seconds;
+		},
 
 		onNavBack: function (oEvent) {
 
@@ -52,6 +67,37 @@ sap.ui.define([
 				window.history.go(-1);
 			} else {
 				this.getRouter().navTo("NotFound", {}, true);
+			}
+		},
+
+		formatAttribute: function (sValue) {
+
+			if (jQuery.isNumeric(sValue)) {
+
+				return FileSizeFormat.getInstance({
+					binaryFilesize: false,
+					maxFractionDigits: 1,
+					maxIntegerDigits: 3
+				}).format(sValue);
+
+			} else {
+
+				try {
+
+					var dia = sValue.getUTCDate();
+					dia = String(dia).length == 1 ? "0" + String(dia) : String(dia);
+
+					var mes = sValue.getUTCMonth() + 1;
+					mes = String(mes).length == 1 ? "0" + String(mes) : String(mes);
+
+					var ano = sValue.getUTCFullYear();
+
+					return dia + "/" + mes + "/" + ano;
+
+				} catch (y) {
+
+					return sValue;
+				}
 			}
 		},
 

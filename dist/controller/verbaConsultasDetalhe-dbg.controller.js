@@ -55,7 +55,7 @@ sap.ui.define([
 			
 			// that.byId("detail").setBusy(true);
 
-			that.oModel.read("/MovimentacaoVerbas", {
+			that.oModel.read("/P_MovtoVerbas", {
 				urlParameters: {
 					"$filter": "IvUsuario eq '" + repres + "'"
 				},

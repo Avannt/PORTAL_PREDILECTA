@@ -36,8 +36,8 @@ sap.ui.define([
 				"Maktx", sap.ui.model.FilterOperator.Contains, sValue)];
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
 			aFilters.push(allFilters);
-			this.byId("idProdutoRelatorio").getBinding("suggestionItems").filter(aFilters);
-			this.byId("idProdutoRelatorio").suggest();
+			this.byId("idtablePrecos").getBinding("items").filter(aFilters);
+			this.byId("idtablePrecos").suggest();
 		},
 
 		onItemChange: function (oEvent) {

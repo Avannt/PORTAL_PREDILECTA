@@ -69,8 +69,7 @@
 					"defaultBindingMode": "OneWay",
 					"defaultCountMode": "Request"
 				},
-				"dataSource": "ZSF_FV_SRV",
-				"preload": true
+				"dataSource": "ZSF_FV_SRV"
 			}
 		},
 		"resources": {
@@ -94,7 +93,7 @@
 				"transition": "slide",
 				"bypassed": {
 					"target": [
-						"notFound"
+						"NotFound"
 					]
 				}
 			},
@@ -154,12 +153,12 @@
 					]
 				},
 				{
-					"name": "notFound",
-					"pattern": "NotFoundPage",
+					"name": "NotFound",
+					"pattern": "NotFound",
 					"titleTarget": "",
 					"greedy": false,
 					"target": [
-						"notFound"
+						"NotFound"
 					]
 				},
 				{
@@ -305,12 +304,47 @@
 					"target": [
 						"MovVerbas"
 					]
+				},
+				{
+					"name": "MsgPortal",
+					"pattern": "MsgPortal",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"MsgPortal"
+					]
+				},
+				{
+					"name": "MsgPortalDetalhe",
+					"pattern": "MsgPortalDetalhe",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"MsgPortalDetalhe"
+					]
 				}
 			],
 			"targets": {
 				"MovVerbas": {
 					"viewName": "MovVerbas",
-					"viewLevel": 1
+					"viewLevel": 1,
+					"viewPath": "application.view",
+					"controlId": "app",
+					"controlAggregation": "pages"
+				},
+				"MsgPortal": {
+					"viewName": "MsgPortal",
+					"viewLevel": 1,
+					"viewPath": "application.view",
+					"controlId": "app",
+					"controlAggregation": "pages"
+				},
+				"MsgPortalDetalhe": {
+					"viewName": "MsgPortalDetalhe",
+					"viewLevel": 1,
+					"viewPath": "application.view",
+					"controlId": "app",
+					"controlAggregation": "pages"
 				},
 				"login": {
 					"viewName": "Login",
@@ -336,13 +370,15 @@
 					"viewName": "MenuRelatorios",
 					"viewLevel": 1
 				},
-				"notFound": {
+				"NotFound": {
 					"viewName": "NotFound",
 					"transition": "slide",
 					"viewType": "XML",
 					"clearControlAggregation": false,
-					"controlId": "",
-					"viewLevel": 1
+					"controlId": "app",
+					"viewLevel": 1,
+					"controlAggregation": "pages",
+					"viewPath": "application.view"
 				},
 				"pedido": {
 					"viewName": "Pedido",
