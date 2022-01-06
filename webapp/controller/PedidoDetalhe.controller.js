@@ -2033,6 +2033,7 @@ sap.ui.define([
 		},
 
 		onNovoItem: function () {
+			
 			console.log("onitempress standard");
 			var that = this;
 

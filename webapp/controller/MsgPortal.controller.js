@@ -39,63 +39,95 @@ sap.ui.define([
 				// },
 				success: function (retorno) {
 
-					var vetorMsg = retorno.results;
+					that.vetorMsg = retorno.results;
 
-					for (var i = 0; i < vetorMsg.length; i++) {
+					// for (var i = 0; i < vetorMsg.length; i++) {
 
-						var filename = vetorMsg[i].NmArquivoFisico.split("/");
-						filename = filename[filename.length - 1];
+					// 	var mimeType = vetorMsg[i].NmArquivoFisico.split(".");
+					// 	mimeType = mimeType[mimeType.length - 1];
 
-						var status = "None";
+					// 	if (mimeType == "xlsx" && mimeType == "xls") {
 
-						if (vetorMsg[i].Prioridade == "01") {
-							status = "Success";
-						} else if (vetorMsg[i].Prioridade == "02") {
-							status = "Warning";
-						} else if (vetorMsg[i].Prioridade == "03") {
-							status = "Error";
-						}
+					// 		mimeType = "application/vnd.ms-excel";
 
-						var vAux = {
-							"documentId": vetorMsg[i].CodMensagem,
-							"fileName": filename,
-							"mimeType": "application/msexcel",
-							"thumbnailUrl": "",
-							"url": vetorMsg[i].NmArquivoFisico,
-							"attributes": [{
-								"title": "Título da Mensagem",
-								"text": vetorMsg[i].TituloMensagem,
-								"active": true
-							}, {
-								"title": "Texto",
-								"text": vetorMsg[i].TextoMensagem,
-								"active": true
-							}, {
-								"title": "Ini Validade",
-								"text": vetorMsg[i].DatIniValid,
-								"active": false
-							}, {
-								"title": "Fim Validade",
-								"text": vetorMsg[i].DatFimValid,
-								"active": false
-							}],
-							"statuses": [{
-								"title": "Prioridade",
-								"text": vetorMsg[i].DescPrioridade,
-								"state": status
-							}],
-							// "markers": [{
-							// }
-							// 	"type": "Flagged"
-							// ],
-							"selected": false
-						};
+					// 	} else if (mimeType == "jpeg") {
 
-						that.vetorMsg.items.push(vAux);
-					}
+					// 		mimeType = "image/jpeg";
+
+					// 	} else if (mimeType == "txt") {
+
+					// 		mimeType = "text/plain";
+
+					// 	} else if (mimeType == "png") {
+
+					// 		mimeType = "image/png";
+
+					// 	} else if (mimeType == "docx") {
+
+					// 		mimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+
+					// 	} else if (mimeType == "pptx") {
+
+					// 		mimeType = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+
+					// 	} else if (mimeType == "pdf") {
+
+					// 		mimeType = "application/pdf";
+
+					// 	} else {
+
+					// 		mimeType = "application/octet-stream";
+					// 	}
+
+					// 	var status = "None";
+
+					// 	if (vetorMsg[i].Prioridade == "01") {
+					// 		status = "Success";
+					// 	} else if (vetorMsg[i].Prioridade == "02") {
+					// 		status = "Warning";
+					// 	} else if (vetorMsg[i].Prioridade == "03") {
+					// 		status = "Error";
+					// 	}
+
+					// 	var vAux = {
+					// 		"documentId": vetorMsg[i].CodMensagem,
+					// 		"fileName": vetorMsg[i].NmArquivoFisico,
+					// 		"mimeType": mimeType,
+					// 		"thumbnailUrl": "",
+					// 		"url": vetorMsg[i].UrlDownload,
+					// 		"attributes": [{
+					// 			"title": "Título da Mensagem",
+					// 			"text": vetorMsg[i].TituloMensagem,
+					// 			"active": true
+					// 		}, {
+					// 			"title": "Texto",
+					// 			"text": vetorMsg[i].TextoMensagem,
+					// 			"active": true
+					// 		}, {
+					// 			"title": "Ini Validade",
+					// 			"text": vetorMsg[i].DatIniValid,
+					// 			"active": false
+					// 		}, {
+					// 			"title": "Fim Validade",
+					// 			"text": vetorMsg[i].DatFimValid,
+					// 			"active": false
+					// 		}],
+					// 		"statuses": [{
+					// 			"title": "Prioridade",
+					// 			"text": vetorMsg[i].DescPrioridade,
+					// 			"state": status
+					// 		}],
+					// 		// "markers": [{
+					// 		// }
+					// 		// 	"type": "Flagged"
+					// 		// ],
+					// 		"selected": false
+					// 	};
+
+					// 	that.vetorMsg.items.push(vAux);
+					// }
 
 					that.getModel("modelMsg").setData(that.vetorMsg);
-
 				},
 				error: function (error) {
 					that.onMensagemErroODATA(error);
@@ -103,12 +135,36 @@ sap.ui.define([
 			});
 		},
 
+		onEditarPress: function (oEvent) {
+
+			var that = this;
+			var oList = oEvent.getParameter("listItem") || oEvent.getSource();
+			var Msg = oList.getBindingContext("modelMsg").getObject();
+			
+			var oModel = new JSONModel(Msg);
+			this.setModelGlobal(oModel, "Msg");
+			
+			sap.ui.core.UIComponent.getRouterFor(that).navTo("MsgPortalDetalhe");
+		},
+		
+		onItemPress: function (oEvent) {
+
+			var that = this;
+			var oList = oEvent.getParameter("listItem") || oEvent.getSource();
+			var Msg = oList.getBindingContext("modelMsg").getObject();
+			
+			var oModel = new JSONModel(Msg);
+			this.setModelGlobal(oModel, "Msg");
+			
+			sap.ui.core.UIComponent.getRouterFor(that).navTo("MsgPortalDetalhe");
+		},
+
 		onCriarModels: function () {
 
 			this.oModel = this.getModel();
 
 			this.vetorMsg = {
-				items: []
+				items: [] 
 			};
 
 			var oModel = new JSONModel(this.vetorMsg);
@@ -138,8 +194,8 @@ sap.ui.define([
 			}), "settings");
 
 			this.getView().setModel(new JSONModel({
-				"items": ["jpg", "txt", "ppt", "doc", "xls", "pdf", "png"],
-				"selected": ["jpg", "txt", "ppt", "doc", "xls", "pdf", "png"]
+				"items": ["jpg", "txt", "ppt", "doc", "xls", "xlsx", "docx", "pdf", "png"],
+				"selected": ["jpg", "txt", "ppt", "doc", "xls", "xlsx", "docx", "pdf", "png"]
 			}), "fileTypes");
 		},
 
@@ -164,7 +220,7 @@ sap.ui.define([
 			if (aSelectedItems) {
 
 				for (var i = 0; i < aSelectedItems.length; i++) {
-					
+
 					aSelectedItems[i].setUrl(aSelectedItems[i].getBindingContext("modelMsg").getObject().url);
 					oUploadCollection.downloadItem(aSelectedItems[i], true);
 					aSelectedItems[i].setUrl("");
