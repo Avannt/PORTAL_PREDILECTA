@@ -1,4 +1,5 @@
 /*eslint-disable no-unused-vars, no-alert */
+/*eslint-disable no-console, no-alert */
 sap.ui.define([
 	"application/controller/BaseController",
 	"sap/ui/model/json/JSONModel",
@@ -98,14 +99,18 @@ sap.ui.define([
 					that.onBuscarAdmin(that.getModelGlobal("modelAux").getProperty("/CodRepres"), res, rej);
 
 				}).then(function (dataAnexo) {
-					
-					if (dataAnexo.EvAdmin == "true") {
-						
-						that.getModel("settings").setProperty("/uploadEnabled", false);
-						that.getModel("settings").setProperty("/uploadButtonVisible", false);
-						
+
+					if (dataAnexo.EvAdmin == true) {
+
+						that.getModel("settings").setProperty("/visibleDelete", true);
+						that.getModel("settings").setProperty("/enableDelete", true);
+						that.getModel("settings").setProperty("/uploadEnabled", true);
+						that.getModel("settings").setProperty("/uploadButtonVisible", true);
+
 					} else {
 						
+						that.getModel("settings").setProperty("/visibleDelete", false);
+						that.getModel("settings").setProperty("/enableDelete", false);
 						that.getModel("settings").setProperty("/uploadEnabled", false);
 						that.getModel("settings").setProperty("/uploadButtonVisible", false);
 					}
@@ -169,6 +174,9 @@ sap.ui.define([
 				itens: []
 			};
 
+			var oModelAnexos = new JSONModel(this.vetorAnexos);
+			this.setModel(oModelAnexos, "modelAnexos");
+
 			var aux = {
 				QtdAnexo: 0,
 				Token: ""
@@ -177,9 +185,9 @@ sap.ui.define([
 			var oModel = new JSONModel(aux);
 			this.setModel(oModel, "modelTela");
 
-			this.getView().setModel(new JSONModel(Device), "device");
+			this.setModel(new JSONModel(Device), "device");
 
-			this.getView().setModel(new JSONModel({
+			this.setModel(new JSONModel({
 				"maximumFilenameLength": 55,
 				"maximumFileSize": 1000,
 				"mode": ListMode.SingleSelectMaster,
@@ -187,8 +195,8 @@ sap.ui.define([
 				"uploadButtonVisible": true,
 				"enableEdit": false,
 				"enableDelete": true,
-				"visibleEdit": false,
 				"visibleDelete": true,
+				"visibleEdit": false,
 				"listSeparatorItems": [
 					ListSeparators.All,
 					ListSeparators.None
@@ -199,11 +207,22 @@ sap.ui.define([
 					"text": "Multi"
 				}]
 			}), "settings");
-
-			this.getView().setModel(new JSONModel({
-				"itens": ["jpg", "jpeg", "txt", "ppt", "doc", "xls", "xlsx", "docx", "pdf", "png", "csv"],
+			
+			var tipo = {
+				"items":    ["jpg", "jpeg", "txt", "ppt", "doc", "xls", "xlsx", "docx", "pdf", "png", "csv"],
 				"selected": ["jpg", "jpeg", "txt", "ppt", "doc", "xls", "xlsx", "docx", "pdf", "png", "csv"]
-			}), "fileTypes");
+			};
+			
+			var model = new JSONModel(tipo);
+			
+			try {
+				
+				this.setModel(model, "fileTypes");
+				
+			} catch(error){
+				
+				console.log(error);
+			}
 		},
 
 		onSelectionChange: function () {

@@ -42,7 +42,7 @@ sap.ui.define([
 		getRouter: function () {
 			return sap.ui.core.UIComponent.getRouterFor(this);
 		},
-		
+
 		onFormatHora: function (duration) {
 
 			var milliseconds = Math.floor((duration % 1000) / 100),
@@ -72,13 +72,26 @@ sap.ui.define([
 
 		formatAttribute: function (sValue) {
 
+			if (jQuery.isNumeric(sValue.ms)) {
+
+				return this.onFormatHora(sValue.ms);
+
+				// 	return FileSizeFormat.getInstance({
+				// 		binaryFilesize: false,
+				// 		maxFractionDigits: 1,
+				// 		maxIntegerDigits: 3
+				// 	}).format(sValue);
+
+			}
 			if (jQuery.isNumeric(sValue)) {
 
-				return FileSizeFormat.getInstance({
-					binaryFilesize: false,
-					maxFractionDigits: 1,
-					maxIntegerDigits: 3
-				}).format(sValue);
+				return sValue;
+
+				// 	return FileSizeFormat.getInstance({
+				// 		binaryFilesize: false,
+				// 		maxFractionDigits: 1,
+				// 		maxIntegerDigits: 3
+				// 	}).format(sValue);
 
 			} else {
 
