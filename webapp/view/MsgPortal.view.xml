@@ -1,58 +1,84 @@
 <mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:layout="sap.ui.layout"
 	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" xmlns="sap.m" xmlns:semantic="sap.m.semantic" height="100%"
 	controllerName="application.controller.MsgPortal">
-	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Comunicação" showFooter="false" busyIndicatorDelay="0">
+	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Relatório de Títulos Abertos" showFooter="false"
+		busyIndicatorDelay="0">
 		<content>
-			<Table id="table_pedidos" backgroundDesign="Translucent" items="{ path:'modelMsg>/', sorter: { path: 'CodMensagem', descending: true }}"
-				mode="None" growingThreshold="99" growingTriggerText="Proximas Mensagens >>" growing="true"
-				noDataText="Nenhuma Mensagem cadastrada" busyIndicatorDelay="0" fixedLayout="false">
-				<headerToolbar>
-					<Toolbar id="lineItemsToolbar">
-						<Title id="lineItemsHeader" text="Lista de mensagens do usuário: {modelAux>/CodRepres} - {modelAux>/NomeRepres}"/>
-						<ToolbarSpacer/>
-						<!--<Label text=""/>-->
-					</Toolbar>
-				</headerToolbar>
-				<columns>
-					<Column minScreenWidth="320px" hAlign="Left" width="120px" popinDisplay="Inline">
-						<Text text="Cod Msg"/>
-					</Column>
-					<Column minScreenWidth="550px" demandPopin="true" popinDisplay="Inline">
-						<Text text="Título"/>
-					</Column>
-					<Column minScreenWidth="750px" demandPopin="true" popinDisplay="Inline">
-						<Text text="Texto Msg"/>
-					</Column>
-					<Column minScreenWidth="Desktop" demandPopin="true" popinDisplay="Inline">
-						<Text text="Data Criação"/>
-					</Column>
-					<Column minScreenWidth="Desktop" demandPopin="true" popinDisplay="Inline">
-						<Text text="Validade Início"/>
-					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline">
-						<Text text="Validade Fim"/>
-					</Column>
-					<Column minScreenWidth="550px" demandPopin="true" popinDisplay="Inline">
-						<Text text="Prioridade"/>
-					</Column>
-				</columns>
+			<UploadCollection
+				id="UploadCollection"
+				maximumFilenameLength="{settings>/maximumFilenameLength}"
+				maximumFileSize="{settings>/maximumFileSize}"
+				multiple="true"
+				change="onChange"
+				fileDeleted="onFileDeleted"
+				filenameLengthExceed="onFilenameLengthExceed"
+				fileRenamed="onFileRenamed"
+				fileSizeExceed="onFileSizeExceed"
+				fileType="{fileTypes>/selected}"
+				selectionChange="onSelectionChange"
+				typeMissmatch="onTypeMissmatch"
+				uploadComplete="onUploadComplete"
+				beforeUploadStarts="onBeforeUploadStarts"
+				uploadTerminated="onUploadTerminated"
+				items="{
+					path: '/items',
+					templateShareable: false
+				}"
+				numberOfAttachmentsText="Uploaded (8)"
+				showSeparators="{settings>/showSeparators}"
+				uploadEnabled="{settings>/uploadEnabled}"
+				uploadButtonInvisible="{=!${settings>/uploadButtonVisible}}"
+				mode="{settings>/mode}">
+				<toolbar>
+					<OverflowToolbar id="myId">
+						<Title id="attachmentTitle" />
+						<ToolbarSpacer />
+						<SearchField width="10rem" search="onSearch" />
+						<Button
+							id="deleteSelectedButton"
+							text="Delete"
+							press="onDeleteSelectedItems"
+							enabled="false"
+							visible="false"
+							type="Transparent" />
+						<ToggleButton
+							id="selectAllButton"
+							text="Select all"
+							press="onSelectAllPress"
+							enabled="false"
+							visible="false"
+							type="Transparent" />
+						<UploadCollectionToolbarPlaceholder />
+					</OverflowToolbar>
+				</toolbar>
 				<items>
-					<ColumnListItem type="Navigation" press="onEditarPress">
-						<cells>
-							<Text text="{modelMsg>CodMensagem}"/>
-							<Text text="{modelMsg>TituloMensagem}"/>
-							<Text text="{modelMsg>TextoMensagem}"/>
-							<Text
-								text="{path: 'modelMsg>DatCriacao', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' , strictParsing: true , UTC: true }}"/>
-							<Text
-								text="{path: 'modelMsg>DatIniValid', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' , strictParsing: true , UTC: true }}"/>
-							<Text
-								text="{path: 'modelMsg>DatFimValid', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' , strictParsing: true , UTC: true }}"/>
-							<Text text="{modelMsg>Prioridade}- {path: 'modelMsg>DescPrioridade'}"/>
-						</cells>
-					</ColumnListItem>
+					<UploadCollectionItem
+						documentId="{documentId}"
+						fileName="{fileName}"
+						mimeType="{mimeType}"
+						thumbnailUrl="{thumbnailUrl}"
+						url="{url}"
+						enableEdit="{settings>/enableEdit}"
+						enableDelete="{settings>/enableDelete}"
+						visibleDelete="{settings>/visibleDelete}"
+						visibleEdit="{settings>/visibleEdit}"
+						attributes="{path : 'attributes', templateShareable : false}"
+						statuses="{path : 'statuses', templateShareable : false}"
+						selected="{selected}">
+						<attributes>
+							<ObjectAttribute title="{title}"
+								text="{path : 'text', formatter : '.formatAttribute'}"
+								active="{active}"
+								press="onAttributePress" />
+						</attributes>
+						<statuses>
+							<ObjectStatus title="{title}"
+								text="{text}"
+								state="{state}" />
+						</statuses>
+					</UploadCollectionItem>
 				</items>
-			</Table>
+			</UploadCollection>
 		</content>
 	</Page>
 </mvc:View>
