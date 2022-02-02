@@ -14,7 +14,7 @@
 				<toolbar>
 					<OverflowToolbar id="myId">
 						<content>
-							<Title xmlns="sap.m" text="Código de Mensagem: {Msg>/CodMensagem} / {modelTela>/QtdAnexo} Anexos" id="title1"/>
+							<Title xmlns="sap.m" text="Código de Mensagem: {Msg>/CodMensagem} / {Msg>/TituloMensagem}" id="title1"/>
 						</content>
 						<ToolbarSpacer/>
 						<Button id="deleteSelectedButton" text="Delete" press="onDeleteSelectedItems" enabled="false" visible="false" type="Transparent"/>

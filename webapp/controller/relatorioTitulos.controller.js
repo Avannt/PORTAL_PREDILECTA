@@ -43,7 +43,8 @@ sap.ui.define([
 				BelnrFim: "",
 				LifnrIni: "",
 				LifnrFim: "",
-				Periodo: ""
+				PeriodoIni: "",
+				PeriodoFim: ""
 			};
 
 			var omodelParametros = new JSONModel(vAux);
@@ -132,6 +133,7 @@ sap.ui.define([
 					"$filter": "IvUsuario eq '" + repres + "'"
 				},
 				success: function (retorno) {
+
 					// var vetorCentros = retorno.results;
 					// var oModelCentros = new JSONModel(vetorCentros);
 					// that.setModel(oModelCentros, "modelCentros");
@@ -144,10 +146,15 @@ sap.ui.define([
 						var vAchouEmpresa = false;
 
 						for (var j = 0; j < that.vetorEmpresas.length; j++) {
-							vAchouEmpresa = true;
+
+							if (that.vetorEmpresas[j].Bukrs == that.vetorCentrosAux[i].Bukrs) {
+
+								vAchouEmpresa = true;
+							}
 						}
 
 						if (vAchouEmpresa == false) {
+
 							var vAux = {
 								Bukrs: that.vetorCentrosAux[i].Bukrs,
 								Butxt: that.vetorCentrosAux[i].Butxt
@@ -156,7 +163,8 @@ sap.ui.define([
 						}
 					}
 
-					that.getModel("modelEmpresas").setData(that.vetorEmpresas);
+					var oModelEmpresa = new JSONModel(that.vetorEmpresas);
+					that.setModel(oModelEmpresa, "modelEmpresas");
 
 				},
 				error: function (error) {
@@ -315,9 +323,17 @@ sap.ui.define([
 
 			var parametros = that.getModel("modelParametros").getData();
 			var PerioAux = that.getModel("modelParametros").getProperty("/Periodo");
-			var PerioSplit = PerioAux.split(" - ");
-			var PerioIni = PerioSplit[0];
-			var PerioFim = PerioSplit[1];
+
+			try {
+
+				var PerioSplit = PerioAux.split(" - ");
+				parametros.PeriodoIni = PerioSplit[0];
+				parametros.PeriodoFim = PerioSplit[1];
+
+			} catch (x) {
+				
+				console.log(x);
+			}
 
 			that.byId("master").setBusy(true);
 
@@ -337,8 +353,8 @@ sap.ui.define([
 						"' and BelnrFim eq '" + parametros.BelnrFim +
 						"' and RepreIni eq '" + parametros.LifnrIni +
 						"' and RepreFim eq '" + parametros.LifnrFim +
-						"' and PerioIni eq '" + PerioIni +
-						"' and PerioFim eq '" + PerioFim + "'"
+						"' and PerioIni eq '" + parametros.PeriodoIni +
+						"' and PerioFim eq '" + parametros.PeriodoFim + "'"
 				},
 				success: function (retorno) {
 

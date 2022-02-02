@@ -72,7 +72,7 @@
 												<Label text="Familia"/>
 												<Input id="idFamilia" value="{modelProduto>/Mvgr3} - {modelProduto>/DescMvgr3}" enabled="false"/>
 												<Label text="Gramatura"/>
-												<Input id="idGramatura" value="{modelProduto>/DescMvgr4}" enabled="false"/>
+												<Input id="idGramatura" value="{modelProduto>/Mvgr4} - {modelProduto>/DescMvgr4}" enabled="false"/>
 												<Label text="Marca"/>
 												<Input id="idMarca" value="{modelProduto>/Mvgr5} - {modelProduto>/DescMvgr5}" enabled="false"/>
 												<Label text="Classificação Fiscal"/>
