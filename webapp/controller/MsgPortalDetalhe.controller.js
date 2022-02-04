@@ -379,7 +379,6 @@ sap.ui.define([
 					that.onMensagemErroODATA(error);
 				}
 			});
-
 		},
 
 		deleteItemById: function (sItemToDeleteId) {
