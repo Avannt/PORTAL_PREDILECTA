@@ -4,7 +4,7 @@
 	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Relatório de Títulos Abertos" showFooter="false"
 		busyIndicatorDelay="0">
 		<content>
-			<Table class="centralizaGroup" id="idtableTitulos" growing="false" growingScrollToLoad="false" growingThreshold="5"
+			<Table class="centralizaGroup" id="idtableTitulos" growing="true" growingScrollToLoad="true" growingThreshold="99"
 				noDataText="Nenhum registro encontrado" alternateRowColors="true" backgroundDesign="Solid" width="100%"
 				growingTriggerText="Próximo &gt;&gt;&gt;"
 				items="{ path: 'modelTitulos>/', sorter : [{ path: 'Bukrs', ascending: true, group: '.ongetHeaderGroupBukrs' }] }">
@@ -98,99 +98,64 @@
 					</Toolbar>
 				</headerToolbar>
 				<columns>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="30px">
-						<Text text="Emp"/>
-					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="30px">
-						<Text text="Nome Emp"/>
-					</Column>
+					<!--<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="30px">-->
+					<!--	<Text text="Emp"/>-->
+					<!--</Column>-->
+					<!--<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="30px">-->
+					<!--	<Text text="Nome Emp"/>-->
+					<!--</Column>-->
 					<Column minScreenWidth="500px" demandPopin="true" popinDisplay="Inline" width="65px">
-						<Text text="Nº docto"/>
+						<Text text="Doc Contábil"/>
 					</Column>
-					<Column minScreenWidth="610px" demandPopin="true" popinDisplay="Inline" width="70px" hAlign="Right">
+					<Column minScreenWidth="610px" demandPopin="true" popinDisplay="Inline" width="70px" hAlign="Left">
 						<Text text="Lançto"/>
 					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="65px">
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="120px">
 						<Text text="Cliente"/>
 					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="200px">
-						<Text text="Razão Social"/>
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="65px">
+						<Text text="Nº Docto"/>
 					</Column>
-					<!--<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="110px">-->
-					<!--	<Text text="CNPJ"/>-->
-					<!--</Column>-->
-					<!--<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="40px">-->
-					<!--	<Text text="UF"/>-->
-					<!--</Column>-->
-					<!--<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="100px">-->
-					<!--	<Text text="Cidade"/>-->
-					<!--</Column>-->
-					<!--<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="100px">-->
-					<!--	<Text text="Transporte"/>-->
-					<!--</Column>-->
-					<!--<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="100px">-->
-					<!--	<Text text="Transp.Redesp"/>-->
-					<!--</Column>-->
-					<!--<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="95px" hAlign="Right">-->
-					<!--	<Text text="Vl.Tot.NF"/>-->
-					<!--</Column>-->
-					<!--<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="60px" hAlign="Right">-->
-					<!--	<Text text="%Rent"/>-->
-					<!--</Column>-->
-					<!--<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="60px" hAlign="Right">-->
-					<!--	<Text text="DANFe"/>-->
-					<!--</Column>-->
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="60px">
+						<Text text="Nº Fat"/>
+					</Column>
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="110px">
+						<Text text="CNPJ/CPF"/>
+					</Column>
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="100px">
+						<Text text="Cidade"/>
+					</Column>
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="60px">
+						<Text text="Dias Atraso"/>
+					</Column>
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="80px" hAlign="Left">
+						<Text text="Vl.Título"/>
+					</Column>
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="60px" hAlign="Left">
+						<Text text="Data Últ Advt."/>
+					</Column>
 				</columns>
 				<items>
 					<ColumnListItem type="Inactive">
 						<cells>
-							<Text text="{modelTitulos>Bukrs}"/>
-							<Text text="{modelTitulos>Butxt}"/>
+							<!--<Text text="{modelTitulos>Bukrs}"/>-->
+							<!--<Text text="{modelTitulos>Butxt}"/>-->
 							<Text text="{modelTitulos>Belnr}"/>
-							<text="{path: 'modelTitulos>Budat', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' , strictParsing: true , UTC: true }}"/>
-							<Text text="{modelTitulos>Kunnr}"/>
-							<Text text="{modelTitulos>Name1Cli}"/>
+							<Text text="{path: 'modelTitulos>Budat', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' , strictParsing: true , UTC: true }}" />
+							<Text text="{modelTitulos>Kunnr} - {modelTitulos>Name1Cli}" />
 							<!--<Text text="{modelTitulos>Series}"/>-->
-							<!--<Text text="{modelTitulos>Nfenum}"/>-->
-							<!--<Text text="{modelTitulos>Vbeln}"/>-->
-							<!--<Text text="{modelTitulos>Bstkd}"/>-->
-							<!--<Text text="{modelTitulos>Stcd1}"/>-->
-							<!--<Text text="{modelTitulos>Region}"/>-->
-							<!--<Text text="{modelTitulos>City1}"/>-->
-							<!--<Text-->
-							<!--	text="{path: 'modelTitulos>Netwrt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>-->
-						
+							<Text text="{modelTitulos>DocNum}"/>
+							<Text text="{modelTitulos>DocFat}"/>
+							<Text text="{path: 'modelTitulos>Stcd1', formatter: '.onFormatCnpj'}{path: 'modelTitulos>Stcd2', formatter: '.onFormatCpf'}"/>
+							<Text text="{modelTitulos>City1} - {modelTitulos>Region}"/>
+							<Text text="{modelTitulos>DiasAtraso}"/>
+							<Text
+								text="R$: {path: 'modelTitulos>Dmbtr', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
+							<Text text="{path: 'modelTitulos>Madat', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' , strictParsing: true , UTC: true }}" />
 						</cells>
 					</ColumnListItem>
 				</items>
 			</Table>
-			<!--<f:SimpleForm id="SimpleFormChange472" editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="3"-->
-			<!--	labelSpanS="1" adjustLabelSpan="false" emptySpanXL="3" emptySpanL="3" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"-->
-			<!--	singleContainerFullSize="false">-->
-			<!--	<f:content>-->
-			<!--		<Label/>-->
-			<!--		<Table class="centralizaGroup" id="idtableResumoEmpresa" growing="false" growingScrollToLoad="false" growingThreshold="5"-->
-			<!--			noDataText="Nenhum registro encontrado" items="{ path: 'modelResumoEmpresa>/' }">-->
-			<!--			<columns>-->
-			<!--				<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" styleClass="">-->
-			<!--					<Text text="Resumo Representante"/>-->
-			<!--				</Column>-->
-			<!--				<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" hAlign="Right">-->
-			<!--					<Text text="Valor Total Faturado"/>-->
-			<!--				</Column>-->
-			<!--			</columns>-->
-			<!--			<items>-->
-			<!--				<ColumnListItem type="Inactive">-->
-			<!--					<cells>-->
-			<!--						<Text text="{modelResumoEmpresa>Bukrs} - {modelResumoEmpresa>Butxt}"/>-->
-			<!--						<Text-->
-			<!--							text="{path: 'modelResumoEmpresa>Netwrt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>-->
-			<!--					</cells>-->
-			<!--				</ColumnListItem>-->
-			<!--			</items>-->
-			<!--		</Table>-->
-			<!--	</f:content>-->
-			<!--</f:SimpleForm>-->
 		</content>
 	</Page>
 </mvc:View>

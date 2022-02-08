@@ -89,12 +89,18 @@
 												<Input id="idUnidadeMedida" value="{modelProduto>/Vrkme}" enabled="false"/>
 												<Label text="Quantidade na caixa"/>
 												<Input id="idQuantidadeNaCaixa" value="{modelProduto>/QntCaixa}" enabled="false"/>
-												<Label text="Comprimento"/>
+												<Label text="Comprimento CX"/>
 												<Input id="idComprimento" value="{path: 'modelProduto>/Laeng', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} {modelProduto>/Meabm}" enabled="false"/>
-												<Label text="Altura"/>
+												<Label text="Comprimento UN"/>
+												<Input id="idComprimentoUn" value="{path: 'modelProduto>/LaengUn', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} {modelProduto>/Meabm}" enabled="false"/>
+												<Label text="Altura CX"/>
 												<Input id="idAltura" value="{path: 'modelProduto>/Hoehe', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} {modelProduto>/Meabm}" enabled="false"/>
-												<Label text="Largura"/>
+												<Label text="Altura UN"/>
+												<Input id="idAlturaUn" value="{path: 'modelProduto>/HoeheUn', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} {modelProduto>/Meabm}" enabled="false"/>
+												<Label text="Largura CX"/>
 												<Input id="idLargura" value="{path: 'modelProduto>/Breit', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} {modelProduto>/Meabm}" enabled="false"/>
+												<Label text="Largura UN"/>
+												<Input id="idLarguraUn" value="{path: 'modelProduto>/BreitUn', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} {modelProduto>/Meabm}" enabled="false"/>
 												<Label text="Codigo EAN"/>
 												<Input id="idCodigoEAN" value="{modelProduto>/Ean11}" enabled="false"/>
 												<Label text="Codigo DUN"/>

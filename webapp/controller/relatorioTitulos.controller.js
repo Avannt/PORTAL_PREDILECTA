@@ -215,20 +215,14 @@ sap.ui.define([
 			});
 
 			aCols.push({
-				label: "Docto",
+				label: "Doc Contábil",
 				property: "Belnr",
 				type: EdmType.String
 			});
 
 			aCols.push({
-				label: "Referência Cliente",
-				property: "Bstkd",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Dt Docto",
-				property: "Docdat",
+				label: "Lançto",
+				property: "Budat",
 				type: EdmType.DateTime,
 				format: 'dd/mm/yyyy'
 			});
@@ -256,6 +250,30 @@ sap.ui.define([
 				property: "Stcd2",
 				type: EdmType.String
 			});
+			
+			aCols.push({
+				label: "Rede",
+				property: "Kvgr4",
+				type: EdmType.String
+			});
+
+			aCols.push({
+				label: "Descrição Rede",
+				property: "Kvgr4Text",
+				type: EdmType.String
+			});
+
+			aCols.push({
+				label: "Bandeira",
+				property: "Kvgr5",
+				type: EdmType.String
+			});
+
+			aCols.push({
+				label: "Descrição Bandeira",
+				property: "Kvgr5Text",
+				type: EdmType.String
+			});
 
 			aCols.push({
 				label: "UF",
@@ -268,13 +286,44 @@ sap.ui.define([
 				property: "City1",
 				type: EdmType.String
 			});
+			
+			aCols.push({
+				label: "Nº Docto",
+				property: "DocNum",
+				type: EdmType.String
+			});
+			
+			aCols.push({
+				label: "Referência Cliente",
+				property: "Bstkd",
+				type: EdmType.String
+			});
+			
+			aCols.push({
+				label: "Nº Fat",
+				property: "DocFat",
+				type: EdmType.String
+			});
+			
+			aCols.push({
+				label: "Dias Atraso",
+				property: "DiasAtraso",
+				type: EdmType.String
+			});
 
 			aCols.push({
-				label: "Vl.Tot.NF",
-				property: "Netwrt",
+				label: "Vl.Título",
+				property: "Dmbtr",
 				type: EdmType.Number,
 				scale: 2,
 				delimiter: true
+			});
+			
+			aCols.push({
+				label: "Data Últ Advt.",
+				property: "Madat",
+				type: EdmType.DateTime,
+				format: 'dd/mm/yyyy'
 			});
 
 			return aCols;

@@ -30,8 +30,10 @@
 												<Input id="idEndereco" enabled="false" value="{modelCliente>/Stras}"/>
 												<Label text="Cidade / UF"/>
 												<Input id="idCidade" enabled="false" value="{modelCliente>/Ort01} - {modelCliente>/Regio}"/>
+												<Label text="Data Criação"/>
+												<Input id="idDataCadastroCliente" enabled="false" value="{path: 'modelCliente>/Crdat', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' , strictParsing: true , UTC: true }}"/>
 												<Label text="Data Fundação"/>
-												<Input id="idDataCadastroCliente" enabled="false" value="{path : 'modelCliente>/FoundDat', formatter: '.myFormatterDataMobile'}"/>
+												<Input id="idDataFundacaoCliente" enabled="false" value="{path: 'modelCliente>/FoundDat', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' , strictParsing: true , UTC: true }}"/>
 												<Label text="Email"/>
 												<Input id="idEmail" enabled="false" value="{modelCliente>/EmailNf}"/>
 												<Label text="Email Envio XML"/>
