@@ -60,7 +60,7 @@
 										<SearchField id="idBandeiraIni" placeholder="Digite Código ou Nome da Bandeira" enableSuggestions="true" value="{modelParametros>/Kvgr5Ini}"
 											suggest="onSuggestBandeiraIni" suggestionItems="{ path: 'modelBandeiras>/', sorter: { path: 'Kvgr5', ascending: true }}">
 											<suggestionItems>
-												<SuggestionItem text="{modelBandeiras>Kvgr4}" description="{modelBandeiras>DescKvgr4}" key="{modelBandeiras>Kvgr5}"/>
+												<SuggestionItem text="{modelBandeiras>Kvgr5}" description="{modelBandeiras>DescKvgr5}" key="{modelBandeiras>Kvgr5}"/>
 											</suggestionItems>
 										</SearchField>
 										<SearchField id="idBandeiraFim" placeholder="Digite Código ou Nome da Bandeira" enableSuggestions="true" value="{modelParametros>/Kvgr5Fim}"
