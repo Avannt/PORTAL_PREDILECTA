@@ -1952,6 +1952,14 @@ sap.ui.define([
 					console.log("Validações da Campanha estão OK!");
 				}
 			}
+			
+			if (pedido.TipoPedido == "Proposta") {
+				this.byId("idTextCamp").setVisible(false);
+				this.byId("idBtnCamp").setVisible(false);
+			} else {
+				this.byId("idTextCamp").setVisible(true);
+				this.byId("idBtnCamp").setVisible(true);
+			}
 		},
 
 		onBloquearCabecalho: function (bloqueio) {
