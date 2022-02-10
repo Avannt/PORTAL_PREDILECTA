@@ -362,7 +362,10 @@ sap.ui.define([
 
 											if (oAction == "Ver Titulo") {
 
-												that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
+												// that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
+												
+												that.getModelGlobal("modelAux").setProperty("/Kunnr", Pedido.IvKunnr);
+												
 												sap.ui.core.UIComponent.getRouterFor(that).navTo("relatorioTitulos");
 											} else if (oAction == "Continuar") {
 
