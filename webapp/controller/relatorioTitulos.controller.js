@@ -54,6 +54,10 @@ sap.ui.define([
 			var omodelTitulos = new JSONModel(that.vetorTitulos);
 			that.setModel(omodelTitulos, "modelTitulos");
 
+			var CodCliente = that.getModelGlobal("modelAux").getProperty("/Kunnr");
+			that.getModel("modelParametros").setProperty("/KunnrIni", CodCliente);
+			that.getModel("modelParametros").setProperty("/KunnrFim", CodCliente);
+
 			// that.vetorResumoEmpresa = [];
 			// var oModelResumoEmpresa = new JSONModel(that.vetorResumoEmpresa);
 			// that.setModel(oModelResumoEmpresa, "modelResumoEmpresa");
