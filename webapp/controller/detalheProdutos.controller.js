@@ -77,7 +77,7 @@ sap.ui.define([
 						
 							if (that.vetorProdutosAux[i].Werks == werks) {
 							
-							 that.vetorProdutosAux[i].PathImg = "https://www.predilecta.com.br/images/produtos/" + parseInt(that.vetorProdutosAux[i].Matnr) + "_528.png";
+							 that.vetorProdutosAux[i].PathImg = "https://www.predilecta.com.br/images/produtos_portal/" + that.vetorProdutosAux[i].Matnr + ".png";
 						
 						     that.vetorProdutos.push(that.vetorProdutosAux[i]);
 
