@@ -10,7 +10,7 @@
 								<Toolbar width="100%" id="toolbar1">
 									<content>
 										<Select id="idEstabelecimento" forceSelection="false" selectedKey="{modelTela>/Werks}" showSecondaryValues="false" items="{ path: 'modelCentros>/' }" change="onChangeCentro" busyIndicatorDelay="0">
-											<core:Item xmlns:core="sap.ui.core" key="{modelCentros>Werks}" text="{modelCentros>Werks} - {modelCentros>NomeCentro}"/>
+											<core:Item xmlns:core="sap.ui.core" key="{modelCentros>Werks}" text="{modelCentros>NomeCentro}"/>
 											<layoutData>
 												<layout:GridData xmlns:layout="sap.ui.layout" span="L2 M2" linebreakM="true" id="data98"/>
 											</layoutData>
