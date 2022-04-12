@@ -444,11 +444,28 @@ sap.ui.define([
 			// var dataAntiga = new Date(dataSplit[2],dataSplit[1],dataSplit[0]);
 
 			if (dataEscolhida >= novaAtual) {
-				return "Data OK";
+				return "Data Maior";
 
 			} else {
 
-				return "Data menor que data atual!";
+				return "Data Menor";
+			}
+		},
+
+		onValidaDataLimiteEntrega: function (DataEntrega, DataLimite) {
+
+			var DataEntrega = DataEntrega.split("/");
+			var DataLimite = DataLimite.split("/");
+
+			var dataEscolhida = String(DataEntrega[2]) + String(DataEntrega[1]) + String(DataEntrega[0]);
+			var dataLimite = String(DataLimite[2]) + String(DataLimite[1]) + String(DataLimite[0]);
+
+			if (dataEscolhida > dataLimite) {
+				return "Data Maior";
+
+			} else {
+
+				return "Data Menor";
 			}
 		},
 
@@ -549,7 +566,7 @@ sap.ui.define([
 					that.byId("idPedidoOrigem").setEnabled(false);
 					that.byId("idObservacoes").setEnabled(false);
 					that.byId("idEmailCliente").setEnabled(false);
-					
+
 				} else {
 
 					that.byId("idDataLimite").setEnabled(true);
@@ -642,12 +659,22 @@ sap.ui.define([
 
 		onLiberarItensPedido: function () {
 
+			Date.prototype.addDays = function (days) {
+				var dat = new Date(this.valueOf());
+				dat.setDate(dat.getDate() + parseInt(days, 10));
+				return dat.toLocaleDateString("pt-BR");
+			};
+
 			var that = this;
 
 			var Pedido = that.getModelGlobal("modelPedido").getData();
 
 			var validaDataLimite = that.onValidaDataMenorAtual(Pedido.DataLimite);
 			var validaDataEntrega = that.onValidaDataMenorAtual(Pedido.DataEntrega);
+
+			var date = new Date();
+			var dataLimiteEntrega = date.addDays(this.getModelGlobal("modelAux").getProperty("/MaxDiasEntrega"));
+			var validaLimiteDataEntrega = that.onValidaDataLimiteEntrega(Pedido.DataEntrega, dataLimiteEntrega);
 
 			if (Pedido.StatusPedido == 3) {
 
@@ -773,7 +800,7 @@ sap.ui.define([
 					}
 				});
 
-			} else if (validaDataLimite != "Data OK") {
+			} else if (validaDataLimite != "Data Maior") {
 
 				sap.m.MessageBox.show("Data Limite é menor que data Atual!", {
 					icon: sap.m.MessageBox.Icon.ERROR,
@@ -788,7 +815,7 @@ sap.ui.define([
 					}
 				});
 
-			} else if (validaDataEntrega != "Data OK") {
+			} else if (validaDataEntrega != "Data Maior") {
 
 				sap.m.MessageBox.show("Data de Entrega é menor que data Atual!", {
 					icon: sap.m.MessageBox.Icon.ERROR,
@@ -802,6 +829,22 @@ sap.ui.define([
 
 					}
 				});
+
+			} else if (validaLimiteDataEntrega == "Data Maior") {
+
+				sap.m.MessageBox.show("Data de Entrega máx permitida é de " + this.getModelGlobal("modelAux").getProperty("/MaxDiasEntrega") +
+					" dias a partir da data atual! ", {
+						icon: sap.m.MessageBox.Icon.ERROR,
+						title: "Preecher campo(s)",
+						actions: [MessageBox.Action.OK],
+						onClose: function () {
+
+							that.byId("idTopLevelIconTabBar").setSelectedKey("tab2");
+							that.byId("idDataEntrega").focus();
+							that.byId("idDataEntrega").setValueState("Error");
+
+						}
+					});
 
 			} else if (Pedido.EmailCliente == "") {
 
@@ -1367,7 +1410,7 @@ sap.ui.define([
 				};
 
 				this.vetorTipoPedidos.push(aux);
-				
+
 			} else if (TipoPedido !== undefined && TipoPedido.DatFimValid !== null) {
 
 				this.vetorTipoPedidos = [];
@@ -1952,6 +1995,14 @@ sap.ui.define([
 					console.log("Validações da Campanha estão OK!");
 				}
 			}
+
+			if (pedido.TipoPedido == "Proposta") {
+				this.byId("idTextCamp").setVisible(false);
+				this.byId("idBtnCamp").setVisible(false);
+			} else {
+				this.byId("idTextCamp").setVisible(true);
+				this.byId("idBtnCamp").setVisible(true);
+			}
 		},
 
 		onBloquearCabecalho: function (bloqueio) {
@@ -2033,7 +2084,7 @@ sap.ui.define([
 		},
 
 		onNovoItem: function () {
-			
+
 			console.log("onitempress standard");
 			var that = this;
 

@@ -43,7 +43,8 @@ sap.ui.define([
 				BelnrFim: "",
 				LifnrIni: "",
 				LifnrFim: "",
-				Periodo: ""
+				PeriodoIni: "",
+				PeriodoFim: ""
 			};
 
 			var omodelParametros = new JSONModel(vAux);
@@ -52,6 +53,10 @@ sap.ui.define([
 			that.vetorTitulos = [];
 			var omodelTitulos = new JSONModel(that.vetorTitulos);
 			that.setModel(omodelTitulos, "modelTitulos");
+
+			var CodCliente = that.getModelGlobal("modelAux").getProperty("/Kunnr");
+			that.getModel("modelParametros").setProperty("/KunnrIni", CodCliente);
+			that.getModel("modelParametros").setProperty("/KunnrFim", CodCliente);
 
 			// that.vetorResumoEmpresa = [];
 			// var oModelResumoEmpresa = new JSONModel(that.vetorResumoEmpresa);
@@ -132,6 +137,7 @@ sap.ui.define([
 					"$filter": "IvUsuario eq '" + repres + "'"
 				},
 				success: function (retorno) {
+
 					// var vetorCentros = retorno.results;
 					// var oModelCentros = new JSONModel(vetorCentros);
 					// that.setModel(oModelCentros, "modelCentros");
@@ -144,10 +150,15 @@ sap.ui.define([
 						var vAchouEmpresa = false;
 
 						for (var j = 0; j < that.vetorEmpresas.length; j++) {
-							vAchouEmpresa = true;
+
+							if (that.vetorEmpresas[j].Bukrs == that.vetorCentrosAux[i].Bukrs) {
+
+								vAchouEmpresa = true;
+							}
 						}
 
 						if (vAchouEmpresa == false) {
+
 							var vAux = {
 								Bukrs: that.vetorCentrosAux[i].Bukrs,
 								Butxt: that.vetorCentrosAux[i].Butxt
@@ -156,7 +167,8 @@ sap.ui.define([
 						}
 					}
 
-					that.getModel("modelEmpresas").setData(that.vetorEmpresas);
+					var oModelEmpresa = new JSONModel(that.vetorEmpresas);
+					that.setModel(oModelEmpresa, "modelEmpresas");
 
 				},
 				error: function (error) {
@@ -207,20 +219,14 @@ sap.ui.define([
 			});
 
 			aCols.push({
-				label: "Docto",
+				label: "Doc Contábil",
 				property: "Belnr",
 				type: EdmType.String
 			});
 
 			aCols.push({
-				label: "Referência Cliente",
-				property: "Bstkd",
-				type: EdmType.String
-			});
-
-			aCols.push({
-				label: "Dt Docto",
-				property: "Docdat",
+				label: "Lançto",
+				property: "Budat",
 				type: EdmType.DateTime,
 				format: 'dd/mm/yyyy'
 			});
@@ -248,6 +254,30 @@ sap.ui.define([
 				property: "Stcd2",
 				type: EdmType.String
 			});
+			
+			aCols.push({
+				label: "Rede",
+				property: "Kvgr4",
+				type: EdmType.String
+			});
+
+			aCols.push({
+				label: "Descrição Rede",
+				property: "Kvgr4Text",
+				type: EdmType.String
+			});
+
+			aCols.push({
+				label: "Bandeira",
+				property: "Kvgr5",
+				type: EdmType.String
+			});
+
+			aCols.push({
+				label: "Descrição Bandeira",
+				property: "Kvgr5Text",
+				type: EdmType.String
+			});
 
 			aCols.push({
 				label: "UF",
@@ -260,13 +290,44 @@ sap.ui.define([
 				property: "City1",
 				type: EdmType.String
 			});
+			
+			aCols.push({
+				label: "Nº Docto",
+				property: "DocNum",
+				type: EdmType.String
+			});
+			
+			aCols.push({
+				label: "Referência Cliente",
+				property: "Bstkd",
+				type: EdmType.String
+			});
+			
+			aCols.push({
+				label: "Nº Fat",
+				property: "DocFat",
+				type: EdmType.String
+			});
+			
+			aCols.push({
+				label: "Dias Atraso",
+				property: "DiasAtraso",
+				type: EdmType.String
+			});
 
 			aCols.push({
-				label: "Vl.Tot.NF",
-				property: "Netwrt",
+				label: "Vl.Título",
+				property: "Dmbtr",
 				type: EdmType.Number,
 				scale: 2,
 				delimiter: true
+			});
+			
+			aCols.push({
+				label: "Data Últ Advt.",
+				property: "Madat",
+				type: EdmType.DateTime,
+				format: 'dd/mm/yyyy'
 			});
 
 			return aCols;
@@ -315,9 +376,17 @@ sap.ui.define([
 
 			var parametros = that.getModel("modelParametros").getData();
 			var PerioAux = that.getModel("modelParametros").getProperty("/Periodo");
-			var PerioSplit = PerioAux.split(" - ");
-			var PerioIni = PerioSplit[0];
-			var PerioFim = PerioSplit[1];
+
+			try {
+
+				var PerioSplit = PerioAux.split(" - ");
+				parametros.PeriodoIni = PerioSplit[0];
+				parametros.PeriodoFim = PerioSplit[1];
+
+			} catch (x) {
+				
+				console.log(x);
+			}
 
 			that.byId("master").setBusy(true);
 
@@ -337,8 +406,8 @@ sap.ui.define([
 						"' and BelnrFim eq '" + parametros.BelnrFim +
 						"' and RepreIni eq '" + parametros.LifnrIni +
 						"' and RepreFim eq '" + parametros.LifnrFim +
-						"' and PerioIni eq '" + PerioIni +
-						"' and PerioFim eq '" + PerioFim + "'"
+						"' and PerioIni eq '" + parametros.PeriodoIni +
+						"' and PerioFim eq '" + parametros.PeriodoFim + "'"
 				},
 				success: function (retorno) {
 

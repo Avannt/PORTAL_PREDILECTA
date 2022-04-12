@@ -183,7 +183,7 @@ sap.ui.define([
 
 			for (var property in Obj) {
 
-				if (property != "Completo" && property != "CheckIncentivo" && property != "EnviarEmailCliente" &&
+				if (property != "Completo" && property != "CheckIncentivo" && property != "EnviarEmailCliente" && property != "DataIniConv" &&
 					property != "EnviarEmailRepres" && property != "LogVerbaRentNeg" && property != "TotalItens" && property != "LogProposta") {
 
 					Obj[property] = String(Obj[property]);

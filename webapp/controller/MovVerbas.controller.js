@@ -332,7 +332,8 @@ sap.ui.define([
 				BukrsOrig: this.getModel("modelTela").getProperty("/BukrsOrig"),
 				RepresDest: this.getModel("modelTela").getProperty("/RepresDest"),
 				BukrsDest: this.getModel("modelTela").getProperty("/BukrsDest"),
-				Valor: this.getModel("modelTela").getProperty("/Valor")
+				Valor: this.getModel("modelTela").getProperty("/Valor"),
+				Usuario: this.getModelGlobal("modelAux").getProperty("/CodRepres")
 			};
 
 			that.oModel.callFunction("/P_Set_Transf_Verba", {

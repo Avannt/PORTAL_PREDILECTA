@@ -69,7 +69,8 @@
                     "defaultBindingMode": "OneWay",
                     "defaultCountMode": "Request"
                 },
-                "dataSource": "ZSF_FV_SRV"
+                "dataSource": "ZSF_FV_SRV",
+                "preload": true
             }
         },
         "resources": {
@@ -216,15 +217,6 @@
                     ]
                 },
                 {
-                    "name": "relatorioTitulos",
-                    "pattern": "RelatorioTitulos",
-                    "titleTarget": "",
-                    "greedy": false,
-                    "target": [
-                        "relatorioTitulos"
-                    ]
-                },
-                {
                     "name": "relatorioPedidos",
                     "pattern": "RelatorioPedidos",
                     "titleTarget": "",
@@ -322,6 +314,15 @@
                     "target": [
                         "MsgPortalDetalhe"
                     ]
+                },
+                {
+                    "name": "relatorioTitulos",
+                    "pattern": "RelatorioTitulos",
+                    "titleTarget": "",
+                    "greedy": false,
+                    "target": [
+                        "relatorioTitulos"
+                    ]
                 }
             ],
             "targets": {
@@ -406,7 +407,13 @@
                 },
                 "relatorioTitulos": {
                     "viewName": "relatorioTitulos",
-                    "viewLevel": 2
+                    "viewLevel": 2,
+                    "viewType": "XML",
+                    "transition": "slide",
+                    "clearControlAggregation": false,
+                    "controlAggregation": "pages",
+                    "controlId": "app",
+                    "viewPath": "application.view"
                 },
                 "relatorioPedidos": {
                     "viewName": "relatorioPedidos",

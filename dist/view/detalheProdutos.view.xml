@@ -10,7 +10,7 @@
 								<Toolbar width="100%" id="toolbar1">
 									<content>
 										<Select id="idEstabelecimento" forceSelection="false" selectedKey="{modelTela>/Werks}" showSecondaryValues="false" items="{ path: 'modelCentros>/' }" change="onChangeCentro" busyIndicatorDelay="0">
-											<core:Item xmlns:core="sap.ui.core" key="{modelCentros>Werks}" text="{modelCentros>Werks} - {modelCentros>NomeCentro}"/>
+											<core:Item xmlns:core="sap.ui.core" key="{modelCentros>Werks}" text="{modelCentros>NomeCentro}"/>
 											<layoutData>
 												<layout:GridData xmlns:layout="sap.ui.layout" span="L2 M2" linebreakM="true" id="data98"/>
 											</layoutData>
@@ -72,7 +72,7 @@
 												<Label text="Familia"/>
 												<Input id="idFamilia" value="{modelProduto>/Mvgr3} - {modelProduto>/DescMvgr3}" enabled="false"/>
 												<Label text="Gramatura"/>
-												<Input id="idGramatura" value="{modelProduto>/DescMvgr4}" enabled="false"/>
+												<Input id="idGramatura" value="{modelProduto>/Mvgr4} - {modelProduto>/DescMvgr4}" enabled="false"/>
 												<Label text="Marca"/>
 												<Input id="idMarca" value="{modelProduto>/Mvgr5} - {modelProduto>/DescMvgr5}" enabled="false"/>
 												<Label text="Classificação Fiscal"/>
@@ -89,12 +89,18 @@
 												<Input id="idUnidadeMedida" value="{modelProduto>/Vrkme}" enabled="false"/>
 												<Label text="Quantidade na caixa"/>
 												<Input id="idQuantidadeNaCaixa" value="{modelProduto>/QntCaixa}" enabled="false"/>
-												<Label text="Comprimento"/>
+												<Label text="Comprimento CX"/>
 												<Input id="idComprimento" value="{path: 'modelProduto>/Laeng', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} {modelProduto>/Meabm}" enabled="false"/>
-												<Label text="Altura"/>
+												<Label text="Comprimento UN"/>
+												<Input id="idComprimentoUn" value="{path: 'modelProduto>/LaengUn', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} {modelProduto>/Meabm}" enabled="false"/>
+												<Label text="Altura CX"/>
 												<Input id="idAltura" value="{path: 'modelProduto>/Hoehe', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} {modelProduto>/Meabm}" enabled="false"/>
-												<Label text="Largura"/>
+												<Label text="Altura UN"/>
+												<Input id="idAlturaUn" value="{path: 'modelProduto>/HoeheUn', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} {modelProduto>/Meabm}" enabled="false"/>
+												<Label text="Largura CX"/>
 												<Input id="idLargura" value="{path: 'modelProduto>/Breit', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} {modelProduto>/Meabm}" enabled="false"/>
+												<Label text="Largura UN"/>
+												<Input id="idLarguraUn" value="{path: 'modelProduto>/BreitUn', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} {modelProduto>/Meabm}" enabled="false"/>
 												<Label text="Codigo EAN"/>
 												<Input id="idCodigoEAN" value="{modelProduto>/Ean11}" enabled="false"/>
 												<Label text="Codigo DUN"/>
@@ -106,8 +112,7 @@
 							</IconTabFilter>
 							<IconTabFilter id="tabMovimentacao" text="Ilustração" key="tab2" icon="sap-icon://picture">
 								<VBox alignItems="Center">
-									<!--<Image id="idPictureSrc" src="https://www.castgroup.com.br/wp-content/uploads/2020/07/logo-ok.png" densityAware="false"/>-->
-									<!--<Image id="idPictureSrc" src="{modelProduto>/PathImg}" densityAware="false"/>-->
+									<Image id="idPictureSrc" src="{modelProduto>/PathImg}" densityAware="false"/>
 								</VBox>
 							</IconTabFilter>
 						</items>

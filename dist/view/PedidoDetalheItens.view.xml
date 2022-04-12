@@ -345,7 +345,7 @@
 								<Text text="Qnt" textAlign="Left"/>
 							</Column>
 							<Column minScreenWidth="815px" demandPopin="false" hAlign="Left">
-								<Text text="P. Tab. Líq" textAlign="Left"/>
+								<Text text="Tab - Canal" textAlign="Left"/>
 							</Column>
 							<Column minScreenWidth="320px" demandPopin="false" hAlign="Left">
 								<Text text="P. Vend." textAlign="Left"/>
@@ -369,7 +369,7 @@
 									<Text text="{modelItensPedidoGrid>Vrkme}" textAlign="Left" />
 									<Text text="{modelItensPedidoGrid>QtdPedida}" textAlign="Left" />
 									<Text
-										text="R$: {path: 'modelItensPedidoGrid>ValPrecoTabelaMin', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+										text="R$: {path: 'modelItensPedidoGrid>ValPrecoUnit', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
 										textAlign="Left" />
 									<Text
 										text="R$: {path: 'modelItensPedidoGrid>ValPrecoInform', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"

@@ -212,7 +212,7 @@
 													<layout:GridData span="L4 M4"/>
 												</layoutData>
 											</Input>
-											<Label text="Data entrega sujerida">
+											<Label text="Data entrega sugerida">
 												<layoutData>
 													<layout:GridData span="L2 M2" linebreakM="true"/>
 												</layoutData>
@@ -425,8 +425,8 @@
 											<Toolbar id="TB1">
 												<Title id="Title1" text="Desconto Campanha Pedido"/>
 												<ToolbarSpacer/>
-												<Text xmlns="sap.m" text="Itens Ativos" id="text32"/>
-												<Button icon="sap-icon://message-information" press="onAbrirTela" type="Emphasized"/>
+												<Text xmlns="sap.m" text="Itens Ativos" id="idTextCamp"/>
+												<Button icon="sap-icon://message-information" press="onAbrirTela" type="Emphasized" id="idBtnCamp"/>
 												<content/>
 											</Toolbar>
 										</f:toolbar>

@@ -50,7 +50,7 @@ sap.ui.define([
 						user: "t_rcardilo",
 						password: "sap123",
 						headers: {
-							"sap-client": "410",
+							"sap-client": "450",
 							"sap-language": "PT",
 							"Authorization": "Basic " + btoa("t_rcardilo" + ":" + "sap123"),
 							"Access-Control-Allow-Origin": "*"
@@ -89,6 +89,8 @@ sap.ui.define([
 					ReleasePRD: "",
 					Lifnr: "",
 					Email: "",
+					DiasPedPend: 0,
+					MaxDiasEntrega: 0,
 					Url: "/sap/opu/odata/sap/ZSF_FV_SRV/"
 				});
 				this.setModelGlobal(oModelAux, "modelAux");
@@ -96,7 +98,6 @@ sap.ui.define([
 				var oModel = new sap.ui.model.json.JSONModel();
 				this.setModelGlobal(oModel, "modelCliente");
 				this.setModelGlobal(oModel, "modelMenu");
-
 			},
 
 			retornaDataAtualizacao: function () {
@@ -369,6 +370,8 @@ sap.ui.define([
 				oModel.read("/Logins(IvUsuario='" + CodRepres + "',IvSenha='" + Senha + "',IvSistOper='" + SistemaOp +
 					"',IvImei='" + Imei + "',IvVersaoApp='" + VersaoApp + "')", {
 						success: function (retorno) {
+							
+							debugger;
 
 							that.getModelGlobal("modelAux").setProperty("/CodRepres", CodRepres);
 							that.getModelGlobal("modelAux").setProperty("/NomeRepres", retorno.EvNomeRepres);
@@ -376,6 +379,8 @@ sap.ui.define([
 							that.getModelGlobal("modelAux").setProperty("/Senha", Senha);
 							that.getModelGlobal("modelAux").setProperty("/Lifnr", retorno.EvLifnr);
 							that.getModelGlobal("modelAux").setProperty("/Email", retorno.EvEmail);
+							that.getModelGlobal("modelAux").setProperty("/DiasPedPend", retorno.EvDiasPedPend);
+							that.getModelGlobal("modelAux").setProperty("/MaxDiasEntrega", retorno.EvMaxDiasEntrg);
 
 							oModel.read("/Menus", {
 								urlParameters: {

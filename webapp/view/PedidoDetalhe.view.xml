@@ -212,7 +212,7 @@
 													<layout:GridData span="L4 M4"/>
 												</layoutData>
 											</Input>
-											<Label text="Data entrega sujerida">
+											<Label text="Data entrega sugerida">
 												<layoutData>
 													<layout:GridData span="L2 M2" linebreakM="true"/>
 												</layoutData>

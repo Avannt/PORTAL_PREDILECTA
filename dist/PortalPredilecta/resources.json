@@ -1,9 +1,12 @@
 {
     "resources": [
         {
-            "name": "../i18n/i18n_pt_BR.properties",
+            "name": "../view/App.view.xml"
+        },
+        {
+            "name": "../i18n/i18n_pt.properties",
             "raw": "i18n/i18n.properties",
-            "locale": "_pt_BR"
+            "locale": "_pt"
         },
         {
             "name": "../i18n/i18n_en.properties",
@@ -15,15 +18,10 @@
             "raw": "i18n/i18n.properties"
         },
         {
-            "name": "../controller/App.controller.js"
+            "name": "../controller/verbaConsultasDetalhe.controller.js"
         },
         {
             "name": "../manifest.json"
-        },
-        {
-            "name": "../i18n/i18n_pt.properties",
-            "raw": "i18n/i18n.properties",
-            "locale": "_pt"
         },
         {
             "name": "../model/models.js"
@@ -32,7 +30,7 @@
             "name": "../model/formatter.js"
         },
         {
-            "name": "../controller/verbaConsultasDetalhe.controller.js"
+            "name": "../model/Menu.json"
         },
         {
             "name": "../controller/verbaConsultas.controller.js"
@@ -113,7 +111,7 @@
             "name": "../controller/BaseController.js"
         },
         {
-            "name": "../model/Menu.json"
+            "name": "../controller/App.controller.js"
         },
         {
             "name": "../serviceBinding.js"
@@ -129,15 +127,11 @@
             "merged": true
         },
         {
-            "name": "../controller/relatorioTabelas-dbg.controller.js",
+            "name": "../model/formatter-dbg.js",
             "isDebug": true
         },
         {
             "name": "../model/models-dbg.js",
-            "isDebug": true
-        },
-        {
-            "name": "../model/formatter-dbg.js",
             "isDebug": true
         },
         {
@@ -150,6 +144,10 @@
         },
         {
             "name": "../controller/relatorioTitulos-dbg.controller.js",
+            "isDebug": true
+        },
+        {
+            "name": "../controller/relatorioTabelas-dbg.controller.js",
             "isDebug": true
         },
         {
@@ -374,7 +372,9 @@
             "name": "../view/Dialog.fragment.xml"
         },
         {
-            "name": "../view/App.view.xml"
+            "name": "../i18n/i18n_pt_BR.properties",
+            "raw": "i18n/i18n.properties",
+            "locale": "_pt_BR"
         },
         {
             "name": "../view/AlterarSenha.fragment.xml"

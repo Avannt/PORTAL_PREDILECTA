@@ -77,14 +77,11 @@ sap.ui.define([
 						
 							if (that.vetorProdutosAux[i].Werks == werks) {
 							
-							// that.vetorProdutosAux[i].PathImg = "http://189.57.15.163:81/predilecta/images_produtos/" + that.vetorProdutosAux[i].Matnr + ".png";
+							 that.vetorProdutosAux[i].PathImg = "https://www.predilecta.com.br/images/produtos_portal/" + that.vetorProdutosAux[i].Matnr + ".png";
 						
-							that.vetorProdutos.push(that.vetorProdutosAux[i]);
+						     that.vetorProdutos.push(that.vetorProdutosAux[i]);
 
 						}
-						
-						//that.vetorProdutos[i].PathImg = "http://189.57.15.163:81/predilecta/images_produtos/" + that.vetorProdutos[i].Matnr + ".png";
-						//that.vetorProdutos[i].PathImg = sap.ui.require.toUrl("http://189.57.15.163:81/predilecta/images_produtos/0300.png");
 					}
 
 					that.byId("masterProdutos").setBusy(false);
