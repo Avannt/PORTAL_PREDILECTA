@@ -1,9 +1,6 @@
 {
     "resources": [
         {
-            "name": "../view/App.view.xml"
-        },
-        {
             "name": "../i18n/i18n_pt.properties",
             "raw": "i18n/i18n.properties",
             "locale": "_pt"
@@ -18,7 +15,7 @@
             "raw": "i18n/i18n.properties"
         },
         {
-            "name": "../controller/verbaConsultasDetalhe.controller.js"
+            "name": "../controller/MenuConsultas.controller.js"
         },
         {
             "name": "../manifest.json"
@@ -30,7 +27,7 @@
             "name": "../model/formatter.js"
         },
         {
-            "name": "../model/Menu.json"
+            "name": "../controller/verbaConsultasDetalhe.controller.js"
         },
         {
             "name": "../controller/verbaConsultas.controller.js"
@@ -99,7 +96,7 @@
             "name": "../controller/MenuRelatorios.controller.js"
         },
         {
-            "name": "../controller/MenuConsultas.controller.js"
+            "name": "../model/Menu.json"
         },
         {
             "name": "../controller/Menu.controller.js"
@@ -127,11 +124,16 @@
             "merged": true
         },
         {
-            "name": "../model/formatter-dbg.js",
-            "isDebug": true
+            "name": "../i18n/i18n_pt_BR.properties",
+            "raw": "i18n/i18n.properties",
+            "locale": "_pt_BR"
         },
         {
             "name": "../model/models-dbg.js",
+            "isDebug": true
+        },
+        {
+            "name": "../model/formatter-dbg.js",
             "isDebug": true
         },
         {
@@ -372,9 +374,7 @@
             "name": "../view/Dialog.fragment.xml"
         },
         {
-            "name": "../i18n/i18n_pt_BR.properties",
-            "raw": "i18n/i18n.properties",
-            "locale": "_pt_BR"
+            "name": "../view/App.view.xml"
         },
         {
             "name": "../view/AlterarSenha.fragment.xml"

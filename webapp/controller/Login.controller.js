@@ -91,7 +91,8 @@ sap.ui.define([
 					Email: "",
 					DiasPedPend: 0,
 					MaxDiasEntrega: 0,
-					Url: "/sap/opu/odata/sap/ZSF_FV_SRV/"
+					Url: "/sap/opu/odata/sap/ZSF_FV_SRV/",
+					ValTotPedPend: 0
 				});
 				this.setModelGlobal(oModelAux, "modelAux");
 

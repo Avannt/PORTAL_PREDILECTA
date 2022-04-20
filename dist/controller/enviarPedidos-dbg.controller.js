@@ -56,6 +56,13 @@ sap.ui.define([
 
 						that.vetorPedidos = dataPedidos;
 						var oModel = new JSONModel(that.vetorPedidos);
+						
+						var valorTotal = 0;
+						for(var i=0; i<that.vetorPedidos.length; i++){
+							valorTotal += parseFloat(that.vetorPedidos[i].ValorTotal);
+						}
+						
+						that.getModelGlobal("modelAux").setProperty("/ValTotPedPend", valorTotal);
 						that.setModel(oModel, "Pedidos");
 
 						that.byId("table_pedidos").setBusy(false);
