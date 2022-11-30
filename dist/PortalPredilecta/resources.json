@@ -1,6 +1,10 @@
 {
     "resources": [
         {
+            "name": "../controller/enviarPedidos-dbg.controller.js",
+            "isDebug": true
+        },
+        {
             "name": "../i18n/i18n_pt.properties",
             "raw": "i18n/i18n.properties",
             "locale": "_pt"
@@ -15,10 +19,10 @@
             "raw": "i18n/i18n.properties"
         },
         {
-            "name": "../controller/MenuConsultas.controller.js"
+            "name": "../manifest.json"
         },
         {
-            "name": "../manifest.json"
+            "name": "../model/Menu.json"
         },
         {
             "name": "../model/models.js"
@@ -96,7 +100,7 @@
             "name": "../controller/MenuRelatorios.controller.js"
         },
         {
-            "name": "../model/Menu.json"
+            "name": "../controller/MenuConsultas.controller.js"
         },
         {
             "name": "../controller/Menu.controller.js"
@@ -124,9 +128,8 @@
             "merged": true
         },
         {
-            "name": "../i18n/i18n_pt_BR.properties",
-            "raw": "i18n/i18n.properties",
-            "locale": "_pt_BR"
+            "name": "../controller/NotFound-dbg.controller.js",
+            "isDebug": true
         },
         {
             "name": "../model/models-dbg.js",
@@ -173,8 +176,9 @@
             "isDebug": true
         },
         {
-            "name": "../controller/enviarPedidos-dbg.controller.js",
-            "isDebug": true
+            "name": "../i18n/i18n_pt_BR.properties",
+            "raw": "i18n/i18n.properties",
+            "locale": "_pt_BR"
         },
         {
             "name": "../controller/detalhesRelatorioTabelas-dbg.controller.js",
@@ -206,10 +210,6 @@
         },
         {
             "name": "../controller/Pedido-dbg.controller.js",
-            "isDebug": true
-        },
-        {
-            "name": "../controller/NotFound-dbg.controller.js",
             "isDebug": true
         },
         {

@@ -82,7 +82,7 @@ sap.ui.define([
 								});
 
 							} else {
-								
+
 								new Promise(function (res, rej) {
 
 									that.byId("table_pedidos").setBusy(true);
@@ -180,17 +180,17 @@ sap.ui.define([
 		},
 
 		formatRentabilidade: function (Value) {
-			
+
 			if (Value == 0) {
 
 				this.byId("table_pedidos").getColumns()[7].setVisible(false);
 				return Value;
-				
+
 			} else if (Value > -3) {
 
 				this.byId("table_pedidos").getColumns()[7].setVisible(false);
-				return "" ;
-				
+				return "";
+
 			} else {
 
 				this.byId("table_pedidos").getColumns()[7].setVisible(true);
@@ -202,23 +202,23 @@ sap.ui.define([
 
 			var oSplitCont = this.getSplitContObj(),
 				ref = oSplitCont.getDomRef() && oSplitCont.getDomRef().parentNode;
-				
+
 			if (ref && !ref._sapui5_heightFixed) {
-				
+
 				ref._sapui5_heightFixed = true;
-				
+
 				while (ref && ref !== document.documentElement) {
-					
+
 					var $ref = jQuery(ref);
-					
+
 					if ($ref.attr("data-sap-ui-root-content")) { // Shell as parent does this already
 						break;
 					}
-					
+
 					if (!ref.style.height) {
 						ref.style.height = "100%";
 					}
-					
+
 					ref = ref.parentNode;
 				}
 			}
@@ -338,43 +338,54 @@ sap.ui.define([
 
 							Pedido = result;
 
-							if (Pedido.TipoErro == "E") {
+							if (Pedido.TipoErro == "S" && Pedido.MsgErro == "") {
 
-								MessageBox.show("O Pedido: " + Pedido.NrPedido + ", Cliente: " + Pedido.Kunnr + " está em aberto.", {
-									icon: MessageBox.Icon.ERROR,
-									// details: "<li> Curioso! </li>",
-									title: "Pedido em aberto",
-									actions: [MessageBox.Action.OK]
-								});
-
+								sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
 							} else {
 
-								if (Pedido.TipoErro == "S" && Pedido.MsgErro == "") {
+								// debugger;
 
-									sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
-								} else {
+								var dataAtual = new Date();
+								var regime = that.getModel("Cliente").getData().RegimeEspecial;
+
+								if (regime !== null && dataAtual > regime) {
+
+									MessageBox.show("Cliente com a Data do Regime expirada. Entre em contato com o comercial e com o cliente! ", {
+										icon: sap.m.MessageBox.Icon.WARNING,
+										title: "Data Regime Expirada!",
+										actions: ["OK"],
+										onClose: function (oAction) {}
+									});
+
+								} else if(Pedido.TipoErro == "S" && Pedido.MsgErro != "") {
 
 									MessageBox.show(Pedido.MsgErro, {
 										icon: sap.m.MessageBox.Icon.WARNING,
-										title: "Títulos em Aberto!",
-										actions: ["Ver Titulo", "Continuar", "Cancelar"],
+										title: "Alerta de pendências!",
+										actions: ["Ver Título", "Continuar", "Cancelar"],
 										onClose: function (oAction) {
 
 											if (oAction == "Ver Titulo") {
 
 												// that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
-												
+
 												that.getModelGlobal("modelAux").setProperty("/Kunnr", Pedido.IvKunnr);
-												
+
 												sap.ui.core.UIComponent.getRouterFor(that).navTo("relatorioTitulos");
 											} else if (oAction == "Continuar") {
 
 												sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
 											}
-											// else {
-											// 	that.getOwnerComponent().getModel("modelAux").setProperty("/telaPedido", true);
-											// 	sap.ui.core.UIComponent.getRouterFor(that).navTo("relatorioTitulos");
-											// }
+										}
+									});
+									
+								} else {
+									
+									MessageBox.show(Pedido.MsgErro, {
+										icon: sap.m.MessageBox.Icon.ERROR,
+										title: "Bloqueio de digitação!",
+										actions: ["OK"],
+										onClose: function (oAction) {
 										}
 									});
 								}

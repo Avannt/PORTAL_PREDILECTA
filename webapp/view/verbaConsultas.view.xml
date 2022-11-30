@@ -10,7 +10,7 @@
 				</attributes>
 			</ObjectHeader>
 			<Table id="table_Verbas" width="100%" items="{ path:'Verbas>/', sorter: { path: 'Periodo', descending: true }}" updateFinished="onListUpdateFinished" mode="None" itemPress="onItemPress"
-				noDataText="Nenhuma verba disponivel no momento." busyIndicatorDelay="0" fixedLayout="false">
+				noDataText="Nenhuma verba disponivel no momento." busyIndicatorDelay="0" fixedLayout="false" growingThreshold="99" growingTriggerText="Proximos >>" growing="true" >
 				<headerToolbar>
 					<Toolbar id="lineItemsToolbar">
 						<Title id="lineItemsHeader" text="Verbas / Empresas"/>

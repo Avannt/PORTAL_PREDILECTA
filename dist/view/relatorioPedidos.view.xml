@@ -225,7 +225,7 @@
 					</Toolbar>
 				</headerToolbar>
 				<columns>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="30px">
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="35px">
 						<Text text="Cen"/>
 					</Column>
 					<Column minScreenWidth="410px" demandPopin="true" popinDisplay="Inline" width="60px" hAlign="Right">

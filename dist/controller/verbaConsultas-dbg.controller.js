@@ -31,12 +31,14 @@ sap.ui.define([
 					"$filter": "IvUsuario eq '" + repres + "'"
 				},
 				success: function (retorno) {
+					
 					var vetorCentros = [];
+					
 					that.vetorCentros = retorno.results;
 					var oModelCentros = new JSONModel(that.vetorCentros);
 					that.setModel(oModelCentros, "modelCentros");
+					
 					that.onBuscarDados();
-					// that.onAbrirCentros();
 				},
 				error: function (error) {
 
@@ -81,11 +83,11 @@ sap.ui.define([
 
 					for (var i = 0; i < that.vetorVerbasAux.length; i++) {
 
-						if (that.vetorVerbasAux[i].Periodo == Periodo) {
+						// if (that.vetorVerbasAux[i].Periodo == Periodo) {
 
 							that.vetorVerbas.push(that.vetorVerbasAux[i]);
 
-						}
+						// }
 					}
 					
 					that.byId("detail").setBusy(false);

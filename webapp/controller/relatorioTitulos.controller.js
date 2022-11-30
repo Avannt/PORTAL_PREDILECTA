@@ -254,7 +254,7 @@ sap.ui.define([
 				property: "Stcd2",
 				type: EdmType.String
 			});
-			
+
 			aCols.push({
 				label: "Rede",
 				property: "Kvgr4",
@@ -290,25 +290,31 @@ sap.ui.define([
 				property: "City1",
 				type: EdmType.String
 			});
-			
+
 			aCols.push({
 				label: "Nº Docto",
 				property: "DocNum",
 				type: EdmType.String
 			});
-			
+
+			aCols.push({
+				label: "Nº NF",
+				property: "Xblnr",
+				type: EdmType.String
+			});
+
 			aCols.push({
 				label: "Referência Cliente",
 				property: "Bstkd",
 				type: EdmType.String
 			});
-			
+
 			aCols.push({
 				label: "Nº Fat",
 				property: "DocFat",
 				type: EdmType.String
 			});
-			
+
 			aCols.push({
 				label: "Dias Atraso",
 				property: "DiasAtraso",
@@ -322,7 +328,7 @@ sap.ui.define([
 				scale: 2,
 				delimiter: true
 			});
-			
+
 			aCols.push({
 				label: "Data Últ Advt.",
 				property: "Madat",
@@ -384,7 +390,7 @@ sap.ui.define([
 				parametros.PeriodoFim = PerioSplit[1];
 
 			} catch (x) {
-				
+
 				console.log(x);
 			}
 

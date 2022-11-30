@@ -5,8 +5,9 @@
 			<Page id="idItens" title="Itens do Pedido WEB" contentOnlyBusy="true" busy="false" floatingFooter="false" navButtonPress="onNavBack"
 				showNavButton="true" busyIndicatorDelay="1">
 				<content>
-					<Table id="idTableItens" growingScrollToLoad="true" inset="false" noDataText="Nenhum item inserido!" mode="Delete" delete="onDeletarItem" alternateRowColors="true"
-						busyIndicatorDelay="0" items="{ path: 'modelItensPedidoGrid>/', sorter: { path: 'IndexItem', ascending: true }}" itemPress="onEditarItemPress">
+					<Table id="idTableItens" growingScrollToLoad="true" inset="false" noDataText="Nenhum item inserido!" mode="Delete" delete="onDeletarItem"
+						alternateRowColors="true" busyIndicatorDelay="0" items="{ path: 'modelItensPedidoGrid>/', sorter: { path: 'IndexItem', ascending: true }}"
+						itemPress="onEditarItemPress">
 						<headerToolbar>
 							<Toolbar height="100%" class="backGround">
 								<form:SimpleForm minWidth="1024" maxContainerCols="3" editable="true" layout="ResponsiveGridLayout" labelSpanL="1" labelSpanM="2"
@@ -14,42 +15,43 @@
 									<form:content>
 										<Label text="Item">
 											<layoutData>
-												<layout:GridData span="L2 M2" />
+												<layout:GridData span="L2 M2"/>
 											</layoutData>
 										</Label>
 										<SearchField class="camposDialog" id="IdItemPedido" placeholder="Digite Código ou Nome do Produto" enableSuggestions="true"
-											value="{modelItem>/Matnr}" search="onItemChange" suggest="onSuggestProdutos" busyIndicatorDelay="0" suggestionItems="{ path: 'modelProdutos>/', sorter: { path: 'Matnr', ascending: true }}">
+											value="{modelItem>/Matnr}" search="onItemChange" suggest="onSuggestProdutos" busyIndicatorDelay="0"
+											suggestionItems="{ path: 'modelProdutos>/', sorter: { path: 'Matnr', ascending: true }}">
 											<suggestionItems>
-												<SuggestionItem text="{modelProdutos>Matnr}" description="{modelProdutos>Maktx}" key="{modelProdutos>Matnr}" />
+												<SuggestionItem text="{modelProdutos>Matnr}" description="{modelProdutos>Maktx}" key="{modelProdutos>Matnr}"/>
 											</suggestionItems>
 											<layoutData>
-												<layout:GridData span="L2 M2" />
+												<layout:GridData span="L2 M2"/>
 											</layoutData>
 										</SearchField>
 										<Label text="Descrição">
 											<layoutData>
-												<layout:GridData span="L2 M2" />
+												<layout:GridData span="L2 M2"/>
 											</layoutData>
 										</Label>
 										<Input id="idDescricao" enabled="false" class="desabilitado" value="{modelItem>/Maktx}">
 											<layoutData>
-												<layout:GridData span="L2 M2" />
+												<layout:GridData span="L2 M2"/>
 											</layoutData>
 										</Input>
 										<Label text="Preço Tab">
 											<layoutData>
-												<layout:GridData span="L2 M2" />
+												<layout:GridData span="L2 M2"/>
 											</layoutData>
 										</Label>
 										<Input id="idPrecoTabela" enabled="false" class="desabilitado"
 											value="{path: 'modelItem>/ValPrecoOrig', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}">
 											<layoutData>
-												<layout:GridData span="L2 M2" />
+												<layout:GridData span="L2 M2"/>
 											</layoutData>
 										</Input>
 										<Label text="Canal">
 											<layoutData>
-												<layout:GridData span="L2 M2" />
+												<layout:GridData span="L2 M2"/>
 											</layoutData>
 										</Label>
 										<Input id="idCanal" enabled="false" class="desabilitado"
@@ -70,7 +72,6 @@
 												<layout:GridData span="L2 M2"/>
 											</layoutData>
 										</Input>
-										
 										<Label text="Máx. Prom.">
 											<layoutData>
 												<layout:GridData span="L2 M2"/>
@@ -83,7 +84,6 @@
 												<layout:GridData span="L2 M2"/>
 											</layoutData>
 										</Input>
-										
 										<Label text="Quantidade">
 											<layoutData>
 												<layout:GridData span="L2 M2" linebreakL="true"/>
@@ -100,8 +100,8 @@
 												<layout:GridData span="L2 M2"/>
 											</layoutData>
 										</Label>
-										<Input id="idPrecoVenda" value="{path: 'modelItem>/ValPrecoInform'}" 
-											class="camposDialog" editable="true" change="onPrecoVendaChange" liveChange="onBloquearInput" submit="onFocusVenda" type="Number">
+										<Input id="idPrecoVenda" value="{path: 'modelItem>/ValPrecoInform'}" class="camposDialog" editable="true" change="onPrecoVendaChange"
+											liveChange="onBloquearInput" submit="onFocusVenda" type="Number">
 											<layoutData>
 												<layout:GridData span="L2 M2"/>
 											</layoutData>
@@ -345,7 +345,7 @@
 								<Text text="Qnt" textAlign="Left"/>
 							</Column>
 							<Column minScreenWidth="815px" demandPopin="false" hAlign="Left">
-								<Text text="Tab - Canal" textAlign="Left"/>
+								<Text text="P. Tab. Líq" textAlign="Left"/>
 							</Column>
 							<Column minScreenWidth="320px" demandPopin="false" hAlign="Left">
 								<Text text="P. Vend." textAlign="Left"/>
@@ -363,24 +363,27 @@
 						<items class="margins">
 							<ColumnListItem type="Active">
 								<cells>
-									<Text text="{path : 'modelItensPedidoGrid>IndexItem', type: 'sap.ui.model.type.Integer'}" visible="true" textAlign="Left" />
-									<Text text="{modelItensPedidoGrid>Matnr}" textAlign="Left" />
-									<Text text="{path: 'modelItensPedidoGrid>Maktx'}" textAlign="Left" />
-									<Text text="{modelItensPedidoGrid>Vrkme}" textAlign="Left" />
-									<Text text="{modelItensPedidoGrid>QtdPedida}" textAlign="Left" />
+									<Text text="{path : 'modelItensPedidoGrid>IndexItem', type: 'sap.ui.model.type.Integer'}" visible="true" textAlign="Left"/>
+									<Text text="{modelItensPedidoGrid>Matnr}" textAlign="Left"/>
+									<Text text="{path: 'modelItensPedidoGrid>Maktx'}" textAlign="Left"/>
+									<Text text="{modelItensPedidoGrid>Vrkme}" textAlign="Left"/>
+									<Text text="{modelItensPedidoGrid>QtdPedida}" textAlign="Left"/>
 									<Text
-										text="R$: {path: 'modelItensPedidoGrid>ValPrecoUnit', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+										text="R$: {path: 'modelItensPedidoGrid>ValPrecoTabelaMin', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
 										textAlign="Left" />
+									<!--<Text-->
+									<!--	text="R$: {path: 'modelItensPedidoGrid>ValPrecoUnit', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"-->
+									<!--	textAlign="Left"/>-->
 									<Text
 										text="R$: {path: 'modelItensPedidoGrid>ValPrecoInform', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
-										textAlign="Left" />
+										textAlign="Left"/>
 									<Text
 										text="R$: {path: 'modelItensPedidoGrid>ValorTotal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
-										textAlign="Left" />
+										textAlign="Left"/>
 									<Text
 										text="R$: {path: 'modelItensPedidoGrid>ValTotItemSt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
-										textAlign="Left" />
-									<Image src="{path : 'modelItensPedidoGrid>RentImg'}" width="30px" backgroundPosition="Center" />
+										textAlign="Left"/>
+									<Image src="{path : 'modelItensPedidoGrid>RentImg'}" width="30px" backgroundPosition="Center"/>
 								</cells>
 							</ColumnListItem>
 						</items>

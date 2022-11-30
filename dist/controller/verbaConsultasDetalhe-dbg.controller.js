@@ -21,7 +21,7 @@ sap.ui.define([
 		_onLoadFields: function () {
 
 			var that = this;
-
+			
 			var oModel = new JSONModel({
 
 				Bukrs: "",

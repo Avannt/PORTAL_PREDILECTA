@@ -3,10 +3,14 @@ sap.ui.define([
 	"application/controller/BaseController",
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageBox",
-	"application/model/formatter"
+	"application/model/formatter",
+	"sap/ui/export/library",
+	"sap/ui/export/Spreadsheet",
 
-], function (BaseController, JSONModel, MessageBox, formatter) {
+], function (BaseController, JSONModel, MessageBox, formatter, exportLibrary, Spreadsheet) {
 	"use strict";
+
+	var EdmType = exportLibrary.EdmType;
 
 	return BaseController.extend("application.controller.PedidoDetalhe", {
 
@@ -213,10 +217,24 @@ sap.ui.define([
 				that.oModel.read("/Vencimentos", {
 					success: function (result) {
 
-						that.vetorVencimentoTotal = result.results;
+						var limiteCred = parseFloat(that.getModel("modelCliente").getProperty("/CreditLimit"));
+
+						if (limiteCred == 1) {
+
+							for (var i = 0; i < result.results.length; i++) {
+
+								if (result.results[i].Zterm == "0000") {
+
+									that.vetorVencimentoTotal.push(result.results[i]);
+								}
+							}
+						} else {
+
+							that.vetorVencimentoTotal = result.results;
+						}
+
 						that.getModel("modelVencimentos1").setData(that.vetorVencimentoTotal);
 						res();
-
 					},
 					error: function (error) {
 						that.onMensagemErroODATA(error);
@@ -668,6 +686,7 @@ sap.ui.define([
 			var that = this;
 
 			var Pedido = that.getModelGlobal("modelPedido").getData();
+			var limiteCredito = parseFloat(this.getModel("modelCliente").getProperty("/CreditLimit"));
 
 			var validaDataLimite = that.onValidaDataMenorAtual(Pedido.DataLimite);
 			var validaDataEntrega = that.onValidaDataMenorAtual(Pedido.DataEntrega);
@@ -675,6 +694,7 @@ sap.ui.define([
 			var date = new Date();
 			var dataLimiteEntrega = date.addDays(this.getModelGlobal("modelAux").getProperty("/MaxDiasEntrega"));
 			var validaLimiteDataEntrega = that.onValidaDataLimiteEntrega(Pedido.DataEntrega, dataLimiteEntrega);
+			var validaMinDataEntrega = that.onValidaDataLimiteEntrega(Pedido.DataEntrega, Pedido.DataEntregaSujerida);
 
 			if (Pedido.StatusPedido == 3) {
 
@@ -708,6 +728,19 @@ sap.ui.define([
 						that.byId("idTopLevelIconTabBar").setSelectedKey("tab2");
 						that.byId("idEstabelecimento").focus();
 						that.byId("idEstabelecimento").setValueState("Error");
+					}
+				});
+
+			} else if (Pedido.Vencimento == "" && Pedido.Contrato != "" && limiteCredito == 1) {
+
+				sap.m.MessageBox.show("Cliente possui Contrato e Limite de crédito indisponível. Entrar em contato com Depto. Financeiro!", {
+					icon: sap.m.MessageBox.Icon.ERROR,
+					title: "Preecher campo(s)",
+					actions: [MessageBox.Action.OK],
+					onClose: function () {
+
+						that.byId("idTopLevelIconTabBar").setSelectedKey("tab2");
+						that.byId("idVencimento1").setValueState("Error");
 					}
 				});
 
@@ -872,6 +905,20 @@ sap.ui.define([
 						that.byId("idTopLevelIconTabBar").setSelectedKey("tab2");
 						that.byId("idPedidoOrigem").focus();
 						that.byId("idPedidoOrigem").setValueState("Error");
+					}
+				});
+
+			} else if (validaMinDataEntrega == "Data Menor") {
+
+				sap.m.MessageBox.show("Alinhar data de entrega superior a data sugerida!", {
+					icon: sap.m.MessageBox.Icon.ERROR,
+					title: "Preecher campo(s)",
+					actions: [MessageBox.Action.OK],
+					onClose: function () {
+
+						that.byId("idTopLevelIconTabBar").setSelectedKey("tab2");
+						that.byId("idDataEntrega").focus();
+						that.byId("idDataEntrega").setValueState("Error");
 					}
 				});
 
@@ -1232,14 +1279,14 @@ sap.ui.define([
 											that.getModel("modelPedido").setProperty("/IndiceFinal", result.IndiceContrato);
 										} else {
 
-											that.getModel("modelPedido").setProperty("/IndiceFinal", vetorVenc[i].Kbetr);
+											that.getModel("modelPedido").setProperty("/IndiceFinal", vetorVenc[j].Kbetr);
 										}
 
 										break;
 									}
 								}
 
-								if (encontrou == "false") {
+								if (encontrou == "false" && result.Zterm != "") {
 
 									var aux = {
 										Zterm: result.Zterm,
@@ -1258,20 +1305,52 @@ sap.ui.define([
 										//Não possui vencimento cadastrado e vinculado para o representante.
 										that.getModel("modelPedido").setProperty("/IndiceFinal", 0);
 									}
+
+								}
+								
+								debugger;
+
+								if (result.Zterm == "") {
+									//Setar pagamento avista. Se tiver contrato mas nao tiver forma de pagamento do contrato definida
+
+									that.getModel("modelPedido").setProperty("/Vencimento", vetorVenc[0].Zterm);
+									that.getModel("modelPedido").setProperty("/IndiceFinal", vetorVenc[0].Kbetr);
+									that.getModelGlobal("modelPedido").setProperty("/Contrato", result.ContratoInterno);
+
+								} else {
+
+									that.getModelGlobal("modelPedido").setProperty("/Vencimento", result.Zterm); //Forma de pagamento setada no contrato
+									that.getModelGlobal("modelPedido").setProperty("/Contrato", result.ContratoInterno);
 								}
 
 								if (that.getModel("modelPedido").getProperty("/Vencimento") == "") {
 
 									that.byId("idVencimento1").setEnabled(true);
+
 								} else {
 
 									that.byId("idVencimento1").setEnabled(false);
 								}
 
-								that.getModelGlobal("modelPedido").setProperty("/Vencimento", result.Zterm);
-								that.getModelGlobal("modelPedido").setProperty("/Contrato", result.ContratoInterno);
+								var contrato = that.getModelGlobal("modelPedido").getProperty("/Contrato");
+								var limiteCred = parseFloat(that.getModel("modelCliente").getProperty("/CreditLimit"));
+								
+								//Regra para quando tiver contrato e a rede for OUTROS. limpar tudo e deixar o kra setar a cond de pagto
+								if(contrato != "" && result.Kvgr4 == 1){
+									
+									that.byId("idVencimento1").setEnabled(true);
+									that.getModelGlobal("modelPedido").setProperty("/Vencimento", "");
+									that.getModel("modelPedido").setProperty("/IndiceFinal", 0);
+									
+								} else if (result.Zterm != "" && contrato != "" && limiteCred == 1) {
+									
+									//Regra para limpar forma de pagamento quando o cliente nao 
+									//possui limite de credito mas existe contrato ativo com Indice e Forma de pagamento setada
+									that.getModelGlobal("modelPedido").setProperty("/Vencimento", "");
+									that.getModel("modelPedido").setProperty("/IndiceFinal", 0);
+								}
 
-								that.byId("idVencimento1").setEnabled(false);
+								// that.byId("idVencimento1").setEnabled(false);
 
 							} else {
 
@@ -1509,13 +1588,13 @@ sap.ui.define([
 			Date.prototype.addDays = function (days) {
 				var dat = new Date(this.valueOf());
 				dat.setDate(dat.getDate() + parseInt(days, 10));
-				return dat.toLocaleDateString('pt-BR');
+				return dat.toLocaleDateString("pt-BR");
 			};
 
 			Date.prototype.remDays = function (days) {
 				var dat = new Date(this.valueOf());
 				dat.setDate(dat.getDate() - parseInt(days - 1, 10));
-				return dat.toLocaleDateString('pt-BR');
+				return dat.toLocaleDateString("pt-BR");
 			};
 
 			this.getModelGlobal("modelAux").setProperty("/ObrigaSalvar", true);
@@ -2176,7 +2255,15 @@ sap.ui.define([
 						sap.m.MessageBox.show(dataPed.MsgErro, {
 							icon: sap.m.MessageBox.Icon.ERROR,
 							title: "Não Permitido",
-							actions: [MessageBox.Action.OK]
+							actions: [MessageBox.Action.OK],
+							onClose: function () {
+
+								Pedido.SituacaoPedido = "EM DIGITAÇÃO";
+								Pedido.IdStatusPedido = 1;
+								Pedido.DataFim = "";
+								Pedido.HoraFim = "";
+								Pedido.Completo = false;
+							}
 						});
 
 					} else {
@@ -2248,6 +2335,12 @@ sap.ui.define([
 					}
 				}).catch(function (error) {
 
+					Pedido.SituacaoPedido = "EM DIGITAÇÃO";
+					Pedido.IdStatusPedido = 1;
+					Pedido.DataFim = "";
+					Pedido.HoraFim = "";
+					Pedido.Completo = false;
+
 					that.byId("idPedidoDetalhe").setBusy(false);
 					that.onMensagemErroODATA(error);
 				});
@@ -2306,6 +2399,250 @@ sap.ui.define([
 					that.onMensagemErroODATA(error);
 				}
 			});
+		},
+
+		onExportarPedido: function () {
+
+			var aCols, oRowBinding, oSettings, oSheet, oTable;
+
+			var itens = this.getModelGlobal("modelItensPedidoGrid");
+			var pedido = this.getModel("modelPedido").getData();
+			var cliente = this.getModel("modelCliente").getData();
+			var vencimentos = this.getModel("modelVencimentos1").getData();
+			var frete = this.getModel("modelFretes").getData();
+			var endereco = this.getModel("modelLocaisEntregas").getData();
+			var centros = this.getModel("modelCentros").getData();
+			
+			var ZtermDesc = "";
+			var Inco1Desc = "";
+			var RuaEntrega = "";
+			var CidadeEntrega = "";
+			var NomeCentro = "";
+
+			for (var i = 0; i < vencimentos.length; i++) {
+				if (vencimentos[i].Zterm == pedido.Vencimento) {
+
+					ZtermDesc = vencimentos[i].DescCond;
+					break;
+				}
+			}
+
+			for (var i = 0; i < frete.length; i++) {
+				if (frete[i].Inco1 == pedido.Inco1) {
+
+					Inco1Desc = frete[i].Bezei;
+					break;
+				}
+			}
+			
+			for (var i = 0; i < endereco.length; i++) {
+				if (endereco[i].Addrnumber == pedido.LocalEntrega) {
+
+					RuaEntrega = endereco[i].Rua;
+					CidadeEntrega = endereco[i].Cidade;
+					break;
+				}
+			}
+			
+			for (var i = 0; i < centros.length; i++) {
+				if (centros[i].Werks == pedido.Werks) {
+
+					NomeCentro = centros[i].NomeCentro;
+					break;
+				}
+			}
+
+			if (!this._oTable) {
+				this._oTable = this.byId("table_pedidos");
+			}
+
+			oTable = this._oTable;
+			oRowBinding = oTable.getBinding("items");
+
+			aCols = this.createColumnConfig();
+
+			oSettings = {
+				workbook: {
+					columns: aCols,
+					context: {
+						application: "Aplicação Força de Vendas",
+						// version: "0.0.1",
+						title: "Espelho do Pedido",
+						modifiedBy: "Repres: " + this.getModelGlobal("modelAux").getProperty("/Usuario"),
+						metaSheetName: "Cabeçalho Pedido",
+						metainfo: [{
+							name: "Resumo do pedido",
+							items: [{
+								key: "Ordem de venda",
+								value: pedido.Vbeln
+							}, {
+								key: "Data Criação",
+								value: pedido.DataFim
+							}]
+						}, {
+							name: "Dados Fornecedor",
+							items: [{
+								key: "Vendedor",
+								value: this.getModelGlobal("modelAux").getProperty("/Usuario")
+							}, {
+								key: "Centro",
+								value: pedido.Werks + "-" + NomeCentro
+							}]
+						}, {
+							name: "Dados Cliente",
+							items: [{
+								key: "Cliente",
+								value: cliente.Kunnr
+							}, {
+								key: "CNPJ Cliente",
+								value: cliente.Stcd1 + cliente.Stcd2
+							}, {
+								key: "Endereço",
+								value: cliente.Stras
+							}, {
+								key: "Cidade/ UF",
+								value: cliente.Ort01
+							}, {
+								key: "CEP",
+								value: cliente.Pstlz
+							}, {
+								key: "Fone/ Cel",
+								value: cliente.Telf1
+							}, {
+								key: "E-mail envio XML",
+								value: cliente.EmailNf
+							}]
+						}, {
+							name: "Dados de Negociação",
+							items: [{
+								key: "Prazo de pagamento",
+								value: pedido.Vencimento + "-" + ZtermDesc
+							}, {
+								key: "Tipo de Frete",
+								value: pedido.Inco1 + "-" + Inco1Desc
+							}, {
+								key: "Endereço de entrega",
+								value: RuaEntrega
+							},{
+								key: "Cidade de entrega",
+								value: CidadeEntrega
+							}]
+						}, {
+							name: "Investimentos",
+							items: [{
+								key: "Em Nota Fiscal",
+								value: pedido.ValDescAplicar                         
+							}, {
+								key: "Em Boleto",
+								value: pedido.ValDescAplicarBol
+							}]
+						}, {
+							name: "Composição do pedido",
+							items: [{
+								key: "QTD",
+								value: pedido.TotalItens
+							}, {
+								key: "Preço Total s/ST",
+								value: pedido.ValorTotal         
+							}, {
+								key: "Preço Total c/ST",
+								value: pedido.ValTotItemSt
+							}, {
+								key: "Peso Bruto (KG)",
+								value: pedido.PesoBruto
+							}]
+						}]
+					},
+					hierarchyLevel: "level",
+					sheetName: ""
+				},
+				dataSource: oRowBinding,
+				fileName: "Pedido" + pedido.Vbeln + ".xlsx"
+			};
+
+			oSheet = new Spreadsheet(oSettings);
+			oSheet.build().finally(function () {
+				oSheet.destroy();
+			});
+
+		},
+
+		createColumnConfig: function () {
+			var aCols = [];
+
+			aCols.push({
+				label: "Material",
+				property: "Matnr",
+				type: EdmType.Number
+			});
+
+			aCols.push({
+				label: "Descrição",
+				property: "Maktx",
+				type: EdmType.String
+			});
+
+			aCols.push({
+				label: "U.M.",
+				property: "Vrkme",
+				type: EdmType.String
+			});
+
+			aCols.push({
+				label: "QTD",
+				property: "QtdPedida",
+				type: EdmType.Number
+			});
+
+			aCols.push({
+				label: "Preço Unit. s/ST",
+				property: "ValPrecoTabelaMin",
+				type: EdmType.Number,
+				scale: 2,
+				delimiter: true
+			});
+
+			aCols.push({
+				label: "Preço Total s/ST",
+				property: "ValorTotal",
+				type: EdmType.Number,
+				scale: 2,
+				delimiter: true
+			});
+
+			aCols.push({
+				label: "% ST",
+				property: "PerSubTri",
+				type: EdmType.Number,
+				scale: 2,
+				delimiter: true
+			});
+
+			aCols.push({
+				label: "Preço Unit. c/ST",
+				property: "ValPrecoUnitStFat",
+				type: EdmType.Number,
+				scale: 2,
+				delimiter: true
+			});
+
+			aCols.push({
+				label: "Preço Total c/ST",
+				property: "ValTotItemSt",
+				type: EdmType.Number,
+				scale: 2,
+				delimiter: true
+			});
+
+			aCols.push({
+				label: "Peso Bruto (KG)",
+				property: "PesoBruto",
+				type: EdmType.Number,
+				scale: 2,
+				delimiter: true
+			});
+
+			return aCols;
 		}
 	});
 });

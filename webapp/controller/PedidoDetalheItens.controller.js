@@ -23,7 +23,8 @@ sap.ui.define([
 
 			var that = this;
 			var CodRepres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
-			var Bukrs = that.getModelGlobal("modelPedido").getProperty("/Bukrs");
+			// var Bukrs = that.getModelGlobal("modelPedido").getProperty("/Bukrs");
+			var Werks = that.getModelGlobal("modelPedido").getProperty("/Werks");
 
 			that.getView().byId("IdItemPedido").setBusy(true);
 			
@@ -40,7 +41,7 @@ sap.ui.define([
 			}).then(function (data) {
 
 				that.vetorProdutos = data.filter(function (a, b) {
-					if (a.Vkorg == Bukrs) {
+					if (a.Werks == Werks) {
 						delete a.__metadata;
 						return a;
 					}

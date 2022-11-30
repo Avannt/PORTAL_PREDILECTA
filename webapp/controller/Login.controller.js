@@ -92,7 +92,8 @@ sap.ui.define([
 					DiasPedPend: 0,
 					MaxDiasEntrega: 0,
 					Url: "/sap/opu/odata/sap/ZSF_FV_SRV/",
-					ValTotPedPend: 0
+					ValTotPedPend: 0,
+					MaxDiasBloqTitulo: 0
 				});
 				this.setModelGlobal(oModelAux, "modelAux");
 
@@ -382,6 +383,7 @@ sap.ui.define([
 							that.getModelGlobal("modelAux").setProperty("/Email", retorno.EvEmail);
 							that.getModelGlobal("modelAux").setProperty("/DiasPedPend", retorno.EvDiasPedPend);
 							that.getModelGlobal("modelAux").setProperty("/MaxDiasEntrega", retorno.EvMaxDiasEntrg);
+							that.getModelGlobal("modelAux").setProperty("/DiasTituloVenc", retorno.EvMDiasTituloVenc);
 
 							oModel.read("/Menus", {
 								urlParameters: {

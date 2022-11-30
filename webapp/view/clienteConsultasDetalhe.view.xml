@@ -88,7 +88,7 @@
 											<Input id="idUltimoTitulo_NF"
 												value="{path: 'modelCliente>/ValorUltFatura', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
 												enabled="false"/>
-											<Label text="Data Valor Último Título/NF"/>
+											<Label text="Data Último Título/NF"/>
 											<Input id="idDataUltimoTitulo_NF" value="{path: 'modelCliente>/DataUltFatura', formatter: '.myFormatterDataInvert'}" enabled="false"/>
 										</f:content>
 									</f:SimpleForm>
