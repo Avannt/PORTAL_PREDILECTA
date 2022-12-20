@@ -478,7 +478,7 @@ sap.ui.define([
 			var dataEscolhida = String(DataEntrega[2]) + String(DataEntrega[1]) + String(DataEntrega[0]);
 			var dataLimite = String(DataLimite[2]) + String(DataLimite[1]) + String(DataLimite[0]);
 
-			if (dataEscolhida > dataLimite) {
+			if (dataEscolhida >= dataLimite) {
 				return "Data Maior";
 
 			} else {
@@ -1336,8 +1336,9 @@ sap.ui.define([
 								var limiteCred = parseFloat(that.getModel("modelCliente").getProperty("/CreditLimit"));
 								
 								//Regra para quando tiver contrato e a rede for OUTROS. limpar tudo e deixar o kra setar a cond de pagto
-								if(contrato != "" && result.Kvgr4 == 1){
-									
+								// if(contrato != "" && result.Kvgr4 == 1){
+								if(contrato != "" && String(result.AtlOrdem) == "false" && result.Zterm == "") {
+								
 									that.byId("idVencimento1").setEnabled(true);
 									that.getModelGlobal("modelPedido").setProperty("/Vencimento", "");
 									that.getModel("modelPedido").setProperty("/IndiceFinal", 0);
