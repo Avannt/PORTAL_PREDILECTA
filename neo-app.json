@@ -41,7 +41,7 @@
       "path": "/sap/opu/odata",
       "target": {
         "type": "destination",
-        "name": "PredilectaQAS",
+        "name": "PredilectaPRD",
         "entryPath": "/sap/opu/odata"
       },
       "description": "PREDILECTA QAS"

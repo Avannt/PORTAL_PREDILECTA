@@ -166,7 +166,7 @@ sap.ui.define([
 				property: "Name1Rep",
 				type: EdmType.String
 			});
-			
+
 			aCols.push({
 				label: "Vocativo",
 				property: "TitleLet",
@@ -202,7 +202,7 @@ sap.ui.define([
 				property: "Nfenum",
 				type: EdmType.String
 			});
-			
+
 			aCols.push({
 				label: "Doc.Vendas",
 				property: "Vbeln",
@@ -296,6 +296,13 @@ sap.ui.define([
 				type: EdmType.Number,
 				scale: 2,
 				delimiter: true
+			});
+
+			aCols.push({
+				label: "Data Entrega",
+				property: "Datent",
+				type: EdmType.DateTime,
+				format: 'dd/mm/yyyy'
 			});
 
 			return aCols;

@@ -81,17 +81,17 @@
 					</Toolbar>
 				</headerToolbar>
 				<columns>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="30px">
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="35px">
 						<Text text="Cen"/>
 					</Column>
 					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="30px">
 						<Text text="Sér"/>
 					</Column>
-					<Column minScreenWidth="500px" demandPopin="true" popinDisplay="Inline" width="65px">
+					<Column minScreenWidth="500px" demandPopin="true" popinDisplay="Inline" width="70px">
 						<Text text="Nota Fiscal"/>
 					</Column>
 					<Column minScreenWidth="610px" demandPopin="true" popinDisplay="Inline" width="70px" hAlign="Right">
-						<Text text="Doc.Vendas"/>
+						<Text text="Doc.Vend"/>
 					</Column>
 					<Column minScreenWidth="610px" demandPopin="true" popinDisplay="Inline" width="80px">
 						<Text text="Ref.Cliente"/>
@@ -102,7 +102,7 @@
 					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="65px">
 						<Text text="Cliente"/>
 					</Column>
-					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="200px">
+					<Column minScreenWidth="2000px" demandPopin="true" popinDisplay="Inline" width="200px">
 						<Text text="Razão Social"/>
 					</Column>
 					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="110px">
@@ -129,6 +129,12 @@
 					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="60px" hAlign="Right">
 						<Text text="DANFe"/>
 					</Column>
+					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="40px" hAlign="Right">
+						<Text text=""/>
+					</Column>
+					<Column  minScreenWidth="2000px" demandPopin="true" popinDisplay="Inline" width="60px" hAlign="Right">
+						<Text text="Data Entrg"/>
+					</Column>
 				</columns>
 				<items>
 					<ColumnListItem type="Inactive">
@@ -148,6 +154,7 @@
 							<Text text="{modelNotasFiscais>Name1Redesp}"/>
 							<Text text="{path: 'modelNotasFiscais>Netwrt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
 							<Text text="{path: 'modelNotasFiscais>PctRentab', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
+							<Text text="{path: 'modelNotasFiscais>Datent', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' , strictParsing: true , UTC: true }}"/>
 							<Button type="Emphasized" icon="sap-icon://print" press="onDialogOpen"/>
 						</cells>
 					</ColumnListItem>

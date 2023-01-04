@@ -393,7 +393,7 @@ sap.ui.define([
 							}
 						}
 
-						if (encontrou == "false") {
+						if (encontrou == "false" && result.Zterm != "") {
 
 							var aux = {
 								Zterm: result.Zterm,
@@ -413,6 +413,7 @@ sap.ui.define([
 								that.getModelGlobal("modelTela").setProperty("/Indice", 0);
 							}
 						}
+						
 						if (that.getModelGlobal("modelTela").getProperty("/Vencimento") == "") {
 
 							that.byId("idVencimento").setEnabled(true);

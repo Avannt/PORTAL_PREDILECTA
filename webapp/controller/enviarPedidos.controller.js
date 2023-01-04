@@ -77,6 +77,7 @@ sap.ui.define([
 					that.byId("table_pedidos").setBusy(false);
 					that.onMensagemErroODATA(error);
 				});
+				
 			}).catch(function (error) {
 
 				that.byId("table_pedidos").setBusy(false);

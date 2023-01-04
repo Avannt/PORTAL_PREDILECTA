@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
-<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
-	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData">
+<edmx:Edmx xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData" Version="1.0">
 	<edmx:DataServices m:DataServiceVersion="2.0">
-		<Schema Namespace="ZSF_FV_SRV" xml:lang="en" sap:schema-version="1" xmlns="http://schemas.microsoft.com/ado/2008/09/edm"><Annotation Term="Core.SchemaVersion" String="1.0.0" xmlns="http://docs.oasis-open.org/odata/ns/edm"/>
+		<Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="ZSF_FV_SRV" xml:lang="en" sap:schema-version="1"><Annotation xmlns="http://docs.oasis-open.org/odata/ns/edm" Term="Core.SchemaVersion" String="1.0.0"/>
 			<EntityType Name="SeqAcessoTabela" sap:content-version="1">
 				<Key><PropertyRef Name="Kozgf"/><PropertyRef Name="Kschl"/></Key><Property Name="Kozgf" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Descricao" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:creatable="false" sap:updatable="false"
@@ -1478,6 +1477,7 @@
 			<EntityType Name="P_RelNotasFiscais" sap:content-version="1">
 				<Key><PropertyRef Name="Usuario"/><PropertyRef Name="WerksIni"/><PropertyRef Name="WerksFim"/><PropertyRef Name="KunnrIni"/><PropertyRef Name="KunnrFim"/><PropertyRef Name="Kvgr4Ini"/><PropertyRef Name="Kvgr4Fim"/><PropertyRef Name="Kvgr5Ini"/><PropertyRef Name="Kvgr5Fim"/><PropertyRef Name="VbelnIni"/><PropertyRef Name="VbelnFim"/><PropertyRef Name="SeriesIni"/><PropertyRef Name="SeriesFim"/><PropertyRef Name="NfenumIni"/><PropertyRef Name="NfenumFim"/><PropertyRef Name="RepreIni"/><PropertyRef Name="RepreFim"/><PropertyRef Name="PerioIni"/><PropertyRef Name="PerioFim"/></Key><Property Name="Usuario" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="TitleLet" Type="Edm.String" Nullable="false" MaxLength="50" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="Datent" Type="Edm.DateTime" Nullable="false" Precision="7" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="WerksIni" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="WerksFim" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="KunnrIni" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false" sap:updatable="false"
@@ -1628,8 +1628,8 @@
 					sap:sortable="false" sap:filterable="false"/><Property Name="DrillState" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
 			<EntityType Name="P_RelTitulos" sap:content-version="1">
-				<Key><PropertyRef Name="Usuario"/><PropertyRef Name="BukrsIni"/><PropertyRef Name="BukrsFim"/><PropertyRef Name="KunnrIni"/><PropertyRef Name="KunnrFim"/><PropertyRef Name="Kvgr4Ini"/><PropertyRef Name="Kvgr4Fim"/><PropertyRef Name="Kvgr5Ini"/><PropertyRef Name="Kvgr5Fim"/><PropertyRef Name="BelnrIni"/><PropertyRef Name="BelnrFim"/><PropertyRef Name="RepreIni"/><PropertyRef Name="RepreFim"/><PropertyRef Name="PerioIni"/><PropertyRef Name="PerioFim"/></Key><Property Name="Kvgr4" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="Xblnr" Type="Edm.String" Nullable="false" MaxLength="16" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+				<Key><PropertyRef Name="Usuario"/><PropertyRef Name="BukrsIni"/><PropertyRef Name="BukrsFim"/><PropertyRef Name="KunnrIni"/><PropertyRef Name="KunnrFim"/><PropertyRef Name="Kvgr4Ini"/><PropertyRef Name="Kvgr4Fim"/><PropertyRef Name="Kvgr5Ini"/><PropertyRef Name="Kvgr5Fim"/><PropertyRef Name="BelnrIni"/><PropertyRef Name="BelnrFim"/><PropertyRef Name="RepreIni"/><PropertyRef Name="RepreFim"/><PropertyRef Name="PerioIni"/><PropertyRef Name="PerioFim"/></Key><Property Name="Xblnr" Type="Edm.String" Nullable="false" MaxLength="16" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="Kvgr4" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Usuario" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Kvgr4Text" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="BukrsIni" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
@@ -1862,11 +1862,11 @@
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Prioridade" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/></EntityType>
 			<EntityType Name="P_AnexoQ" m:HasStream="true" sap:content-version="1">
-				<Key><PropertyRef Name="IvCodMensagem"/></Key><Property Name="Nome" Type="Edm.String" Nullable="false" MaxLength="100" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="CriadoPor" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+				<Key><PropertyRef Name="IvCodMensagem"/></Key><Property Name="CriadoPor" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="CodMensagem" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Tipo" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Nome" Type="Edm.String" Nullable="false" MaxLength="100" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Filename" Type="Edm.String" Nullable="false" MaxLength="100" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="Tipo" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Sydate" Type="Edm.DateTime" Precision="7" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Sytime" Type="Edm.Time" Precision="0" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false"
 					sap:filterable="false"/><Property Name="Value" Type="Edm.Binary" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false"
@@ -1878,10 +1878,10 @@
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="IvNomeArq" Type="Edm.String" Nullable="false" MaxLength="100" sap:unicode="false" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
 			<EntityType Name="File" m:HasStream="true" sap:content-version="1">
-				<Key><PropertyRef Name="Filename"/></Key><Property Name="CriadoPor" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false" sap:updatable="false"
-					sap:sortable="false" sap:filterable="false"/><Property Name="CodMensagem" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Tipo" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+				<Key><PropertyRef Name="Filename"/></Key><Property Name="CodMensagem" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="CriadoPor" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Filename" Type="Edm.String" Nullable="false" MaxLength="100" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="Tipo" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Sydate" Type="Edm.DateTime" Nullable="false" Precision="7" sap:unicode="false" sap:label="Current Date"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Sytime" Type="Edm.Time" Nullable="false" Precision="0" sap:unicode="false" sap:label="Time" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Value" Type="Edm.Binary" Nullable="false" sap:unicode="false" sap:label="Binary String" sap:creatable="false"
@@ -1971,7 +1971,6 @@
 				<FunctionImport Name="P_Get_PercRebaixa" ReturnType="ZSF_FV_SRV.P_PercRebaixa" EntitySet="P_PercRebaixaCollection" m:HttpMethod="POST"><Parameter Name="Vkorg" Type="Edm.String" Mode="In" MaxLength="4"/><Parameter Name="Lifnr" Type="Edm.String" Mode="In" MaxLength="10"/><Parameter Name="Kvgr4" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Mvgr1" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Mvgr2" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Mvgr3" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Mvgr4" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Mvgr5" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Kunnr" Type="Edm.String" Mode="In" MaxLength="10"/><Parameter Name="Matnr" Type="Edm.String" Mode="In" MaxLength="40"/><Parameter Name="Usuario" Type="Edm.String" Mode="In" MaxLength="12"/></FunctionImport>
 				<FunctionImport Name="P_Set_PercRebaixa" ReturnType="ZSF_FV_SRV.P_PercRebaixa" EntitySet="P_PercRebaixaCollection" m:HttpMethod="POST"><Parameter Name="Kunnr" Type="Edm.String" Mode="In" MaxLength="10"/><Parameter Name="Kvgr4" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Lifnr" Type="Edm.String" Mode="In" MaxLength="10"/><Parameter Name="Matnr" Type="Edm.String" Mode="In" MaxLength="40"/><Parameter Name="Mvgr1" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Mvgr2" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Mvgr3" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Mvgr4" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Mvgr5" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Usuario" Type="Edm.String" Mode="In" MaxLength="12"/><Parameter Name="Vkorg" Type="Edm.String" Mode="In" MaxLength="4"/><Parameter Name="PercCadastrado" Type="Edm.Decimal" Mode="In" Precision="3" Scale="3"/><Parameter Name="PercCadastrar" Type="Edm.Decimal" Mode="In" Precision="3" Scale="3"/></FunctionImport>
 				<FunctionImport Name="P_Set_Transf_Verba" ReturnType="ZSF_FV_SRV.Return" EntitySet="ReturnCollection" m:HttpMethod="POST"><Parameter Name="RepresOrig" Type="Edm.String" Mode="In" MaxLength="10"/><Parameter Name="RepresDest" Type="Edm.String" Mode="In" MaxLength="10"/><Parameter Name="BukrsOrig" Type="Edm.String" Mode="In" MaxLength="4"/><Parameter Name="BukrsDest" Type="Edm.String" Mode="In" MaxLength="4"/><Parameter Name="Valor" Type="Edm.Decimal" Mode="In" Precision="3" Scale="3"/><Parameter Name="Usuario" Type="Edm.String" Mode="In" MaxLength="12"/></FunctionImport>
-			</EntityContainer><atom:link rel="self" href="http://predilectaqas:11443/sap/opu/odata/sap/ZSF_FV_SRV/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/><atom:link rel="latest-version" href="http://predilectaqas:11443/sap/opu/odata/sap/ZSF_FV_SRV/$metadata"
-				xmlns:atom="http://www.w3.org/2005/Atom"/></Schema>
+			</EntityContainer><atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="self" href="./sap/ZSF_FV_SRV/$metadata"/><atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="latest-version" href="./sap/ZSF_FV_SRV/$metadata"/></Schema>
 	</edmx:DataServices>
 </edmx:Edmx>
