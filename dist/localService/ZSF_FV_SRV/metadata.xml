@@ -1,7 +1,8 @@
-<edmx:Edmx xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
-	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData" Version="1.0">
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData">
 	<edmx:DataServices m:DataServiceVersion="2.0">
-		<Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="ZSF_FV_SRV" xml:lang="en" sap:schema-version="1"><Annotation xmlns="http://docs.oasis-open.org/odata/ns/edm" Term="Core.SchemaVersion" String="1.0.0"/>
+		<Schema Namespace="ZSF_FV_SRV" xml:lang="en" sap:schema-version="1" xmlns="http://schemas.microsoft.com/ado/2008/09/edm"><Annotation Term="Core.SchemaVersion" String="1.0.0" xmlns="http://docs.oasis-open.org/odata/ns/edm"/>
 			<EntityType Name="SeqAcessoTabela" sap:content-version="1">
 				<Key><PropertyRef Name="Kozgf"/><PropertyRef Name="Kschl"/></Key><Property Name="Kozgf" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Descricao" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:creatable="false" sap:updatable="false"
@@ -1971,6 +1972,10 @@
 				<FunctionImport Name="P_Get_PercRebaixa" ReturnType="ZSF_FV_SRV.P_PercRebaixa" EntitySet="P_PercRebaixaCollection" m:HttpMethod="POST"><Parameter Name="Vkorg" Type="Edm.String" Mode="In" MaxLength="4"/><Parameter Name="Lifnr" Type="Edm.String" Mode="In" MaxLength="10"/><Parameter Name="Kvgr4" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Mvgr1" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Mvgr2" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Mvgr3" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Mvgr4" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Mvgr5" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Kunnr" Type="Edm.String" Mode="In" MaxLength="10"/><Parameter Name="Matnr" Type="Edm.String" Mode="In" MaxLength="40"/><Parameter Name="Usuario" Type="Edm.String" Mode="In" MaxLength="12"/></FunctionImport>
 				<FunctionImport Name="P_Set_PercRebaixa" ReturnType="ZSF_FV_SRV.P_PercRebaixa" EntitySet="P_PercRebaixaCollection" m:HttpMethod="POST"><Parameter Name="Kunnr" Type="Edm.String" Mode="In" MaxLength="10"/><Parameter Name="Kvgr4" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Lifnr" Type="Edm.String" Mode="In" MaxLength="10"/><Parameter Name="Matnr" Type="Edm.String" Mode="In" MaxLength="40"/><Parameter Name="Mvgr1" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Mvgr2" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Mvgr3" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Mvgr4" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Mvgr5" Type="Edm.String" Mode="In" MaxLength="3"/><Parameter Name="Usuario" Type="Edm.String" Mode="In" MaxLength="12"/><Parameter Name="Vkorg" Type="Edm.String" Mode="In" MaxLength="4"/><Parameter Name="PercCadastrado" Type="Edm.Decimal" Mode="In" Precision="3" Scale="3"/><Parameter Name="PercCadastrar" Type="Edm.Decimal" Mode="In" Precision="3" Scale="3"/></FunctionImport>
 				<FunctionImport Name="P_Set_Transf_Verba" ReturnType="ZSF_FV_SRV.Return" EntitySet="ReturnCollection" m:HttpMethod="POST"><Parameter Name="RepresOrig" Type="Edm.String" Mode="In" MaxLength="10"/><Parameter Name="RepresDest" Type="Edm.String" Mode="In" MaxLength="10"/><Parameter Name="BukrsOrig" Type="Edm.String" Mode="In" MaxLength="4"/><Parameter Name="BukrsDest" Type="Edm.String" Mode="In" MaxLength="4"/><Parameter Name="Valor" Type="Edm.Decimal" Mode="In" Precision="3" Scale="3"/><Parameter Name="Usuario" Type="Edm.String" Mode="In" MaxLength="12"/></FunctionImport>
-			</EntityContainer><atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="self" href="./sap/ZSF_FV_SRV/$metadata"/><atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="latest-version" href="./sap/ZSF_FV_SRV/$metadata"/></Schema>
+			</EntityContainer><atom:link rel="self"
+				href="https://webidecp-wrf3onqibe.dispatcher.br1.hana.ondemand.com/destinations/PredilectaPRD/sap/opu/odata/sap/ZSF_FV_SRV/$metadata"
+				xmlns:atom="http://www.w3.org/2005/Atom"/><atom:link rel="latest-version"
+				href="https://webidecp-wrf3onqibe.dispatcher.br1.hana.ondemand.com/destinations/PredilectaPRD/sap/opu/odata/sap/ZSF_FV_SRV/$metadata"
+				xmlns:atom="http://www.w3.org/2005/Atom"/></Schema>
 	</edmx:DataServices>
 </edmx:Edmx>

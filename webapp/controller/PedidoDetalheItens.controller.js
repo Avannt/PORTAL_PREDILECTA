@@ -27,7 +27,7 @@ sap.ui.define([
 			var Werks = that.getModelGlobal("modelPedido").getProperty("/Werks");
 
 			that.getView().byId("IdItemPedido").setBusy(true);
-			
+
 			that.vetorProdutos = [];
 			var modelProdutos = new JSONModel(that.vetorProdutos);
 			this.setModel(modelProdutos, "modelProdutos");
@@ -175,6 +175,9 @@ sap.ui.define([
 			this.setModel(model, "modelVar");
 
 			that.getView().byId("IdItemPedido").setEnabled(true);
+			that.getView().byId("idPrecoVenda").setEnabled(true);
+			that.getView().byId("idPromocao").setEnabled(true);
+			that.getView().byId("idQuantidade").setEnabled(true);
 
 			setTimeout(function () {
 				that.getView().byId("IdItemPedido").focus();
@@ -230,7 +233,7 @@ sap.ui.define([
 						title: "Não Permitido",
 						actions: [MessageBox.Action.OK],
 						onClose: function () {
-							
+
 							that.getModelGlobal("modelItem").setProperty("/Matnr", "");
 							that.getView().byId("IdItemPedido").focus();
 						}
@@ -257,7 +260,7 @@ sap.ui.define([
 						that.getView().byId("idQuantidade").focus();
 					}, 500);
 				}
-				
+
 			} else {
 
 				that.onInicializaCamposItens();
@@ -489,7 +492,11 @@ sap.ui.define([
 						if (that.getModel("modelVar").getProperty("/Editar")) {
 
 							oButtonSalvar.setText("Inserir");
+
+							that.getView().byId("idBtnEditar").setVisible(false);
+							that.getView().byId("idBtnAdd").setVisible(true);
 							that.getModel("modelVar").setProperty("/Editar", false);
+							
 							that.getView().byId("IdItemPedido").setEnabled(true);
 
 							for (var i = 0; i < itensPed.length; i++) {
@@ -498,11 +505,14 @@ sap.ui.define([
 									itensPed[i] = data;
 								}
 							}
-
 						} else {
 
 							itensPed.push(data);
 						}
+						
+						that.getView().byId("idPrecoVenda").setEnabled(true);
+						that.getView().byId("idPromocao").setEnabled(true);
+						that.getView().byId("idQuantidade").setEnabled(true);
 
 						oButtonSalvar.setEnabled(true);
 						that.byId("idItens").setBusy(false);
@@ -532,10 +542,23 @@ sap.ui.define([
 			this.getView().byId("idBtnAdd").setText("Salvar");
 			this.getView().byId("IdItemPedido").setEnabled(false);
 
+			this.getView().byId("idBtnEditar").setVisible(true);
+			this.getView().byId("idBtnAdd").setVisible(false);
+
 			setTimeout(function () {
 				that.getView().byId("idQuantidade").focus();
 			}, 500);
+		},
 
+		onAtualizarItemPress: function (oEvent) {
+
+			this.getView().byId("idBtnEditar").setVisible(false);
+			this.getView().byId("idBtnAdd").setVisible(true);
+
+			this.getView().byId("IdItemPedido").setEnabled(false);
+			this.getView().byId("idPrecoVenda").setEnabled(false);
+			this.getView().byId("idPromocao").setEnabled(false);
+			this.getView().byId("idQuantidade").setEnabled(false);
 		},
 
 		onDeletarItem: function (oEvent) {
@@ -652,6 +675,9 @@ sap.ui.define([
 
 						that.getView().byId("idBtnAdd").setText("Salvar");
 						that.getView().byId("IdItemPedido").setEnabled(true);
+						that.getView().byId("idPrecoVenda").setEnabled(true);
+						that.getView().byId("idPromocao").setEnabled(true);
+						that.getView().byId("idQuantidade").setEnabled(true);
 
 						that.onInicializaCamposItens();
 					}

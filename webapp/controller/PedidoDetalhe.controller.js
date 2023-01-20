@@ -75,6 +75,7 @@ sap.ui.define([
 
 								that.byId("idTipoPedido").setBusy(false);
 								that.onCarregarTipoPedido(dataPed, TipoPedido);
+								that.onCarregarLocalEntrega(that.getModelGlobal("modelPedido").getProperty("/Bukrs"));
 
 								that.getModelGlobal("modelItensPedidoGrid").setData(that.vetorItensPedido);
 								that.getModelGlobal("modelItensPedidoGrid").refresh();
@@ -89,7 +90,7 @@ sap.ui.define([
 							});
 
 						}).catch(function (error) {
-
+							
 							that.byId("table_pedidos").setBusy(false);
 							that.onMensagemErroODATA(error);
 						});
@@ -140,6 +141,7 @@ sap.ui.define([
 			that.vetorVencimentos1 = [];
 			that.vetorMotivosBoleto = [];
 			that.vetorLocaisEntregas = [];
+			that.vetorLocaisEntregasAux = [];
 			that.vetorMotivosCampanha = [];
 			that.vetorVencimentoTotal = [];
 			that.vetorTipoPedidosTotal = [];
@@ -302,7 +304,7 @@ sap.ui.define([
 							}
 						}
 
-						that.getModel("modelLocaisEntregas").setData(that.vetorLocaisEntregas);
+						// that.getModel("modelLocaisEntregas").setData(that.vetorLocaisEntregas);
 						res();
 
 					},
@@ -1157,9 +1159,9 @@ sap.ui.define([
 					that.getModelGlobal("modelPedido").setProperty("/Bukrs", that.vetorCentros[i].Bukrs);
 					that.getModelGlobal("modelPedido").setProperty("/RegCentro", that.vetorCentros[i].Regio);
 
-					// that.getModelGlobal("modelPedido").setProperty("/RegCliente", that.getModel("modelCliente").getProperty("/Regio"));
-					var regCliente = that.getModel("modelCliente").getProperty("/Txjcd").substring(0, 3).trim();
-					that.getModel("modelPedido").setProperty("/RegCliente", regCliente);
+					that.getModelGlobal("modelPedido").setProperty("/RegCliente", that.getModel("modelCliente").getProperty("/Regio"));
+					// var regCliente = that.getModel("modelCliente").getProperty("/Txjcd").substring(0, 3).trim();
+					// that.getModel("modelPedido").setProperty("/RegCliente", regCliente);
 
 					that.getModelGlobal("modelPedido").setProperty("/ValMinPed", that.vetorCentros[i].ValMinPed);
 					that.getModelGlobal("modelPedido").setProperty("/PercAcresc", that.vetorCentros[i].PercAcresc);
@@ -1172,13 +1174,28 @@ sap.ui.define([
 					that.getModelGlobal("modelPedido").setProperty("/LogProposta", that.vetorCentros[i].LogProposta);
 					that.getModelGlobal("modelPedido").setProperty("/Gerencia", that.vetorCentros[i].Gerencia);
 					that.getModelGlobal("modelPedido").setProperty("/Supervisor", that.vetorCentros[i].Supervisor);
+
+					//Locais de entregas
+					that.vetorLocaisEntregasAux = [];
+
+					for (var i = 0; i < that.vetorLocaisEntregas.length; i++) {
+
+						if (that.getModelGlobal("modelPedido").getProperty("/Bukrs") == that.vetorLocaisEntregas[i].Bukrs || that.vetorLocaisEntregas[i]
+							.Bukrs == "") {
+
+							that.vetorLocaisEntregasAux.push(that.vetorLocaisEntregas[i]);
+						}
+					}
+
+					that.getModel("modelLocaisEntregas").setData(that.vetorLocaisEntregasAux);
+					that.getModel("modelLocaisEntregas").refresh();
+
+					//Setar Local de entrega default
+					if (this.getModel("modelLocaisEntregas").getData().length == 1) {
+						this.getModel("modelPedido").setProperty("/LocalEntrega", (this.getModel("modelLocaisEntregas").getData()[0].Addrnumber));
+					}
+
 					break;
-				}
-
-				//Setar Local de entrega default
-				if (this.getModel("modelLocaisEntregas").getData().length == 1) {
-
-					this.getModel("modelPedido").setProperty("/LocalEntrega", (this.getModel("modelLocaisEntregas").getData()[0].Addrnumber));
 				}
 
 				//Setar Tipo pedido Default
@@ -1307,7 +1324,7 @@ sap.ui.define([
 									}
 
 								}
-								
+
 								debugger;
 
 								if (result.Zterm == "") {
@@ -1334,17 +1351,17 @@ sap.ui.define([
 
 								var contrato = that.getModelGlobal("modelPedido").getProperty("/Contrato");
 								var limiteCred = parseFloat(that.getModel("modelCliente").getProperty("/CreditLimit"));
-								
+
 								//Regra para quando tiver contrato e a rede for OUTROS. limpar tudo e deixar o kra setar a cond de pagto
 								// if(contrato != "" && result.Kvgr4 == 1){
-								if(contrato != "" && String(result.AtlOrdem) == "false" && result.Zterm == "") {
-								
+								if (contrato != "" && String(result.AtlOrdem) == "false" && result.Zterm == "") {
+
 									that.byId("idVencimento1").setEnabled(true);
 									that.getModelGlobal("modelPedido").setProperty("/Vencimento", "");
 									that.getModel("modelPedido").setProperty("/IndiceFinal", 0);
-									
+
 								} else if (result.Zterm != "" && contrato != "" && limiteCred == 1) {
-									
+
 									//Regra para limpar forma de pagamento quando o cliente nao 
 									//possui limite de credito mas existe contrato ativo com Indice e Forma de pagamento setada
 									that.getModelGlobal("modelPedido").setProperty("/Vencimento", "");
@@ -1468,6 +1485,23 @@ sap.ui.define([
 				that.byId("idTipoPedido").setBusy(false);
 				// that.onMensagemErroODATA(error);
 			});
+
+		},
+
+		onCarregarLocalEntrega: function (Bukrs) {
+			
+			var that = this;
+
+			for (var i = 0; i < that.vetorLocaisEntregas.length; i++) {
+
+				if (Bukrs == that.vetorLocaisEntregas[i].Bukrs || that.vetorLocaisEntregas[i].Bukrs == "") {
+
+					that.vetorLocaisEntregasAux.push(that.vetorLocaisEntregas[i]);
+				}
+			}
+
+			that.getModel("modelLocaisEntregas").setData(that.vetorLocaisEntregasAux);
+			that.getModel("modelLocaisEntregas").refresh();
 
 		},
 
@@ -2413,7 +2447,7 @@ sap.ui.define([
 			var frete = this.getModel("modelFretes").getData();
 			var endereco = this.getModel("modelLocaisEntregas").getData();
 			var centros = this.getModel("modelCentros").getData();
-			
+
 			var ZtermDesc = "";
 			var Inco1Desc = "";
 			var RuaEntrega = "";
@@ -2435,7 +2469,7 @@ sap.ui.define([
 					break;
 				}
 			}
-			
+
 			for (var i = 0; i < endereco.length; i++) {
 				if (endereco[i].Addrnumber == pedido.LocalEntrega) {
 
@@ -2444,7 +2478,7 @@ sap.ui.define([
 					break;
 				}
 			}
-			
+
 			for (var i = 0; i < centros.length; i++) {
 				if (centros[i].Werks == pedido.Werks) {
 
@@ -2524,7 +2558,7 @@ sap.ui.define([
 							}, {
 								key: "Endereço de entrega",
 								value: RuaEntrega
-							},{
+							}, {
 								key: "Cidade de entrega",
 								value: CidadeEntrega
 							}]
@@ -2532,7 +2566,7 @@ sap.ui.define([
 							name: "Investimentos",
 							items: [{
 								key: "Em Nota Fiscal",
-								value: pedido.ValDescAplicar                         
+								value: pedido.ValDescAplicar
 							}, {
 								key: "Em Boleto",
 								value: pedido.ValDescAplicarBol
@@ -2544,7 +2578,7 @@ sap.ui.define([
 								value: pedido.TotalItens
 							}, {
 								key: "Preço Total s/ST",
-								value: pedido.ValorTotal         
+								value: pedido.ValorTotal
 							}, {
 								key: "Preço Total c/ST",
 								value: pedido.ValTotItemSt

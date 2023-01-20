@@ -393,6 +393,7 @@
 					<Bar>
 						<contentLeft></contentLeft>
 						<contentRight>
+							<Button id="idBtnEditar" type="Emphasized" text="Atualizar" icon="sap-icon://edit" press="onAtualizarItemPress" visible="false"/>
 							<Button id="idBtnAdd" type="Accept" text="Inserir" icon="sap-icon://save" press="onInserirItem"/>
 							<Button id="idButton" type="Default" text="Limpar" icon="sap-icon://refresh" press="onResetaTela"/>
 						</contentRight>
