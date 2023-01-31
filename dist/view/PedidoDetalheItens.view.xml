@@ -90,7 +90,7 @@
 											</layoutData>
 										</Label>
 										<Input id="idQuantidade" value="{modelItem>/QtdPedida}" class="camposDialog" editable="true" change="onQuantidadeChange"
-											liveChange="onBloquearInput" submit="onFocusQnt" type="Number">
+											liveChange="onAtualizarItemPress" submit="onFocusQnt" type="Number">
 											<layoutData>
 												<layout:GridData span="L2 M2"/>
 											</layoutData>
@@ -101,7 +101,7 @@
 											</layoutData>
 										</Label>
 										<Input id="idPrecoVenda" value="{path: 'modelItem>/ValPrecoInform'}" class="camposDialog" editable="true" change="onPrecoVendaChange"
-											liveChange="onBloquearInput" submit="onFocusVenda" type="Number">
+											liveChange="onAtualizarItemPress" submit="onFocusVenda" type="Number">
 											<layoutData>
 												<layout:GridData span="L2 M2"/>
 											</layoutData>
@@ -112,10 +112,10 @@
 											</layoutData>
 										</Label>
 										<Input id="idPromocao" class="camposDialog" value="{ path: 'modelItem>/PercPromo' }" editable="true" change="onPromocaoChange"
-											liveChange="onBloquearInput" submit="onFocusPromo" type="Number">
-											<layoutData>
+											liveChange="onAtualizarItemPress" submit="onFocusPromo" type="Number">
+											<layoutData>  
 												<layout:GridData span="L2 M2"/>
-											</layoutData>
+											</layoutData >
 										</Input>
 										<Label text="Preço total">
 											<layoutData>

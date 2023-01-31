@@ -90,7 +90,7 @@ sap.ui.define([
 							});
 
 						}).catch(function (error) {
-
+							
 							that.byId("table_pedidos").setBusy(false);
 							that.onMensagemErroODATA(error);
 						});

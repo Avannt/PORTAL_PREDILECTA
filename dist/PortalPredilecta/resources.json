@@ -1,7 +1,7 @@
 {
     "resources": [
         {
-            "name": "../controller/enviarPedidos.controller.js"
+            "name": "../controller/Login.controller.js"
         },
         {
             "name": "../i18n/i18n_pt.properties",
@@ -19,7 +19,7 @@
             "locale": "_pt_BR"
         },
         {
-            "name": "../controller/relatorioTabelas.controller.js"
+            "name": "../controller/relatorioTitulos.controller.js"
         },
         {
             "name": "../manifest.json"
@@ -37,10 +37,10 @@
             "name": "../controller/verbaConsultas.controller.js"
         },
         {
-            "name": "../controller/relatorioTitulos.controller.js"
+            "name": "../model/Menu.json"
         },
         {
-            "name": "../model/Menu.json"
+            "name": "../controller/relatorioTabelas.controller.js"
         },
         {
             "name": "../controller/relatorioPedidos.controller.js"
@@ -58,8 +58,7 @@
             "name": "../controller/produtoConsultas.controller.js"
         },
         {
-            "name": "../i18n/i18n.properties",
-            "raw": "i18n/i18n.properties"
+            "name": "../controller/enviarPedidos.controller.js"
         },
         {
             "name": "../controller/detalhesRelatorioTabelas.controller.js"
@@ -107,7 +106,8 @@
             "name": "../controller/Menu.controller.js"
         },
         {
-            "name": "../controller/Login.controller.js"
+            "name": "../i18n/i18n.properties",
+            "raw": "i18n/i18n.properties"
         },
         {
             "name": "../controller/BaseController.js"
@@ -127,6 +127,10 @@
         {
             "name": "../Component-preload.js",
             "merged": true
+        },
+        {
+            "name": "../controller/MsgPortalDetalhe-dbg.controller.js",
+            "isDebug": true
         },
         {
             "name": "../model/models-dbg.js",
@@ -210,10 +214,6 @@
         },
         {
             "name": "../controller/NotFound-dbg.controller.js",
-            "isDebug": true
-        },
-        {
-            "name": "../controller/MsgPortalDetalhe-dbg.controller.js",
             "isDebug": true
         },
         {
