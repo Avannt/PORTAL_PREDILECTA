@@ -28,6 +28,13 @@ sap.ui.define([
 
 			that.getView().byId("IdItemPedido").setBusy(true);
 
+			var modelAtualizaTela = new JSONModel({
+				changeQnt: false,
+				changePreco: false,
+				changePromo: false
+			});
+			this.setModel(modelAtualizaTela, "modelAtualizarItem");
+
 			that.vetorProdutos = [];
 			var modelProdutos = new JSONModel(that.vetorProdutos);
 			this.setModel(modelProdutos, "modelProdutos");
@@ -56,6 +63,21 @@ sap.ui.define([
 				that.getView().byId("IdItemPedido").setBusy(false);
 				that.onMensagemErroODATA(error);
 			});
+		},
+
+		onLiveChangeQuantidade: function () {
+
+			this.getModel("modelAtualizarItem").setProperty("/changeQnt", true);
+		},
+
+		onLiveChangePromocao: function () {
+
+			this.getModel("modelAtualizarItem").setProperty("/changePromo", true);
+		},
+
+		onLiveChangePreco: function () {
+
+			this.getModel("modelAtualizarItem").setProperty("/changePreco", true);
 		},
 
 		onInicializaCamposItens: function () {
@@ -268,7 +290,7 @@ sap.ui.define([
 			}
 		},
 
-		onQuantidadeChange: function () {
+		onQuantidadeChange: function (res, rej) {
 
 			var that = this;
 
@@ -288,7 +310,7 @@ sap.ui.define([
 
 					that.byId("idItens").setBusy(true);
 
-					that.onCallPrecoItem(oParameters);
+					that.onCallPrecoItem(oParameters, res, rej);
 
 				} else {
 
@@ -309,7 +331,7 @@ sap.ui.define([
 			}
 		},
 
-		onPrecoVendaChange: function () {
+		onPrecoVendaChange: function (res, rej) {
 
 			var that = this;
 
@@ -329,7 +351,7 @@ sap.ui.define([
 
 					that.byId("idItens").setBusy(true);
 
-					that.onCallPrecoItem(oParameters);
+					that.onCallPrecoItem(oParameters, res, rej);
 
 				} else {
 
@@ -349,7 +371,7 @@ sap.ui.define([
 			}
 		},
 
-		onPromocaoChange: function () {
+		onPromocaoChange: function (res, rej) {
 
 			var that = this;
 
@@ -372,15 +394,15 @@ sap.ui.define([
 
 			} else {
 
-				if (Promocao > MaxPromo) {
+				if (parseFloat(Promocao) > parseFloat(MaxPromo)) {
 					that.getModelGlobal("modelItem").setProperty("/PercPromo", MaxPromo);
 				}
 
-				that.onCallPrecoItem(oParameters);
+				that.onCallPrecoItem(oParameters, res, rej);
 			}
 		},
 
-		onCallPrecoItem: function (parameters) {
+		onCallPrecoItem: function (parameters, res, rej) {
 
 			var that = this;
 			that.byId("idItens").setBusy(true);
@@ -410,6 +432,19 @@ sap.ui.define([
 						that.getModelGlobal("modelItem").setData(Item);
 						that.byId("idItens").setBusy(false);
 
+						that.getModel("modelAtualizarItem").setProperty("/changePromo", false);
+						that.getModel("modelAtualizarItem").setProperty("/changeQnt", false);
+						that.getModel("modelAtualizarItem").setProperty("/changePreco", false);
+
+						try {
+
+							res(Item);
+
+						} catch (x) {
+
+							console.log(x);
+						}
+
 						// if (Item.PercLucro <= -3) {
 
 						// 	that.byId("idRentabilidade").setVisible(false);
@@ -429,6 +464,15 @@ sap.ui.define([
 
 					that.byId("idItens").setBusy(false);
 					that.onMensagemErroODATA(oError);
+
+					try {
+
+						rej();
+
+					} catch (x) {
+
+						console.log(x);
+					}
 				}
 			});
 		},
@@ -436,98 +480,122 @@ sap.ui.define([
 		onInserirItem: function () {
 
 			var that = this;
+			
+			var objItem = that.getModel("modelItem").getData();
 
-			var oButtonSalvar = this.byId("idBtnAdd");
+			new Promise(function (res, rej) {
 
-			that.byId("idItens").setBusy(true);
-			var objItem = this.getModel("modelItem").getData();
+				if (that.getModel("modelAtualizarItem").getProperty("/changePromo") == true) {
 
-			that.oModel.setUseBatch(false);
-			that.oModel.refreshSecurityToken();
+					that.onPromocaoChange(res, rej);
 
-			delete objItem.__metadata;
+				} else if (that.getModel("modelAtualizarItem").getProperty("/changeQnt") == true) {
 
-			if (objItem.Matnr === "") {
+					that.onQuantidadeChange(res, rej);
 
-				MessageBox.show("Selecione um produto.", {
-					icon: sap.m.MessageBox.Icon.ERROR,
-					title: "Falha ao inserir",
-					actions: [MessageBox.Action.OK],
-					onClose: function () {
+				} else if (that.getModel("modelAtualizarItem").setProperty("/changePreco") == true) {
 
-						that.byId("idItens").setBusy(false);
-					}
-				});
+					that.onPrecoVendaChange(res, rej);
 
-			} else if (objItem.QtdPedida === "" || objItem.QtdPedida <= 0) {
+				} else {
 
-				sap.m.MessageBox.show("Digite uma quantidade acima de 0.", {
-					icon: sap.m.MessageBox.Icon.ERROR,
-					title: "Campo Inválido!",
-					actions: [MessageBox.Action.OK],
-					onClose: function () {
-
-						that.byId("idItens").setBusy(false);
-						objItem.QtdPedida = 1;
-					}
-				});
-
-			} else {
-
-				oButtonSalvar.setEnabled(false);
-
-				if (that.getModel("modelVar").getProperty("/Editar")) {
-					objItem.Draft = true;
+					res(objItem);
 				}
 
-				that.onFormatNumberItem(objItem);
+			}).then(function (data) {
 
-				that.oModel.create("/P_ItensPedidoPR", objItem, {
-					method: "POST",
-					success: function (data) {
+				var oButtonSalvar = that.byId("idBtnAdd");
 
-						var itensPed = that.getModelGlobal("modelItensPedidoGrid").getData();
-						delete data.__metadata;
+				that.byId("idItens").setBusy(true);
 
-						if (that.getModel("modelVar").getProperty("/Editar")) {
+				that.oModel.setUseBatch(false);
+				that.oModel.refreshSecurityToken();
 
-							oButtonSalvar.setText("Inserir");
+				delete data.__metadata;
 
-							that.getView().byId("idBtnEditar").setVisible(false);
-							that.getView().byId("idBtnAdd").setVisible(true);
-							that.getModel("modelVar").setProperty("/Editar", false);
-							
-							that.getView().byId("IdItemPedido").setEnabled(true);
+				if (data.Matnr === "") {
 
-							for (var i = 0; i < itensPed.length; i++) {
-								if (itensPed[i].Matnr == data.Matnr) {
+					MessageBox.show("Selecione um produto.", {
+						icon: sap.m.MessageBox.Icon.ERROR,
+						title: "Falha ao inserir",
+						actions: [MessageBox.Action.OK],
+						onClose: function () {
 
-									itensPed[i] = data;
-								}
-							}
-						} else {
-
-							itensPed.push(data);
+							that.byId("idItens").setBusy(false);
 						}
-						
-						that.getView().byId("idPrecoVenda").setEnabled(true);
-						that.getView().byId("idPromocao").setEnabled(true);
-						that.getView().byId("idQuantidade").setEnabled(true);
+					});
 
-						oButtonSalvar.setEnabled(true);
-						that.byId("idItens").setBusy(false);
-						that.onInicializaCamposItens();
-						that.getModelGlobal("modelItensPedidoGrid").refresh();
+				} else if (data.QtdPedida === "" || data.QtdPedida <= 0) {
 
-					},
-					error: function (error) {
+					sap.m.MessageBox.show("Digite uma quantidade acima de 0.", {
+						icon: sap.m.MessageBox.Icon.ERROR,
+						title: "Campo Inválido!",
+						actions: [MessageBox.Action.OK],
+						onClose: function () {
 
-						that.byId("idItens").setBusy(false);
-						oButtonSalvar.setEnabled(true);
-						that.onMensagemErroODATA(error);
+							that.byId("idItens").setBusy(false);
+							data.QtdPedida = 1;
+						}
+					});
+
+				} else {
+
+					oButtonSalvar.setEnabled(false);
+
+					if (that.getModel("modelVar").getProperty("/Editar")) {
+						objItem.Draft = true;
 					}
-				});
-			}
+
+					that.onFormatNumberItem(data);
+
+					that.oModel.create("/P_ItensPedidoPR", data, {
+						method: "POST",
+						success: function (data) {
+
+							var itensPed = that.getModelGlobal("modelItensPedidoGrid").getData();
+							delete data.__metadata;
+
+							if (that.getModel("modelVar").getProperty("/Editar")) {
+
+								oButtonSalvar.setText("Inserir");
+
+								// that.getView().byId("idBtnEditar").setVisible(false);
+								that.getView().byId("idBtnAdd").setVisible(true);
+								that.getModel("modelVar").setProperty("/Editar", false);
+
+								that.getView().byId("IdItemPedido").setEnabled(true);
+
+								for (var i = 0; i < itensPed.length; i++) {
+									if (itensPed[i].Matnr == data.Matnr) {
+
+										itensPed[i] = data;
+									}
+								}
+							} else {
+
+								itensPed.push(data);
+							}
+
+							that.getView().byId("idPrecoVenda").setEnabled(true);
+							that.getView().byId("idPromocao").setEnabled(true);
+							that.getView().byId("idQuantidade").setEnabled(true);
+
+							oButtonSalvar.setEnabled(true);
+							that.byId("idItens").setBusy(false);
+							that.onInicializaCamposItens();
+							that.getModelGlobal("modelItensPedidoGrid").refresh();
+
+						},
+						error: function (error) {
+
+							that.byId("idItens").setBusy(false);
+							oButtonSalvar.setEnabled(true);
+							that.onMensagemErroODATA(error);
+						}
+					});
+				}
+			});
+
 		},
 
 		onEditarItemPress: function (oEvent) {
@@ -542,8 +610,8 @@ sap.ui.define([
 			this.getView().byId("idBtnAdd").setText("Salvar");
 			this.getView().byId("IdItemPedido").setEnabled(false);
 
-			this.getView().byId("idBtnEditar").setVisible(true);
-			this.getView().byId("idBtnAdd").setVisible(false);
+			// this.getView().byId("idBtnEditar").setVisible(true);
+			this.getView().byId("idBtnAdd").setVisible(true);
 
 			setTimeout(function () {
 				that.getView().byId("idQuantidade").focus();

@@ -89,8 +89,8 @@
 												<layout:GridData span="L2 M2" linebreakL="true"/>
 											</layoutData>
 										</Label>
-										<Input id="idQuantidade" value="{modelItem>/QtdPedida}" class="camposDialog" editable="true" change="onQuantidadeChange"
-											liveChange="onAtualizarItemPress" submit="onFocusQnt" type="Number">
+										<Input id="idQuantidade" value="{modelItem>/QtdPedida}" class="camposDialog" editable="true" change="onQuantidadeChange" submit="onFocusQnt"
+											liveChange="onLiveChangeQuantidade" type="Number">
 											<layoutData>
 												<layout:GridData span="L2 M2"/>
 											</layoutData>
@@ -101,7 +101,7 @@
 											</layoutData>
 										</Label>
 										<Input id="idPrecoVenda" value="{path: 'modelItem>/ValPrecoInform'}" class="camposDialog" editable="true" change="onPrecoVendaChange"
-											liveChange="onAtualizarItemPress" submit="onFocusVenda" type="Number">
+											liveChange="onLiveChangePrecoVenda" submit="onFocusVenda" type="Number">
 											<layoutData>
 												<layout:GridData span="L2 M2"/>
 											</layoutData>
@@ -112,8 +112,8 @@
 											</layoutData>
 										</Label>
 										<Input id="idPromocao" class="camposDialog" value="{ path: 'modelItem>/PercPromo' }" editable="true" change="onPromocaoChange"
-											liveChange="onAtualizarItemPress" submit="onFocusPromo" type="Number">
-											<layoutData>  
+											liveChange="onLiveChangePromocao" submit="onFocusPromo" type="Number">
+											<layoutData>
 												<layout:GridData span="L2 M2"/>
 											</layoutData >
 										</Input>
@@ -370,7 +370,7 @@
 									<Text text="{modelItensPedidoGrid>QtdPedida}" textAlign="Left"/>
 									<Text
 										text="R$: {path: 'modelItensPedidoGrid>ValPrecoTabelaMin', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
-										textAlign="Left" />
+										textAlign="Left"/>
 									<!--<Text-->
 									<!--	text="R$: {path: 'modelItensPedidoGrid>ValPrecoUnit', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"-->
 									<!--	textAlign="Left"/>-->
@@ -393,7 +393,7 @@
 					<Bar>
 						<contentLeft></contentLeft>
 						<contentRight>
-							<Button id="idBtnEditar" type="Emphasized" text="Atualizar" icon="sap-icon://edit" press="onAtualizarItemPress" visible="false"/>
+							<!--<Button id="idBtnEditar" type="Emphasized" text="Atualizar" icon="sap-icon://edit" press="onAtualizarItemPress" visible="false"/>-->
 							<Button id="idBtnAdd" type="Accept" text="Inserir" icon="sap-icon://save" press="onInserirItem"/>
 							<Button id="idButton" type="Default" text="Limpar" icon="sap-icon://refresh" press="onResetaTela"/>
 						</contentRight>

@@ -394,7 +394,7 @@ sap.ui.define([
 
 			} else {
 
-				if (parseFloat(Promocao) > parseFloatMaxPromo) {
+				if (parseFloat(Promocao) > parseFloat(MaxPromo)) {
 					that.getModelGlobal("modelItem").setProperty("/PercPromo", MaxPromo);
 				}
 

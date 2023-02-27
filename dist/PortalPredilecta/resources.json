@@ -1,7 +1,8 @@
 {
     "resources": [
         {
-            "name": "../controller/Login.controller.js"
+            "name": "../controller/App-dbg.controller.js",
+            "isDebug": true
         },
         {
             "name": "../i18n/i18n_pt.properties",
@@ -9,17 +10,16 @@
             "locale": "_pt"
         },
         {
-            "name": "../i18n/i18n_en.properties",
-            "raw": "i18n/i18n.properties",
-            "locale": "_en"
-        },
-        {
             "name": "../i18n/i18n_pt_BR.properties",
             "raw": "i18n/i18n.properties",
             "locale": "_pt_BR"
         },
         {
-            "name": "../controller/relatorioTitulos.controller.js"
+            "name": "../i18n/i18n.properties",
+            "raw": "i18n/i18n.properties"
+        },
+        {
+            "name": "../controller/detalhesRelatorioTabelas.controller.js"
         },
         {
             "name": "../manifest.json"
@@ -37,7 +37,7 @@
             "name": "../controller/verbaConsultas.controller.js"
         },
         {
-            "name": "../model/Menu.json"
+            "name": "../controller/relatorioTitulos.controller.js"
         },
         {
             "name": "../controller/relatorioTabelas.controller.js"
@@ -61,7 +61,7 @@
             "name": "../controller/enviarPedidos.controller.js"
         },
         {
-            "name": "../controller/detalhesRelatorioTabelas.controller.js"
+            "name": "../model/Menu.json"
         },
         {
             "name": "../controller/detalheProdutos.controller.js"
@@ -106,8 +106,7 @@
             "name": "../controller/Menu.controller.js"
         },
         {
-            "name": "../i18n/i18n.properties",
-            "raw": "i18n/i18n.properties"
+            "name": "../controller/Login.controller.js"
         },
         {
             "name": "../controller/BaseController.js"
@@ -129,7 +128,7 @@
             "merged": true
         },
         {
-            "name": "../controller/MsgPortalDetalhe-dbg.controller.js",
+            "name": "../controller/clienteConsultas-dbg.controller.js",
             "isDebug": true
         },
         {
@@ -193,10 +192,6 @@
             "isDebug": true
         },
         {
-            "name": "../controller/clienteConsultas-dbg.controller.js",
-            "isDebug": true
-        },
-        {
             "name": "../controller/cadastroRebaixa-dbg.controller.js",
             "isDebug": true
         },
@@ -214,6 +209,10 @@
         },
         {
             "name": "../controller/NotFound-dbg.controller.js",
+            "isDebug": true
+        },
+        {
+            "name": "../controller/MsgPortalDetalhe-dbg.controller.js",
             "isDebug": true
         },
         {
@@ -245,8 +244,9 @@
             "isDebug": true
         },
         {
-            "name": "../controller/App-dbg.controller.js",
-            "isDebug": true
+            "name": "../i18n/i18n_en.properties",
+            "raw": "i18n/i18n.properties",
+            "locale": "_en"
         },
         {
             "name": "../serviceBinding-dbg.js",
