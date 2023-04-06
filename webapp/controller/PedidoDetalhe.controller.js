@@ -19,7 +19,6 @@ sap.ui.define([
 		onInit: function () {
 
 			this.getRouter().getRoute("pedidoDetalhe").attachPatternMatched(this.onLoadFields, this);
-
 		},
 
 		onLoadFields: function () {
@@ -90,7 +89,7 @@ sap.ui.define([
 							});
 
 						}).catch(function (error) {
-							
+
 							that.byId("table_pedidos").setBusy(false);
 							that.onMensagemErroODATA(error);
 						});
@@ -612,6 +611,14 @@ sap.ui.define([
 					that.byId("idDescontoPedidoCampBol").setEnabled(false);
 					that.byId("idDescontoAplicarCampBol").setEnabled(false);
 
+					that.byId("idDescontoDisponivelCe").setEnabled(false);
+					that.byId("idDescontoPedidoCe").setEnabled(false);
+					that.byId("idDescontoAplicarCe").setEnabled(false);
+
+					that.byId("idDescontoDisponivelCampBolEscal").setEnabled(false);
+					that.byId("idDescontoPedidoCampBolEscal").setEnabled(false);
+					that.byId("idDescontoAplicarCampBolEscal").setEnabled(false);
+
 				} else {
 
 					that.byId("idDescontoPedido").setEnabled(true);
@@ -623,6 +630,14 @@ sap.ui.define([
 
 					that.byId("idDescontoPedidoCampBol").setEnabled(true);
 					that.byId("idDescontoAplicarCampBol").setEnabled(true);
+
+					// that.byId("idDescontoDisponivelCe").setEnabled(true);
+					that.byId("idDescontoPedidoCe").setEnabled(true);
+					that.byId("idDescontoAplicarCe").setEnabled(true);
+
+					// that.byId("idDescontoDisponivelCampBolEscal").setEnabled(true);
+					that.byId("idDescontoPedidoCampBolEscal").setEnabled(true);
+					that.byId("idDescontoAplicarCampBolEscal").setEnabled(true);
 				}
 			}
 
@@ -697,6 +712,8 @@ sap.ui.define([
 			var dataLimiteEntrega = date.addDays(this.getModelGlobal("modelAux").getProperty("/MaxDiasEntrega"));
 			var validaLimiteDataEntrega = that.onValidaDataLimiteEntrega(Pedido.DataEntrega, dataLimiteEntrega);
 			var validaMinDataEntrega = that.onValidaDataLimiteEntrega(Pedido.DataEntrega, Pedido.DataEntregaSujerida);
+
+			var caracSpecRefPedido = this.containsSpecialChars(Pedido.PedidoOrigem);
 
 			if (Pedido.StatusPedido == 3) {
 
@@ -924,6 +941,20 @@ sap.ui.define([
 					}
 				});
 
+			} else if (caracSpecRefPedido == true) {
+
+				sap.m.MessageBox.show("O campo Pedido Origem Cliente possui caracteres especiais. Favor corrigir!", {
+					icon: sap.m.MessageBox.Icon.ERROR,
+					title: "Preecher campo(s)",
+					actions: [MessageBox.Action.OK],
+					onClose: function () {
+
+						that.byId("idTopLevelIconTabBar").setSelectedKey("tab2");
+						that.byId("idPedidoOrigem").focus();
+						that.byId("idPedidoOrigem").setValueState("Error");
+					}
+				});
+
 			} else {
 
 				sap.m.MessageBox.show("O tipo de frete escolhido é " + Pedido.Inco1 + ". Deseja continuar?", {
@@ -941,6 +972,8 @@ sap.ui.define([
 							that.byId("idPedidoDetalhe").setBusy(true);
 
 							Pedido = that.onFormatNumberPedido(Pedido);
+
+							debugger;
 
 							delete Pedido.__metadata;
 
@@ -1125,7 +1158,13 @@ sap.ui.define([
 				Tdt: "",
 				DataEnvio: "",
 				HoraEnvio: "",
-				LeadTime: 0
+				LeadTime: 0,
+				MotivoDescBolCe: "",
+				MotivoDescCe: "",
+				ValDescDispCe: 0,
+				ValDescInformCe: 0,
+				ValDescDispBolCe: 0,
+				ValDescInformBolCe: 0
 			});
 
 			this.setModelGlobal(modelPedido, "modelPedido");
@@ -1489,7 +1528,7 @@ sap.ui.define([
 		},
 
 		onCarregarLocalEntrega: function (Bukrs) {
-			
+
 			var that = this;
 
 			for (var i = 0; i < that.vetorLocaisEntregas.length; i++) {
@@ -1946,6 +1985,7 @@ sap.ui.define([
 
 							that.getModelGlobal("modelAux").setProperty("/ItensPedidoTab", that.vetorItensPedido.length);
 							that.onValidacoesCampanha();
+							that.onValidacoesCampanhaEscal();
 
 						}
 					}
@@ -2116,6 +2156,100 @@ sap.ui.define([
 			} else {
 				this.byId("idTextCamp").setVisible(true);
 				this.byId("idBtnCamp").setVisible(true);
+			}
+		},
+		onValidacoesCampanhaEscal: function () {
+
+			var pedido = this.getModel("modelPedido").getData();
+
+			if (pedido.ValDescInformBolCe == "") {
+				pedido.ValDescInformBolCe = 0;
+			}
+
+			if (pedido.ValDescInformCe == "") {
+				pedido.ValDescInformCe = 0;
+			}
+
+			var MotivoDescCe = pedido.MotivoDescCe;
+			var ValDescInformCe = pedido.ValDescInformCe;
+			var ValDescDispCe = parseFloat(pedido.ValDescDispCe);
+
+			if (ValDescInformCe > ValDescDispCe) {
+
+				this.byId("idTopLevelIconTabBar").setSelectedKey("tab4");
+				this.byId("idDescontoAplicarCe").focus();
+
+				this.byId("idDescontoAplicarCe").setValueState("Error");
+				this.byId("idDescontoAplicarCe").setValueStateText("A soma dos descontos é maior que o permitido de R$ " + ValDescDispCe);
+				return;
+
+			} else {
+
+				if ((ValDescInformCe > 0) && MotivoDescCe == "") {
+
+					this.byId("idTopLevelIconTabBar").setSelectedKey("tab4");
+					this.byId("idDescontoPedidoCe").focus();
+
+					this.byId("idDescontoPedidoCe").setValueState("Error");
+					this.byId("idDescontoPedidoCe").setValueStateText("Preencher o motivo de desconto!");
+					return;
+
+				} else {
+
+					this.byId("idDescontoPedidoCe").setValueState("None");
+					this.byId("idDescontoPedidoCe").setValueStateText("");
+
+					this.byId("idDescontoAplicarCe").setValueState("None");
+					this.byId("idDescontoAplicarCe").setValueStateText("");
+
+				}
+			}
+
+			var MotivoDescBolCe = pedido.MotivoDescBolCe;
+			var ValDescDispBolCe = parseFloat(pedido.ValDescDispBolCe);
+			var ValDescInformBolCe = pedido.ValDescInformBolCe;
+
+			if (ValDescInformBolCe > ValDescDispBolCe) {
+
+				this.byId("idTopLevelIconTabBar").setSelectedKey("tab4");
+				this.byId("idDescontoAplicarCampBolEscal").focus();
+
+				this.byId("idDescontoAplicarCampBolEscal").setValueState("Error");
+				this.byId("idDescontoAplicarCampBolEscal").setValueStateText("A soma dos descontos é maior que o permitido de R$ " +
+					ValDescDispBolCe);
+				return;
+
+			} else {
+
+				if ((ValDescInformBolCe > 0) && MotivoDescBolCe == "") {
+
+					this.byId("idTopLevelIconTabBar").setSelectedKey("tab4");
+					this.byId("idDescontoPedidoCampBolEscal").focus();
+
+					this.byId("idDescontoPedidoCampBolEscal").setValueState("Error");
+					this.byId("idDescontoPedidoCampBolEscal").setValueStateText("Preencher o motivo de desconto!");
+					return;
+
+				} else {
+
+					this.byId("idDescontoAplicarCampBolEscal").setValueStateText("");
+					this.byId("idDescontoAplicarCampBolEscal").setValueState("None");
+
+					this.byId("idDescontoPedidoCampBolEscal").setValueStateText("");
+					this.byId("idDescontoPedidoCampBolEscal").setValueState("None");
+
+					console.log("Validações da Campanha estão OK!");
+				}
+			}
+
+			if (pedido.TipoPedido == "Proposta") {
+
+				this.byId("idTextCE").setVisible(false);
+				this.byId("idBtnCE").setVisible(false);
+			} else {
+
+				this.byId("idTextCE").setVisible(true);
+				this.byId("idBtnCE").setVisible(true);
 			}
 		},
 
@@ -2405,6 +2539,30 @@ sap.ui.define([
 
 			this._ItemDialog.open();
 		},
+		
+		onAbrirTelaEscal: function () {
+
+			var oModelDelay = new JSONModel({
+				"table": false
+			});
+
+			this.getView().setModel(oModelDelay, "modelDelay");
+
+			if (this._ItemDialog) {
+				this._ItemDialog.destroy(true);
+			}
+
+			if (!this._CreateMaterialFragment) {
+
+				this._ItemDialog = sap.ui.xmlfragment(
+					"application.view.ItensCampanhaEscal",
+					this
+				);
+				this.getView().addDependent(this._ItemDialog);
+			}
+
+			this._ItemDialog.open();
+		},
 
 		onBuscarCampanhaAtiva: function () {
 
@@ -2423,6 +2581,36 @@ sap.ui.define([
 				},
 				success: function (result) {
 
+					var modelItensCamp = new JSONModel(result.results);
+					that.setModel(modelItensCamp, "modelItensCampanha");
+
+					that.getModel("modelDelay").setProperty("/dialog", false);
+				},
+				error: function (error) {
+
+					that.getModel("modelDelay").setProperty("/dialog", false);
+					that.onMensagemErroODATA(error);
+				}
+			});
+		},
+		onBuscarCampanhaAtivaEscal: function () {
+
+			var that = this;
+
+			var aux = {
+				dialog: true
+			};
+
+			var modelDialog = new JSONModel(aux);
+			that.setModel(modelDialog, "modelDelay");
+
+			that.oModel.read("/P_itensCampEscalQ", {
+				urlParameters: {
+					"$filter": "EvNrPedido eq '" + that.getModel("modelPedido").getProperty("/NrPedido") + "'"
+				},
+				success: function (result) {
+					
+					debugger;
 					var modelItensCamp = new JSONModel(result.results);
 					that.setModel(modelItensCamp, "modelItensCampanha");
 

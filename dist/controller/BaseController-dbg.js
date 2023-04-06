@@ -70,6 +70,14 @@ sap.ui.define([
 			}
 		},
 
+		containsSpecialChars: function (str) {
+			
+			// const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+			const specialChars = /[`!@#$%^&*()_+\=\[\]{};':"\\|,<>\?~]/;
+			
+			return specialChars.test(str);
+		},
+
 		formatAttribute: function (sValue) {
 
 			if (jQuery.isNumeric(sValue.ms)) {
@@ -187,6 +195,10 @@ sap.ui.define([
 					property != "EnviarEmailRepres" && property != "LogVerbaRentNeg" && property != "TotalItens" && property != "LogProposta") {
 
 					Obj[property] = String(Obj[property]);
+				}
+				
+				if(property == "PedidoOrigem"){
+					Obj[property] = Obj[property].replace(/\s/g, '');;
 				}
 
 				if (property == "LogVerbaRentNeg" || property == "LogProposta") {

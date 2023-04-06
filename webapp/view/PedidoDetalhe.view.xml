@@ -1,4 +1,5 @@
-<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:layout="sap.ui.layout" xmlns:f="sap.ui.layout.form" displayBlock="true" controllerName="application.controller.PedidoDetalhe">
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:layout="sap.ui.layout" xmlns:f="sap.ui.layout.form"
+	displayBlock="true" controllerName="application.controller.PedidoDetalhe">
 	<App>
 		<pages>
 			<Page id="idPedidoDetalhe" busyIndicatorDelay="0" title="Digitação do Pedido" showNavButton="true" navButtonPress="onNavBack">
@@ -7,7 +8,8 @@
 						<items>
 							<IconTabFilter id="tabClienteStep" text="Dados Cliente" icon="sap-icon://hint" key="tab1">
 								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
-									<f:SimpleForm id="form0" minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4" emptySpanL="2" emptySpanM="3" columnsL="2" columnsM="2">
+									<f:SimpleForm id="form0" minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
+										emptySpanL="2" emptySpanM="3" columnsL="2" columnsM="2">
 										<f:content>
 											<Label text="Cod Cli - Cod Repres - Sup/Ger/Div"/>
 											<Input id="idCodCliente" value="{modelCliente>/Kunnr} - {modelAux>/Usuario} - {modelAux>/CodRepres}" enabled="false"/>
@@ -36,7 +38,8 @@
 											<Label text="Suframa"/>
 											<Input id="idSuframa" value="{modelCliente>/Suframa}" enabled="false"/>
 											<Label text="Limite de Crédito"/>
-											<Input id="idLimCredito" enabled="false" value="R$: {path: 'modelCliente>/CreditLimit', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
+											<Input id="idLimCredito" enabled="false"
+												value="R$: {path: 'modelCliente>/CreditLimit', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
 											<!--<Label text="Limite Crédito Disponível" />-->
 											<!--<Input id="idLimiteCreditoDisp" enabled="false"-->
 											<!--value="R$: {path: 'modelCliente>/CredLimReq', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>-->
@@ -50,14 +53,17 @@
 							</IconTabFilter>
 							<IconTabFilter id="tabPedidoWebStep" text="Pedido Web" icon="sap-icon://notes" key="tab2">
 								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
-									<f:SimpleForm minWidth="1024" maxContainerCols="3" editable="true" layout="ResponsiveGridLayout" labelSpanL="3" labelSpanM="2" labelSpanXL="1" emptySpanL="2" emptySpanM="2" emptySpanXL="1" columnsL="3" columnsXL="3" columnsM="3">
+									<f:SimpleForm minWidth="1024" maxContainerCols="3" editable="true" layout="ResponsiveGridLayout" labelSpanL="3" labelSpanM="2"
+										labelSpanXL="1" emptySpanL="2" emptySpanM="2" emptySpanXL="1" columnsL="3" columnsXL="3" columnsM="3">
 										<f:content>
 											<Label text="Estabelecimento*">
 												<layoutData>
 													<layout:GridData span="L2 M2" linebreakM="true"/>
 												</layoutData>
 											</Label>
-											<Select id="idEstabelecimento" forceSelection="false" selectedKey="{modelPedido>/Werks}" showSecondaryValues="false" items="{ path: 'modelCentros>/', sorter: { path: 'Werks', ascending: true }}" change="onChangeEstabelecimento" busyIndicatorDelay="0" busy="{modelBusy>Centro}">
+											<Select id="idEstabelecimento" forceSelection="false" selectedKey="{modelPedido>/Werks}" showSecondaryValues="false"
+												items="{ path: 'modelCentros>/', sorter: { path: 'Werks', ascending: true }}" change="onChangeEstabelecimento" busyIndicatorDelay="0"
+												busy="{modelBusy>Centro}">
 												<core:Item key="{modelCentros>Werks}" text="{modelCentros>NomeCentro}"/>
 												<layoutData>
 													<layout:GridData span="L4 M4"/>
@@ -78,7 +84,8 @@
 													<layout:GridData span="L2 M2" linebreakM="true"/>
 												</layoutData>
 											</Label>
-											<Select id="idTipoPedido" showSecondaryValues="false" forceSelection="false" items="{ path: 'modelTipoPedidos>/' }" selectedKey="{modelPedido>/TipoPedido}" change="onChangeInfo">
+											<Select id="idTipoPedido" showSecondaryValues="false" forceSelection="false" items="{ path: 'modelTipoPedidos>/' }"
+												selectedKey="{modelPedido>/TipoPedido}" change="onChangeInfo">
 												<core:Item key="{modelTipoPedidos>TipoPedido}" text="{modelTipoPedidos>TipoPedido}"/>
 												<layoutData>
 													<layout:GridData span="L4 M4"/>
@@ -109,7 +116,8 @@
 													<layout:GridData span="L2 M2" linebreakM="true"/>
 												</layoutData>
 											</Label>
-											<Select id="idTabelaPreco" showSecondaryValues="false" forceSelection="false" items="{ path: 'modelTabPrecos>/' }" selectedKey="{modelPedido>/Pltyp}" change="onChangeInfo" busyIndicatorDelay="0" busy="{modelBusy>TabPreco}">
+											<Select id="idTabelaPreco" showSecondaryValues="false" forceSelection="false" items="{ path: 'modelTabPrecos>/' }"
+												selectedKey="{modelPedido>/Pltyp}" change="onChangeInfo" busyIndicatorDelay="0" busy="{modelBusy>TabPreco}">
 												<core:Item key="{modelTabPrecos>Pltyp}" text="{modelTabPrecos>Pltyp} - {modelTabPrecos>Ptext}"/>
 												<layoutData>
 													<layout:GridData span="L4 M4"/>
@@ -120,7 +128,8 @@
 													<layout:GridData span="L2 M2" linebreakM="true"/>
 												</layoutData>
 											</Label>
-											<Select id="idTipoTransporte" forceSelection="false" items="{ path: 'modelFretes>/' }" showSecondaryValues="true" selectedKey="{modelPedido>/Inco1}" busyIndicatorDelay="0" busy="{modelDelay>/Frete}" change="onChangeInfo">
+											<Select id="idTipoTransporte" forceSelection="false" items="{ path: 'modelFretes>/' }" showSecondaryValues="true"
+												selectedKey="{modelPedido>/Inco1}" busyIndicatorDelay="0" busy="{modelDelay>/Frete}" change="onChangeInfo">
 												<core:Item key="{modelFretes>Inco1}" text="{modelFretes>Inco1} - {modelFretes>Bezei}"/>
 												<layoutData>
 													<layout:GridData span="L4 M4"/>
@@ -141,7 +150,9 @@
 													<layout:GridData span="L2 M2" linebreakM="true"/>
 												</layoutData>
 											</Label>
-											<Select id="idVencimento1" showSecondaryValues="false" forceSelection="false" busyIndicatorDelay="0" busy="{modelDelay>/Vencimento1}" items="{ path: 'modelVencimentos1>/', sorter: 'Zterm', ascending: true}" selectedKey="{modelPedido>/Vencimento}" change="onChangeVencimento1">
+											<Select id="idVencimento1" showSecondaryValues="false" forceSelection="false" busyIndicatorDelay="0" busy="{modelDelay>/Vencimento1}"
+												items="{ path: 'modelVencimentos1>/', sorter: 'Zterm', ascending: true}" selectedKey="{modelPedido>/Vencimento}"
+												change="onChangeVencimento1">
 												<core:Item key="{modelVencimentos1>Zterm}" text="{path: 'modelVencimentos1>DescCond'}"/>
 												<layoutData>
 													<layout:GridData span="L4 M4"/>
@@ -162,7 +173,8 @@
 													<layout:GridData span="L2 M2" linebreakM="true"/>
 												</layoutData>
 											</Label>
-											<Input id="idIndice" enabled="false" value="{path: 'modelPedido>/IndiceFinal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} %">
+											<Input id="idIndice" enabled="false"
+												value="{path: 'modelPedido>/IndiceFinal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} %">
 												<layoutData>
 													<layout:GridData span="L4 M4"/>
 												</layoutData>
@@ -172,7 +184,8 @@
 													<layout:GridData span="L2 M2" linebreakM="true"/>
 												</layoutData>
 											</Label>
-											<Select id="idLocalEntrega" selectedKey="{modelPedido>/LocalEntrega}" forceSelection="false" showSecondaryValues="true" items="{ path: 'modelLocaisEntregas>/' }" change="onChangeInfo">
+											<Select id="idLocalEntrega" selectedKey="{modelPedido>/LocalEntrega}" forceSelection="false" showSecondaryValues="true"
+												items="{ path: 'modelLocaisEntregas>/' }" change="onChangeInfo">
 												<core:Item key="{modelLocaisEntregas>Addrnumber}" text="{modelLocaisEntregas>Rua} - {modelLocaisEntregas>Cidade}"/>
 												<layoutData>
 													<layout:GridData span="L4 M4"/>
@@ -183,7 +196,8 @@
 													<layout:GridData span="L2 M2" linebreakM="true"/>
 												</layoutData>
 											</Label>
-											<DatePicker id="idDataEntrega" class="readOnly" required="true" displayFormat="dd/MM/yyyy" valueFormat="dd/MM/yyyy" value="{modelPedido>/DataEntrega}" change="onChangeDataEntrega">
+											<DatePicker id="idDataEntrega" class="readOnly" required="true" displayFormat="dd/MM/yyyy" valueFormat="dd/MM/yyyy"
+												value="{modelPedido>/DataEntrega}" change="onChangeDataEntrega">
 												<layoutData>
 													<layout:GridData span="L4 M4"/>
 												</layoutData>
@@ -203,7 +217,8 @@
 													<layout:GridData span="L2 M2" linebreakM="true"/>
 												</layoutData>
 											</Label>
-											<DatePicker id="idDataEntregaSujerida" required="true" displayFormat="dd/MM/yyyy" valueFormat="dd/MM/yyyy" enabled="false" valueState="Warning" value="{modelPedido>/DataEntregaSujerida}">
+											<DatePicker id="idDataEntregaSujerida" required="true" displayFormat="dd/MM/yyyy" valueFormat="dd/MM/yyyy" enabled="false"
+												valueState="Warning" value="{modelPedido>/DataEntregaSujerida}">
 												<layoutData>
 													<layout:GridData span="L4 M4"/>
 												</layoutData>
@@ -243,7 +258,8 @@
 													<layout:GridData span="L2 M2" linebreakM="true"/>
 												</layoutData>
 											</Label>
-											<Select id="idMsg1" selectedKey="{modelPedido>/MsgPedido1}" forceSelection="false" items="{ path: 'modelMsgPedido>/' }" showSecondaryValues="true" change="onChangeMsg1">
+											<Select id="idMsg1" selectedKey="{modelPedido>/MsgPedido1}" forceSelection="false" items="{ path: 'modelMsgPedido>/' }"
+												showSecondaryValues="true" change="onChangeMsg1">
 												<core:Item key="{modelMsgPedido>CodMensagem}" text="{modelMsgPedido>DesMensagem}"/>
 												<layoutData>
 													<layout:GridData span="L4 M4"/>
@@ -264,7 +280,8 @@
 													<layout:GridData span="L2 M2" linebreakM="true" linebreakL="true"/>
 												</layoutData>
 											</Label>
-											<Select id="idMsg2" selectedKey="{modelPedido>/MsgPedido2}" showSecondaryValues="true" forceSelection="false" items="{ path: 'modelMsgPedido2>/' }" change="onChangeMsg2">
+											<Select id="idMsg2" selectedKey="{modelPedido>/MsgPedido2}" showSecondaryValues="true" forceSelection="false"
+												items="{ path: 'modelMsgPedido2>/' }" change="onChangeMsg2">
 												<core:Item key="{modelMsgPedido2>CodMensagem}" text="{modelMsgPedido2>DesMensagem}"/>
 												<layoutData>
 													<layout:GridData span="L4 M4"/>
@@ -275,7 +292,8 @@
 													<layout:GridData span="L2 M2" linebreakM="true"/>
 												</layoutData>
 											</Label>
-											<Select id="idMsg3" selectedKey="{modelPedido>/MsgPedido3}" showSecondaryValues="true" forceSelection="false" items="{ path: 'modelMsgPedido3>/' }" change="onChangeMsg3">
+											<Select id="idMsg3" selectedKey="{modelPedido>/MsgPedido3}" showSecondaryValues="true" forceSelection="false"
+												items="{ path: 'modelMsgPedido3>/' }" change="onChangeMsg3">
 												<core:Item key="{modelMsgPedido3>CodMensagem}" text="{modelMsgPedido3>DesMensagem}"/>
 												<layoutData>
 													<layout:GridData span="L4 M4"/>
@@ -300,7 +318,8 @@
 									</Toolbar>
 								</ScrollContainer>
 							</IconTabFilter>
-							<IconTabFilter id="tabItensPedidoStep" text="Itens Pedido" icon="sap-icon://add" key="tab3" count="{modelAux>/ItensPedidoTab}" enabled="false">
+							<IconTabFilter id="tabItensPedidoStep" text="Itens Pedido" icon="sap-icon://add" key="tab3" count="{modelAux>/ItensPedidoTab}"
+								enabled="false">
 								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
 									<Toolbar id="lineItemsToolbar">
 										<Title id="lineItemsHeader"/>
@@ -308,7 +327,10 @@
 										<Label text="Adicionar Itens"/>
 										<Button id="idAddItens" icon="sap-icon://add" press="onNovoItem" type="Emphasized"/>
 									</Toolbar>
-									<Table id="table_pedidos" width="100%" items="{ path:'modelItensPedidoGrid>/', sorter: { path: 'IndexItem', ascending: true }}" updateFinished="onListUpdateFinished" mode="Delete" delete="onDeletarItem" class="margins" itemPress="onEditarItemPress" noDataText="Nenhum item cadastrado." growing="true" growingThreshold="99" alternateRowColors="true" growingTriggerText="Próximo " busyIndicatorDelay="0" fixedLayout="false">
+									<Table id="table_pedidos" width="100%" items="{ path:'modelItensPedidoGrid>/', sorter: { path: 'IndexItem', ascending: true }}"
+										updateFinished="onListUpdateFinished" mode="Delete" delete="onDeletarItem" class="margins" itemPress="onEditarItemPress"
+										noDataText="Nenhum item cadastrado." growing="true" growingThreshold="99" alternateRowColors="true" growingTriggerText="Próximo "
+										busyIndicatorDelay="0" fixedLayout="false">
 										<columns>
 											<Column minScreenWidth="420px" width="30px" hAlign="Left" visible="false">
 												<Text text="Id" textAlign="Left"/>
@@ -349,13 +371,21 @@
 													<Text text="{path: 'modelItensPedidoGrid>Maktx'}" textAlign="Left"/>
 													<Text text="{modelItensPedidoGrid>Vrkme}" textAlign="Left"/>
 													<Text text="{modelItensPedidoGrid>QtdPedida}" textAlign="Left"/>
-													<Text text="R$: {path: 'modelItensPedidoGrid>ValPrecoTabelaMin', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" textAlign="Left"/>
+													<Text
+														text="R$: {path: 'modelItensPedidoGrid>ValPrecoTabelaMin', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+														textAlign="Left"/>
 													<!--<Text-->
 													<!--	text="R$: {path: 'modelItensPedidoGrid>ValPrecoUnit', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"-->
 													<!--	textAlign="Left"/>-->
-													<Text text="R$: {path: 'modelItensPedidoGrid>ValPrecoInform', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" textAlign="Left"/>
-													<Text text="R$: {path: 'modelItensPedidoGrid>ValorTotal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" textAlign="Left"/>
-													<Text text="R$: {path: 'modelItensPedidoGrid>ValTotItemSt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" textAlign="Left"/>
+													<Text
+														text="R$: {path: 'modelItensPedidoGrid>ValPrecoInform', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+														textAlign="Left"/>
+													<Text
+														text="R$: {path: 'modelItensPedidoGrid>ValorTotal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+														textAlign="Left"/>
+													<Text
+														text="R$: {path: 'modelItensPedidoGrid>ValTotItemSt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+														textAlign="Left"/>
 													<Image src="{path : 'modelItensPedidoGrid>RentImg'}" width="30px" backgroundPosition="Center"/>
 													<!--<ObjectListItem number="{path : 'modelItensPedidoGrid>PercLucro', formatter: '.myFormatterCodEmpresa' }%" numberState="{= ${modelItensPedidoGrid>PercLucro} >= 0 ? 'Success' : 'Error' }" hAlign="Right"/>-->
 													<!--<ObjectListItem number="{path : 'modelItensPedidoGrid>PercLucro', formatter: '.myFormatterRentabilidade' }%" numberState="{= ${modelItensPedidoGrid>PercLucro} >= 0 ? 'Success' : 'Error' }" hAlign="Right"/>-->
@@ -364,29 +394,36 @@
 										</items>
 									</Table>
 								</ScrollContainer>
-							</IconTabFilter><IconTabFilter id="tabDescontoStep" text="Descontos" icon="sap-icon://waiver" key="tab4">
+							</IconTabFilter>
+							<IconTabFilter id="tabDescontoStep" text="Descontos" icon="sap-icon://waiver" key="tab4">
 								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
-									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4" emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2" class="editableForm" title="Desconto Nota Fiscal/Boleto">
+									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
+										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2" class="editableForm" title="Desconto Nota Fiscal/Boleto">
 										<f:content>
 											<Label text="Desconto Disponível"/>
-											<Input id="idDescontoDisponivel" value="{path: 'modelPedido>/ValDescDisp', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" class="desabilitado marginBottomInpu"/>
+											<Input id="idDescontoDisponivel"
+												value="{path: 'modelPedido>/ValDescDisp', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+												enabled="false" class="desabilitado marginBottomInpu"/>
 											<Label text="Tipo de Integração Boleto"/>
 											<Input id="idTipoIntegracaoBoleto" value="{modelPedido>/TipoIntegrBol}" enabled="false" class="desabilitado"/>
 											<Label text="Motivo Desconto Nota Fiscal"/>
-											<Select id="idDescontoPedido" showSecondaryValues="true" forceSelection="false" change="onFocusInputNotaFiscal" selectedKey="{modelPedido>/MotivoDescNota}" items="{ path: 'modelMotivosNota>/' }">
+											<Select id="idDescontoPedido" showSecondaryValues="true" forceSelection="false" change="onFocusInputNotaFiscal"
+												selectedKey="{modelPedido>/MotivoDescNota}" items="{ path: 'modelMotivosNota>/' }">
 												<core:Item key="{modelMotivosNota>CodMotivDesconto}" text="{modelMotivosNota>DesMotivDesconto}"/>
 											</Select>
 											<Label text="Desconto à Aplicar"/>
 											<Input id="idDescontoAplicar" enabled="true" type="Number" value="{modelPedido>/ValDescAplicar}"/>
 											<Label text="Motivo Desconto Boleto"/>
-											<Select id="idDescontoPedidoBoleto" showSecondaryValues="true" forceSelection="false" change="onFocusInputBoleto" selectedKey="{modelPedido>/MotivoDescBoleto1}" items="{ path: 'modelMotivosBoleto>/' }">
+											<Select id="idDescontoPedidoBoleto" showSecondaryValues="true" forceSelection="false" change="onFocusInputBoleto"
+												selectedKey="{modelPedido>/MotivoDescBoleto1}" items="{ path: 'modelMotivosBoleto>/' }">
 												<core:Item key="{modelMotivosBoleto>CodMotivDesconto}" text="{modelMotivosBoleto>DesMotivDesconto}"/>
 											</Select>
 											<Label text="Desconto à Aplicar Boleto"/>
 											<Input id="idDescontoAplicarBoleto" enabled="true" type="Number" value="{modelPedido>/ValDescAplicarBol}"/>
 										</f:content>
 									</f:SimpleForm>
-									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4" emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2" class="editableForm" title="Desconto Campanha Pedido">
+									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
+										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2" class="editableForm" title="Desconto Campanha Pedido">
 										<f:toolbar>
 											<Toolbar id="TB1">
 												<Title id="Title1" text="Desconto Campanha Pedido"/>
@@ -398,21 +435,28 @@
 										</f:toolbar>
 										<f:content>
 											<Label text="Desconto Disponível"/>
-											<Input id="idDescontoDisponivelCamp" value="{path: 'modelPedido>/ValDescCampDisp', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" class="desabilitado"/>
+											<Input id="idDescontoDisponivelCamp"
+												value="{path: 'modelPedido>/ValDescCampDisp', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+												enabled="false" class="desabilitado"/>
 											<Label text="Motivo Desconto"/>
-											<Select id="idDescontoPedidoCamp" showSecondaryValues="true" forceSelection="false" items="{ path: 'modelMotivosCamp>/' }" selectedKey="{modelPedido>/MotivoDescCamp}">
+											<Select id="idDescontoPedidoCamp" showSecondaryValues="true" forceSelection="false" items="{ path: 'modelMotivosCamp>/' }"
+												selectedKey="{modelPedido>/MotivoDescCamp}">
 												<core:Item key="{modelMotivosCamp>CodMotivDesconto}" text="{modelMotivosCamp>DesMotivDesconto}"/>
 											</Select>
 											<Label text="Desconto à Aplicar"/>
 											<Input id="idDescontoAplicarCamp" enabled="true" type="Number" value="{modelPedido>/ValDescCampInform}"/>
 										</f:content>
 									</f:SimpleForm>
-									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4" emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2" class="editableForm" title="Desconto Campanha Boleto">
+									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
+										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2" class="editableForm" title="Desconto Campanha Boleto">
 										<f:content>
 											<Label text="Desconto Disponível"/>
-											<Input id="idDescontoDisponivelCampBol" value="{path: 'modelPedido>/ValDescCampDispBol', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" class="desabilitado"/>
+											<Input id="idDescontoDisponivelCampBol"
+												value="{path: 'modelPedido>/ValDescCampDispBol', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+												enabled="false" class="desabilitado"/>
 											<Label text="Motivo Desconto Boleto"/>
-											<Select id="idDescontoPedidoCampBol" showSecondaryValues="true" forceSelection="false" items="{ path: 'modelMotivosCamp>/'}" selectedKey="{modelPedido>/MotivoDescBoleto2}" change="onChangeMotivBol">
+											<Select id="idDescontoPedidoCampBol" showSecondaryValues="true" forceSelection="false" items="{ path: 'modelMotivosCamp>/'}"
+												selectedKey="{modelPedido>/MotivoDescBoleto2}" change="onChangeMotivBol">
 												<!--<core:Item key="{modelMotivosBoleto>CodMotivDesconto}" text="{modelMotivosBoleto>DesMotivDesconto}"/>-->
 												<core:Item key="{modelMotivosCamp>CodMotivDesconto}" text="{modelMotivosCamp>DesMotivDesconto}"/>
 											</Select>
@@ -420,32 +464,84 @@
 											<Input id="idDescontoAplicarCampBol" enabled="true" type="Number" value="{modelPedido>/ValDescCampInformBol}"/>
 										</f:content>
 									</f:SimpleForm>
-									<!--<Toolbar>-->
-									<!--	<ToolbarSpacer/>-->
-									<!--	<Button id="idAplicarDesconto" text="Aplicar" type="Accept" press="descontoAplicarSubmit" />-->
-									<!--</Toolbar>-->
+									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
+										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2" class="editableForm" title="Desconto Escalonada Pedido">
+										<f:toolbar>
+											<Toolbar>
+												<Title text="Desconto Escalonada"/>
+												<ToolbarSpacer/>
+												<Text xmlns="sap.m" text="Itens Ativos" id="idTextCE"/>
+												<Button icon="sap-icon://message-information" press="onAbrirTelaEscal" type="Emphasized" id="idBtnCE"/>
+												<content/>
+											</Toolbar>
+										</f:toolbar>
+										<f:content>
+											<Label text="Desconto Disponível"/>
+											<Input id="idDescontoDisponivelCe"
+												value="{path: 'modelPedido>/ValDescDispCe', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+												enabled="false" class="desabilitado"/>
+											<Label text="Motivo Desconto"/>
+											<Select id="idDescontoPedidoCe" showSecondaryValues="true" forceSelection="false" items="{ path: 'modelMotivosCamp>/' }"
+												selectedKey="{modelPedido>/MotivoDescCe}">
+												<core:Item key="{modelMotivosCamp>CodMotivDesconto}" text="{modelMotivosCamp>DesMotivDesconto}"/>
+											</Select>
+											<Label text="Desconto à Aplicar"/>
+											<Input id="idDescontoAplicarCe" enabled="true" type="Number" value="{modelPedido>/ValDescInformCe}"/>
+										</f:content>
+									</f:SimpleForm>
+									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
+										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2" class="editableForm" title="Desconto Escalonada Boleto">
+										<f:content>
+											<Label text="Desconto Disponível"/>
+											<Input id="idDescontoDisponivelCampBolEscal"
+												value="{path: 'modelPedido>/ValDescDispBolCe', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+												enabled="false" class="desabilitado"/>
+											<Label text="Motivo Desconto Boleto"/>
+											<Select id="idDescontoPedidoCampBolEscal" showSecondaryValues="true" forceSelection="false" items="{ path: 'modelMotivosCamp>/'}"
+												selectedKey="{modelPedido>/MotivoDescBolCe}" change="onChangeMotivBol">
+												<core:Item key="{modelMotivosCamp>CodMotivDesconto}" text="{modelMotivosCamp>DesMotivDesconto}"/>
+											</Select>
+											<Label text="Desconto à Aplicar"/>
+											<Input id="idDescontoAplicarCampBolEscal" enabled="true" type="Number" value="{modelPedido>/ValDescInformBolCe}"/>
+										</f:content>
+									</f:SimpleForm>
 								</ScrollContainer>
 							</IconTabFilter>
 							<IconTabFilter id="tabTotalStep" text="Total Pedido" icon="sap-icon://expense-report" key="tab5" enabled="false">
 								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
-									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4" emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2" class="editableForm">
+									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
+										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2" class="editableForm">
 										<f:content>
 											<Label text="Total pedido"/>
-											<Input id="idTotalPedido" value="R$ {path: 'modelPedido>/ValorTotal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' } }" enabled="false" class="desabilitado"/>
+											<Input id="idTotalPedido"
+												value="R$ {path: 'modelPedido>/ValorTotal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' } }"
+												enabled="false" class="desabilitado"/>
 											<Label text="Total S/ST"/>
-											<Input id="idTotalLiquido" value="R$ {path: 'modelPedido>/ValorTotal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' } }" enabled="false" class="desabilitado"/>
+											<Input id="idTotalLiquido"
+												value="R$ {path: 'modelPedido>/ValorTotal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' } }"
+												enabled="false" class="desabilitado"/>
 											<Label text="Total C/ST"/>
-											<Input id="idTotalComST" value="R$ {path: 'modelPedido>/ValTotItemSt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' } }" enabled="false" class="desabilitado"/>
+											<Input id="idTotalComST"
+												value="R$ {path: 'modelPedido>/ValTotItemSt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' } }"
+												enabled="false" class="desabilitado"/>
 											<Label text="Total Cxs."/>
 											<Input id="idTotalItens" value="{path: 'modelPedido>/TotalItens', type: 'sap.ui.model.type.Integer'}" enabled="false" class="desabilitado"/>
 											<Label text="Peso Bruto"/>
-											<Input id="idPesoBruto" value="{path: 'modelPedido>/PesoBruto', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' } } KG" enabled="false" class="desabilitado"/>
+											<Input id="idPesoBruto"
+												value="{path: 'modelPedido>/PesoBruto', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' } } KG"
+												enabled="false" class="desabilitado"/>
 											<Label text="Peso líquido"/>
-											<Input id="idPesoLiquido" value="{path: 'modelPedido>/PesoLiq', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' } } KG" enabled="false" class="desabilitado"/>
+											<Input id="idPesoLiquido"
+												value="{path: 'modelPedido>/PesoLiq', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' } } KG"
+												enabled="false" class="desabilitado"/>
 											<Label text="Val mínimo Ped"/>
-											<Input id="idValMinPed" value="{path: 'modelPedido>/ValMinPed', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' } }" enabled="false" class="desabilitado"/>
+											<Input id="idValMinPed"
+												value="{path: 'modelPedido>/ValMinPed', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' } }"
+												enabled="false" class="desabilitado"/>
 											<Label text="Valor Verba"/>
-											<Input id="idVerbaPedido" value="R$ {path: 'modelPedido>/TotalVerba', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' } }" enabled="false" class="desabilitado"/>
+											<Input id="idVerbaPedido"
+												value="R$ {path: 'modelPedido>/TotalVerba', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' } }"
+												enabled="false" class="desabilitado"/>
 											<Label text="Rentabilidade do pedido (%)"/>
 											<Image id="idRentabilidadePedidoImg" src="{path : 'modelPedido>/RentTotalImg'}" width="20%"/>
 											<Input id="idRentabilidadePedido" value="{path : 'modelPedido>/RentTotal'} %" enabled="false" visible="false" class="desabilitado"/>
@@ -457,7 +553,7 @@
 										<!--visible="helperModel>showButtonNovoItem"-->
 										<Label id="labelVerificacao" text="Finalize o Pedido!" class="vermelho"/>
 										<Button id="idExportar" text="Exportar" type="Accept" press="onExportarPedido" icon="sap-icon://attachment"/>
-										<Button id="idFinalizar" text="Finalizar" type="Accept" press="onFinalizarPedido" />
+										<Button id="idFinalizar" text="Finalizar" type="Accept" press="onFinalizarPedido"/>
 										<Button id="idCancelarPedido" text="Cancelar" press="onNavBack"/>
 									</Toolbar>
 								</ScrollContainer>

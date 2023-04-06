@@ -1,13 +1,8 @@
 {
     "resources": [
         {
-            "name": "../controller/App-dbg.controller.js",
+            "name": "../controller/Pedido-dbg.controller.js",
             "isDebug": true
-        },
-        {
-            "name": "../i18n/i18n_pt.properties",
-            "raw": "i18n/i18n.properties",
-            "locale": "_pt"
         },
         {
             "name": "../i18n/i18n_pt_BR.properties",
@@ -15,14 +10,19 @@
             "locale": "_pt_BR"
         },
         {
+            "name": "../i18n/i18n_en.properties",
+            "raw": "i18n/i18n.properties",
+            "locale": "_en"
+        },
+        {
             "name": "../i18n/i18n.properties",
             "raw": "i18n/i18n.properties"
         },
         {
-            "name": "../controller/detalhesRelatorioTabelas.controller.js"
+            "name": "../manifest.json"
         },
         {
-            "name": "../manifest.json"
+            "name": "../model/Menu.json"
         },
         {
             "name": "../model/models.js"
@@ -61,7 +61,7 @@
             "name": "../controller/enviarPedidos.controller.js"
         },
         {
-            "name": "../model/Menu.json"
+            "name": "../controller/detalhesRelatorioTabelas.controller.js"
         },
         {
             "name": "../controller/detalheProdutos.controller.js"
@@ -128,7 +128,7 @@
             "merged": true
         },
         {
-            "name": "../controller/clienteConsultas-dbg.controller.js",
+            "name": "../controller/MovVerbas-dbg.controller.js",
             "isDebug": true
         },
         {
@@ -192,6 +192,10 @@
             "isDebug": true
         },
         {
+            "name": "../controller/clienteConsultas-dbg.controller.js",
+            "isDebug": true
+        },
+        {
             "name": "../controller/cadastroRebaixa-dbg.controller.js",
             "isDebug": true
         },
@@ -204,8 +208,9 @@
             "isDebug": true
         },
         {
-            "name": "../controller/Pedido-dbg.controller.js",
-            "isDebug": true
+            "name": "../i18n/i18n_pt.properties",
+            "raw": "i18n/i18n.properties",
+            "locale": "_pt"
         },
         {
             "name": "../controller/NotFound-dbg.controller.js",
@@ -217,10 +222,6 @@
         },
         {
             "name": "../controller/MsgPortal-dbg.controller.js",
-            "isDebug": true
-        },
-        {
-            "name": "../controller/MovVerbas-dbg.controller.js",
             "isDebug": true
         },
         {
@@ -244,9 +245,8 @@
             "isDebug": true
         },
         {
-            "name": "../i18n/i18n_en.properties",
-            "raw": "i18n/i18n.properties",
-            "locale": "_en"
+            "name": "../controller/App-dbg.controller.js",
+            "isDebug": true
         },
         {
             "name": "../serviceBinding-dbg.js",
@@ -360,6 +360,9 @@
         },
         {
             "name": "../view/Login.view.xml"
+        },
+        {
+            "name": "../view/ItensCampanhaEscal.fragment.xml"
         },
         {
             "name": "../view/ItensCampanha.fragment.xml"
