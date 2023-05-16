@@ -1,13 +1,12 @@
 {
     "resources": [
         {
-            "name": "../controller/Pedido-dbg.controller.js",
-            "isDebug": true
+            "name": "../manifest.json"
         },
         {
-            "name": "../i18n/i18n_pt_BR.properties",
+            "name": "../i18n/i18n_pt.properties",
             "raw": "i18n/i18n.properties",
-            "locale": "_pt_BR"
+            "locale": "_pt"
         },
         {
             "name": "../i18n/i18n_en.properties",
@@ -19,10 +18,12 @@
             "raw": "i18n/i18n.properties"
         },
         {
-            "name": "../manifest.json"
+            "name": "../controller/relatorioFaturamentoItens.controller.js"
         },
         {
-            "name": "../model/Menu.json"
+            "name": "../i18n/i18n_pt_BR.properties",
+            "raw": "i18n/i18n.properties",
+            "locale": "_pt_BR"
         },
         {
             "name": "../model/models.js"
@@ -49,7 +50,7 @@
             "name": "../controller/relatorioNotasFiscais.controller.js"
         },
         {
-            "name": "../controller/relatorioFaturamentoItens.controller.js"
+            "name": "../model/Menu.json"
         },
         {
             "name": "../controller/relatorioFaturamentoClientes.controller.js"
@@ -128,7 +129,7 @@
             "merged": true
         },
         {
-            "name": "../controller/MovVerbas-dbg.controller.js",
+            "name": "../controller/relatorioFaturamentoItens-dbg.controller.js",
             "isDebug": true
         },
         {
@@ -161,10 +162,6 @@
         },
         {
             "name": "../controller/relatorioNotasFiscais-dbg.controller.js",
-            "isDebug": true
-        },
-        {
-            "name": "../controller/relatorioFaturamentoItens-dbg.controller.js",
             "isDebug": true
         },
         {
@@ -208,9 +205,8 @@
             "isDebug": true
         },
         {
-            "name": "../i18n/i18n_pt.properties",
-            "raw": "i18n/i18n.properties",
-            "locale": "_pt"
+            "name": "../controller/Pedido-dbg.controller.js",
+            "isDebug": true
         },
         {
             "name": "../controller/NotFound-dbg.controller.js",
@@ -222,6 +218,10 @@
         },
         {
             "name": "../controller/MsgPortal-dbg.controller.js",
+            "isDebug": true
+        },
+        {
+            "name": "../controller/MovVerbas-dbg.controller.js",
             "isDebug": true
         },
         {
@@ -369,6 +369,9 @@
         },
         {
             "name": "../view/ItemDialog.fragment.xml"
+        },
+        {
+            "name": "../view/DialogEmailPedido.fragment.xml"
         },
         {
             "name": "../view/DialogEmail.fragment.xml"

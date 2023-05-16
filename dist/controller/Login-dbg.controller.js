@@ -50,7 +50,7 @@ sap.ui.define([
 						user: "t_rcardilo",
 						password: "sap123",
 						headers: {
-							"sap-client": "450",
+							"sap-client": "480",
 							"sap-language": "PT",
 							"Authorization": "Basic " + btoa("t_rcardilo" + ":" + "sap123"),
 							"Access-Control-Allow-Origin": "*"

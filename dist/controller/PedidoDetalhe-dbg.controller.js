@@ -1984,18 +1984,18 @@ sap.ui.define([
 						} else {
 
 							that.getModelGlobal("modelAux").setProperty("/ItensPedidoTab", that.vetorItensPedido.length);
+
 							that.onValidacoesCampanha();
 							that.onValidacoesCampanhaEscal();
 
+							that.getModel("modelPedido").refresh();
 						}
 					}
 
 				} else {
 
 					//Validações na primeira e segunda aba
-
 				}
-
 			}
 		},
 
@@ -2003,11 +2003,11 @@ sap.ui.define([
 
 			var pedido = this.getModel("modelPedido").getData();
 
-			if (pedido.ValDescAplicarBol == "") {
+			if (pedido.ValDescAplicarBol == "" || pedido.ValDescAplicarBol < 0) {
 				pedido.ValDescAplicarBol = 0;
 			}
 
-			if (pedido.ValDescAplicar == "") {
+			if (pedido.ValDescAplicar == "" || pedido.ValDescAplicar < 0) {
 				pedido.ValDescAplicar = 0;
 			}
 
@@ -2016,6 +2016,12 @@ sap.ui.define([
 			var ValDescAplicar = parseFloat(pedido.ValDescAplicar);
 			var MotivoDescBoleto1 = pedido.MotivoDescBoleto1;
 			var ValDescAplicarBol = parseFloat(pedido.ValDescAplicarBol);
+
+			if (ValDescDisp < 0) {
+
+				pedido.ValDescDisp = 0;
+				console.log("Valor Desconto Disp foi zerado por estar negativo.");
+			}
 
 			if ((ValDescAplicarBol + ValDescAplicar) > ValDescDisp) {
 
@@ -2071,13 +2077,19 @@ sap.ui.define([
 				}
 			}
 
-			if (pedido.ValDescCampInform == "") {
+			if (pedido.ValDescCampInform == "" || pedido.ValDescCampInform < 0) {
 				pedido.ValDescCampInform = 0;
 			}
 
 			var ValDescCampDisp = pedido.ValDescCampDisp;
 			var ValDescCampInform = pedido.ValDescCampInform;
 			var MotivoDescCamp = pedido.MotivoDescCamp;
+
+			if (ValDescCampDisp < 0) {
+
+				pedido.ValDescCampDisp = 0;
+				console.log("Valor Camp Disp foi zerado por estar negativo.");
+			}
 
 			if (ValDescCampInform > ValDescCampDisp) {
 
@@ -2110,12 +2122,19 @@ sap.ui.define([
 				}
 			}
 
-			if (pedido.ValDescCampInformBol == "") {
+			if (pedido.ValDescCampInformBol == "" || pedido.ValDescCampInformBol < 0) {
 				pedido.ValDescCampInformBol = 0;
 			}
+
 			var ValDescCampDispBol = pedido.ValDescCampDispBol;
 			var ValDescCampInformBol = pedido.ValDescCampInformBol;
 			var MotivoDescBoleto2 = pedido.MotivoDescBoleto2;
+
+			if (ValDescCampDispBol < 0) {
+
+				pedido.ValDescCampDispBol = 0;
+				console.log("Valor Camp Disp Bol foi zerado por estar negativo.");
+			}
 
 			if (ValDescCampInformBol > ValDescCampDispBol) {
 
@@ -2162,17 +2181,23 @@ sap.ui.define([
 
 			var pedido = this.getModel("modelPedido").getData();
 
-			if (pedido.ValDescInformBolCe == "") {
+			if (pedido.ValDescInformBolCe == "" || pedido.ValDescInformBolCe < 0) {
 				pedido.ValDescInformBolCe = 0;
 			}
 
-			if (pedido.ValDescInformCe == "") {
+			if (pedido.ValDescInformCe == "" || pedido.ValDescInformCe < 0) {
 				pedido.ValDescInformCe = 0;
 			}
 
 			var MotivoDescCe = pedido.MotivoDescCe;
 			var ValDescInformCe = pedido.ValDescInformCe;
 			var ValDescDispCe = parseFloat(pedido.ValDescDispCe);
+
+			if (ValDescInformCe < 0) {
+
+				pedido.ValDescInformCe = 0;
+				console.log("Valor Desc Disp Camp CE foi zerado por estar negativo.");
+			}
 
 			if (ValDescInformCe > ValDescDispCe) {
 
@@ -2208,6 +2233,12 @@ sap.ui.define([
 			var MotivoDescBolCe = pedido.MotivoDescBolCe;
 			var ValDescDispBolCe = parseFloat(pedido.ValDescDispBolCe);
 			var ValDescInformBolCe = pedido.ValDescInformBolCe;
+
+			if (ValDescDispBolCe < 0) {
+
+				pedido.ValDescDispBolCe = 0;
+				console.log("Valor Desc Disp Camp Bol CE foi zerado por estar negativo.");
+			}
 
 			if (ValDescInformBolCe > ValDescDispBolCe) {
 
@@ -2539,7 +2570,7 @@ sap.ui.define([
 
 			this._ItemDialog.open();
 		},
-		
+
 		onAbrirTelaEscal: function () {
 
 			var oModelDelay = new JSONModel({
@@ -2609,10 +2640,79 @@ sap.ui.define([
 					"$filter": "EvNrPedido eq '" + that.getModel("modelPedido").getProperty("/NrPedido") + "'"
 				},
 				success: function (result) {
-					
-					debugger;
+
+					var total = 0;
+
+					var aux = {
+						QtdPedida: 0,
+						ValorTotal: 0,
+						QtdDe: 0,
+						QtdAte: 0,
+						CodCampanha: "",
+						DescCampanha: ""
+					};
+
+					var vetorTotais = [];
+
+					for (var i = 0; i < result.results.length; i++) {
+
+						if (aux.CodCampanha == "") {
+
+							aux.CodCampanha = result.results[i].CodCampanha;
+							aux.DescCampanha = result.results[i].DescCampanha;
+							aux.QtdDe = parseFloat(result.results[i].QtdDe);
+							aux.QtdAte = parseFloat(result.results[i].QtdAte);
+
+							// aux.QtdPedida = parseFloat(result.results[i].QtdPedida);
+							//aux.ValorTotal = parseFloat(result.results[i].ValorTotal);
+
+						}
+
+						if (result.results[i].CodCampanha != aux.CodCampanha || result.results.length - 1 == i) {
+
+							if (result.results[i].CodCampanha == aux.CodCampanha && result.results.length - 1 == i) {
+
+								aux.QtdPedida += parseFloat(result.results[i].QtdPedida);
+								aux.ValorTotal += parseFloat(result.results[i].ValorTotal);
+							}
+
+							vetorTotais.push(aux);
+
+							if (result.results[i].CodCampanha != aux.CodCampanha) {
+
+								var aux = {
+									QtdPedida: parseFloat(result.results[i].QtdPedida),
+									ValorTotal: parseFloat(result.results[i].ValorTotal),
+									QtdDe: parseFloat(result.results[i].QtdDe),
+									QtdAte: parseFloat(result.results[i].QtdAte),
+									CodCampanha: result.results[i].CodCampanha,
+									DescCampanha: result.results[i].DescCampanha
+								};
+
+							} else {
+
+								var aux = {
+									QtdPedida: 0,
+									ValorTotal: 0,
+									QtdDe: 0,
+									QtdAte: 0,
+									CodCampanha: "",
+									DescCampanha: ""
+								};
+							}
+
+						} else {
+
+							aux.QtdPedida += parseFloat(result.results[i].QtdPedida);
+							aux.ValorTotal += parseFloat(result.results[i].ValorTotal);
+						}
+					}
+
 					var modelItensCamp = new JSONModel(result.results);
 					that.setModel(modelItensCamp, "modelItensCampanha");
+
+					var modelItensCampCE = new JSONModel(vetorTotais);
+					that.setModelGlobal(modelItensCampCE, "modelResumo");
 
 					that.getModel("modelDelay").setProperty("/dialog", false);
 				},
@@ -2624,7 +2724,7 @@ sap.ui.define([
 			});
 		},
 
-		onExportarPedido: function () {
+		onExportarPedidoExcel: function () {
 
 			var aCols, oRowBinding, oSettings, oSheet, oTable;
 
@@ -2788,6 +2888,119 @@ sap.ui.define([
 				oSheet.destroy();
 			});
 
+		},
+
+		onDialogOpen: function (evt) {
+
+			var that = this;
+
+			var pedido = this.getModelGlobal("modelPedido").getData();
+			var aux = this.getModelGlobal("modelAux").getData();
+
+			var vAux = {
+				CodRepres: this.getModelGlobal("modelAux").getProperty("/CodRepres"),
+				NomeRepres: this.getModelGlobal("modelAux").getProperty("/NomeRepres"),
+				NrPedido: pedido.NrPedido,
+				EmailPedido: pedido.EmailRepres
+			};
+
+			var omodelParamDialog = new JSONModel(vAux);
+			that.setModel(omodelParamDialog, "modelParamDialog");
+
+			if (that._ItemDialog) {
+				that._ItemDialog.destroy(true);
+			}
+
+			if (!that._CreateMaterialFragment) {
+
+				that._ItemDialog = sap.ui.xmlfragment(
+					"application.view.DialogEmailPedido",
+					that
+				);
+				that.getView().addDependent(that._ItemDialog);
+			}
+
+			that._ItemDialog.open();
+
+		},
+
+		onDialogClose: function () {
+
+			if (this._ItemDialog) {
+				this._ItemDialog.destroy(true);
+			}
+		},
+
+		onEnviarEmailPedido: function () {
+
+			var that = this;
+
+			var pedido = this.getModelGlobal("modelPedido").getData();
+			var modelDialog = this.getModel("modelParamDialog").getData();
+
+			if (modelDialog.EmailPedido.includes("/") || modelDialog.EmailPedido.includes("'")) {
+				
+				sap.m.MessageBox.show("O e-mail do pedido contém caracteres não permitidos (/ ou '') ", {
+					icon: sap.m.MessageBox.Icon.ERROR,
+					title: "Ação não permitida!",
+					actions: [MessageBox.Action.OK],
+					onClose: function () {
+					}
+				});
+				
+			} else {
+
+				that.oModel.read("/P_EnviaEmailPedidoR(NrPedido='" + pedido.NrPedido + "',Email='" + modelDialog.EmailPedido + "')", {
+					success: function (result) {
+
+						sap.m.MessageBox.show("O e-mail do pedido " + pedido.NrPedido + " foi enviado com sucesso!", {
+							icon: sap.m.MessageBox.Icon.SUCCESS,
+							title: "Pedido enviado!",
+							actions: [MessageBox.Action.OK],
+							onClose: function () {
+
+								that.onDialogClose();
+							}
+						});
+					},
+					error: function (error) {
+
+						that.onMensagemErroODATA(error);
+					}
+				});
+			}
+
+		},
+
+		onExportarPedido: function () {
+
+			var that = this;
+			var pedido = this.getModelGlobal("modelPedido").getData();
+
+			if (pedido.Vbeln == "") {
+
+				sap.m.MessageBox.show("Pedido ainda não foi criado!", {
+					icon: sap.m.MessageBox.Icon.ERROR,
+					title: "Ação não permitida!",
+					actions: [MessageBox.Action.OK]
+				});
+
+			} else {
+
+				that.onDialogOpen();
+
+				// sap.m.MessageBox.show("Deseja enviar o espelho do pedido por e-mail?", {
+				// 	icon: sap.m.MessageBox.Icon.QUESTION,
+				// 	title: "Tomada de Ação!",
+				// 	actions: ['Enviar', 'Cancelar'],
+				// 	onClose: function (oAction) {
+
+				// 		if (oAction == "Enviar") {
+
+				// 		}
+				// 	}
+				// });
+			}
 		},
 
 		createColumnConfig: function () {

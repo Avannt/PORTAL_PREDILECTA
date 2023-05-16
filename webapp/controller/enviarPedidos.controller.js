@@ -59,6 +59,7 @@ sap.ui.define([
 						
 						var valorTotal = 0;
 						for(var i=0; i<that.vetorPedidos.length; i++){
+							
 							valorTotal += parseFloat(that.vetorPedidos[i].ValorTotal);
 						}
 						
