@@ -223,7 +223,7 @@
 													<layout:GridData span="L2 M2" linebreakM="true" linebreakL="true"/>
 												</layoutData>
 											</Label>
-											<DatePicker id="idDataLimite" displayFormat="dd/MM/yyyy" valueFormat="dd/MM/yyyy" change="onChangeInfo" value="{modelPedido>/DataLimite}">
+											<DatePicker id="idDataLimite" displayFormat="dd/MM/yyyy" valueFormat="dd/MM/yyyy" change="onChangeInfo" value="{modelPedido>/DataLimite}" enabled="false">
 												<layoutData>
 													<layout:GridData span="L4 M4"/>
 												</layoutData>

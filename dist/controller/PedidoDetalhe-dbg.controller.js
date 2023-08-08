@@ -444,9 +444,7 @@ sap.ui.define([
 			Promise.all(vetorPromises).then(function (values) {
 
 				that.getModelGlobal("modelPedido").setProperty("/EmailCliente", that.getModel("modelCliente").getProperty("/EmailComprador"));
-
 				resolve();
-
 			});
 		},
 
@@ -588,7 +586,7 @@ sap.ui.define([
 
 				} else {
 
-					that.byId("idDataLimite").setEnabled(true);
+					that.byId("idDataLimite").setEnabled(false);
 					that.byId("idDataEntrega").setEnabled(true);
 					that.byId("idMsg1").setEnabled(true);
 					that.byId("idMsg2").setEnabled(true);
@@ -1013,7 +1011,7 @@ sap.ui.define([
 			this.byId("idVencimento1").setValueState(value);
 			this.byId("idEstabelecimento").setValueState(value);
 			this.byId("idTabelaPreco").setValueState(value);
-			this.byId("idDataLimite").setValueState(value);
+			this.byId("idDataLimite").setValueState("None");
 			this.byId("idDataEntrega").setValueState(value);
 			this.byId("idTipoPedido").setValueState(value);
 			this.byId("idLocalEntrega").setValueState(value);
@@ -2289,7 +2287,7 @@ sap.ui.define([
 			this.byId("idEstabelecimento").setEnabled(bloqueio);
 			this.byId("idTabelaPreco").setEnabled(bloqueio);
 			this.byId("idVencimento1").setEnabled(bloqueio);
-			this.byId("idDataLimite").setEnabled(true);
+			this.byId("idDataLimite").setEnabled(false);
 			this.byId("idDataEntrega").setEnabled(bloqueio);
 			this.byId("idTipoPedido").setEnabled(bloqueio);
 			this.byId("idLocalEntrega").setEnabled(bloqueio);
