@@ -19,7 +19,10 @@
 				</headerToolbar>
 				<columns>
 					<Column minScreenWidth="320px" hAlign="Left" width="70px" demandPopin="false">
-						<Text text="Cód"/>
+						<Text text="RCA" />
+					</Column>
+					<Column minScreenWidth="320px" hAlign="Left" width="70px" demandPopin="false">
+						<Text text="Cód" />
 					</Column>
 					<Column minScreenWidth="500px" demandPopin="true" hAlign="Left">
 						<Text text="Nome"/>
@@ -37,6 +40,7 @@
 				<items>
 					<ColumnListItem press="onSelectionChange" type="Navigation">
 						<cells>
+							<Text text="{modelClientes>Lifnr}"/>
 							<Text text="{modelClientes>Kunnr}"/>
 							<Text text="{modelClientes>Name1}"/>
 							<Text text="{modelClientes>Stras}"/>

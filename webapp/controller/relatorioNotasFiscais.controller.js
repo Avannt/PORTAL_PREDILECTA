@@ -387,6 +387,81 @@ sap.ui.define([
 			}
 		},
 
+		onDialogOpenStatus: function (evt) {
+
+			var that = this;
+
+			var vAux = {
+				Nfenum: evt.getSource().getBindingContext("modelNotasFiscais").getObject().Nfenum,
+			};
+
+			var omodelParamDialog = new JSONModel(vAux);
+			that.setModel(omodelParamDialog, "modelParamDialog");
+			
+			var oModelDelay = new JSONModel({
+				"view": false
+			});
+
+			this.getView().setModel(oModelDelay, "modelDelay");
+
+			if (this._ItemDialog) {
+				this._ItemDialog.destroy(true);
+			}
+
+			if (!this._CreateMaterialFragment) {
+
+				this._ItemDialog = sap.ui.xmlfragment(
+					"application.view.StatusPedido",
+					this
+				);
+				this.getView().addDependent(this._ItemDialog);
+			}
+
+			this._ItemDialog.open();
+		},
+
+		onZoomIn: function () {
+
+			this.oProcessFlow.zoomIn();
+		},
+
+		onZoomOut: function () {
+
+			this.oProcessFlow.zoomOut();
+		},
+
+		onLoadStatus: function () {
+			
+			var that = this;
+			
+			debugger;
+			
+			var NF = that.getModel("modelParamDialog").getProperty("/Nfenum");
+			
+			this.oProcessFlow = this._ItemDialog.getContent("fnClass")[0];
+			this.oProcessFlow.setZoomLevel(sap.suite.ui.commons.ProcessFlowZoomLevel.One);
+
+			new Promise(function (res, rej) {
+
+				that.onBuscarStatusPedido(NF, res, rej, that);
+
+			}).then(function (retorno) {
+				
+				console.lo(retorno);
+
+
+			}).catch(function (error) {
+
+				that.onMensagemErroODATA(error);
+			});
+
+			// var jsonModel = new JSONModel({});
+			// jsonModel.loadData("./model/StatusPedido.json", false);
+
+			// // oMydata.loadData();
+			// this.setModel(jsonModel, "modelStatus");
+		},
+
 		onDialogEnvioDanfe: function () {
 
 			var that = this;

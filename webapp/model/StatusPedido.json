@@ -1,0 +1,81 @@
+{
+	"nodes": [{
+		"id": "1",
+		"lane": "0",
+		"title": "Emissão da NF",
+		"titleAbbreviation": "NF",
+		"children": [10],
+		"state": "Negative",
+		"stateText": "-",
+		"focused": true,
+		"texts": [
+			"Data de emissão da nota fiscal."
+		]
+	}, {
+		"id": "10",
+		"lane": "1",
+		"title": "Em contratação de frete",
+		"titleAbbreviation": "CONT FRETE",
+		"children": [20],
+		"state": null,
+		"stateText": "-",
+		"focused": false,
+		"texts": null
+	}, {
+		"id": "20",
+		"lane": "2",
+		"title": "Mercadoria em separação",
+		"titleAbbreviation": "MERC TRANS",
+		"children": [30],
+		"state": null,
+		"stateText": "-",
+		"focused": false,
+		"texts": null
+	}, {
+		"id": "30",
+		"lane": "3",
+		"title": "Mercadoria em trânsito",
+		"titleAbbreviation": "MERC TRANS",
+		"children": [40],
+		"state": null,
+		"stateText": "-",
+		"focused": false,
+		"texts": null
+	}, {
+		"id": "40",
+		"lane": "4",
+		"title": "Mercadoria entregue",
+		"titleAbbreviation": "MERC ENTRG",
+		"children": null,
+		"state": null,
+		"stateText": "-",
+		"focused": false,
+		"texts": null
+	}],
+	"lanes": [{
+		"id": "0",
+		"icon": "sap-icon://order-status",
+		"label": "Emissão da NF",
+		"position": 0
+	}, {
+		"id": "1",
+		"icon": "sap-icon://lead",
+		"label": "Em contratação de frete",
+		"position": 1
+	}, {
+		"id": "2",
+		"icon": "sap-icon://customer-and-supplier",
+		"label": "Em separação de mercadoria",
+		"position": 2
+	}, {
+		"id": "3",
+		"icon": "sap-icon://shipping-status",
+		"label": "Mercadoria em trânsito para entrega",
+		"position": 3
+	}, {
+		"id": "4",
+		"icon": "sap-icon://task",
+		"label": "Mercadoria entregue",
+		"position": 4
+	}]
+}

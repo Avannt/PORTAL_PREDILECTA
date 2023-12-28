@@ -458,6 +458,7 @@ sap.ui.define([
 		},
 
 		onExport: function () {
+			
 			var aCols, oRowBinding, oSettings, oSheet, oTable;
 
 			if (!this._oTable) {
@@ -759,5 +760,76 @@ sap.ui.define([
 
 			this.byId("idMaterialFim").suggest();
 		},
+
+		onDialogOpen: function (evt) {
+			
+			var pedido = evt.getSource().getBindingContext("modelPedidos").getObject().Vbeln;
+			
+
+			var oModelDelay = new JSONModel({
+				"table"  : false,
+				"Pedido" : pedido 
+			});
+
+			this.getView().setModel(oModelDelay, "modelTela");
+
+			if (this._ItemDialog) {
+				this._ItemDialog.destroy(true);
+			}
+
+			if (!this._CreateMaterialFragment) {
+
+				this._ItemDialog = sap.ui.xmlfragment(
+					"application.view.RelatorioItensPedido",
+					this
+				);
+				this.getView().addDependent(this._ItemDialog);
+			}
+
+			this._ItemDialog.open();
+		},
+		
+		onBuscarItens: function (evt) {
+
+			var that = this;
+			
+			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
+			var Pedido = that.getModel("modelTela").getProperty("/Pedido");
+
+			that.oModel.read("/P_RelPedidoItens", {
+				urlParameters: {
+					"$filter": "IvVbeln eq '" + Pedido + "'"
+				},
+				success: function (retorno) {
+					
+					var oModel = new JSONModel(retorno.results);
+					that.setModel(oModel, "modelItensPed");
+				},
+				error: function (error) {
+					
+					that.onMensagemErroODATA(error);
+				}
+			});
+		},
+		
+		formatterText: function(fValue) {
+			try {
+				var valor = fValue;
+				
+				if (valor == 1) {
+					
+					return "Error";
+				} else if (valor == 2) {
+					
+					return "Warning";
+				} else {
+					
+					return "Success";
+				}
+			} catch (err) {
+				
+				return "None";
+			}
+		}
 	});
 });

@@ -271,6 +271,18 @@
 												<layout:GridData span="L2 M2"/>
 											</layoutData>
 										</Input>
+										<Label text="Vl. Reajuste">
+											<layoutData>
+												<layout:GridData span="L2 M2"/>
+											</layoutData>
+										</Label>
+										<Input id="idValorAjuste"
+											value="{path : 'modelItem>/ValorAjuste', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+											enabled="false" class="desabilitado">
+											<layoutData>
+												<layout:GridData span="L2 M2"/>
+											</layoutData>
+										</Input>
 										<Label text="Subs. Trib.">
 											<layoutData>
 												<layout:GridData span="L2 M2"/>

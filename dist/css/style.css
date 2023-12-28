@@ -30,15 +30,18 @@ li[data-mydataItensEntrega='0'], li[data-mydataItensEntrega='0'] + tr.sapMSelect
   background: red !important;
 }
 
-tr[data-mydata="Diluicao"], tr[data-mydata="Diluicao"] + tr.sapMListTblSubRow {	
+tr[data-mydata="1"], tr[data-mydata="1"] + tr.sapMListTblSubRow {	
   background:  #FF8484 !important;
+}
+tr[data-mydata2="1"], tr[data-mydata="1"] + tr.sapMListTblSubRow {	
+  background:  #b88414 !important;
 }
 
 tr[data-mydataAprov="0"], tr[data-mydataAprov="0"] + tr.sapMListTblSubRow {	
   background:  #df5a3e !important;
 }
 tr[data-mydataVerba="0"], tr[data-mydataVerba="0"] + tr.sapMListTblSubRow {	
-  background:  #df5a3e !important;
+  background:  #b88414 !important;
 }
 
 tr[data-mydataRP="Inconsistente"], tr[data-mydataRP="Inconsistente"] + tr.sapMListTblSubRow {	

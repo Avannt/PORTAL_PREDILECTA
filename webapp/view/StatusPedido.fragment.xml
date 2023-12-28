@@ -1,0 +1,21 @@
+<core:FragmentDefinition xmlns:m="sap.m" xmlns:f="sap.ui.layout.form" xmlns="sap.suite.ui.commons" xmlns:core="sap.ui.core"
+	xmlns:form="sap.ui.layout.form" xmlns:layout="sap.ui.layout" id="idStatusPed">
+	<m:Dialog id="idDialog" title="Status do Pedido" afterOpen="onLoadStatus" busy="{modelTela>/view}" busyIndicatorDelay="0" stretch="true">
+		<ProcessFlow id="idProcessFlow" class="PFLayoutSpec" scrollable="true" foldedCorners="true" showLabels="true" 
+			nodes="{StatusPedido>/nodes}" lanes="{StatusPedido>/lanes}" wheelZoomable="false">
+			<nodes>
+				<ProcessFlowNode laneId="{StatusPedido>lane}" nodeId="{StatusPedido>id}" title="{StatusPedido>title}"
+					titleAbbreviation="{StatusPedido>titleAbbreviation}" children="{StatusPedido>children}" state="{StatusPedido>state}"
+					stateText="{StatusPedido>stateText}" texts="{StatusPedido>texts}" focused="{StatusPedido>focused}"/>
+			</nodes>
+			<lanes>
+				<ProcessFlowLaneHeader laneId="{StatusPedido>id}" iconSrc="{StatusPedido>icon}" text="{StatusPedido>label}" position="{StatusPedido>position}"/>
+			</lanes>
+		</ProcessFlow>
+		<m:buttons>
+			<Button xmlns="sap.m" id="button1" text="Zoom" icon="sap-icon://zoom-in" press="onZoomIn"/>
+			<Button xmlns="sap.m" id="button2" text="Zoom" icon="sap-icon://zoom-out" press="onZoomOut"/>
+			<Button xmlns="sap.m" id="button3" text="Fechar" icon="sap-icon://decline" press="onDialogClose"/>
+		</m:buttons>
+	</m:Dialog>
+</core:FragmentDefinition>

@@ -18,6 +18,7 @@ sap.ui.define([
 			},
 
 			_onLoadFields: function () {
+				
 				var that = this;
 
 				this.onInicializaModels();
@@ -27,7 +28,7 @@ sap.ui.define([
 				QAS => ReleasePRD = FALSE
 				*/
 				this.getModelGlobal("modelAux").setProperty("/ReleasePRD", false);
-				this.getModelGlobal("modelAux").setProperty("/VersaoApp", "1.5");
+				this.getModelGlobal("modelAux").setProperty("/VersaoApp", "2.3");
 				this.getModelGlobal("modelAux").setProperty("/Werks", "1000");
 				this.getModelGlobal("modelAux").setProperty("/EditarIndexItem", 0);
 				this.getModelGlobal("modelAux").setProperty("/bConectado", false);

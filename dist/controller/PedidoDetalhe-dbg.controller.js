@@ -243,32 +243,33 @@ sap.ui.define([
 				});
 			}));
 
-			//Tabela de Preço
-			vetorPromises.push(new Promise(function (res, rej) {
+			// //Tabela de Preço
+			// vetorPromises.push(new Promise(function (res, rej) {
 
-				that.oModel.read("/TabPrecos", {
-					// urlParameters: {
-					// 	"$filter": "IvUsuario eq '" + that.CodRepres + "'"
-					// },
-					success: function (result) {
+			// 	that.oModel.read("/TabPrecos", {
+			// 		// urlParameters: {
+			// 		// 	"$filter": "IvUsuario eq '" + that.CodRepres + "'"
+			// 		// },
+			// 		success: function (result) {
 
-						for (var i = 0; i < result.results.length; i++) {
+			// 			for (var i = 0; i < result.results.length; i++) {
 
-							if (result.results[i].Pltyp == that.getModel("modelCliente").getProperty("/Pltyp")) {
+			// 				if (result.results[i].Pltyp == that.getModel("modelCliente").getProperty("/Pltyp")) {
 
-								that.vetorTabPrecos.push(result.results[i]);
-							}
-						}
+			// 					that.vetorTabPrecos.push(result.results[i]);
+			// 				}
+			// 			}
 
-						that.getModel("modelTabPrecos").setData(that.vetorTabPrecos);
-						res();
-					},
-					error: function (error) {
+			// 			that.getModel("modelTabPrecos").setData(that.vetorTabPrecos);
+			// 			res();
+			// 		},
+			// 		error: function (error) {
 
-						that.onMensagemErroODATA(error);
-					}
-				});
-			}));
+			// 			that.onMensagemErroODATA(error);
+			// 		}
+			// 	});
+			// }));
+
 			vetorPromises.push(new Promise(function (res, rej) {
 
 				that.oModel.read("/MsgNF", {
@@ -1470,39 +1471,72 @@ sap.ui.define([
 						// var CodRepres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
 						// var Usuario = that.getModelGlobal("modelAux").getProperty("/Usuario");
 
-						that.oModel.read("/TipoIntegraBol", {
-							urlParameters: {
-								"$filter": "IvUsuario eq '" + that.Usuario + "'"
-							},
-							success: function (retoroTipIntegraBol) {
+						new Promise(function (resTab, rejTab) {
 
-								var vetorTipoIntegraBol = retoroTipIntegraBol.results;
+							that.oModel.read("/TipoIntegraBol", {
+								urlParameters: {
+									"$filter": "IvUsuario eq '" + that.Usuario + "'"
+								},
+								success: function (retoroTipIntegraBol) {
 
-								var Cliente = that.getModel("modelCliente").getProperty("/Kunnr");
-								var Bukrs = that.getModel("modelPedido").getProperty("/Bukrs");
-								var encontrou = "false";
+									var vetorTipoIntegraBol = retoroTipIntegraBol.results;
 
-								for (var j = 0; j < vetorTipoIntegraBol.length; j++) {
+									var Cliente = that.getModel("modelCliente").getProperty("/Kunnr");
+									var Bukrs = that.getModel("modelPedido").getProperty("/Bukrs");
+									var encontrou = "false";
 
-									if (Cliente == vetorTipoIntegraBol[j].Kunnr && Bukrs == vetorTipoIntegraBol[j].Bukrs) {
-										encontrou = "true";
-										break;
+									for (var j = 0; j < vetorTipoIntegraBol.length; j++) {
+
+										if (Cliente == vetorTipoIntegraBol[j].Kunnr && Bukrs == vetorTipoIntegraBol[j].Bukrs) {
+											encontrou = "true";
+											break;
+										}
 									}
+
+									if (encontrou == "true") {
+
+										that.getModelGlobal("modelPedido").setProperty("/TipoIntegrBol", "CONTAS A RECEBER");
+
+									} else {
+
+										that.getModelGlobal("modelPedido").setProperty("/TipoIntegrBol", "CONTAS A PAGAR");
+									}
+
+									resTab();
+								},
+								error: function (error) {
+
+									that.onMensagemErroODATA(error);
+									rejTab();
 								}
+							});
 
-								if (encontrou == "true") {
+						}).then(function (data) {
 
-									that.getModelGlobal("modelPedido").setProperty("/TipoIntegrBol", "CONTAS A RECEBER");
+							// var CodRepres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
+							// var Usuario = that.getModelGlobal("modelAux").getProperty("/Usuario");
 
-								} else {
+							var Cliente = that.getModel("modelCliente").getProperty("/Kunnr");
+							var Bukrs = that.getModel("modelPedido").getProperty("/Bukrs");
 
-									that.getModelGlobal("modelPedido").setProperty("/TipoIntegrBol", "CONTAS A PAGAR");
+							that.oModel.read("/P_TabPrecos(IvKunnr='" + Cliente + "',IvBukrs='" + Bukrs + "',IvRepres='" + that.Repres + "')", {
+								// urlParameters: {
+								// 	"$filter": "IvKunnr eq '" + Cliente + "' and IvBukrs eq '" + Bukrs + "'"
+								// },
+								success: function (result) {
+
+									that.vetorTabPrecos = [];
+
+									that.vetorTabPrecos.push(result);
+									that.getModel("modelTabPrecos").setData(that.vetorTabPrecos);
+								},
+								error: function (error) {
+									that.onMensagemErroODATA(error);
 								}
-							},
-							error: function (error) {
+							});
 
-								that.onMensagemErroODATA(error);
-							}
+						}).catch(function () {
+							that.byId("idDataEntregaSujerida").setBusy(false);
 						});
 
 					}).catch(function () {
@@ -2654,29 +2688,46 @@ sap.ui.define([
 
 					for (var i = 0; i < result.results.length; i++) {
 
-						if (aux.CodCampanha == "") {
+						// if (aux.CodCampanha == "") {
+						if (i == 0) {
 
 							aux.CodCampanha = result.results[i].CodCampanha;
 							aux.DescCampanha = result.results[i].DescCampanha;
 							aux.QtdDe = parseFloat(result.results[i].QtdDe);
 							aux.QtdAte = parseFloat(result.results[i].QtdAte);
+							aux.QtdPedida = parseFloat(result.results[i].QtdPedida);
+							aux.ValorTotal = parseFloat(result.results[i].ValorTotal);
 
-							// aux.QtdPedida = parseFloat(result.results[i].QtdPedida);
-							//aux.ValorTotal = parseFloat(result.results[i].ValorTotal);
+						} else {
 
-						}
+							//Ultimo registro
+							if (result.results.length == i + 1) {
 
-						if (result.results[i].CodCampanha != aux.CodCampanha || result.results.length - 1 == i) {
+								if (result.results[i].CodCampanha == aux.CodCampanha) {
 
-							if (result.results[i].CodCampanha == aux.CodCampanha && result.results.length - 1 == i) {
+									aux.QtdPedida += parseFloat(result.results[i].QtdPedida);
+									aux.ValorTotal += parseFloat(result.results[i].ValorTotal);
 
-								aux.QtdPedida += parseFloat(result.results[i].QtdPedida);
-								aux.ValorTotal += parseFloat(result.results[i].ValorTotal);
-							}
+									vetorTotais.push(aux);
 
-							vetorTotais.push(aux);
+								} else {
 
-							if (result.results[i].CodCampanha != aux.CodCampanha) {
+									vetorTotais.push(aux);
+
+									var aux = {
+										QtdPedida: parseFloat(result.results[i].QtdPedida),
+										ValorTotal: parseFloat(result.results[i].ValorTotal),
+										QtdDe: parseFloat(result.results[i].QtdDe),
+										QtdAte: parseFloat(result.results[i].QtdAte),
+										CodCampanha: result.results[i].CodCampanha,
+										DescCampanha: result.results[i].DescCampanha
+									};
+
+									vetorTotais.push(aux);
+								}
+							} else if (result.results[i].CodCampanha != aux.CodCampanha) {
+
+								vetorTotais.push(aux);
 
 								var aux = {
 									QtdPedida: parseFloat(result.results[i].QtdPedida),
@@ -2689,20 +2740,9 @@ sap.ui.define([
 
 							} else {
 
-								var aux = {
-									QtdPedida: 0,
-									ValorTotal: 0,
-									QtdDe: 0,
-									QtdAte: 0,
-									CodCampanha: "",
-									DescCampanha: ""
-								};
+								aux.QtdPedida += parseFloat(result.results[i].QtdPedida);
+								aux.ValorTotal += parseFloat(result.results[i].ValorTotal);
 							}
-
-						} else {
-
-							aux.QtdPedida += parseFloat(result.results[i].QtdPedida);
-							aux.ValorTotal += parseFloat(result.results[i].ValorTotal);
 						}
 					}
 
@@ -2937,15 +2977,14 @@ sap.ui.define([
 			var modelDialog = this.getModel("modelParamDialog").getData();
 
 			if (modelDialog.EmailPedido.includes("/") || modelDialog.EmailPedido.includes("'")) {
-				
+
 				sap.m.MessageBox.show("O e-mail do pedido contém caracteres não permitidos (/ ou '') ", {
 					icon: sap.m.MessageBox.Icon.ERROR,
 					title: "Ação não permitida!",
 					actions: [MessageBox.Action.OK],
-					onClose: function () {
-					}
+					onClose: function () {}
 				});
-				
+
 			} else {
 
 				that.oModel.read("/P_EnviaEmailPedidoR(NrPedido='" + pedido.NrPedido + "',Email='" + modelDialog.EmailPedido + "')", {

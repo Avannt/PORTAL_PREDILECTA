@@ -96,13 +96,13 @@ sap.ui.define([
 
 					var vetorRepres = result.results;
 					
-					if (vetorRepres.length == 0) {
+					// if (vetorRepres.length == 0) {
 						
-						vetorRepres.push({
-							Lifnr: "800001",
-							Name1: "APARECE QUANDO NÃO TEM CADASTRO FEITO !! IHAA "
-						});
-					}
+						// vetorRepres.push({
+						// 	Lifnr: "800001",
+						// 	Name1: "APARECE QUANDO NÃO TEM CADASTRO FEITO !! IHAA "
+						// });
+					// }
 
 					var oModelRepres = new JSONModel(vetorRepres);
 					that.setModel(oModelRepres, "modelRepres");

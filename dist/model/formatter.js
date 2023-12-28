@@ -1,0 +1,1 @@
+sap.ui.define(function(){"use strict";return{formatterText:function(r){try{var e=r;if(e==1){return"Error"}else if(e==2){return"Warning"}else{return"Success"}}catch(r){return"None"}}}});

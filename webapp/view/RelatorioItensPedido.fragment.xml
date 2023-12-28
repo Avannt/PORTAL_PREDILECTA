@@ -1,0 +1,169 @@
+<core:FragmentDefinition xmlns="sap.ui.table" xmlns:m="sap.m" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core"
+	xmlns:form="sap.ui.layout.form" xmlns:layout="sap.ui.layout" id="idItensCampanha">
+	<m:Dialog id="idDialog" title="Itens do Pedido" afterOpen="onBuscarItens" busy="{modelTela>/table}" busyIndicatorDelay="0" stretch="true">
+		<Table id="table_itens" selectionMode="None" width="100%" noDataText="Sem Dados" mode="None" showSeparators="All" growing="false"
+			growingThreshold="20" growingScrollToLoad="true" class="sapUiResponsiveMargin" itemPress="_onTableItemPress"
+			rows="{path:'modelItensPed>/', templateShareable:true}">
+			<rowSettingsTemplate>
+				<!--<RowSettings highlight="{=${path: 'modelItensPed>LinhaVerm'}===1 ? 'Error' : 'Success'}" highlightText="{}"/>				-->
+				<RowSettings highlight="{path: 'modelItensPed>LinhaColorida', formatter: '.formatterText'}" highlightText="{}" />
+			</rowSettingsTemplate>
+			<columns type="None">
+				<!--<extension>-->
+				<!--	<m:OverflowToolbar width="auto" height="auto" design="Transparent" visible="true" enabled="true">-->
+				<!--		<m:content>-->
+				<!--			<m:Button id="btDeclaracao" text="Declaração" type="Transparent" icon="sap-icon://write-new-document" iconFirst="true" width="auto" enabled="false" visible="true" iconDensityAware="false" press="_onButtonPressDeclaracao"/>-->
+				<!--			<m:Button id="btAnexos" text="Anexos" type="Transparent" icon="sap-icon://attachment-photo" iconFirst="true" width="auto" enabled="false" visible="true" iconDensityAware="false" press="_onButtonPressUpload"/>-->
+				<!--			<m:Button id="btAssinatura" text="Assinatura" type="Transparent" icon="sap-icon://signature" iconFirst="true" width="auto" enabled="true" visible="true" iconDensityAware="false" press="_onButtonPressAssinatura"/>-->
+				<!--			<m:Button id="btPrint" text="Contingência" type="Transparent" icon="sap-icon://print" iconFirst="true" width="auto" enabled="true" visible="true" iconDensityAware="false" press="_onButtonPressPrint"/>-->
+				<!--			<m:Button id="btExport" text="Exportar" type="Transparent" icon="sap-icon://excel-attachment" iconFirst="true" width="auto" enabled="false" visible="true" iconDensityAware="false" press="_onButtonPressExport"/>-->
+				<!--			<m:ToolbarSpacer width="370px"/>-->
+				<!--			<m:SearchField placeholder="Procurar" showSearchButton="true" visible="true" width="auto" liveChange="_onSearchFieldLiveChange"/>-->
+				<!--			<m:OverflowToolbarButton text="Action" type="Default" icon="sap-icon://multiselect-all" iconFirst="true" width="auto" enabled="true" visible="true" iconDensityAware="false"/>-->
+				<!--			<m:OverflowToolbarButton text="Action" type="Default" icon="sap-icon://multiselect-none" iconFirst="true" width="auto" enabled="true" visible="true" iconDensityAware="false"/>-->
+				<!--			<m:OverflowToolbarButton text="Configurações" type="Transparent" icon="sap-icon://action-settings" iconFirst="true" width="auto" enabled="true" visible="true" iconDensityAware="false" press="_onOverflowToolbarButtonPress"/>-->
+				<!--		</m:content>-->
+				<!--	</m:OverflowToolbar>-->
+				<!--</extension>-->
+				<Column id="Matnr" width="80px" hAlign="Center" sortProperty="Matnr">
+					<m:Label text="Material"/>
+					<template>
+						<m:Text text="{modelItensPed>Matnr}" wrapping="false"/>
+					</template>
+				</Column>
+				<Column id="Maktx" width="250px" hAlign="Left" sortProperty="Maktx">
+					<m:Label text="Descrição"/>
+					<template>
+						<m:Text text="{modelItensPed>Maktx}" wrapping="false"/>
+					</template>
+				</Column>
+				<!--<Column id="UM" width="50px" hAlign="Left" sortProperty="Meins" autoResizable="true">-->
+				<!--	<m:Label text="UM"/>-->
+				<!--	<template>-->
+				<!--		<m:Text text="{modelItensPed>Meins}" wrapping="false"/>-->
+				<!--	</template>-->
+				<!--</Column>-->
+				<Column id="QntPedida" width="110px" hAlign="Center" sortProperty="QntPedida">
+					<m:Label text="Qnt Ped (cx)"/>
+					<template>
+						<m:Text text="{modelItensPed>QntPedida}" wrapping="false"/>
+						<!--<m:ObjectIdentifier title="{modelItensPed>QntPedida}" titleActive="false" visible="true"/>-->
+						<!--text="{modelItensPed>Ort01}" -->
+					</template>
+				</Column>
+				<Column id="QntFaturada" width="110px" hAlign="Center" sortProperty="QntFaturada">
+					<m:Label text="Qnt Fat (cx)"/>
+					<template>
+						<m:Text text="{modelItensPed>QntFaturada}" wrapping="false"/>
+					</template>
+				</Column>
+				<Column id="Saldo" width="100px" hAlign="Center" sortProperty="Saldo">
+					<m:Label text="Saldo (cx)"/>
+					<template>
+						<m:Text text="{modelItensPed>Saldo}" wrapping="false"/>
+						<!--<m:ObjectIdentifier title="{modelItensPed>Saldo}" text="{modelItensPed>Arktx}" titleActive="false" visible="true"/>-->
+					</template>
+				</Column>
+				<Column id="QntCancelada" width="110px" hAlign="Center" sortProperty="QntCancelada">
+					<m:Label text="Qnt Canc (cx)"/>
+					<template>
+						<m:Text text="{modelItensPed>QntCancelada}" wrapping="false"/>
+					</template>
+				</Column>
+				<!--<Column id="DescTotal" width="150px" hAlign="Center" sortProperty="ValDescTot">-->
+				<!--	<m:Label text="Valor Desc Total"/>-->
+				<!--	<template> -->
+				<!--		<m:Text text="R$ {path: 'modelItensPed>ValDescTot' , type: 'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 2, groupingEnabled: true, groupingSeparator: '.', decimalSeparator: ','}}" wrapping="false"/>-->
+				<!--	</template>-->
+				<!--</Column>-->
+				<!--<Column id="ValUn" width="150px" hAlign="Center" sortProperty="ValUn">-->
+				<!--	<m:Label text="Valor Total Un"/>-->
+				<!--	<template>-->
+				<!--		<m:Text-->
+				<!--			text="R$ {path: 'modelItensPed>ValUn', type: 'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 2, groupingEnabled: true, groupingSeparator: '.', decimalSeparator: ','}}"-->
+				<!--			wrapping="false"/>-->
+				<!--	</template>-->
+				<!--</Column>-->
+				<!--<Column id="ValUnST" width="150px" hAlign="Center" sortProperty="ValUnST">-->
+				<!--	<m:Label text="Valor Unit ST"/>-->
+				<!--	<template>-->
+				<!--		<m:Text-->
+				<!--			text="R$ {path: 'modelItensPed>ValUnSt', type: 'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 2, groupingEnabled: true, groupingSeparator: '.', decimalSeparator: ','}}"-->
+				<!--			wrapping="false"/>-->
+				<!--	</template>-->
+				<!--</Column>-->
+				<Column id="ValTot" width="150px" hAlign="Center" sortProperty="ValTot">
+					<m:Label text="Valor Total S/ST"/>
+					<template>
+						<m:Text
+							text="R$ {path: 'modelItensPed>ValTot', type: 'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 2, groupingEnabled: true, groupingSeparator: '.', decimalSeparator: ','}}"
+							wrapping="false"/>
+						<!--<m:ObjectNumber-->
+						<!--	number="{path: 'modelItensPed>Volum', type: 'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 3, groupingEnabled: true, groupingSeparator: '.', decimalSeparator: ','}}"-->
+						<!--	unit="{UnVol}" textAlign="Right" emphasized="true" state="None"/>-->
+					</template>
+				</Column>
+				<Column id="ValTotST" width="150px" hAlign="Center" sortProperty="ValTotSt">
+					<m:Label text="Valor Total C/ST"/>
+					<template>
+						<m:Text
+							text="R$ {path: 'modelItensPed>ValTotSt', type: 'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 2, groupingEnabled: true, groupingSeparator: '.', decimalSeparator: ','}}"
+							wrapping="false"/>
+						<!--<m:ObjectNumber-->
+						<!--	number="{path: 'modelItensPed>ValTotSt', type: 'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 2, groupingEnabled: true, groupingSeparator: '.', decimalSeparator: ','}}"-->
+						<!--	unit="{modelItensPed>Meins}" textAlign="Right"/>-->
+					</template>
+				</Column>
+				<Column id="ValTotSaldo" width="175px" hAlign="Center" sortProperty="ValTotSaldo">
+					<m:Label text="Valor Total Saldo S/ST"/>
+					<template>
+						<m:Text
+							text="R$ {path: 'modelItensPed>ValTotSaldo', type: 'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 2, groupingEnabled: true, groupingSeparator: '.', decimalSeparator: ','}}"
+							wrapping="false"/>
+						<!--<m:ObjectNumber-->
+						<!--	number="{path: 'modelItensPed>ValTotSt', type: 'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 2, groupingEnabled: true, groupingSeparator: '.', decimalSeparator: ','}}"-->
+						<!--	unit="{modelItensPed>Meins}" textAlign="Right"/>-->
+					</template>
+				</Column>
+				<Column id="ValTotSTSaldo" width="175px" hAlign="Center" sortProperty="ValTotStSaldo">
+					<m:Label text="Valor Total Saldo C/ST"/>
+					<template>
+						<m:Text
+							text="R$ {path: 'modelItensPed>ValTotStSaldo', type: 'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 2, groupingEnabled: true, groupingSeparator: '.', decimalSeparator: ','}}"
+							wrapping="false"/>
+						<!--<m:ObjectNumber-->
+						<!--	number="{path: 'modelItensPed>ValTotSt', type: 'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 2, groupingEnabled: true, groupingSeparator: '.', decimalSeparator: ','}}"-->
+						<!--	unit="{modelItensPed>Meins}" textAlign="Right"/>-->
+					</template>
+				</Column>
+				<!--<Column id="Status" width="200px" hAlign="Left" sortProperty="Status">-->
+				<!--	<m:Label text="Status"/>-->
+				<!--	<template>-->
+				<!--		<m:Text text="{path: 'modelItensPed>Status'}" wrapping="false"/>-->
+				<!--	</template>-->
+				<!--</Column>-->
+				<!--				<Column id="Data" width="100px" hAlign="Left" sortProperty="DataCancelado">
+					<m:Label text="Data Canc"/>
+					<template>
+						<m:Text text="{ path: 'modelItensPed>DataCancelado', type: 'sap.ui.model.type.Date', formatOptions: { relative: true, relativeScale: 'auto' } }" wrapping="false" />
+					</template>
+				</Column>-->
+				<!--<Column id="Hora" width="100px" hAlign="Left" sortProperty="HoraCancelado">-->
+				<!--	<m:Label text="Hora Canc"/>-->
+				<!--	<template>-->
+				<!--		<m:Text text="{path: 'modelItensPed>HoraCancelado'}" wrapping="false"/>-->
+				<!--	</template>-->
+				<!--</Column>-->
+				<Column id="Motivo" width="250px" hAlign="Left" sortProperty="MotivoCancelado">
+					<m:Label text="Motivo Cancelamento"/>
+					<template>
+						<m:Text text="{path: 'modelItensPed>MotivoCancelado'}" wrapping="false"/>
+					</template>
+				</Column>
+			</columns>
+		</Table>
+		<m:endButton>
+			<Button xmlns="sap.m" text="Fechar" id="button3" icon="sap-icon://decline" press="onDialogClose"/>
+		</m:endButton>
+	</m:Dialog>
+</core:FragmentDefinition>

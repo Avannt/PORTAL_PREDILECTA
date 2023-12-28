@@ -71,10 +71,10 @@ sap.ui.define([
 		},
 
 		containsSpecialChars: function (str) {
-			
+
 			// const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
 			const specialChars = /[`!@#$%^&*()_+\=\[\]{};':"\\|,<>\?~]/;
-			
+
 			return specialChars.test(str);
 		},
 
@@ -196,8 +196,8 @@ sap.ui.define([
 
 					Obj[property] = String(Obj[property]);
 				}
-				
-				if(property == "PedidoOrigem"){
+
+				if (property == "PedidoOrigem") {
 					Obj[property] = Obj[property].replace(/\s/g, '');;
 				}
 
@@ -368,12 +368,26 @@ sap.ui.define([
 				}
 			});
 		},
+		
+		onBuscarStatusPedido: function (NF, res, rej, that) {
+
+			that.oModel.read("/P_StatusPedido(Nfenum='" + NF + "')", {
+				success: function (retorno) {
+
+					res(retorno);
+				},
+				error: function (error) {
+					rej(error);
+				}
+			});
+		},
 
 		onFormatNumberItem: function (Obj) {
 
 			for (var property in Obj) {
 
-				if (property != "QtdPedida" && property != "IndexItem" && property != "ExcIncent" && property != "ExcVerba") {
+				if (property != "QtdPedida" && property != "IndexItem" && property != "ExcIncent" && property != "ExcVerba" && property !=
+					"DataUltCompraUltMes") {
 
 					Obj[property] = String(Obj[property]);
 				}

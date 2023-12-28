@@ -1,4 +1,4 @@
-<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:layout="sap.ui.layout" 
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:layout="sap.ui.layout"
 	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" xmlns="sap.m" xmlns:semantic="sap.m.semantic" height="100%"
 	controllerName="application.controller.relatorioPedidos">
 	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Relatório de Posição de Pedidos" showFooter="false"
@@ -154,7 +154,8 @@
 												<layout:GridData span="L1 M1" linebreakM="false"/>
 											</layoutData>
 										</Label>
-										<CheckBox id="idCheckAtendParcialPendCred" text="Atendido Parcial - Pendente Crédito" selected="{modelParametros>/StatusAtendParcialPendCred}">
+										<CheckBox id="idCheckAtendParcialPendCred" text="Atendido Parcial - Pendente Crédito"
+											selected="{modelParametros>/StatusAtendParcialPendCred}">
 											<layoutData>
 												<layout:GridData span="L3 M1" linebreakM="false"/>
 											</layoutData>
@@ -205,7 +206,6 @@
 												<layout:GridData span="L1 M1" linebreakM="false"/>
 											</layoutData>
 										</Label>
-										
 										<Label text=""/>
 										<CheckBox id="idCheckCancelado" text="Cancelado" selected="{modelParametros>/StatusCancelado}">
 											<layoutData>
@@ -217,7 +217,6 @@
 												<layout:GridData span="L1 M1" linebreakM="false"/>
 											</layoutData>
 										</Label>
-										
 									</f:content>
 								</f:SimpleForm>
 							</content>
@@ -272,15 +271,15 @@
 					<ColumnListItem type="Inactive">
 						<cells>
 							<Text text="{modelPedidos>Werks}"/>
-							<Text text="{modelPedidos>Vbeln}"/>
-							<Text text="{modelPedidos>Bstkd}"/>
+							<Link text="{modelPedidos>Vbeln}" emphasized="true" press="onDialogOpen" />
+							<Text text="{modelPedidos>Bstkd}" />
 							<Text
 								text="{path: 'modelPedidos>Audat', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' , strictParsing: true , UTC: true }}"/>
-							<Text text="{modelPedidos>Kunnr}"/>
-							<Text text="{modelPedidos>Name1Cli}"/>
-							<Text text="{modelPedidos>Kvgr4Text}"/>
-							<Text text="{modelPedidos>Region}"/>
-							<Text text="{modelPedidos>City1}"/>
+							<Text text="{modelPedidos>Kunnr}" />
+							<Text text="{modelPedidos>Name1Cli}" />
+							<Text text="{modelPedidos>Kvgr4Text}" />
+							<Text text="{modelPedidos>Region}" />
+							<Text text="{modelPedidos>City1}" />
 							<Text
 								text="{path: 'modelPedidos>Kwmeng', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
 							<Text

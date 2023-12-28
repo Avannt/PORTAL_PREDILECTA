@@ -373,7 +373,7 @@ sap.ui.define([
 
 			for (var property in Obj) {
 
-				if (property != "QtdPedida" && property != "IndexItem" && property != "ExcIncent" && property != "ExcVerba") {
+				if (property != "QtdPedida" && property != "IndexItem" && property != "ExcIncent" && property != "ExcVerba" && property != "DataUltCompraUltMes") {
 
 					Obj[property] = String(Obj[property]);
 				}

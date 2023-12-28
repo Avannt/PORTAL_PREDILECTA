@@ -183,7 +183,10 @@ sap.ui.define([
 				Mvgr5: 0,
 				Mtpos: 0,
 				VerbaRepres: 0,
-				Draft: false
+				Draft: false,
+				DataUltCompraUltMes: null,
+				QtdUltCompraUltMes: 0,
+				ValorUltCompraUltMes: 0
 			};
 
 			var modelItem = new JSONModel(this.ItemPedido);

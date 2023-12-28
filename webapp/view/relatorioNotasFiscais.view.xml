@@ -139,11 +139,11 @@
 				<items>
 					<ColumnListItem type="Inactive">
 						<cells>
-							<Text text="{modelNotasFiscais>Werks}"/>
-							<Text text="{modelNotasFiscais>Series}"/>
-							<Text text="{modelNotasFiscais>Nfenum}"/>
-							<Text text="{modelNotasFiscais>Vbeln}"/>
-							<Text text="{modelNotasFiscais>Bstkd}"/>
+							<Text text="{modelNotasFiscais>Werks}" />
+							<Text text="{modelNotasFiscais>Series}" />
+							<Link text="{modelNotasFiscais>Nfenum}"  press="onDialogOpenStatus" />
+							<Text text="{modelNotasFiscais>Vbeln}" />
+							<Text text="{modelNotasFiscais>Bstkd}" />
 							<Text text="{path: 'modelNotasFiscais>Docdat', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' , strictParsing: true , UTC: true }}"/>
 							<Text text="{modelNotasFiscais>Kunnr}"/>
 							<Text text="{modelNotasFiscais>Name1Cli}"/>

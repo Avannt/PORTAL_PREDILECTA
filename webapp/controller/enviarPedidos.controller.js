@@ -24,6 +24,9 @@ sap.ui.define([
 			that.oModel = that.getModel();
 			var CodRepres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
 
+			var oModel = new JSONModel([]);
+			that.setModel(oModel, "PedidosEnviar");
+
 			that.byId("table_pedidos").setBusy(true);
 
 			new Promise(function (resCentro, rejCentro) {
@@ -56,13 +59,13 @@ sap.ui.define([
 
 						that.vetorPedidos = dataPedidos;
 						var oModel = new JSONModel(that.vetorPedidos);
-						
+
 						var valorTotal = 0;
-						for(var i=0; i<that.vetorPedidos.length; i++){
-							
+						for (var i = 0; i < that.vetorPedidos.length; i++) {
+
 							valorTotal += parseFloat(that.vetorPedidos[i].ValorTotal);
 						}
-						
+
 						that.getModelGlobal("modelAux").setProperty("/ValTotPedPend", valorTotal);
 						that.setModel(oModel, "Pedidos");
 
@@ -78,7 +81,7 @@ sap.ui.define([
 					that.byId("table_pedidos").setBusy(false);
 					that.onMensagemErroODATA(error);
 				});
-				
+
 			}).catch(function (error) {
 
 				that.byId("table_pedidos").setBusy(false);
@@ -164,72 +167,72 @@ sap.ui.define([
 			}
 		},
 
-		onItemPress: function (oEvent) {
+		// onItemPress: function (oEvent) {
 
-			var that = this;
-			var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
-			var nrPedCli = oItem.getBindingContext("PedidosEnviar").getProperty("nrPedCli");
-			var variavelCodigoCliente = oItem.getBindingContext("PedidosEnviar").getProperty("kunnr");
-			that.getOwnerComponent().getModel("modelAux").setProperty("/Kunnr", variavelCodigoCliente);
-			that.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", nrPedCli);
+		// 	var that = this;
+		// 	var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
+		// 	var nrPedCli = oItem.getBindingContext("PedidosEnviar").getProperty("nrPedCli");
+		// 	var variavelCodigoCliente = oItem.getBindingContext("PedidosEnviar").getProperty("kunnr");
+		// 	that.getOwnerComponent().getModel("modelAux").setProperty("/Kunnr", variavelCodigoCliente);
+		// 	that.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", nrPedCli);
 
-			MessageBox.show("Deseja mesmo detalhar o Pedido? O pedido será reaberto.", {
-				icon: MessageBox.Icon.WARNING,
-				title: "Detalhamento Solicitado",
-				actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
-				onClose: function (oAction) {
-					if (oAction == sap.m.MessageBox.Action.YES) {
-						var open = indexedDB.open("VB_DataBase");
+		// 	MessageBox.show("Deseja mesmo detalhar o Pedido? O pedido será reaberto.", {
+		// 		icon: MessageBox.Icon.WARNING,
+		// 		title: "Detalhamento Solicitado",
+		// 		actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
+		// 		onClose: function (oAction) {
+		// 			if (oAction == sap.m.MessageBox.Action.YES) {
+		// 				var open = indexedDB.open("VB_DataBase");
 
-						open.onerror = function () {
-							console.log("não foi possivel encontrar e/ou carregar a base de clientes");
-						};
+		// 				open.onerror = function () {
+		// 					console.log("não foi possivel encontrar e/ou carregar a base de clientes");
+		// 				};
 
-						open.onsuccess = function (e) {
-							var db = e.target.result;
+		// 				open.onsuccess = function (e) {
+		// 					var db = e.target.result;
 
-							var promise = new Promise(function (resolve, reject) {
-								that.carregaModelCliente(db, resolve, reject);
-							});
+		// 					var promise = new Promise(function (resolve, reject) {
+		// 						that.carregaModelCliente(db, resolve, reject);
+		// 					});
 
-							promise.then(function () {
-								/* Reabro o pedido */
-								new Promise(function (resAP, rejAP) {
-									var store1 = db.transaction("PrePedidos", "readwrite");
-									var objPedido = store1.objectStore("PrePedidos");
-									var req = objPedido.get(nrPedCli);
+		// 					promise.then(function () {
+		// 						/* Reabro o pedido */
+		// 						new Promise(function (resAP, rejAP) {
+		// 							var store1 = db.transaction("PrePedidos", "readwrite");
+		// 							var objPedido = store1.objectStore("PrePedidos");
+		// 							var req = objPedido.get(nrPedCli);
 
-									req.onsuccess = function (ret) {
-										var result = ret.target.result;
-										var oPed = result;
-										oPed.idStatusPedido = 1; // Em digitação
-										oPed.situacaoPedido = "EM DIGITAÇÃO";
+		// 							req.onsuccess = function (ret) {
+		// 								var result = ret.target.result;
+		// 								var oPed = result;
+		// 								oPed.idStatusPedido = 1; // Em digitação
+		// 								oPed.situacaoPedido = "EM DIGITAÇÃO";
 
-										store1 = db.transaction("PrePedidos", "readwrite");
-										objPedido = store1.objectStore("PrePedidos");
-										req = objPedido.put(oPed);
+		// 								store1 = db.transaction("PrePedidos", "readwrite");
+		// 								objPedido = store1.objectStore("PrePedidos");
+		// 								req = objPedido.put(oPed);
 
-										req.onsuccess = function () {
-											/* Pedido reaberto */
-											resAP();
-											console.log("O pedido foi reaberto.");
-										};
+		// 								req.onsuccess = function () {
+		// 									/* Pedido reaberto */
+		// 									resAP();
+		// 									console.log("O pedido foi reaberto.");
+		// 								};
 
-										req.onerror = function () {
-											/* Erro ao reabir pedido */
-											rejAP("Erro ao reabrir pedido!");
-											console.log("Erro ao abrir o Pedido > " + nrPedCli);
-										};
-									};
-								}).then(function () {
-									sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
-								});
-							});
-						};
-					}
-				}
-			});
-		},
+		// 								req.onerror = function () {
+		// 									/* Erro ao reabir pedido */
+		// 									rejAP("Erro ao reabrir pedido!");
+		// 									console.log("Erro ao abrir o Pedido > " + nrPedCli);
+		// 								};
+		// 							};
+		// 						}).then(function () {
+		// 							sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
+		// 						});
+		// 					});
+		// 				};
+		// 			}
+		// 		}
+		// 	});
+		// },
 
 		carregaModelCliente: function (db, resolve, reject) {
 			var that = this;
@@ -425,7 +428,7 @@ sap.ui.define([
 		onDeletarPedido: function (oEvent) {
 
 			var that = this;
-			
+
 			var PedidosEnviar = that.getModel("PedidosEnviar").getData();
 			var pedidosError = [];
 
@@ -489,10 +492,10 @@ sap.ui.define([
 							for (var j = 0; j < PedidosEnviar.length; j++) {
 
 								var Pedido = PedidosEnviar[j];
-								
+
 								oModelPed.remove("/P_PedidoD(IvNrPedido='" + Pedido.NrPedido + "')", {
 									success: function (result) {
-										
+
 									},
 									error: function (error) {
 										that.onMensagemErroODATA(error);
