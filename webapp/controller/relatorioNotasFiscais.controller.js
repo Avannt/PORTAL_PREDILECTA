@@ -393,11 +393,14 @@ sap.ui.define([
 
 			var vAux = {
 				Nfenum: evt.getSource().getBindingContext("modelNotasFiscais").getObject().Nfenum,
+				Name1Redesp: evt.getSource().getBindingContext("modelNotasFiscais").getObject().Name1Redesp,
+				FoneRedesp: evt.getSource().getBindingContext("modelNotasFiscais").getObject().FoneRedesp,
+				EmailRedesp: evt.getSource().getBindingContext("modelNotasFiscais").getObject().EmailRedesp,
 			};
 
 			var omodelParamDialog = new JSONModel(vAux);
 			that.setModel(omodelParamDialog, "modelParamDialog");
-			
+
 			var oModelDelay = new JSONModel({
 				"view": false
 			});
@@ -431,35 +434,180 @@ sap.ui.define([
 		},
 
 		onLoadStatus: function () {
-			
+
 			var that = this;
-			
+
 			debugger;
-			
+
 			var NF = that.getModel("modelParamDialog").getProperty("/Nfenum");
-			
+			var Name1Redesp = that.getModel("modelParamDialog").getProperty("/Name1Redesp");
+			var FoneRedesp = that.getModel("modelParamDialog").getProperty("/FoneRedesp");
+			var EmailRedesp = that.getModel("modelParamDialog").getProperty("/EmailRedesp");
+
 			this.oProcessFlow = this._ItemDialog.getContent("fnClass")[0];
+
 			this.oProcessFlow.setZoomLevel(sap.suite.ui.commons.ProcessFlowZoomLevel.One);
+			this._ItemDialog.setBusy(true);
 
 			new Promise(function (res, rej) {
 
 				that.onBuscarStatusPedido(NF, res, rej, that);
 
 			}).then(function (retorno) {
-				
-				console.lo(retorno);
 
+				console.log(retorno);
+				that.onCriarModelStatus();
+
+				var vetorStatus = that.getModel("modelStatusPedido").getData();
+
+				if (retorno.DataFaturamento != '' || retorno.DataFaturamento != "00/00/0000" && retorno.DataFaturamento != "undefined") {
+
+					vetorStatus.lanes[0].state = "Positive";
+					vetorStatus.nodes[0].state = "Positive";
+					vetorStatus.nodes[0].stateText = "OK - " + retorno.DataFaturamento;
+					vetorStatus.nodes[0].texts = "Nota Fiscal emitida."
+
+					vetorStatus.lanes[1].state = "Positive";
+					vetorStatus.nodes[1].state = "Positive";
+					vetorStatus.nodes[1].stateText = "OK - " + retorno.DataFaturamento;
+					vetorStatus.nodes[1].texts = "Frete contratado.";
+				}
+
+				if (retorno.DataLibPortaria != '' && retorno.DataLibPortaria != "00/00/0000" && retorno.DataLibPortaria != "undefined") {
+
+					vetorStatus.lanes[2].state = "Positive";
+					vetorStatus.nodes[2].state = "Positive";
+					vetorStatus.nodes[2].stateText = "OK - " + retorno.DataLibPortaria;
+					vetorStatus.nodes[2].texts = "Mercadoria separada.";
+
+					vetorStatus.lanes[3].state = "Positive";
+					vetorStatus.nodes[3].state = "Positive";
+					vetorStatus.nodes[3].stateText = "OK - " + retorno.DataLibPortaria;
+					vetorStatus.nodes[3].texts = "Mercadoria saiu da fabrica.";
+
+					debugger;
+					if (retorno.Inco1 == 'FOB') {
+
+						vetorStatus.nodes.splice(4, 1);
+						vetorStatus.lanes.splice(4, 1);
+
+						// o quinto no virou o quarto no
+						vetorStatus.lanes[4].state = "Positive";
+						vetorStatus.nodes[4].state = "Positive";
+						vetorStatus.nodes[4].stateText = "OK - " + retorno.DataLibPortaria;
+						vetorStatus.nodes[4].texts = "Mercadoria entregue";
+
+					} else {
+
+						if (retorno.DataRedesp != '' && retorno.DataRedesp != "00/00/0000" && retorno.DataRedesp != "undefined") {
+
+							vetorStatus.nodes[3].children = [40, 41];
+
+							//Index 4
+							var aux = {
+								"id": "41",
+								"lane": "4",
+								"title": that.getModel("modelParamDialog").getProperty("/Name1Redesp"),
+								"titleAbbreviation": "TRANSP REDESP",
+								"children": null,
+								"state": "Positive",
+								"stateText": that.onFormatTelefone(that.getModel("modelParamDialog").getProperty("/FoneRedesp")),
+								"focused": false,
+								"texts": [that.getModel("modelParamDialog").getProperty("/EmailRedesp")]
+							};
+
+							vetorStatus.nodes.splice(4, 0, aux);
+
+							// var dataReal = retorno.DataEntregaReal.substring(6, 10) + retorno.DataEntregaReal.substring(3, 5) + retorno.DataEntregaReal.substring(0, 2);
+							// var dataPortaria = retorno.DataLibPortaria.substring(6, 10) + retorno.DataLibPortaria.substring(3, 5) + retorno.DataLibPortaria.substring(0, 2);
+
+							// var dataResult = dataReal - dataPortaria;
+
+							vetorStatus.lanes[4].state = "Positive";
+							vetorStatus.nodes[5].state = "Positive";
+							vetorStatus.nodes[5].stateText = "OK - " + retorno.DataRedesp;
+							vetorStatus.nodes[5].texts = "Prev Redespacho: " + retorno.DataPrevRedesp;
+
+							if (retorno.DataEntregaReal != '' && retorno.DataEntregaReal != "00/00/0000" && retorno.DataEntregaReal != "undefined") {
+
+								//Index 6 - Entrega Final
+								vetorStatus.lanes[5].state = "Positive";
+								vetorStatus.nodes[6].state = "Positive";
+								vetorStatus.nodes[5].focused = true;
+								vetorStatus.nodes[6].stateText = "OK - " + retorno.DataEntregaReal;
+
+								if (retorno.DataAgendada != "" && retorno.DataAgendada != "00/00/0000" && retorno.DataAgendada != "undefined") {
+
+									vetorStatus.nodes[6].texts = ["Data agendada: " + retorno.DataAgendada];
+
+								} else if (retorno.DataEstimadaEntrega != "" && retorno.DataAgendada != "00/00/0000" && retorno.DataAgendada != "undefined") {
+
+									vetorStatus.nodes[6].texts = ["Prev Entrega: " + retorno.DataEstimadaEntrega];
+								}
+
+							} else {
+
+								if (retorno.DataAgendada != "" && retorno.DataAgendada != "00/00/0000" && retorno.DataAgendada != "undefined") {
+
+									vetorStatus.nodes[6].texts = ["Data agendada: " + retorno.DataAgendada];
+
+								} else if (retorno.DataEstimadaEntrega != "" && retorno.DataAgendada != "00/00/0000" && retorno.DataAgendada != "undefined") {
+
+									vetorStatus.nodes[6].texts = ["Prev Entrega: " + retorno.DataEstimadaEntrega];
+								}
+
+							}
+
+						} else {
+
+							if (retorno.DataEntregaReal != '' && retorno.DataEntregaReal != "00/00/0000" && retorno.DataEntregaReal != "undefined") {
+
+								vetorStatus.lanes[5].state = "Positive";
+								vetorStatus.nodes[5].state = "Positive";
+								vetorStatus.nodes[5].focused = true;
+								vetorStatus.nodes[5].stateText = "OK - " + retorno.DataEntregaReal;
+
+							}
+						}
+					}
+				}
+				
+				//Texto do ultimo status
+				if (retorno.Inco1 == 'FOB') {
+
+					if (retorno.DataAgendada != "" && retorno.DataAgendada != "00/00/0000" && retorno.DataAgendada != "undefined") {
+
+						vetorStatus.nodes[4].texts = ["Data agendada: " + retorno.DataAgendada];
+
+					} else if (retorno.DataEstimadaEntrega != "" && retorno.DataAgendada != "00/00/0000" && retorno.DataAgendada != "undefined") {
+
+						vetorStatus.nodes[4].texts = ["Prev Entrega: " + retorno.DataEstimadaEntrega];
+					}
+
+				} else {
+
+					if (retorno.DataAgendada != "" && retorno.DataAgendada != "00/00/0000" && retorno.DataAgendada != "undefined") {
+
+						vetorStatus.nodes[5].texts = ["Data agendada: " + retorno.DataAgendada];
+
+					} else if (retorno.DataEstimadaEntrega != "" && retorno.DataAgendada != "00/00/0000" && retorno.DataAgendada != "undefined") {
+
+						vetorStatus.nodes[5].texts = ["Prev Entrega: " + retorno.DataEstimadaEntrega];
+					}
+				}
+
+				var oModel = new JSONModel(vetorStatus);
+				that.setModel(oModel, "StatusPed");
+
+				that.getModel("StatusPed").refresh();
+
+				that._ItemDialog.setBusy(false);
 
 			}).catch(function (error) {
 
 				that.onMensagemErroODATA(error);
+				that._ItemDialog.setBusy(false);
 			});
-
-			// var jsonModel = new JSONModel({});
-			// jsonModel.loadData("./model/StatusPedido.json", false);
-
-			// // oMydata.loadData();
-			// this.setModel(jsonModel, "modelStatus");
 		},
 
 		onDialogEnvioDanfe: function () {
@@ -740,5 +888,104 @@ sap.ui.define([
 
 			this.byId("idRepreFim").suggest();
 		},
+		onCriarModelStatus: function () {
+
+			var omodelParametros = new JSONModel({
+				"nodes": [{
+					"id": "1",
+					"lane": "0",
+					"title": "Emissão da NF",
+					"titleAbbreviation": "NF",
+					"children": [10],
+					"state": "Negative",
+					"stateText": "-",
+					"focused": true,
+					"texts": null
+				}, {
+					"id": "10",
+					"lane": "1",
+					"title": "Em contratação de frete",
+					"titleAbbreviation": "CONT FRETE",
+					"children": [20],
+					"state": null,
+					"stateText": "-",
+					"focused": false,
+					"texts": null
+				}, {
+					"id": "20",
+					"lane": "2",
+					"title": "Mercadoria em separação",
+					"titleAbbreviation": "MERC TRANS",
+					"children": [30],
+					"state": null,
+					"stateText": "-",
+					"focused": false,
+					"texts": null
+				}, {
+					"id": "30",
+					"lane": "3",
+					"title": "Mercadoria saiu da fábrica",
+					"titleAbbreviation": "MERC FÁBRIC",
+					"children": [40],
+					"state": null,
+					"stateText": "-",
+					"focused": false,
+					"texts": null
+				}, {
+					"id": "40",
+					"lane": "4",
+					"title": "Transportadora de Redespacho",
+					"titleAbbreviation": "MERC REDESP",
+					"children": [50],
+					"state": null,
+					"stateText": "-",
+					"focused": false,
+					"texts": null
+				}, {
+					"id": "50",
+					"lane": "5",
+					"title": "Mercadoria entregue",
+					"titleAbbreviation": "MERC ENTRG",
+					"children": null,
+					"state": null,
+					"stateText": "-",
+					"focused": false,
+					"texts": null
+				}],
+				"lanes": [{
+					"id": "0",
+					"icon": "sap-icon://order-status",
+					"label": "Emissão da NF",
+					"position": 0
+				}, {
+					"id": "1",
+					"icon": "sap-icon://lead",
+					"label": "Em contratação de frete",
+					"position": 1
+				}, {
+					"id": "2",
+					"icon": "sap-icon://customer-and-supplier",
+					"label": "Em separação de mercadoria",
+					"position": 2
+				}, {
+					"id": "3",
+					"icon": "sap-icon://offsite-work",
+					"label": "Mercadoria saiu da fábrica",
+					"position": 3
+				}, {
+					"id": "4",
+					"icon": "sap-icon://shipping-status",
+					"label": "Mercadoria em trânsito para entrega",
+					"position": 4
+				}, {
+					"id": "5",
+					"icon": "sap-icon://task",
+					"label": "Mercadoria entregue",
+					"position": 5
+				}]
+			});
+			this.setModel(omodelParametros, "modelStatusPedido");
+
+		}
 	});
 });

@@ -8,9 +8,7 @@
 		"state": "Negative",
 		"stateText": "-",
 		"focused": true,
-		"texts": [
-			"Data de emissão da nota fiscal."
-		]
+		"texts": null
 	}, {
 		"id": "10",
 		"lane": "1",
@@ -34,16 +32,26 @@
 	}, {
 		"id": "30",
 		"lane": "3",
-		"title": "Mercadoria em trânsito",
-		"titleAbbreviation": "MERC TRANS",
+		"title": "Mercadoria saiu da fábrica",
+		"titleAbbreviation": "MERC FÁBRIC",
 		"children": [40],
 		"state": null,
 		"stateText": "-",
 		"focused": false,
 		"texts": null
-	}, {
+	},{
 		"id": "40",
 		"lane": "4",
+		"title": "Mercadoria em trânsito",
+		"titleAbbreviation": "MERC TRANS",
+		"children": [50],
+		"state": null,
+		"stateText": "-",
+		"focused": false,
+		"texts": null
+	}, {
+		"id": "50",
+		"lane": "5",
 		"title": "Mercadoria entregue",
 		"titleAbbreviation": "MERC ENTRG",
 		"children": null,
@@ -69,13 +77,18 @@
 		"position": 2
 	}, {
 		"id": "3",
+		"icon": "sap-icon://offsite-work",
+		"label": "Mercadoria saiu da fábrica",
+		"position": 3
+	},{
+		"id": "4",
 		"icon": "sap-icon://shipping-status",
 		"label": "Mercadoria em trânsito para entrega",
-		"position": 3
+		"position": 4
 	}, {
-		"id": "4",
+		"id": "5",
 		"icon": "sap-icon://task",
 		"label": "Mercadoria entregue",
-		"position": 4
+		"position": 5
 	}]
 }

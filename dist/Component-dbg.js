@@ -13,18 +13,19 @@ sap.ui.define([
 		},
 
 		init: function () {
-			// call the init function of the parent
+			
 			UIComponent.prototype.init.apply(this, arguments);
 
-			// additional initialization can be done here
 			this.getRouter().initialize();
 
 			var oModel = new sap.ui.model.json.JSONModel("./model/Menu.json");
 			this.setModel(oModel, "menu");
+			
+			var oModel = new sap.ui.model.json.JSONModel("./model/StatusPedido.json");
+			this.setModel(oModel, "StatusPedido");
 
 			sap.ui.getCore().getConfiguration().setLanguage("pt-BR");
 
-			// set the device model
 			this.setModel(models.createDeviceModel(), "device");
 		}
 	});

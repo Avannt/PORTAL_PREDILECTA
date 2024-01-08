@@ -1,12 +1,12 @@
 {
     "resources": [
         {
-            "name": "../view/relatorioTabelas.view.xml"
+            "name": "../view/Menu.view.xml"
         },
         {
-            "name": "../i18n/i18n_pt_BR.properties",
+            "name": "../i18n/i18n_pt.properties",
             "raw": "i18n/i18n.properties",
-            "locale": "_pt_BR"
+            "locale": "_pt"
         },
         {
             "name": "../i18n/i18n_en.properties",
@@ -18,10 +18,13 @@
             "raw": "i18n/i18n.properties"
         },
         {
-            "name": "../controller/MenuRelatorios.controller.js"
+            "name": "../model/Menu.json"
         },
         {
             "name": "../manifest.json"
+        },
+        {
+            "name": "../model/StatusPedido.json"
         },
         {
             "name": "../model/models.js"
@@ -96,7 +99,7 @@
             "name": "../controller/MovVerbas.controller.js"
         },
         {
-            "name": "../model/Menu.json"
+            "name": "../controller/MenuRelatorios.controller.js"
         },
         {
             "name": "../controller/MenuConsultas.controller.js"
@@ -127,7 +130,7 @@
             "merged": true
         },
         {
-            "name": "../controller/cadastroRebaixa-dbg.controller.js",
+            "name": "../controller/Menu-dbg.controller.js",
             "isDebug": true
         },
         {
@@ -195,6 +198,10 @@
             "isDebug": true
         },
         {
+            "name": "../controller/cadastroRebaixa-dbg.controller.js",
+            "isDebug": true
+        },
+        {
             "name": "../controller/PedidoDetalheItens-dbg.controller.js",
             "isDebug": true
         },
@@ -228,10 +235,6 @@
         },
         {
             "name": "../controller/MenuConsultas-dbg.controller.js",
-            "isDebug": true
-        },
-        {
-            "name": "../controller/Menu-dbg.controller.js",
             "isDebug": true
         },
         {
@@ -276,9 +279,7 @@
             "name": "../view/relatorioTitulos.view.xml"
         },
         {
-            "name": "../i18n/i18n_pt.properties",
-            "raw": "i18n/i18n.properties",
-            "locale": "_pt"
+            "name": "../view/relatorioTabelas.view.xml"
         },
         {
             "name": "../view/relatorioPedidos.view.xml"
@@ -323,6 +324,9 @@
             "name": "../view/cadastroRebaixa.view.xml"
         },
         {
+            "name": "../view/StatusPedido.fragment.xml"
+        },
+        {
             "name": "../view/RelatorioItensPedido.fragment.xml"
         },
         {
@@ -359,7 +363,9 @@
             "name": "../view/MenuConsultas.view.xml"
         },
         {
-            "name": "../view/Menu.view.xml"
+            "name": "../i18n/i18n_pt_BR.properties",
+            "raw": "i18n/i18n.properties",
+            "locale": "_pt_BR"
         },
         {
             "name": "../view/Login.view.xml"

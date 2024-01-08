@@ -71,6 +71,12 @@
                 },
                 "dataSource": "ZSF_FV_SRV",
                 "preload": true
+            },
+            "StatusPedido": {
+                "type": "sap.ui.model.json.JSONModel",
+                "settings": {},
+                "uri": "model/StatusPedido.json",
+                "preload": true
             }
         },
         "resources": {
