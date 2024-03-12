@@ -1,46 +1,137 @@
-<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout" id="idPageAlterar">
-	<Dialog id="idDialogEmail" title="Envio DANF-e por E-mail" initialFocus="idEmail" icon="sap-icon://email" stretch="true" class="customizedDialog" busyIndicatorDelay="0">
-		<content>
-			<f:Form id="idForm" editable="true" ariaLabelledBy="Title1">
-				<f:layout>
-					<f:ResponsiveGridLayout labelSpanXL="2" labelSpanL="2" labelSpanM="2" labelSpanS="3" adjustLabelSpan="false" emptySpanXL="0" emptySpanL="0" emptySpanM="0" emptySpanS="0" columnsXL="4" columnsL="4" columnsM="8"/>
-				</f:layout>
-				<f:FormContainer ariaLabelledBy="Title1">
-					<f:formElements>
-						<f:FormElement label="NF-e">
-							<f:fields>
-								<Input id="idNfenum" type="Text" value="{modelParamDialog>/Nfenum} - {modelParamDialog>/Series}" blocked="true">
-									<layoutData>
-										<l:GridData span="XL8 L8 M8 S12" linebreakXL="false" linebreakS="true"/>
-									</layoutData>
-								</Input>
-							</f:fields>
-						</f:FormElement>
-						<f:FormElement label="Representante">
-							<f:fields>
-								<Input id="idCodRepres" type="Text" value="{modelAux>/CodRepres} - {modelAux>/NomeRepres}" blocked="true">
-									<layoutData>
-										<l:GridData span="XL8 L8 M8 S12" linebreakXL="false" linebreakS="true"/>
-									</layoutData>
-								</Input>
-							</f:fields>
-						</f:FormElement>
-						<f:FormElement label="E-mail">
-							<f:fields>
-								<Input id="idEmail" type="Text" value="{modelAux>/Email}">
-									<layoutData>
-										<l:GridData span="XL8 L8 M8 S12" linebreakXL="false" linebreakS="true"/>
-									</layoutData>
-								</Input>
-							</f:fields>
-						</f:FormElement>
-					</f:formElements>
-				</f:FormContainer>
-			</f:Form>
-		</content>
-		<buttons>
-			<Button id="idBtEnvioDanfe" text="Enviar" icon="sap-icon://accept" press="onDialogEnvioDanfe" type="Accept"/>
-			<Button text="Sair" icon="sap-icon://undo" press="onDialogClose"/>
-		</buttons>
-	</Dialog>
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:l="sap.ui.layout"
+    id="idPageAlterar"
+>
+    <Dialog
+        id="idDialogEmail"
+        title="Envio DANF-e por E-mail"
+        initialFocus="idEmailInput"
+        icon="sap-icon://email"
+        stretch="true"
+        class="customizedDialog"
+        busyIndicatorDelay="0"
+		contentWidth="50%"
+    >
+        <content>
+            <f:Form
+                id="idForm"
+                editable="true"
+                ariaLabelledBy="Title1"
+            >
+                <f:layout>
+                    <f:ResponsiveGridLayout
+                        labelSpanXL="2"
+                        labelSpanL="2"
+                        labelSpanM="2"
+                        labelSpanS="3"
+                        adjustLabelSpan="false"
+                        emptySpanXL="0"
+                        columnsXL="4"
+                        columnsL="4"
+                        columnsM="8"
+                    />
+                </f:layout>
+                <f:FormContainer ariaLabelledBy="Title1">
+                    <f:formElements>
+                        <f:FormElement label="">
+                            <f:fields>							
+								<CheckBox
+									text="NFe"
+									selected="{modelParamDialog>/Nfe}"
+								/>
+                            </f:fields>
+                            <f:fields>							
+								<CheckBox
+									text="Boleto"
+									selected="{modelParamDialog>/Boleto}"
+								/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="NF-e">
+                            <f:fields>
+                                <Input
+                                    id="idNfenum"
+                                    enabled="false"
+                                    value="{modelParamDialog>/Nfenum} - {modelParamDialog>/Series}"
+                                >
+                                    <layoutData>
+                                        <l:GridData
+                                            span="XL8 L8 M8 S12"
+                                            linebreakS="true"
+                                        />
+                                    </layoutData>
+                                </Input>
+                            </f:fields>
+                        </f:FormElement>
+                        <!-- <f:FormElement label="Doc Contábil">
+                            <f:fields>
+                                <Input
+                                    id="idBelnrInput"
+                                    enabled="false"
+                                    value="{modelParamDialog>/Belnr}"
+                                >
+                                    <layoutData>
+                                        <l:GridData
+                                            span="XL8 L8 M8 S12"
+                                            linebreakS="true"
+                                        />
+                                    </layoutData>
+                                </Input>
+                            </f:fields>
+                        </f:FormElement> -->
+
+                        <f:FormElement label="Representante">
+                            <f:fields>
+                                <Input
+                                    id="idCodRepres"
+                                    enabled="false"
+                                    value="{modelAux>/CodRepres} - {modelAux>/NomeRepres}"
+                                >
+                                    <layoutData>
+                                        <l:GridData
+                                            span="XL8 L8 M8 S12"
+                                            linebreakS="true"
+                                        />
+                                    </layoutData>
+                                </Input>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="E-mail">
+                            <f:fields>
+                                <Input
+                                    id="idEmailInput"
+                                    type="Email"
+                                    value="{modelAux>/Email}"
+                                >
+                                    <layoutData>
+                                        <l:GridData
+                                            span="XL8 L8 M8 S12"
+                                            linebreakS="true"
+                                        />
+                                    </layoutData>
+                                </Input>
+                            </f:fields>
+                        </f:FormElement>
+                    </f:formElements>
+                </f:FormContainer>
+            </f:Form>
+        </content>
+        <buttons>
+            <Button
+                id="idBtEnvioDanfe"
+                text="Enviar"
+                icon="sap-icon://accept"
+                press="onDialogEnvioDanfe"
+                type="Accept"
+            />
+            <Button
+                text="Sair"
+                icon="sap-icon://undo"
+                press="onDialogClose"
+            />
+        </buttons>
+    </Dialog>
 </core:FragmentDefinition>

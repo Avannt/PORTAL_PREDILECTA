@@ -247,15 +247,44 @@ sap.ui.define([
 
 			that.oModel.read("/P_TipoPedidosR(IvRepres='" + Usuario + "',IvCliente='" + Kunnr + "',IvCentro='" + Centro + "',IvKvgr4='" +
 				Kvgr4 + "',IvKvgr5='" + Kvgr5 + "')", {
-					success: function (retorno) {
+				success: function (retorno) {
 
-						res(retorno);
-					},
-					error: function (error) {
+					res(retorno);
+				},
+				error: function (error) {
 
-						rej(error);
+					rej(error);
+				}
+			});
+		},
+
+		onBuscarTabelaPreco: function (Pedido, Repres, res, rej, that) {
+
+			that.oModel.read("/P_TabPrecos(IvKunnr='" + Pedido.Kunnr + "',IvBukrs='" + Pedido.Bukrs + "',IvRepres='" + Repres + "')", {
+				success: function (result) {
+
+					that.vetorTabPrecos = [];
+					
+					that.vetorTabPrecos.push(result);
+
+					if (result.Pltyp != Pedido.Pltyp && Pedido.Pltyp != "") {
+						
+						var aux = {
+							Pltyp: Pedido.Pltyp,
+							Ptext: Pedido.PltypDesc
+						};
+						
+						that.vetorTabPrecos.push(aux);
 					}
-				});
+
+					that.getModel("modelTabPrecos").setData(that.vetorTabPrecos);
+					res();
+				},
+				error: function (error) {
+
+					that.onMensagemErroODATA(error);
+				}
+			});
 		},
 
 		onBuscarPedido: function (NrPedido, res, rej, that) {
@@ -368,7 +397,7 @@ sap.ui.define([
 				}
 			});
 		},
-		
+
 		onBuscarStatusPedido: function (NF, res, rej, that) {
 
 			that.oModel.read("/P_StatusPedido(Nfenum='" + NF + "')", {
@@ -515,17 +544,17 @@ sap.ui.define([
 			modelAux.DBModel.read("/CheckOnline(IvUsuario='" + modelAux.CodRepres + "',IvSenha='" + modelAux.Senha + "',IvSistOper='" +
 				modelAux.SistemaOper +
 				"',IvImei='" + modelAux.Imei + "',IvRetirarCheck=" + RetiraAtual + ",IvVersaoApp='" + modelAux.VersaoApp + "')", {
-					success: function (retorno) {
+				success: function (retorno) {
 
-						res();
+					res();
 
-					},
-					error: function (error) {
+				},
+				error: function (error) {
 
-						console.log(error);
-						rej(error);
-					}
-				});
+					console.log(error);
+					rej(error);
+				}
+			});
 		},
 
 		onDataHora: function () {
@@ -641,13 +670,13 @@ sap.ui.define([
 
 			sap.m.MessageBox.show(
 				errorLog, {
-					icon: sap.m.MessageBox.Icon.WARNING,
-					title: "Erro!",
-					actions: [sap.m.MessageBox.Action.OK],
-					onClose: function (oAction) {
+				icon: sap.m.MessageBox.Icon.WARNING,
+				title: "Erro!",
+				actions: [sap.m.MessageBox.Action.OK],
+				onClose: function (oAction) {
 
-					}
 				}
+			}
 			);
 		},
 
@@ -655,6 +684,66 @@ sap.ui.define([
 
 			if (this._ItemDialog) {
 				this._ItemDialog.destroy(true);
+			}
+		},
+
+		onTile: function (oEvent) {
+
+			switch (oEvent.getSource().data("opcao")) {
+				case "P01":
+					sap.ui.core.UIComponent.getRouterFor(this).navTo("pedido");
+					break;
+				case "P02":
+					sap.ui.core.UIComponent.getRouterFor(this).navTo("enviarPedidos");
+					break;
+				case "P03":
+					sap.ui.core.UIComponent.getRouterFor(this).navTo("menuRelatorios");
+					break;
+				case "P04":
+					sap.ui.core.UIComponent.getRouterFor(this).navTo("menuConsultas");
+					break;
+				case "P05":
+					sap.ui.core.UIComponent.getRouterFor(this).navTo("MsgPortal");
+					break;
+				case "R01":
+					sap.ui.core.UIComponent.getRouterFor(this).navTo("relatorioPedidos");
+					break;
+				case "R02":
+					sap.ui.core.UIComponent.getRouterFor(this).navTo("relatorioTabelas");
+					break;
+				case "R03":
+					sap.ui.core.UIComponent.getRouterFor(this).navTo("relatorioTitulos");
+					break;
+				case "R04":
+					sap.ui.core.UIComponent.getRouterFor(this).navTo("relatorioFaturamentoClientes");
+					break;
+				case "R05":
+					sap.ui.core.UIComponent.getRouterFor(this).navTo("relatorioFaturamentoItens");
+					break;
+				case "R06":
+					sap.ui.core.UIComponent.getRouterFor(this).navTo("relatorioNotasFiscais");
+					break;
+				case "A01":
+					sap.ui.core.UIComponent.getRouterFor(this).navTo("relatorioNotasFiscais");
+					break;
+				case "C01":
+					sap.ui.core.UIComponent.getRouterFor(this).navTo("detalheProdutos");
+					break;
+				case "C02":
+					sap.ui.core.UIComponent.getRouterFor(this).navTo("clienteConsultas");
+					break;
+				case "C03":
+					sap.ui.core.UIComponent.getRouterFor(this).navTo("VerbaConsultas");
+					break;
+				case "C04":
+					sap.ui.core.UIComponent.getRouterFor(this).navTo("cadastroRebaixa");
+					break;
+				case "C05":
+					sap.ui.core.UIComponent.getRouterFor(this).navTo("MovVerbas");
+					break;
+				default:
+					sap.ui.core.UIComponent.getRouterFor(this).navTo("notFound");
+					break;
 			}
 		},
 

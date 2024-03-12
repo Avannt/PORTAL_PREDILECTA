@@ -12,16 +12,19 @@
         },
         "dataSources": {
             "ZSF_FV_SRV": {
-                "uri": "/sap/opu/odata/sap/ZSF_FV_SRV/",
+                "uri": "/sap/opu/odata/sap/ZSF_FV_SRV",
                 "type": "OData",
                 "settings": {
-                    "localUri": "localService/ZSF_FV_SRV/metadata.xml"
+                    "annotations": [],
+                    "localUri": "localService/metadata.xml",
+                    "odataVersion": "2.0"
                 }
             }
         },
         "sourceTemplate": {
             "id": "servicecatalog.connectivityComponentForManifest",
-            "version": "0.0.0"
+            "version": "0.0.0",
+            "toolsId": "2413c153-d7a0-4ff0-b445-0065068353b5"
         }
     },
     "sap.ui": {
@@ -62,21 +65,23 @@
                     "bundleName": "application.i18n.i18n"
                 }
             },
-            "": {
-                "type": "sap.ui.model.odata.v2.ODataModel",
-                "settings": {
-                    "defaultOperationMode": "Server",
-                    "defaultBindingMode": "OneWay",
-                    "defaultCountMode": "Request"
-                },
-                "dataSource": "ZSF_FV_SRV",
-                "preload": true
-            },
             "StatusPedido": {
                 "type": "sap.ui.model.json.JSONModel",
                 "settings": {},
                 "uri": "model/StatusPedido.json",
                 "preload": true
+            },
+            "": {
+                "preload": true,
+                "dataSource": "ZSF_FV_SRV",
+                "settings": {
+                    "defaultBindingMode": "TwoWay",
+                    "defaultCountMode": "Inline",
+                    "refreshAfterChange": false,
+                    "metadataUrlParams": {
+                        "sap-value-list": "none"
+                    }
+                }
             }
         },
         "resources": {

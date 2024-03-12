@@ -1,11 +1,10 @@
 /*eslint-disable no-console, no-alert */
 /*eslint-disable no-console, sap-no-hardcoded-url */
 sap.ui.define([
-		"sap/ui/core/mvc/Controller",
-		"application/controller/BaseController",
-		"sap/m/MessageBox"
-		// "application/js/index"
-	],
+	"sap/ui/core/mvc/Controller",
+	"application/controller/BaseController",
+	"sap/m/MessageBox"
+],
 	function (Controller, BaseController, MessageBox) {
 		"use strict";
 		var idbSupported = false;
@@ -18,7 +17,7 @@ sap.ui.define([
 			},
 
 			_onLoadFields: function () {
-				
+
 				var that = this;
 
 				this.onInicializaModels();
@@ -28,7 +27,7 @@ sap.ui.define([
 				QAS => ReleasePRD = FALSE
 				*/
 				this.getModelGlobal("modelAux").setProperty("/ReleasePRD", false);
-				this.getModelGlobal("modelAux").setProperty("/VersaoApp", "2.4");
+				this.getModelGlobal("modelAux").setProperty("/VersaoApp", "2.7");
 				this.getModelGlobal("modelAux").setProperty("/Werks", "1000");
 				this.getModelGlobal("modelAux").setProperty("/EditarIndexItem", 0);
 				this.getModelGlobal("modelAux").setProperty("/bConectado", false);
@@ -152,16 +151,16 @@ sap.ui.define([
 
 						MessageBox.show(
 							"A recusa do acesso resultará a falha na autenticação. Deseja permitir?", {
-								icon: MessageBox.Icon.ERROR,
-								title: "Erro ao atualizar bases.",
-								actions: [MessageBox.Action.YES, MessageBox.Action.NO],
-								onClose: function (value) {
-									if (value == MessageBox.Action.YES) {
+							icon: MessageBox.Icon.ERROR,
+							title: "Erro ao atualizar bases.",
+							actions: [MessageBox.Action.YES, MessageBox.Action.NO],
+							onClose: function (value) {
+								if (value == MessageBox.Action.YES) {
 
-										that.getPermissao();
-									}
+									that.getPermissao();
 								}
-							});
+							}
+						});
 					}
 				}
 
@@ -279,39 +278,39 @@ sap.ui.define([
 
 					sap.m.MessageBox.show(
 						"Preencher o código do representante!", {
-							icon: sap.m.MessageBox.Icon.WARNING,
-							title: "Corrija os Campos!",
-							actions: [sap.m.MessageBox.Action.OK],
-							onClose: function (oAction) {
-								sap.ui.getCore().byId("idCodRepres").focus();
-							}
+						icon: sap.m.MessageBox.Icon.WARNING,
+						title: "Corrija os Campos!",
+						actions: [sap.m.MessageBox.Action.OK],
+						onClose: function (oAction) {
+							sap.ui.getCore().byId("idCodRepres").focus();
 						}
+					}
 					);
 
 				} else if (modelAux.Senha == "" || modelAux.Senha == "undefined") {
 
 					sap.m.MessageBox.show(
 						"Preencher a Senha atual!", {
-							icon: sap.m.MessageBox.Icon.WARNING,
-							title: "Corrija os Campos!",
-							actions: [sap.m.MessageBox.Action.OK],
-							onClose: function (oAction) {
-								sap.ui.getCore().byId("idSenha").focus();
-							}
+						icon: sap.m.MessageBox.Icon.WARNING,
+						title: "Corrija os Campos!",
+						actions: [sap.m.MessageBox.Action.OK],
+						onClose: function (oAction) {
+							sap.ui.getCore().byId("idSenha").focus();
 						}
+					}
 					);
 
 				} else if (SenhaNova != SenhaNova2) {
 
 					sap.m.MessageBox.show(
 						"As Senhas são diferentes!", {
-							icon: sap.m.MessageBox.Icon.WARNING,
-							title: "Corrija os Campos!",
-							actions: [sap.m.MessageBox.Action.OK],
-							onClose: function (oAction) {
-								sap.ui.getCore().byId("idSenhaNova").focus();
-							}
+						icon: sap.m.MessageBox.Icon.WARNING,
+						title: "Corrija os Campos!",
+						actions: [sap.m.MessageBox.Action.OK],
+						onClose: function (oAction) {
+							sap.ui.getCore().byId("idSenhaNova").focus();
 						}
+					}
 					);
 
 				} else {
@@ -323,29 +322,29 @@ sap.ui.define([
 					modelAux.DBModel.read("/TrocarSenha(IvUsuario='" + modelAux.CodRepres + "',IvSenha='" + modelAux.Senha + "',IvSistOper='" +
 						modelAux.SistemaOper + "',IvImei='" + modelAux.Imei + "',IvVersaoApp='" + modelAux.VersaoApp + "',IvSenhaNova='" + SenhaNova +
 						"')", {
-							success: function (retorno) {
+						success: function (retorno) {
 
-								MessageBox.show("Senha foi alterada com sucesso!", {
-									icon: MessageBox.Icon.SUCCESS,
-									title: "Confirmação",
-									actions: [MessageBox.Action.OK],
-									onClose: function () {
+							MessageBox.show("Senha foi alterada com sucesso!", {
+								icon: MessageBox.Icon.SUCCESS,
+								title: "Confirmação",
+								actions: [MessageBox.Action.OK],
+								onClose: function () {
 
-										if (that._ItemDialog) {
-											that._ItemDialog.destroy(true);
-										}
-
+									if (that._ItemDialog) {
+										that._ItemDialog.destroy(true);
 									}
-								});
 
-							},
-							error: function (error) {
+								}
+							});
 
-								sap.ui.getCore().byId("idDialogAlterarSenha").setBusy(false);
-								that.onMensagemErroODATA(error);
+						},
+						error: function (error) {
 
-							}
-						});
+							sap.ui.getCore().byId("idDialogAlterarSenha").setBusy(false);
+							that.onMensagemErroODATA(error);
+
+						}
+					});
 				}
 			},
 
@@ -359,9 +358,39 @@ sap.ui.define([
 
 			onStartWorking: function () {
 
+				// var method = 'GET';
+				// var filepath = 'https://drive.usercontent.google.com/u/0/uc?id=1GWtHIVZV_yeCJV6zzLkZsv3HaGJpBOtV&export=download';
+
+				// $.ajax({
+				// 	url: filepath,
+				// 	type: 'get',
+				// 	dataType: 'text',
+				// 	success: function (data) {
+				// 		debugger;
+				// 		alert(data.query.results.body.p);
+				// 	},
+				// 	error: function (jqXHR, textStatus, errorThrow) {
+				// 		debugger;
+				// 		alert(jqXHR['responseText']);
+				// 	}
+				// });
+
+				// $.ajax({
+				// 	type: "GET",
+				// 	url: filepath,
+				// 	dataType: "text",
+				// 	success: function (data) {
+				// 		alert(data);
+				// 		debugger;
+				// 	},
+				// 	error: function (xhr, ajaxOptions, thrownError) {
+				// 		alert("Status: " + xhr.status + "     Error: " + thrownError);
+				// 	}
+				// });
+
 				var that = this;
 
-				this.getView().byId("idPageLogin").setBusy(true);
+				// this.getView().byId("idPageLogin").setBusy(true);
 				var CodRepres = this.byId("idLogin").getValue();
 				var Senha = this.byId("idSenha").getValue();
 				var Imei = "WEB";
@@ -372,47 +401,279 @@ sap.ui.define([
 
 				oModel.read("/Logins(IvUsuario='" + CodRepres + "',IvSenha='" + Senha + "',IvSistOper='" + SistemaOp +
 					"',IvImei='" + Imei + "',IvVersaoApp='" + VersaoApp + "')", {
-						success: function (retorno) {
-							
-							debugger;
+					success: function (retorno) {
 
-							that.getModelGlobal("modelAux").setProperty("/CodRepres", CodRepres);
-							that.getModelGlobal("modelAux").setProperty("/NomeRepres", retorno.EvNomeRepres);
-							that.getModelGlobal("modelAux").setProperty("/Login", CodRepres);
-							that.getModelGlobal("modelAux").setProperty("/Senha", Senha);
-							that.getModelGlobal("modelAux").setProperty("/Lifnr", retorno.EvLifnr);
-							that.getModelGlobal("modelAux").setProperty("/Email", retorno.EvEmail);
-							that.getModelGlobal("modelAux").setProperty("/DiasPedPend", retorno.EvDiasPedPend);
-							that.getModelGlobal("modelAux").setProperty("/MaxDiasEntrega", retorno.EvMaxDiasEntrg);
-							that.getModelGlobal("modelAux").setProperty("/DiasTituloVenc", retorno.EvMDiasTituloVenc);
+						debugger;
 
-							oModel.read("/Menus", {
-								urlParameters: {
-									"$filter": "IvUsuario eq '" + CodRepres + "' and IvSistOper eq '" + SistemaOp + "'"
-								},
-								success: function (result) {
-									var vetor = result.results.sort();
-									that.getModelGlobal("modelMenu").setData(vetor);
+						that.getModelGlobal("modelAux").setProperty("/CodRepres", CodRepres);
+						that.getModelGlobal("modelAux").setProperty("/NomeRepres", retorno.EvNomeRepres);
+						that.getModelGlobal("modelAux").setProperty("/Login", CodRepres);
+						that.getModelGlobal("modelAux").setProperty("/Senha", Senha);
+						that.getModelGlobal("modelAux").setProperty("/Lifnr", retorno.EvLifnr);
+						that.getModelGlobal("modelAux").setProperty("/Email", retorno.EvEmail);
+						that.getModelGlobal("modelAux").setProperty("/DiasPedPend", retorno.EvDiasPedPend);
+						that.getModelGlobal("modelAux").setProperty("/MaxDiasEntrega", retorno.EvMaxDiasEntrg);
+						that.getModelGlobal("modelAux").setProperty("/DiasTituloVenc", retorno.EvMDiasTituloVenc);
 
-									sap.ui.core.UIComponent.getRouterFor(that).navTo("menu");
-									that.getView().byId("idPageLogin").setBusy(false);
-								},
-								error: function (error) {
+						oModel.read("/Menus", {
+							urlParameters: {
+								"$filter": "IvUsuario eq '" + CodRepres + "' and IvSistOper eq '" + SistemaOp + "'"
+							},
+							success: function (result) {
+								var vetor = result.results.sort();
+								that.getModelGlobal("modelMenu").setData(vetor);
 
-									that.getView().byId("idPageLogin").setBusy(false);
+								sap.ui.core.UIComponent.getRouterFor(that).navTo("menu");
+								that.getView().byId("idPageLogin").setBusy(false);
+							},
+							error: function (error) {
 
-									console.log(error);
-									that.onMensagemErroODATA(error);
-								}
-							});
-						},
-						error: function (error) {
+								that.getView().byId("idPageLogin").setBusy(false);
 
-							that.getView().byId("idPageLogin").setBusy(false);
-							console.log(error);
-							that.onMensagemErroODATA(error);
+								console.log(error);
+								that.onMensagemErroODATA(error);
+							}
+						});
+					},
+					error: function (error) {
+
+						that.getView().byId("idPageLogin").setBusy(false);
+						console.log(error);
+						that.onMensagemErroODATA(error);
+					}
+				});
+			},
+
+			onEntrarCSV: function () {
+
+				let tokenClient;
+				let accessToken = null;
+				let pickerInited = false;
+				let gisInited = false;
+
+				const clientId = '934285555664-lh47cbekeih2kfafmnr6uuqg3ppghlmd.apps.googleusercontent.com';
+				const apiKey = 'AIzaSyBRcB2SLKWPc2BDZ3gm-zawwDz992kZq8s';
+				const scope = 'https://www.googleapis.com/auth/drive.readonly';
+				const fileId = '1GWtHIVZV_yeCJV6zzLkZsv3HaGJpBOtV';
+
+				var myHeaders = new Headers();
+				myHeaders.append("Cookie", "__Host-GAPS=1:iHo03JcmT4tL39QdP1rD4vik5LhmVQ:mZZuPY6OdVBXjWbO");
+
+				var requestOptions = {
+					method: 'POST',
+					headers: myHeaders,
+					redirect: 'follow'
+				};
+
+				fetch("https://accounts.google.com/o/oauth2/v2/auth?client_id=934285555664-tg68esjee7uoa9kqq2ltpjha1h1l3a4d.apps.googleusercontent.com&refresh_token=&response_type=code&redirect_uri=https://port8080-workspaces-ws-mlqzn.br10.applicationstudio.cloud.sap&scope=https://www.googleapis.com/auth/drive.readonly", requestOptions)
+					.then(response => response.text())
+					.then(result => console.log(result))
+					.catch(error => console.log('error', error));
+			},
+
+			onGetCSV: function () {
+				debugger
+
+				function updateSigninStatus(isSignedIn) {
+					if (isSignedIn) {
+						// Usuário autenticado, pode fazer chamadas à API
+						listFiles();
+					}
+				}
+
+				let tokenClient;
+				let accessToken = null;
+				let pickerInited = false;
+				let gisInited = false;
+
+				const clientId = '934285555664-tg68esjee7uoa9kqq2ltpjha1h1l3a4d.apps.googleusercontent.com';
+				const apiKey = 'AIzaSyBRcB2SLKWPc2BDZ3gm-zawwDz992kZq8s';
+				const scope = 'https://www.googleapis.com/auth/drive.readonly';
+				const fileId = '1GWtHIVZV_yeCJV6zzLkZsv3HaGJpBOtV';
+
+				// initClient();
+
+				// function initClient() {
+
+				// 	gapi.load('auth2', function () {
+				// 		gapi.auth2.init({
+				// 			client_id: clientId
+				// 		}).then(function (auth2) {
+				// 			// Configurar o Google Sign-In
+				// 			auth2.isSignedIn.listen(updateSigninStatus);
+				// 			updateSigninStatus(auth2.isSignedIn.get());
+
+				// 			handleAuthClick();
+				// 		});
+				// 	});
+				// }
+
+
+				// function updateSigninStatus(isSignedIn) {
+				// 	if (isSignedIn) {
+				// 		// Após a autenticação bem-sucedida, você pode fazer chamadas à API
+				// 		listFiles();
+				// 	}
+				// }
+				// function handleAuthClick() {
+				// 	gapi.auth2.getAuthInstance().signIn();
+				// }
+
+				// function listFiles() {
+				// 	gapi.client.drive.files.list({
+				// 		pageSize: 10,
+				// 		fields: "nextPageToken, files(id, name)"
+				// 	}).then(function (response) {
+				// 		const files = response.result.files;
+				// 		if (files && files.length > 0) {
+				// 			for (const file of files) {
+				// 				console.log(`${file.name} (${file.id})`);
+				// 			}
+				// 		} else {
+				// 			console.log('No files found.');
+				// 		}
+				// 	});
+				// }
+
+				// // Use the API Loader script to load google.picker
+				// function onApiLoad() {
+				// 	gapi.load('picker', onPickerApiLoad);
+				// }
+
+				// function onPickerApiLoad() {
+				// 	pickerInited = true;
+				// }
+
+				// function gisLoaded(res, rej) {
+				// 	// TODO(developer): Replace with your client ID and required scopes.
+				// 	tokenClient = google.accounts.oauth2.initTokenClient({
+				// 		client_id: clientId,
+				// 		scope: scope,
+				// 		callback: createPicker, // defined later
+				// 	});
+				// 	gisInited = true;
+				// }
+
+				// createPicker();
+
+				// new Promise(function (res, rej) {
+
+				// 	gisLoaded(res, rej);
+
+				// }).then(function (dado) {
+
+				// // createPicker();
+				// // downloadFile();
+				// }).catch(function (error) {
+
+				// 	debugger;
+				// });
+
+				// onApiLoad();
+
+
+
+				// function handleClientLoad() {
+				// 	gapi.load('client:auth2', initClient);
+				//   }
+
+				//   function initClient() {
+				// 	gapi.client.init({
+				// 	  apiKey: apiKey,
+				// 	  clientId: clientId,
+				// 	  discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
+				// 	  scope: 'https://www.googleapis.com/auth/drive.readonly',
+				// 	}).then(function () {
+
+				// 		console.log("OK AUTENTICADO")
+				// 	  // Faça a chamada da API após a autenticação ser bem-sucedida
+				// 	  // ...
+				// 	});
+				//   }
+
+				//   // Inicialize a biblioteca de autenticação ao carregar a página
+				//   handleClientLoad();
+
+				// gapi.load('client:auth2', initClient);
+
+				// function initClient() {
+				//   gapi.client.init({
+				// 	apiKey: apiKey,
+				// 	clientId: clientId,
+				// 	discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
+				// 	scope: scope
+				//   }).then(function () {
+				// 	document.getElementById('downloadButton').addEventListener('click', downloadFile);
+				//   });
+				// }
+
+				function createPicker() {
+
+					const picker = new google.picker.PickerBuilder()
+						.addView(google.picker.ViewId.DOCS)
+						.setOAuthToken(accessToken)
+						.setDeveloperKey(apiKey)
+						.setCallback(pickerCallback)
+						.build();
+
+					const showPicker = () => {
+						// TODO(developer): Replace with your API key
+						picker.setVisible(true);
+					}
+
+
+					// Request an access token.
+					tokenClient.callback = async (response) => {
+						if (response.error !== undefined) {
+							throw (response);
 						}
+						accessToken = response.access_token;
+						showPicker();
+					};
+
+					// if (accessToken === null) {
+					// 	// Prompt the user to select a Google Account and ask for consent to share their data
+					// 	// when establishing a new session.
+					// 	tokenClient.requestAccessToken({ prompt: 'consent' });
+					// } else {
+					// 	// Skip display of account chooser and consent dialog for an existing session.
+					// 	tokenClient.requestAccessToken({ prompt: '' });
+					// }
+
+					function pickerCallback(data) {
+						debugger
+						let url = 'nothing';
+						if (data[google.picker.Response.ACTION] == google.picker.Action.PICKED) {
+							let doc = data[google.picker.Response.DOCUMENTS][0];
+							url = doc[google.picker.Document.URL];
+						}
+						let message = `You picked: ${url}`;
+						document.getElementById('result').innerText = message;
+					}
+				}
+
+
+
+				function downloadFile() {
+					gapi.client.drive.files.get({
+						fileId: fileId,
+						alt: 'media'
+					}).then(function (response) {
+						const fileData = response.body;
+
+						// Create a Blob from the file data
+						const blob = new Blob([fileData], { type: 'application/octet-stream' });
+
+						// Create a link element and trigger a download
+						const link = document.createElement('a');
+						link.href = window.URL.createObjectURL(blob);
+						link.download = 'downloaded-file.txt';
+						link.click();
+					}, function (error) {
+						console.error('Error downloading file:', error.result.error.message);
 					});
+				}
+
 			},
 
 			onLoginChange: function () {

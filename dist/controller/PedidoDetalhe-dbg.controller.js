@@ -7,10 +7,10 @@ sap.ui.define([
 	"sap/ui/export/library",
 	"sap/ui/export/Spreadsheet",
 
-], function (BaseController, JSONModel, MessageBox, formatter, exportLibrary, Spreadsheet) {
+], function (BaseController, JSONModel, MessageBox, formatter, library, Spreadsheet) {
 	"use strict";
 
-	var EdmType = exportLibrary.EdmType;
+	var EdmType = library.EdmType;
 
 	return BaseController.extend("application.controller.PedidoDetalhe", {
 
@@ -59,34 +59,49 @@ sap.ui.define([
 								that.byId("idTopLevelIconTabBar").setSelectedKey("tab3");
 							}
 
-							new Promise(function (res, rej) {
+							var Pedido = that.getModelGlobal("modelPedido").getData();
+							var Repres = that.Usuario;
 
-								that.byId("idTipoPedido").setBusy(true);
+							new Promise(function (resTabPreco, rejTabPreco) {
 
-								var Kunnr = that.getModelGlobal("modelPedido").getProperty("/Kunnr");
-								var Kvgr4 = that.getModelGlobal("modelPedido").getProperty("/Kvgr4");
-								var Kvgr5 = that.getModelGlobal("modelPedido").getProperty("/Kvgr5");
-								var Centro = that.getModelGlobal("modelPedido").getProperty("/Werks");
+								that.onBuscarTabelaPreco(Pedido, Repres, resTabPreco, rejTabPreco, that);
 
-								that.onBuscarTipoPedido(that.Usuario, Kunnr, Centro, Kvgr4, Kvgr5, res, rej, that);
+							}).then(function (dataItens) {
 
-							}).then(function (TipoPedido) {
+								new Promise(function (res, rej) {
 
-								that.byId("idTipoPedido").setBusy(false);
-								that.onCarregarTipoPedido(dataPed, TipoPedido);
-								that.onCarregarLocalEntrega(that.getModelGlobal("modelPedido").getProperty("/Bukrs"));
+									that.byId("idTipoPedido").setBusy(true);
 
-								that.getModelGlobal("modelItensPedidoGrid").setData(that.vetorItensPedido);
-								that.getModelGlobal("modelItensPedidoGrid").refresh();
-								that.getModelGlobal("modelAux").setProperty("/ItensPedidoTab", that.vetorItensPedido.length);
+									var Kunnr = that.getModelGlobal("modelPedido").getProperty("/Kunnr");
+									var Kvgr4 = that.getModelGlobal("modelPedido").getProperty("/Kvgr4");
+									var Kvgr5 = that.getModelGlobal("modelPedido").getProperty("/Kvgr5");
+									var Centro = that.getModelGlobal("modelPedido").getProperty("/Werks");
 
-								that.byId("table_pedidos").setBusy(false);
-								that.onBloquearPedido(dataPed.IdStatusPedido);
+									that.onBuscarTipoPedido(that.Usuario, Kunnr, Centro, Kvgr4, Kvgr5, res, rej, that);
+
+								}).then(function (TipoPedido) {
+
+									that.byId("idTipoPedido").setBusy(false);
+									that.onCarregarTipoPedido(dataPed, TipoPedido);
+									that.onCarregarLocalEntrega(that.getModelGlobal("modelPedido").getProperty("/Bukrs"));
+
+									that.getModelGlobal("modelItensPedidoGrid").setData(that.vetorItensPedido);
+									that.getModelGlobal("modelItensPedidoGrid").refresh();
+									that.getModelGlobal("modelAux").setProperty("/ItensPedidoTab", that.vetorItensPedido.length);
+
+									that.byId("table_pedidos").setBusy(false);
+									that.onBloquearPedido(dataPed.IdStatusPedido);
+
+								}).catch(function (error) {
+
+									that.onMensagemErroODATA(error);
+								});
 
 							}).catch(function (error) {
 
 								that.onMensagemErroODATA(error);
 							});
+
 
 						}).catch(function (error) {
 
@@ -711,6 +726,7 @@ sap.ui.define([
 			var dataLimiteEntrega = date.addDays(this.getModelGlobal("modelAux").getProperty("/MaxDiasEntrega"));
 			var validaLimiteDataEntrega = that.onValidaDataLimiteEntrega(Pedido.DataEntrega, dataLimiteEntrega);
 			var validaMinDataEntrega = that.onValidaDataLimiteEntrega(Pedido.DataEntrega, Pedido.DataEntregaSujerida);
+			that.onBuscarDescTabPreco(Pedido.Pltyp);
 
 			var caracSpecRefPedido = this.containsSpecialChars(Pedido.PedidoOrigem);
 
@@ -885,17 +901,17 @@ sap.ui.define([
 
 				sap.m.MessageBox.show("Data de Entrega máx permitida é de " + this.getModelGlobal("modelAux").getProperty("/MaxDiasEntrega") +
 					" dias a partir da data atual! ", {
-						icon: sap.m.MessageBox.Icon.ERROR,
-						title: "Preecher campo(s)",
-						actions: [MessageBox.Action.OK],
-						onClose: function () {
+					icon: sap.m.MessageBox.Icon.ERROR,
+					title: "Preecher campo(s)",
+					actions: [MessageBox.Action.OK],
+					onClose: function () {
 
-							that.byId("idTopLevelIconTabBar").setSelectedKey("tab2");
-							that.byId("idDataEntrega").focus();
-							that.byId("idDataEntrega").setValueState("Error");
+						that.byId("idTopLevelIconTabBar").setSelectedKey("tab2");
+						that.byId("idDataEntrega").focus();
+						that.byId("idDataEntrega").setValueState("Error");
 
-						}
-					});
+					}
+				});
 
 			} else if (Pedido.EmailCliente == "") {
 
@@ -1101,6 +1117,7 @@ sap.ui.define([
 				Bukrs: "", //Empresa
 				RegCentro: "", //Região Estabelecimento
 				Pltyp: "", // Tab Preço
+				PltypDesc: "", // Tab Preço
 				Inco1: "", //Frete
 				TipoPedido: "",
 				Completo: false,
@@ -1167,7 +1184,6 @@ sap.ui.define([
 			});
 
 			this.setModelGlobal(modelPedido, "modelPedido");
-
 		},
 
 		onChangeEstabelecimento: function (e) {
@@ -1443,28 +1459,28 @@ sap.ui.define([
 							"',IvRegCliente='" + that.getModelGlobal("modelPedido").getProperty("/RegCliente") +
 							"',IvRegCentro='" + that.getModelGlobal("modelPedido").getProperty("/RegCentro") +
 							"',IvTxjcd='" + IvTxjcd + "')", {
-								// urlParameters: {
-								// 	"$filter": "IvKvgr4 eq '" + that.getModel("modelPedido").getProperty("/Kvgr4") + "' and IvBukrs eq '" + that.getModel("modelPedido").getProperty("/Bukrs") + "'"
-								// },
-								success: function (result) {
+							// urlParameters: {
+							// 	"$filter": "IvKvgr4 eq '" + that.getModel("modelPedido").getProperty("/Kvgr4") + "' and IvBukrs eq '" + that.getModel("modelPedido").getProperty("/Bukrs") + "'"
+							// },
+							success: function (result) {
 
-									var LeadTime = result.Kbetr;
+								var LeadTime = result.Kbetr;
 
-									that.getModel("modelPedido").setProperty("/LeadTime", LeadTime);
+								that.getModel("modelPedido").setProperty("/LeadTime", LeadTime);
 
-									dataSujerida = date.addDays(LeadTime);
-									that.getModel("modelPedido").setProperty("/DataEntregaSujerida", dataSujerida);
+								dataSujerida = date.addDays(LeadTime);
+								that.getModel("modelPedido").setProperty("/DataEntregaSujerida", dataSujerida);
 
-									that.byId("idDataEntregaSujerida").setBusy(false);
+								that.byId("idDataEntregaSujerida").setBusy(false);
 
-									resLead();
-								},
-								error: function (error) {
+								resLead();
+							},
+							error: function (error) {
 
-									rejLead();
-									that.onMensagemErroODATA(error);
-								}
-							});
+								rejLead();
+								that.onMensagemErroODATA(error);
+							}
+						});
 
 					}).then(function (data) {
 
@@ -1520,9 +1536,6 @@ sap.ui.define([
 							var Bukrs = that.getModel("modelPedido").getProperty("/Bukrs");
 
 							that.oModel.read("/P_TabPrecos(IvKunnr='" + Cliente + "',IvBukrs='" + Bukrs + "',IvRepres='" + that.Repres + "')", {
-								// urlParameters: {
-								// 	"$filter": "IvKunnr eq '" + Cliente + "' and IvBukrs eq '" + Bukrs + "'"
-								// },
 								success: function (result) {
 
 									that.vetorTabPrecos = [];
@@ -1547,7 +1560,6 @@ sap.ui.define([
 
 					that.byId("idContrato").setBusy(false);
 					that.byId("idVencimento1").setBusy(false);
-
 				});
 
 			}).catch(function (error) {
@@ -2982,7 +2994,7 @@ sap.ui.define([
 					icon: sap.m.MessageBox.Icon.ERROR,
 					title: "Ação não permitida!",
 					actions: [MessageBox.Action.OK],
-					onClose: function () {}
+					onClose: function () { }
 				});
 
 			} else {
@@ -3069,7 +3081,7 @@ sap.ui.define([
 
 			aCols.push({
 				label: "Preço Unit. s/ST",
-				property: "ValPrecoTabelaMin",
+				property: "ValPrecoUnitFat",
 				type: EdmType.Number,
 				scale: 2,
 				delimiter: true
@@ -3116,6 +3128,41 @@ sap.ui.define([
 			});
 
 			return aCols;
+		},
+
+
+		onBuscarDescTabPreco: function (TabPreco) {
+
+			if (TabPreco != "" && TabPreco != undefined) {
+
+				var vetorTabPreco = this.getModel("modelTabPrecos").getData();
+				for (var i = 0; i < vetorTabPreco.length; i++) {
+
+					if (vetorTabPreco[i].Pltyp == TabPreco) {
+						this.getModelGlobal("modelPedido").setProperty("/PltypDesc", vetorTabPreco[i].Ptext);
+						break;
+					}
+				}
+			}
+		},
+
+		onChangeTabPreco: function (oEvent) {
+			debugger;
+
+			this.getModelGlobal("modelAux").setProperty("/ObrigaSalvar", true);
+			var TabPreco = this.getModelGlobal("modelPedido").getProperty("/Pltyp");
+
+			if (TabPreco != "" && TabPreco != undefined) {
+
+				var vetorTabPreco = this.getModel("modelTabPrecos").getData();
+				for (var i = 0; i < vetorTabPreco.length; i++) {
+					
+					if (vetorTabPreco[i].Pltyp == TabPreco){
+						this.getModelGlobal("modelPedido").setProperty("/PltypDesc", vetorTabPreco[i].Ptext);
+						break;
+					}
+				}
+			}
 		}
 	});
 });

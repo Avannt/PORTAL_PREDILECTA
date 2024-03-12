@@ -4,13 +4,12 @@ sap.ui.define([
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageBox",
 	"application/model/formatter",
-	"sap/ui/core/util/MockServer",
 	"sap/ui/export/library",
 	"sap/ui/export/Spreadsheet",
 	"sap/ui/model/odata/v2/ODataModel",
-	"sap/m/MessageBox"
+	"sap/ui/core/Fragment"
 
-], function (BaseController, JSONModel, MessageBox, formatter, MockServer, exportLibrary, Spreadsheet, ODataModel) {
+], function (BaseController, JSONModel, MessageBox, formatter, exportLibrary, Spreadsheet, ODataModel, Fragment) {
 	"use strict";
 
 	var oDuplicataRelatorio = [];
@@ -340,7 +339,7 @@ sap.ui.define([
 			var sValue = evt.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Werks", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("NomeCentro", sap.ui.model.FilterOperator.Contains, sValue)
+			new sap.ui.model.Filter("NomeCentro", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
@@ -357,8 +356,11 @@ sap.ui.define([
 			var vAux = {
 				Docnum: evt.getSource().getBindingContext("modelNotasFiscais").getObject().Docnum,
 				Nfenum: evt.getSource().getBindingContext("modelNotasFiscais").getObject().Nfenum,
-				Series: evt.getSource().getBindingContext("modelNotasFiscais").getObject().Series
+				Series: evt.getSource().getBindingContext("modelNotasFiscais").getObject().Series,
+				Nfe: true,
+				Boleto: true
 			};
+
 
 			var omodelParamDialog = new JSONModel(vAux);
 			that.setModel(omodelParamDialog, "modelParamDialog");
@@ -397,14 +399,12 @@ sap.ui.define([
 				FoneRedesp: evt.getSource().getBindingContext("modelNotasFiscais").getObject().FoneRedesp,
 				EmailRedesp: evt.getSource().getBindingContext("modelNotasFiscais").getObject().EmailRedesp,
 			};
-
 			var omodelParamDialog = new JSONModel(vAux);
 			that.setModel(omodelParamDialog, "modelParamDialog");
 
 			var oModelDelay = new JSONModel({
 				"view": false
 			});
-
 			this.getView().setModel(oModelDelay, "modelDelay");
 
 			if (this._ItemDialog) {
@@ -457,8 +457,11 @@ sap.ui.define([
 
 				console.log(retorno);
 				that.onCriarModelStatus();
+				var qntOcorrencia = 0;
 
 				var vetorStatus = that.getModel("modelStatusPedido").getData();
+				var vetorOcorrencias = that.getModel("modelOcorrencias").getData();
+
 
 				if (retorno.DataFaturamento != '' || retorno.DataFaturamento != "00/00/0000" && retorno.DataFaturamento != "undefined") {
 
@@ -571,7 +574,7 @@ sap.ui.define([
 						}
 					}
 				}
-				
+
 				//Texto do ultimo status
 				if (retorno.Inco1 == 'FOB') {
 
@@ -596,6 +599,143 @@ sap.ui.define([
 					}
 				}
 
+
+
+				debugger;
+				var ultimono = vetorStatus.nodes.length;
+				var ultimoIndex = vetorStatus.lanes.length - 1;
+
+				for (var i = 0; i < vetorOcorrencias.length; i++) {
+
+					var campoNF = vetorOcorrencias[i].NF;
+
+					debugger;
+
+					if (campoNF.includes(NF)) {
+
+						// vetorStatus.nodes[0].children = [10, 11, 12];
+
+						qntOcorrencia += 1;
+						var id = parseInt(String(ultimono) + String(qntOcorrencia));
+						var id2 = parseInt(String(ultimono) + String(qntOcorrencia) + String(qntOcorrencia));
+
+						if (vetorStatus.nodes[ultimoIndex].children == null) {
+
+							vetorStatus.nodes[ultimoIndex].children = [id];
+						} else {
+
+							vetorStatus.nodes[ultimoIndex].children.push(id);
+						}
+
+						if (vetorOcorrencias[i].Status == "Resolvido" || vetorOcorrencias[i].Status == "Fechado") {
+							var status = "Positive"
+						} else {
+
+							var status = "Negative"
+						}
+
+						vetorStatus.lanes[String(ultimoIndex)].state = status;
+						//Index 4
+						var aux = {
+							"id": String(id),
+							"lane": String(ultimoIndex),
+							"title": vetorOcorrencias[i].Servico,
+							"titleAbbreviation": "OCORRÊNCIA",
+							"children": [id2],
+							"state": status,
+							"stateText": "Ticket:" + vetorOcorrencias[i].Status,
+							"focused": false,
+							"texts": ["Atendente: " + vetorOcorrencias[i].Nome_Responsavel, "Protocolo:" + vetorOcorrencias[i].Protocolo],
+							"quickView": {
+								"pageId": vetorOcorrencias[i].Protocolo,
+								"header": "Informações da Ocorrência",
+								"icon": "sap-icon://warning",
+								"title": vetorOcorrencias[i].Nome_Responsavel,
+								"description": "Atendente",
+								"groups": [
+									{
+										"heading": "Detalhes",
+										"elements": [
+											{
+												"label": "Status",
+												"value": vetorOcorrencias[i].status,
+												"url": null,
+												"elementType": "text",
+												"emailSubject": null
+											},
+											{
+												"label": "Data Criação",
+												"value": vetorOcorrencias[i].Data_Criacao,
+												"url": null,
+												"elementType": "text",
+												"emailSubject": null
+											},
+											{
+												"label": "Data Última Alteração",
+												"value": vetorOcorrencias[i].Data_Ultima_Acao,
+												"url": null,
+												"elementType": "text",
+												"emailSubject": null
+											},
+										]
+									}
+								]
+							}
+						};
+
+						vetorStatus.nodes.splice(ultimono, 0, aux);
+
+						var aux = {
+							"id": String(id2),
+							"lane": String(ultimoIndex),
+							"title": vetorOcorrencias[i].Nome_Responsavel,
+							"titleAbbreviation": "DETALHES OCORRÊNCIA",
+							"children": null,
+							"state": status,
+							"stateText": "Solic: " + vetorOcorrencias[i].Nome_Solicitante,
+							"focused": false,
+							"texts": ["Criação: " + vetorOcorrencias[i].Data_Criacao, "Últ. Alter.:" + vetorOcorrencias[i].Data_Ultima_Acao],
+							"quickView": {
+								"pageId": vetorOcorrencias[i].Protocolo,
+								"header": "Informações da Ocorrência",
+								"icon": "sap-icon://warning",
+								"title": vetorOcorrencias[i].Nome_Responsavel,
+								"description": "Atendente",
+								"groups": [
+									{
+										"heading": "Detalhes",
+										"elements": [
+											{
+												"label": "Status",
+												"value": vetorOcorrencias[i].status,
+												"url": null,
+												"elementType": "text",
+												"emailSubject": null
+											},
+											{
+												"label": "Data Criação",
+												"value": vetorOcorrencias[i].Data_Criacao,
+												"url": null,
+												"elementType": "text",
+												"emailSubject": null
+											},
+											{
+												"label": "Data Última Alteração",
+												"value": vetorOcorrencias[i].Data_Ultima_Acao,
+												"url": null,
+												"elementType": "text",
+												"emailSubject": null
+											},
+										]
+									}
+								]
+							}
+						};
+
+						vetorStatus.nodes.splice(ultimono, 0, aux);
+					}
+				}
+
 				var oModel = new JSONModel(vetorStatus);
 				that.setModel(oModel, "StatusPed");
 
@@ -610,6 +750,61 @@ sap.ui.define([
 			});
 		},
 
+		onNodePress: function (oEvent) {
+
+			var oNode = oEvent.getParameters();
+			var sPath = oNode.getBindingContext("StatusPed").getPath() + "/quickView";
+			var oObject = oNode.getBindingContext("StatusPed").getObject().quickView;
+
+			var oModel = new JSONModel(oObject);
+			this.setModel(oModel, "modelMaisInfo");
+
+			if (!this.oQuickView) {
+
+				Fragment.load({
+
+					name: "application.view.MaisInfo",
+					type: "XML"
+
+				}).then(function (oFragment) {
+
+					this.oQuickView = oFragment;
+					this.getView().addDependent(this.oQuickView);
+
+					// this.oQuickView.bindElement(oObject);
+					this.oQuickView.openBy(oNode);
+
+				}.bind(this));
+
+			} else {
+
+				// this.oQuickView.bindElement(oObject);
+				this.oQuickView.openBy(oNode);
+			}
+
+			// if (this._ItemDialogMaisInfo) {
+			// 	this._ItemDialogMaisInfo.destroy(true);
+			// }
+
+			// if (!this._CreateMaterialFragment) {
+
+			// 	this._ItemDialogMaisInfo = sap.ui.xmlfragment(
+			// 		"application.view.MaisInfo",
+			// 		this
+			// 	);
+			// 	this.getView().addDependent(this._ItemDialogMaisInfo);
+			// }
+
+			// this._ItemDialogMaisInfo.openBy(oNode);
+		},
+
+		onExit: function () {
+
+			if (this.oQuickView) {
+				this.oQuickView.destroy();
+			}
+		},
+
 		onDialogEnvioDanfe: function () {
 
 			var that = this;
@@ -619,30 +814,50 @@ sap.ui.define([
 			var Docnum = that.getModel("modelParamDialog").getProperty("/Docnum");
 			var Nfenum = that.getModel("modelParamDialog").getProperty("/Nfenum");
 			var Series = that.getModel("modelParamDialog").getProperty("/Series");
+			var Boleto = that.getModel("modelParamDialog").getProperty("/Boleto");
+			var Nfe = that.getModel("modelParamDialog").getProperty("/Nfe");
 			var Email = that.getModelGlobal("modelAux").getProperty("/Email");
 
 			sap.ui.getCore().byId("idDialogEmail").setBusy(true);
 
-			that.oModel.read("/EnviaEmailDanfe(IvUsuario='" + repres +
+			that.oModel.read("/P_EnviaEmailDanfe(IvUsuario='" + repres +
 				"',IvDocnum='" + Docnum +
 				"',IvEmail='" + Email +
-				"',IvName1='" + Name1 + "')", {
-					success: function (data) {
+				"',IvBoleto=" + Boleto +
+				",IvNfe=" + Nfe +
+				",IvName1='" + Name1 + "')", {
+				success: function (data) {
 
-						sap.ui.getCore().byId("idDialogEmail").setBusy(false);
-						MessageBox.show("NF-e " + Nfenum + " -" + Series + " enviada para o e-mail " + Email, {
-							icon: MessageBox.Icon.SUCCESS,
-							title: "Envio de Notas Fiscais",
-							actions: [sap.m.MessageBox.Action.OK]
-						});
-						that.onDialogClose();
-					},
-					error: function (error) {
+					if( Boleto == true && Nfe == true){
 
-						sap.ui.getCore().byId("idDialogEmail").setBusy(false);
-						that.onMensagemErroODATA(error);
+						var msg = 'NF-e "' + Nfenum + "-" + Series + '" e o(os) boletos foram enviados para o e-mail: ';
+
+					} else if(Boleto == true){
+
+							msg = 'Os boletos foram enviados para o e-mail: ';
+
+					} else if(Nfe == true){
+
+						msg = 'NF-e "' + Nfenum + "-" + Series + '" foi enviada para o e-mail: ';
 					}
-				});
+
+					sap.ui.getCore().byId("idDialogEmail").setBusy(false);
+					MessageBox.show(msg + Email, {
+						icon: MessageBox.Icon.SUCCESS,
+						title: "Envio de emails",
+						actions: [sap.m.MessageBox.Action.OK],
+						onClose: function (oAction) {
+
+							that.onDialogClose();
+						}									
+					});
+				},
+				error: function (error) {
+
+					sap.ui.getCore().byId("idDialogEmail").setBusy(false);
+					that.onMensagemErroODATA(error);
+				}
+			});
 		},
 
 		onPressBtnFiltrar: function () {
@@ -753,7 +968,7 @@ sap.ui.define([
 			var sValue = evt.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Werks", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("NomeCentro", sap.ui.model.FilterOperator.Contains, sValue)
+			new sap.ui.model.Filter("NomeCentro", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
@@ -768,7 +983,7 @@ sap.ui.define([
 			var sValue = evt.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Kunnr", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Name1", sap.ui.model.FilterOperator.Contains, sValue)
+			new sap.ui.model.Filter("Name1", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
@@ -783,7 +998,7 @@ sap.ui.define([
 			var sValue = evt.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Kunnr", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Name1", sap.ui.model.FilterOperator.Contains, sValue)
+			new sap.ui.model.Filter("Name1", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
@@ -798,7 +1013,7 @@ sap.ui.define([
 			var sValue = evt.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Kvgr4", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("DescKvgr4", sap.ui.model.FilterOperator.Contains, sValue)
+			new sap.ui.model.Filter("DescKvgr4", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
@@ -814,7 +1029,7 @@ sap.ui.define([
 			var sValue = evt.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Kvgr4", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("DescKvgr4", sap.ui.model.FilterOperator.Contains, sValue)
+			new sap.ui.model.Filter("DescKvgr4", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
@@ -830,7 +1045,7 @@ sap.ui.define([
 			var sValue = evt.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Kvgr5", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("DescKvgr5", sap.ui.model.FilterOperator.Contains, sValue)
+			new sap.ui.model.Filter("DescKvgr5", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
@@ -846,7 +1061,7 @@ sap.ui.define([
 			var sValue = evt.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Kvgr5", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("DescKvgr5", sap.ui.model.FilterOperator.Contains, sValue)
+			new sap.ui.model.Filter("DescKvgr5", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
@@ -862,7 +1077,7 @@ sap.ui.define([
 			var sValue = evt.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Lifnr", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Name1Rep", sap.ui.model.FilterOperator.Contains, sValue)
+			new sap.ui.model.Filter("Name1Rep", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
@@ -878,7 +1093,7 @@ sap.ui.define([
 			var sValue = evt.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Lifnr", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Name1Rep", sap.ui.model.FilterOperator.Contains, sValue)
+			new sap.ui.model.Filter("Name1Rep", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
@@ -982,6 +1197,11 @@ sap.ui.define([
 					"icon": "sap-icon://task",
 					"label": "Mercadoria entregue",
 					"position": 5
+				}, {
+					"id": "6",
+					"icon": "sap-icon://warning",
+					"label": "Ocorrência",
+					"position": 6
 				}]
 			});
 			this.setModel(omodelParametros, "modelStatusPedido");

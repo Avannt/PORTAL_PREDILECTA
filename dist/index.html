@@ -1,23 +1,37 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
-	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>Portal Predilecta</title>
-		<!--sap_belize_plus-->
-		<!---->
-		<script id="sap-ui-bootstrap"
-			src="https://sapui5.hana.ondemand.com/1.96.22/resources/sap-ui-core.js"
-			data-sap-ui-theme="sap_horizon"
-			data-sap-ui-resourceroots='{"application": "./"}'
-			data-sap-ui-compatVersion="edge"
+<html lang="en">
+	
+<head>
+	<meta name="referrer" content="no-referrer">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Vendas Predilecta</title>
+	<style>
+		html, body, body > div, #container, #container-uiarea {
+			height: 100%;
+		}
+	</style>
+	
+	<script src="https://apis.google.com/js/api.js"></script>
+	<script src="https://apis.google.com/js/platform.js" async defer></script>
+	<script src="https://apis.google.com/js/client.js"></script>
+	<script
+			id="sap-ui-bootstrap"
+			src="resources/sap-ui-core.js"
+			data-sap-ui-theme="sap_belize_plus"
+			data-sap-ui-resourceroots='{
+            "application": "."
+        }'
 			data-sap-ui-oninit="module:sap/ui/core/ComponentSupport"
+			data-sap-ui-compatVersion="edge"
 			data-sap-ui-async="true"
-			data-sap-ui-xx-bindingSyntax="complex"
-			data-sap-ui-frameOptions="trusted">
-		</script>
-	</head>
-	<body class="sapUiBody">
-		<div data-sap-ui-component data-name="application" data-id="container" data-settings='{"id" : ""}'></div>
-	</body>
+			data-sap-ui-preload="async"
+			data-sap-ui-libs="sap.m">
+	</script>
+</head>
+<body class="sapUiBody sapUiSizeCompact" id="content">
+<div data-sap-ui-component data-name="application" data-id="container" data-settings='{"id" : "application"}' data-handle-validation="true"></div>
+</body>
 </html>

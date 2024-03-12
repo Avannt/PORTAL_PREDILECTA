@@ -17,7 +17,7 @@ sap.ui.define([
 		onRouteMatched: function (oEvent) {
 
 			var that = this;
-
+			
 			this.oModel = this.getView().getModel();
 			var CodRepres = this.getModelGlobal("modelAux").getProperty("/CodRepres");
 			var Cliente = "";
@@ -98,29 +98,29 @@ sap.ui.define([
 
 		},
 
-		onTile: function (oEvent) {
+		// onTile: function (oEvent) {
 
-			switch (oEvent.getSource().data("opcao")) {
-			case "P01":
-				sap.ui.core.UIComponent.getRouterFor(this).navTo("pedido");
-				break;
-			case "P02":
-				sap.ui.core.UIComponent.getRouterFor(this).navTo("enviarPedidos");
-				break;
-			case "P03":
-				sap.ui.core.UIComponent.getRouterFor(this).navTo("menuRelatorios");
-				break;
-			case "P04":
-				sap.ui.core.UIComponent.getRouterFor(this).navTo("menuConsultas");
-				break;
-			case "P05":
-				sap.ui.core.UIComponent.getRouterFor(this).navTo("MsgPortal");
-				break;
-			default:
-				sap.ui.core.UIComponent.getRouterFor(this).navTo("NotFound");
-				break;
-			}
-		},
+		// 	switch (oEvent.getSource().data("opcao")) {
+		// 	case "P01":
+		// 		sap.ui.core.UIComponent.getRouterFor(this).navTo("pedido");
+		// 		break;
+		// 	case "P02":
+		// 		sap.ui.core.UIComponent.getRouterFor(this).navTo("enviarPedidos");
+		// 		break;
+		// 	case "P03":
+		// 		sap.ui.core.UIComponent.getRouterFor(this).navTo("menuRelatorios");
+		// 		break;
+		// 	case "P04":
+		// 		sap.ui.core.UIComponent.getRouterFor(this).navTo("menuConsultas");
+		// 		break;
+		// 	case "P05":
+		// 		sap.ui.core.UIComponent.getRouterFor(this).navTo("MsgPortal");
+		// 		break;
+		// 	default:
+		// 		sap.ui.core.UIComponent.getRouterFor(this).navTo("NotFound");
+		// 		break;
+		// 	}
+		// },
 
 		onMenu: function () {
 

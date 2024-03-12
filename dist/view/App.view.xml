@@ -5,8 +5,12 @@
 			<u:ShellHeadItem id="label" tooltip="Home" icon="sap-icon://home" press="handlePressHome"/>
 			<!--visible="{modelAux>/homeVisible}"-->
 		</u:headItems>
+		<u:headItems>
+			<u:ShellHeadItem tooltip="Versão" icon="sap-icon://hint" press="showVersion"/>
+			<!--visible="{modelAux>/homeVisible}"-->
+		</u:headItems>
 		<u:user>
-			<u:ShellHeadUserItem id="shellHeadUser" image="sap-icon://customer" username="{modelAux>/userID}" press="showId"/>
+			<u:ShellHeadUserItem id="shellHeadUser" image="sap-icon://customer" username="{modelAux>/CodRepres}" press="showId"/>
 		</u:user>
 		<u:headEndItems>
 			<u:ShellHeadItem id="idLogoff" icon="sap-icon://log" tooltip="Logoff" press="handleLogoffPress"/>

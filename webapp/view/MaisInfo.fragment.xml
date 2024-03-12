@@ -1,0 +1,29 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<QuickView id="quickView">
+		<QuickViewPage
+			pageId="{modelMaisInfo>pageId}"
+			header="{modelMaisInfo>header}"
+			icon="{modelMaisInfo>icon}"
+			title="{modelMaisInfo>title}"
+			description="{modelMaisInfo>description}"
+			groups="{
+				path: 'groups',
+				templateShareable: true
+			}">
+			<QuickViewGroup
+				heading="{modelMaisInfo>heading}"
+				elements="{
+					path: 'elements',
+					templateShareable: true
+				}">
+				<QuickViewGroupElement 
+					label="{modelMaisInfo>label}"
+					value="{modelMaisInfo>value}"
+					url="{modelMaisInfo>url}"
+					type="{modelMaisInfo>elementType}"
+					emailSubject="{modelMaisInfo>emailSubject}">
+				</QuickViewGroupElement>
+			</QuickViewGroup>
+		</QuickViewPage>
+	</QuickView>
+</core:FragmentDefinition>

@@ -1,3 +1,5 @@
+
+
 sap.ui.define([
 	"sap/ui/core/UIComponent",
 	"sap/ui/Device",
@@ -23,6 +25,9 @@ sap.ui.define([
 			
 			var oModel = new sap.ui.model.json.JSONModel("./model/StatusPedido.json");
 			this.setModel(oModel, "StatusPedido");
+
+			var oModel = new sap.ui.model.json.JSONModel("./model/Movidesk.json");
+			this.setModel(oModel, "modelOcorrencias");
 
 			sap.ui.getCore().getConfiguration().setLanguage("pt-BR");
 

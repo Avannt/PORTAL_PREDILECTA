@@ -41,6 +41,22 @@ sap.ui.define([
 			}
 
 		},
+
+		showVersion: function () {
+
+			var id = this.getModelGlobal("modelAux").getProperty("/VersaoApp");
+
+			if (id == "undefined" || id == "" || id == null) {
+
+				sap.m.MessageToast.show("Sem versões disponíveis. Contate o administrador.", {
+					duration: 5000
+				});
+			} else {
+				sap.m.MessageToast.show("Versão:" + id, {
+					duration: 5000
+				});
+			}
+		},
 		
 		handleLogoffPress: function() {
 			
