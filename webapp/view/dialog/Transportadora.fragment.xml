@@ -1,0 +1,169 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.ui.layout.form"
+>
+    <Dialog
+        id="idAutorizadoDialog"
+        title="Autorizado"
+        busyIndicatorDelay="0"
+        afterOpen="onDialogAutorizadoAfterOpen"
+        stretch="true"
+    >
+        <Table
+            id="idAutorizadoTable"
+            noDataText="Nenhum Autorizado encontrado!"
+            mode="SingleSelectMaster"
+            includeItemInSelection="true"
+            selectionChange="onTableAutorizadoSelectionChange"
+            growingThreshold="30"
+            growing="true"
+            growingTriggerText="Próximos &gt;&gt;"
+            alternateRowColors="true"
+            busy="{modelParamTela>/AutorizadoDialog}"
+            busyIndicatorDelay="0"
+            items="{ path: 'modelTransportadora>/', sorter: [{ path: 'Partner', descending: true, group: true }] }"
+        >
+            <columns>
+                <Column
+                    hAlign="Left"
+                    width="auto"
+                >
+                    <Text text="ID" />
+                </Column>
+                <Column
+                    minScreenWidth="550px"
+                    demandPopin="true"
+                    popinDisplay="Inline"
+                    hAlign="Left"
+                    width="auto"
+                >
+                    <Text text="Nome" />
+                </Column>
+                <Column
+                    minScreenWidth="650px"
+                    demandPopin="true"
+                    popinDisplay="Inline"
+                    hAlign="Left"
+                    width="auto"
+                >
+                    <header>
+                        <Text text="Endereço" />
+                    </header>
+                </Column>
+                <Column
+                    minScreenWidth="750px"
+                    demandPopin="true"
+                    popinDisplay="Inline"
+                    hAlign="Left"
+                    width="auto"
+                >
+                    <header>
+                        <Text text="Nº" />
+                    </header>
+                </Column>
+                <Column>
+                    <header>
+                        <Text text="Cidade" />
+                    </header>
+                </Column>
+                <Column>
+                    <header>
+                        <Text text="Bairro" />
+                    </header>
+                </Column>
+                <Column>
+                    <header>
+                        <Text text="CEP" />
+                    </header>
+                </Column>
+            </columns>
+            <items>
+                <ColumnListItem>
+                    <cells>
+                        <Text text="{modelTransportadora>Partner}" />
+                        <Text
+                            text="{modelTransportadora>BuSort1} - {modelTransportadora>BuSort2}"
+                        />
+                        <Text
+                            xmlns="sap.m"
+                            text="{path : 'modelTransportadora>Street'}"
+                        />
+                        <Text
+                            xmlns="sap.m"
+                            text="{path : 'modelTransportadora>HouseNum1'}"
+                        />
+                        <Text
+                            xmlns="sap.m"
+                            text="{path : 'modelTransportadora>City1'}"
+                        />
+                        <Text
+                            xmlns="sap.m"
+                            text="{path : 'modelTransportadora>City2'}"
+                        />
+                        <Text
+                            xmlns="sap.m"
+                            text="{path : 'modelTransportadora>PostCode1'}"
+                        />
+                    </cells>
+                </ColumnListItem>
+            </items>
+            <headerToolbar>
+                <OverflowToolbar />
+                <Toolbar
+                    height="100%"
+                    class="backGround"
+                >
+                    <Panel
+                        headerText="Filtros"
+                        expandable="true"
+                        expanded="true"
+                        expand="onExpandFiltro"
+                    >
+                        <content>
+                            <f:SimpleForm
+                                editable="true"
+                                layout="ResponsiveGridLayout"
+                                labelSpanXL="3"
+                                labelSpanL="3"
+                                labelSpanM="2"
+                                labelSpanS="12"
+                                adjustLabelSpan="false"
+                                emptySpanXL="3"
+                                emptySpanL="3"
+                                emptySpanM="1"
+                                emptySpanS="0"
+                                columnsXL="1"
+                                columnsL="1"
+                                columnsM="1"
+                                singleContainerFullSize="false"
+                            >
+                                <f:content>
+                                    <Label text="" />
+                                    <SearchField
+                                        id="idFiltroSearchField"
+                                        placeholder="Pesquisar"
+                                        tooltip="Pesquisar Clientes pelo Nome"
+                                        width="100%"
+                                        liveChange="onSearchFieldAutorizadoLiveChange"
+                                    />
+                                </f:content>
+                            </f:SimpleForm>
+                        </content>
+                    </Panel>
+                </Toolbar>
+            </headerToolbar>
+        </Table>
+        <!--</content>-->
+        <buttons>
+            <Button
+                xmlns="sap.m"
+                text="Fechar"
+                type="Reject"
+                icon="sap-icon://decline"
+                press="onDialogClose"
+            />
+        </buttons>
+        <content />
+    </Dialog>
+</core:FragmentDefinition>

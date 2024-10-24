@@ -1,61 +1,7 @@
 {
   "configurations": [
     {
-      "name": "Start PORTAL_PREDILECTA Mock",
-      "type": "node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}",
-      "runtimeExecutable": "npx",
-      "windows": {
-        "runtimeExecutable": "npx.cmd"
-      },
-      "runtimeArgs": [
-        "fiori",
-        "run"
-      ],
-      "args": [
-        "--open",
-        "test/flpSandboxMockServer.html#app-tile"
-      ],
-      "console": "internalConsole",
-      "internalConsoleOptions": "openOnSessionStart",
-      "outputCapture": "std",
-      "port": 9229,
-      "env": {
-        "FIORI_TOOLS_URL_PARAMS": "sap-client=110&sap-ui-xx-viewCache=false",
-        "run.config": "{\"handlerId\":\"fiori_tools\",\"runnableId\":\"/home/user/projects/PORTAL_PREDILECTA\"}"
-      }
-    },
-    {
-      "name": "Start PORTAL_PREDILECTA Local",
-      "type": "node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}",
-      "runtimeExecutable": "npx",
-      "windows": {
-        "runtimeExecutable": "npx.cmd"
-      },
-      "runtimeArgs": [
-        "fiori",
-        "run"
-      ],
-      "args": [
-        "--config",
-        "./ui5-local.yaml",
-        "--open",
-        "test/flpSandbox.html#app-tile"
-      ],
-      "console": "internalConsole",
-      "internalConsoleOptions": "openOnSessionStart",
-      "outputCapture": "std",
-      "port": 9229,
-      "env": {
-        "FIORI_TOOLS_URL_PARAMS": "sap-client=110&sap-ui-xx-viewCache=false",
-        "run.config": "{\"handlerId\":\"fiori_tools\",\"runnableId\":\"/home/user/projects/PORTAL_PREDILECTA\"}"
-      }
-    },
-    {
-      "name": "PORTAL_PREDILECTA",
+      "name": "QAS",
       "cwd": "${workspaceFolder}",
       "runtimeArgs": [
         "fiori",
@@ -75,11 +21,61 @@
       "internalConsoleOptions": "openOnSessionStart",
       "outputCapture": "std",
       "env": {
-        "FIORI_TOOLS_UI5_VERSION": "1.108.27",
-        "FIORI_TOOLS_UI5_URI": "https://ui5.sap.com",
         "FIORI_TOOLS_URL_PARAMS": "sap-ui-xx-viewCache=false&sap-language=PT",
         "run.config": "{\"handlerId\":\"fiori_tools\",\"runnableId\":\"/home/user/projects/PORTAL_PREDILECTA\"}",
-        "FIORI_TOOLS_BACKEND_CONFIG": "[{\"destination\":\"PREDILECTAQAS\",\"path\":\"/sap/\"}]"
+        "FIORI_TOOLS_BACKEND_CONFIG": "[{\"path\":\"/sap\",\"url\":\"http://predilectaqas:8010\",\"destination\":\"PREDILECTAQAS\"}]"
+      }
+    },
+    {
+      "name": "DEV",
+      "cwd": "${workspaceFolder}",
+      "runtimeArgs": [
+        "fiori",
+        "run"
+      ],
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npx",
+      "args": [
+        "--open",
+        "index.html"
+      ],
+      "windows": {
+        "runtimeExecutable": "npx.cmd"
+      },
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std",
+      "env": {
+        "run.config": "{\"handlerId\":\"fiori_tools\",\"runnableId\":\"/home/user/projects/PORTAL_PREDILECTA\"}",
+        "FIORI_TOOLS_BACKEND_CONFIG": "[{\"destination\":\"PREDILECTADEV\",\"path\":\"/sap\"}]",
+        "FIORI_TOOLS_URL_PARAMS": "sap-ui-xx-viewCache=false&sap-language=PT"
+      }
+    },
+    {
+      "name": "PRD",
+      "cwd": "${workspaceFolder}",
+      "runtimeArgs": [
+        "fiori",
+        "run"
+      ],
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npx",
+      "args": [
+        "--open",
+        "index.html"
+      ],
+      "windows": {
+        "runtimeExecutable": "npx.cmd"
+      },
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std",
+      "env": {
+        "FIORI_TOOLS_URL_PARAMS": "sap-ui-xx-viewCache=false&sap-language=PT",
+        "run.config": "{\"handlerId\":\"fiori_tools\",\"runnableId\":\"/home/user/projects/PORTAL_PREDILECTA\"}",
+        "FIORI_TOOLS_BACKEND_CONFIG": "[{\"path\":\"/sap\",\"destination\":\"PREDILECTAPRD\"}]"
       }
     }
   ],

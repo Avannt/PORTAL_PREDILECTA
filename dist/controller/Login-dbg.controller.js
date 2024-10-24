@@ -27,7 +27,7 @@ sap.ui.define([
 				QAS => ReleasePRD = FALSE
 				*/
 				this.getModelGlobal("modelAux").setProperty("/ReleasePRD", false);
-				this.getModelGlobal("modelAux").setProperty("/VersaoApp", "2.7");
+				this.getModelGlobal("modelAux").setProperty("/VersaoApp", "3.0");
 				this.getModelGlobal("modelAux").setProperty("/Werks", "1000");
 				this.getModelGlobal("modelAux").setProperty("/EditarIndexItem", 0);
 				this.getModelGlobal("modelAux").setProperty("/bConectado", false);
@@ -451,8 +451,8 @@ sap.ui.define([
 				let pickerInited = false;
 				let gisInited = false;
 
-				const clientId = '934285555664-lh47cbekeih2kfafmnr6uuqg3ppghlmd.apps.googleusercontent.com';
-				const apiKey = 'AIzaSyBRcB2SLKWPc2BDZ3gm-zawwDz992kZq8s';
+				const clientId = '';
+				const apiKey = "";
 				const scope = 'https://www.googleapis.com/auth/drive.readonly';
 				const fileId = '1GWtHIVZV_yeCJV6zzLkZsv3HaGJpBOtV';
 
@@ -486,8 +486,8 @@ sap.ui.define([
 				let pickerInited = false;
 				let gisInited = false;
 
-				const clientId = '934285555664-tg68esjee7uoa9kqq2ltpjha1h1l3a4d.apps.googleusercontent.com';
-				const apiKey = 'AIzaSyBRcB2SLKWPc2BDZ3gm-zawwDz992kZq8s';
+				const clientId = '';
+				const apiKey = '';
 				const scope = 'https://www.googleapis.com/auth/drive.readonly';
 				const fileId = '1GWtHIVZV_yeCJV6zzLkZsv3HaGJpBOtV';
 

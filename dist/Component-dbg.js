@@ -32,6 +32,8 @@ sap.ui.define([
 			sap.ui.getCore().getConfiguration().setLanguage("pt-BR");
 
 			this.setModel(models.createDeviceModel(), "device");
+
+			this.setModel(models.createValidaBPModel(), "modelValidaBP");
 		}
 	});
 });

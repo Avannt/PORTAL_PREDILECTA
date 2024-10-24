@@ -365,7 +365,7 @@ sap.ui.define([
 										actions: ["Ver Título", "Continuar", "Cancelar"],
 										onClose: function (oAction) {
 
-											if (oAction == "Ver Titulo") {
+											if (oAction == "Ver Título") {
 
 												// that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
 

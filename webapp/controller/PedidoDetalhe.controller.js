@@ -2067,7 +2067,20 @@ sap.ui.define([
 				console.log("Valor Desconto Disp foi zerado por estar negativo.");
 			}
 
-			if ((ValDescAplicarBol + ValDescAplicar) > ValDescDisp) {
+			var ValDescBoletoPerm = (ValDescDisp * pedido.PercFlexBoleto) / 100;
+			ValDescBoletoPerm = parseFloat(ValDescBoletoPerm).toFixed(2);
+
+			var Maior = Math.max(ValDescBoletoPerm, ValDescAplicarBol);
+
+			if(Maior == ValDescAplicarBol && ValDescAplicarBol != ValDescBoletoPerm){
+
+				this.byId("idTopLevelIconTabBar").setSelectedKey("tab4");
+				this.byId("idDescontoAplicarBoleto").focus();
+
+				this.byId("idDescontoAplicarBoleto").setValueState("Error");
+				this.byId("idDescontoAplicarBoleto").setValueStateText("O valor permitido para desconto Boleto é de R$ " + ValDescBoletoPerm);
+
+			} else if ((ValDescAplicarBol + ValDescAplicar) > ValDescDisp) {
 
 				this.byId("idTopLevelIconTabBar").setSelectedKey("tab4");
 				this.byId("idDescontoAplicar").focus();
@@ -2973,14 +2986,7 @@ sap.ui.define([
 			that._ItemDialog.open();
 
 		},
-
-		onDialogClose: function () {
-
-			if (this._ItemDialog) {
-				this._ItemDialog.destroy(true);
-			}
-		},
-
+		
 		onEnviarEmailPedido: function () {
 
 			var that = this;

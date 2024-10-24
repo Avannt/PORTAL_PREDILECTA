@@ -1,11 +1,11 @@
 <mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic"
 	height="100%" controllerName="application.controller.enviarPedidos">
-	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Envio de Pedidos">
+	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Envio de Pedidos" busyIndicatorDelay="0">
 		<content>
 			<!--itemPress="onItemPress" -->
-			<Table id="table_pedidos" width="100%" backgroundDesign="Translucent"
+			<Table id="table_pedidos" width="100%" backgroundDesign="Translucent" 
 				items="{ path:'Pedidos>/', sorter: { path: 'NrPedido', descending: true}}" mode="MultiSelect" selectionChange="onSelectionChange"
-				growingThreshold="3" growingTriggerText="Proximos Pedidos &gt;&gt;" growing="true" noDataText="Nenhum pedido pendente para envio"
+				growingThreshold="6" growingTriggerText="Proximos Pedidos &gt;&gt;" growing="true" noDataText="Nenhum pedido pendente para envio"
 				busyIndicatorDelay="0" fixedLayout="false"
 				footerText="Valor total dos pendidos pendentes R$: {path: 'modelAux>/ValTotPedPend', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}">
 				<headerToolbar>

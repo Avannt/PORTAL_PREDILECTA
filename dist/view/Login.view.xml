@@ -31,9 +31,9 @@
 						<f:FormElement label="Login" >
 							<f:fields>
 								<Input id="idLogin" value="{modelAux>/Login}">
-								<!-- <Input id="idLogin" value="800256"> -->
+								<!-- <Input id="idLogin" value="800801"> -->
 									<layoutData>
-										<l:GridData span="XL4 L4 M4 S8" linebreakS="false" />
+										<l:GridData span="XL4 L4 M4 S8" />
 									</layoutData>
 								</Input>
 							</f:fields>
@@ -41,9 +41,9 @@
 						<f:FormElement label="Senha">
 							<f:fields>
 								<Input id="idSenha" value="{modelAux>/Senha}" type="Password" submit="onStartWorking">
-								<!-- <Input id="idSenha" value="01KL63" type="Password" submit="onStartWorking"> -->
+								<!-- <Input id="idSenha" value="801PDL" type="Password" submit="onStartWorking"> -->
 									<layoutData>
-										<l:GridData span="XL4 L4 M4 S8" linebreakS="false" />
+										<l:GridData span="XL4 L4 M4 S8"/>
 									</layoutData>
 								</Input>
 							</f:fields>

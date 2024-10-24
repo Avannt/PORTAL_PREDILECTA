@@ -395,6 +395,7 @@ sap.ui.define([
 
 			var vAux = {
 				Nfenum: evt.getSource().getBindingContext("modelNotasFiscais").getObject().Nfenum,
+				Werks: evt.getSource().getBindingContext("modelNotasFiscais").getObject().Werks,
 				Name1Redesp: evt.getSource().getBindingContext("modelNotasFiscais").getObject().Name1Redesp,
 				FoneRedesp: evt.getSource().getBindingContext("modelNotasFiscais").getObject().FoneRedesp,
 				EmailRedesp: evt.getSource().getBindingContext("modelNotasFiscais").getObject().EmailRedesp,
@@ -440,6 +441,7 @@ sap.ui.define([
 			debugger;
 
 			var NF = that.getModel("modelParamDialog").getProperty("/Nfenum");
+			var Werks = that.getModel("modelParamDialog").getProperty("/Werks");
 			var Name1Redesp = that.getModel("modelParamDialog").getProperty("/Name1Redesp");
 			var FoneRedesp = that.getModel("modelParamDialog").getProperty("/FoneRedesp");
 			var EmailRedesp = that.getModel("modelParamDialog").getProperty("/EmailRedesp");
@@ -451,7 +453,7 @@ sap.ui.define([
 
 			new Promise(function (res, rej) {
 
-				that.onBuscarStatusPedido(NF, res, rej, that);
+				that.onBuscarStatusPedido(NF, Werks, res, rej, that);
 
 			}).then(function (retorno) {
 
@@ -502,8 +504,9 @@ sap.ui.define([
 
 					} else {
 
-						if (retorno.DataRedesp != '' && retorno.DataRedesp != "00/00/0000" && retorno.DataRedesp != "undefined") {
+						if (that.getModel("modelParamDialog").getProperty("/Name1Redesp") != '' && that.getModel("modelParamDialog").getProperty("/Name1Redesp") != undefined) {
 
+							var possuiRedespacho = true;
 							vetorStatus.nodes[3].children = [40, 41];
 
 							//Index 4
@@ -520,7 +523,9 @@ sap.ui.define([
 							};
 
 							vetorStatus.nodes.splice(4, 0, aux);
-
+						}
+						
+						if (retorno.DataRedesp != '' && retorno.DataRedesp != "00/00/0000" && retorno.DataRedesp != "undefined") {
 							// var dataReal = retorno.DataEntregaReal.substring(6, 10) + retorno.DataEntregaReal.substring(3, 5) + retorno.DataEntregaReal.substring(0, 2);
 							// var dataPortaria = retorno.DataLibPortaria.substring(6, 10) + retorno.DataLibPortaria.substring(3, 5) + retorno.DataLibPortaria.substring(0, 2);
 
@@ -564,11 +569,20 @@ sap.ui.define([
 						} else {
 
 							if (retorno.DataEntregaReal != '' && retorno.DataEntregaReal != "00/00/0000" && retorno.DataEntregaReal != "undefined") {
+								
+								if(possuiRedespacho){
 
-								vetorStatus.lanes[5].state = "Positive";
-								vetorStatus.nodes[5].state = "Positive";
-								vetorStatus.nodes[5].focused = true;
-								vetorStatus.nodes[5].stateText = "OK - " + retorno.DataEntregaReal;
+									vetorStatus.lanes[6].state = "Positive";
+									vetorStatus.nodes[6].state = "Positive";
+									vetorStatus.nodes[6].focused = true;
+									vetorStatus.nodes[6].stateText = "OK - " + retorno.DataEntregaReal;
+								} else {
+
+									vetorStatus.lanes[5].state = "Positive";
+									vetorStatus.nodes[5].state = "Positive";
+									vetorStatus.nodes[5].focused = true;
+									vetorStatus.nodes[5].stateText = "OK - " + retorno.DataEntregaReal;
+								}
 
 							}
 						}
@@ -828,15 +842,15 @@ sap.ui.define([
 				",IvName1='" + Name1 + "')", {
 				success: function (data) {
 
-					if( Boleto == true && Nfe == true){
+					if (Boleto == true && Nfe == true) {
 
 						var msg = 'NF-e "' + Nfenum + "-" + Series + '" e o(os) boletos foram enviados para o e-mail: ';
 
-					} else if(Boleto == true){
+					} else if (Boleto == true) {
 
-							msg = 'Os boletos foram enviados para o e-mail: ';
+						msg = 'Os boletos foram enviados para o e-mail: ';
 
-					} else if(Nfe == true){
+					} else if (Nfe == true) {
 
 						msg = 'NF-e "' + Nfenum + "-" + Series + '" foi enviada para o e-mail: ';
 					}
@@ -849,7 +863,7 @@ sap.ui.define([
 						onClose: function (oAction) {
 
 							that.onDialogClose();
-						}									
+						}
 					});
 				},
 				error: function (error) {

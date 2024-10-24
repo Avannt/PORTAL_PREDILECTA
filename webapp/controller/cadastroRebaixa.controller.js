@@ -161,7 +161,7 @@ sap.ui.define([
 
 				setTimeout(function () {
 
-					that.byId("idCliente").focus(false);
+					that.byId("idCliente").focus();
 				}, 500);
 
 				that.byId("idCategoria").setBusy(true);
@@ -601,18 +601,20 @@ sap.ui.define([
 					}
 				});
 
-			} else if (parseFloat(aux.PercCadastrado) == 0 ) {
+			} 
+			// else if (parseFloat(aux.PercCadastrado) == 0 ) {
 
-				MessageBox.show("Preencher a Empresa!", {
-					icon: MessageBox.Icon.WARNING,
-					title: "Não Permitido",
-					actions: [MessageBox.Action.OK],
-					onClose: function () {
-						that.byId("idEmpresa").focus();
-					}
-				});
+			// 	MessageBox.show("Preencher a Empresa!", {
+			// 		icon: MessageBox.Icon.WARNING,
+			// 		title: "Não Permitido",
+			// 		actions: [MessageBox.Action.OK],
+			// 		onClose: function () {
+			// 			that.byId("idEmpresa").focus();
+			// 		}
+			// 	});
 
-			} else if (aux.PercCadastrar < 0) {
+			// } 
+			else if (aux.PercCadastrar < 0) {
 
 				MessageBox.show("Cadastre o percentual positivo! ", {
 					icon: MessageBox.Icon.WARNING,
@@ -732,7 +734,8 @@ sap.ui.define([
 								details: Item.MsgErro,
 								actions: [MessageBox.Action.OK],
 								onClose: function () {
-									that._onLoadFields();
+									
+									// that._onLoadFields();
 								}
 							});
 						}

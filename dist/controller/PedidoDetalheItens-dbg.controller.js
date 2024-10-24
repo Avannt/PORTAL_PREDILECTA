@@ -16,7 +16,6 @@ sap.ui.define([
 		onInit: function () {
 
 			this.getRouter().getRoute("pedidoDetalheItens").attachPatternMatched(this.onLoadFields, this);
-
 		},
 
 		onLoadFields: function () {

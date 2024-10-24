@@ -7,8 +7,9 @@ sap.ui.define([
 	"sap/ui/model/FilterOperator",
 	"sap/m/MessageBox",
 	"sap/ui/model/json/JSONModel",
-	"sap/ui/model/odata/v2/ODataModel"
-], function (BaseController, Filter, FilterOperator, MessageBox, JSONModel, ODataModel) {
+	"sap/ui/model/odata/v2/ODataModel",
+	'sap/m/MessageToast'
+], function (BaseController, Filter, FilterOperator, MessageBox, JSONModel, ODataModel, MessageToast) {
 	"use strict";
 
 	return BaseController.extend("application.controller.enviarPedidos", {
@@ -27,7 +28,7 @@ sap.ui.define([
 			var oModel = new JSONModel([]);
 			that.setModel(oModel, "PedidosEnviar");
 
-			that.byId("table_pedidos").setBusy(true);
+			that.byId("master").setBusy(true);
 
 			new Promise(function (resCentro, rejCentro) {
 
@@ -46,8 +47,6 @@ sap.ui.define([
 
 					var oModelClientes = new JSONModel(DataCliente);
 					that.setModel(oModelClientes, "Clientes");
-
-					that.byId("table_pedidos").setBusy(false);
 
 					new Promise(function (res, rej) {
 
@@ -69,22 +68,22 @@ sap.ui.define([
 						that.getModelGlobal("modelAux").setProperty("/ValTotPedPend", valorTotal);
 						that.setModel(oModel, "Pedidos");
 
-						that.byId("table_pedidos").setBusy(false);
+						that.byId("master").setBusy(false);
 
 					}).catch(function (error) {
 
-						that.byId("table_pedidos").setBusy(false);
+						that.byId("master").setBusy(false);
 						that.onMensagemErroODATA(error);
 					});
 				}).catch(function (error) {
 
-					that.byId("table_pedidos").setBusy(false);
+					that.byId("master").setBusy(false);
 					that.onMensagemErroODATA(error);
 				});
 
 			}).catch(function (error) {
 
-				that.byId("table_pedidos").setBusy(false);
+				that.byId("master").setBusy(false);
 				that.onMensagemErroODATA(error);
 			});
 		},
@@ -235,6 +234,7 @@ sap.ui.define([
 		// },
 
 		carregaModelCliente: function (db, resolve, reject) {
+			
 			var that = this;
 
 			var codCliente = that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
@@ -358,7 +358,7 @@ sap.ui.define([
 							oModelPed.setUseBatch(true);
 							oModelPed.refreshSecurityToken();
 
-							that.byId("table_pedidos").setBusy(true);
+							that.byId("master").setBusy(true);
 
 							for (var j = 0; j < PedidosEnviar.length; j++) {
 
@@ -372,7 +372,8 @@ sap.ui.define([
 								oModelPed.create("/P_PedidoPR", Pedido, {
 									method: "POST",
 									success: function (data) {
-
+										
+										MessageToast.show("Pedido " + data.Vbeln + " enviado com sucesso.")
 										console.info("Pedido " + data.NrPedido + " Inserido.");
 									},
 									error: function (error) {

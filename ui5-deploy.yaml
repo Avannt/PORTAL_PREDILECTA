@@ -1,5 +1,3 @@
-# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
-
 specVersion: "3.1"
 metadata:
   name: application
@@ -20,6 +18,6 @@ builder:
           name: ZPORTAL
           description: ""
           package: Z_SF
-          transport: S4DK931911
+          transport: S4DK942136
         exclude:
           - /test/

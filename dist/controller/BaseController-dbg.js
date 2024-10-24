@@ -246,7 +246,7 @@ sap.ui.define([
 		onBuscarTipoPedido: function (Usuario, Kunnr, Centro, Kvgr4, Kvgr5, res, rej, that) {
 
 			that.oModel.read("/P_TipoPedidosR(IvRepres='" + Usuario + "',IvCliente='" + Kunnr + "',IvCentro='" + Centro + "',IvKvgr4='" +
-				Kvgr4 + "',IvKvgr5='" + Kvgr5 + "')", {
+				Kvgr4 + "',IvKvgr5='" + Kvgr5 + "')", {	
 				success: function (retorno) {
 
 					res(retorno);
@@ -304,6 +304,21 @@ sap.ui.define([
 		onInserirPedido: function (Pedido, res, rej, that) {
 
 			that.oModel.create("/P_PedidoPR", Pedido, {
+				method: "POST",
+				success: function (data) {
+
+					res(data);
+				},
+				error: function (error) {
+
+					rej(error);
+				}
+			});
+		},
+
+		onInserirBP: function (Input, res, rej, that) {
+
+			that.oModel.create("/P_CriarBP", IDBOpenDBRequest, {
 				method: "POST",
 				success: function (data) {
 
@@ -398,9 +413,9 @@ sap.ui.define([
 			});
 		},
 
-		onBuscarStatusPedido: function (NF, res, rej, that) {
+		onBuscarStatusPedido: function (NF, Werks, res, rej, that) {
 
-			that.oModel.read("/P_StatusPedido(Nfenum='" + NF + "')", {
+			that.oModel.read("/P_StatusPedido(IvNf='" + NF + "',IvWerks='" + Werks + "')", {
 				success: function (retorno) {
 
 					res(retorno);
@@ -679,6 +694,22 @@ sap.ui.define([
 			}
 			);
 		},
+		
+		onCriarBP: function (Cliente, res, rej, that) {
+
+			that.oModel.callFunction("/P_CriarBP", {
+				method: "POST",
+				urlParameters: Cliente,
+				success: function (Data, Response) {
+
+					res(Data);
+				},
+				error: function (Error) {
+
+					rej(Error);
+				}
+			});
+		},
 
 		onDialogCancelar: function () {
 
@@ -741,6 +772,9 @@ sap.ui.define([
 				case "C05":
 					sap.ui.core.UIComponent.getRouterFor(this).navTo("MovVerbas");
 					break;
+				case "C06":
+					sap.ui.core.UIComponent.getRouterFor(this).navTo("CadastroBP");
+					break;
 				default:
 					sap.ui.core.UIComponent.getRouterFor(this).navTo("notFound");
 					break;
@@ -748,7 +782,28 @@ sap.ui.define([
 		},
 
 		setLog: function (sLog, sClasse) {
+
 			console.log("[" + sClasse + "]", sLog);
+		},
+
+		onExpandFiltro: function (Event) {
+			
+			var filter = Event.getSource();
+
+			if (filter.getExpanded()) {
+
+				filter.setHeaderText("Ocultar Filtros");
+			} else {
+
+				filter.setHeaderText("Exibir Filtros");
+			}
+		},
+
+		onDialogClose: function () {
+
+			if (this._ItemDialog) {
+				this._ItemDialog.destroy(true);
+			}
 		}
 
 	});

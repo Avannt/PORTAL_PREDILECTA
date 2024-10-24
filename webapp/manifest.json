@@ -264,6 +264,15 @@
                     ]
                 },
                 {
+                    "name": "CadastroBP",
+                    "pattern": "CadastroBP",
+                    "titleTarget": "",
+                    "greedy": false,
+                    "target": [
+                        "CadastroBP"
+                    ]
+                },
+                {
                     "name": "relatorioFaturamentoItens",
                     "pattern": "RelatorioFaturItens",
                     "titleTarget": "",
@@ -418,6 +427,16 @@
                 },
                 "relatorioTitulos": {
                     "viewName": "relatorioTitulos",
+                    "viewLevel": 2,
+                    "viewType": "XML",
+                    "transition": "slide",
+                    "clearControlAggregation": false,
+                    "controlAggregation": "pages",
+                    "controlId": "app",
+                    "viewPath": "application.view"
+                },
+                "CadastroBP": {
+                    "viewName": "CadastroBP",
                     "viewLevel": 2,
                     "viewType": "XML",
                     "transition": "slide",

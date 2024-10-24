@@ -1,113 +1,290 @@
-<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:layout="sap.ui.layout"
-	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" xmlns="sap.m" xmlns:form="sap.ui.layout.form"
-	xmlns:semantic="sap.m.semantic" height="100%" controllerName="application.controller.cadastroRebaixa">
-	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Cadastro Rebaixa" showFooter="false" busyIndicatorDelay="0">
-		<content>
-			<ObjectHeader id="objectHeader_nomeUsuario" title="{modelAux>/NomeRepres}" number="Cód: {modelAux>/CodRepres}">
-				<statuses>
-					<ObjectStatus id="objectStatus_codUsuario"/>
-				</statuses>
-				<attributes>
-					<ObjectAttribute text="Email: {modelAux>/Email}"/>
-				</attributes>
-			</ObjectHeader>
-			<f:SimpleForm id="SimpleFormChange471" editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="2"
-				labelSpanS="12" adjustLabelSpan="false" emptySpanXL="3" emptySpanL="3" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
-				singleContainerFullSize="false">
-				<f:content>
-					<Label text="Empresa" required="true"/>
-					<SearchField id="idEmpresa" busyIndicatorDelay="0" placeholder="Digite Código ou Nome da Empresa" enableSuggestions="true"
-						value="{modelParametros>/Bukrs}" search="onChangeEmpresa" suggest="onSuggestEmpresa"
-						suggestionItems="{ path: 'modelEmpresas>/', sorter: { path: 'Bukrs', ascending: true }}">
-						<suggestionItems>
-							<SuggestionItem text="{modelEmpresas>Bukrs}" description="{modelEmpresas>NomeCentro}" key="{modelEmpresas>Bukrs}"/>
-						</suggestionItems>
-					</SearchField>
-					<Label text="Representante" required="true"/>
-					<SearchField id="idRepres" busyIndicatorDelay="0" placeholder="Digite Código ou Nome do Representante" enableSuggestions="true"
-						value="{modelParametros>/Lifnr}" suggest="onSuggestRepres" search="onChangeRepres"
-						suggestionItems="{ path: 'modelRepres>/', sorter: { path: 'Lifnr', ascending: true }}">
-						<suggestionItems>
-							<SuggestionItem text="{modelRepres>Lifnr}" description="{modelRepres>Name1}" key="{modelRepres>Lifnr}"/>
-						</suggestionItems>
-					</SearchField>
-					<Label text="Cliente" required="true"/>
-					<SearchField id="idCliente" busyIndicatorDelay="0" placeholder="Digite Código ou Nome do Cliente" enableSuggestions="true"
-						value="{modelParametros>/Kunnr}" suggest="onSuggestCliente" search="onChangeCliente"
-						suggestionItems="{ path: 'modelClientes>/', sorter: { path: 'Kunnr', ascending: true }}">
-						<suggestionItems>
-							<SuggestionItem text="{modelClientes>Kunnr}" description="{modelClientes>Name1}" key="{modelClientes>Kunnr}"/>
-						</suggestionItems>
-					</SearchField>
-					<Label text="Rede"/>
-					<SearchField id="idRede" busyIndicatorDelay="0" placeholder="Digite Código ou Nome da Rede" enableSuggestions="true"
-						value="{modelParametros>/Kvgr4}" search="onChangeRede" suggest="onSuggestRede"
-						suggestionItems="{ path: 'modelRedes>/', sorter: { path: 'Kvgr4', ascending: true }}">
-						<suggestionItems>
-							<SuggestionItem text="{modelRedes>Kvgr4}" description="{modelRedes>DescKvgr4}" key="{modelRedes>Kvgr4}"/>
-						</suggestionItems>
-					</SearchField>
-					<Label text="Categoria"/>
-					<SearchField id="idCategoria" busyIndicatorDelay="0" placeholder="Digite Código ou Nome da Categoria" enableSuggestions="true"
-						value="{modelParametros>/Mvgr1}" search="onChangeCategoria" suggest="onSuggestCategoria"
-						suggestionItems="{ path: 'modelCategoria>/', sorter: { path: 'Mvgr1', ascending: true }}">
-						<suggestionItems>
-							<SuggestionItem text="{modelCategoria>Mvgr1}" description="{modelCategoria>DescMvgr1}" key="{modelCategoria>Mvgr1}"/>
-						</suggestionItems>
-					</SearchField>
-					<Label text="SubCategoria"/>
-					<SearchField id="idSubCategoria" busyIndicatorDelay="0" placeholder="Digite Código ou Nome da SubCategoria" enableSuggestions="true"
-						value="{modelParametros>/Mvgr2}" search="onChangeSubCategoria" suggest="onSuggestSubCategoria"
-						suggestionItems="{ path: 'modelSubCategoria>/', sorter: { path: 'Mvgr2', ascending: true }}">
-						<suggestionItems>
-							<SuggestionItem text="{modelSubCategoria>Mvgr2}" description="{modelSubCategoria>DescMvgr2}" key="{modelSubCategoria>Mvgr2}"/>
-						</suggestionItems>
-					</SearchField>
-					<Label text="Família"/>
-					<SearchField id="idFamilia" busyIndicatorDelay="0" placeholder="Digite Código ou Nome da Família" enableSuggestions="true"
-						value="{modelParametros>/Mvgr3}" search="onChangeFamilia" suggest="onSuggestFamilia"
-						suggestionItems="{ path: 'modelFamilia>/', sorter: { path: 'Mvgr3', ascending: true }}">
-						<suggestionItems>
-							<SuggestionItem text="{modelFamilia>Mvgr3}" description="{modelFamilia>DescMvgr3}" key="{modelFamilia>Mvgr3}"/>
-						</suggestionItems>
-					</SearchField>
-					<Label text="Gramatura"/>
-					<SearchField id="idGramatura" busyIndicatorDelay="0" placeholder="Digite Código ou Nome da Gramatura" enableSuggestions="true"
-						value="{modelParametros>/Mvgr4}" search="onChangeGramatura" suggest="onSuggestGramatura"
-						suggestionItems="{ path: 'modelGramatura>/', sorter: { path: 'Mvgr4', ascending: true }}">
-						<suggestionItems>
-							<SuggestionItem text="{modelGramatura>Mvgr4}" description="{modelGramatura>DescMvgr4}" key="{modelGramatura>Mvgr4}"/>
-						</suggestionItems>
-					</SearchField>
-					<Label text="Marca"/>
-					<SearchField id="idMarca" busyIndicatorDelay="0" placeholder="Digite Código ou Nome da Marca" enableSuggestions="true"
-						value="{modelParametros>/Mvgr5}" search="onChangeMarca" suggest="onSuggestMarca"
-						suggestionItems="{ path: 'modelMarca>/', sorter: { path: 'Mvgr5', ascending: true }}">
-						<suggestionItems>
-							<SuggestionItem text="{modelMarca>Mvgr5}" description="{modelMarca>DescMvgr5}" key="{modelMarca>Mvgr5}"/>
-						</suggestionItems>
-					</SearchField>
-					<Label text="Produtos"/>
-					<SearchField id="idProdutos" busyIndicatorDelay="0" placeholder="Digite Código ou Nome da Produto" enableSuggestions="true"
-						value="{modelParametros>/Matnr}" suggest="onSuggestProdutos" search="onChangeProdutos"
-						suggestionItems="{ path: 'modelProdutos>/', sorter: { path: 'Matnr', ascending: true }}">
-						<suggestionItems>
-							<SuggestionItem text="{modelProdutos>Matnr}" description="{modelProdutos>Maktx}" key="{modelProdutos>Matnr}"/>
-						</suggestionItems>
-					</SearchField>
-					<Label text="Percentual Máximo"/>
-					<Input id="idPerc" placeholder=""
-						value="{path :'modelParametros>/PercCadastrado', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
-						enabled="false" valueState="Warning" description="%"/>
-					<Label text="Percentual à Cadastrar"/>
-					<Input id="idPercCadastrar" autocomplete="false" type="Number" description="%" value="{path :'modelParametros>/PercCadastrar'}" enabled="true"
-						valueState="None"/>
-					<Label text=""/>
-				</f:content>
-				<Button text="Procurar Desconto" icon="sap-icon://search" press="onBuscarDesconto" type="Default" tooltip="Cadastrar Percentual de Rebaixa"/>
-				<Button text="Cadastrar Percentual" icon="sap-icon://add" press="onCadastrarDesconto" type="Emphasized"
-					tooltip="Cadastrar Percentual de Rebaixa"/>
-			</f:SimpleForm>
-		</content>
-	</Page>
+<mvc:View
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:layout="sap.ui.layout"
+    xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+    xmlns="sap.m"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:semantic="sap.m.semantic"
+    height="100%"
+    controllerName="application.controller.cadastroRebaixa"
+>
+    <Page
+        id="master"
+        navButtonPress="onNavBack"
+        showNavButton="true"
+        title="Cadastro Rebaixa"
+        showFooter="false"
+        busyIndicatorDelay="0"
+    >
+        <content>
+            <ObjectHeader
+                id="objectHeader_nomeUsuario"
+                title="{modelAux>/NomeRepres}"
+                number="Cód: {modelAux>/CodRepres}"
+            >
+                <statuses>
+                    <ObjectStatus id="objectStatus_codUsuario" />
+                </statuses>
+                <attributes>
+                    <ObjectAttribute text="Email: {modelAux>/Email}" />
+                </attributes>
+            </ObjectHeader>
+            <f:SimpleForm
+                id="SimpleFormChange471"
+                editable="true"
+                layout="ResponsiveGridLayout"
+                labelSpanXL="3"
+                labelSpanL="3"
+                labelSpanM="2"
+                labelSpanS="12"
+                adjustLabelSpan="false"
+                emptySpanXL="3"
+                emptySpanL="3"
+                emptySpanM="1"
+                emptySpanS="0"
+                columnsXL="1"
+                columnsL="1"
+                columnsM="1"
+                singleContainerFullSize="false"
+            >
+                <f:content>
+                    <Label
+                        text="Empresa"
+                        required="true"
+                    />
+                    <SearchField
+                        id="idEmpresa"
+                        busyIndicatorDelay="0"
+                        placeholder="Digite Código ou Nome da Empresa"
+                        enableSuggestions="true"
+                        value="{modelParametros>/Bukrs}"
+                        search="onChangeEmpresa"
+                        suggest="onSuggestEmpresa"
+                        suggestionItems="{ path: 'modelEmpresas>/', sorter: { path: 'Bukrs', descending: false }}"
+                    >
+                        <suggestionItems>
+                            <SuggestionItem
+                                text="{modelEmpresas>Bukrs}"
+                                description="{modelEmpresas>NomeCentro}"
+                                key="{modelEmpresas>Bukrs}"
+                            />
+                        </suggestionItems>
+                    </SearchField>
+                    <Label
+                        text="Representante"
+                        required="true"
+                    />
+                    <SearchField
+                        id="idRepres"
+                        busyIndicatorDelay="0"
+                        placeholder="Digite Código ou Nome do Representante"
+                        enableSuggestions="true"
+                        value="{modelParametros>/Lifnr}"
+                        suggest="onSuggestRepres"
+                        search="onChangeRepres"
+                        suggestionItems="{ path: 'modelRepres>/', sorter: { path: 'Lifnr', descending: false }}"
+                    >
+                        <suggestionItems>
+                            <SuggestionItem
+                                text="{modelRepres>Lifnr}"
+                                description="{modelRepres>Name1}"
+                                key="{modelRepres>Lifnr}"
+                            />
+                        </suggestionItems>
+                    </SearchField>
+                    <Label
+                        text="Cliente"
+                        required="true"
+                    />
+                    <SearchField
+                        id="idCliente"
+                        busyIndicatorDelay="0"
+                        placeholder="Digite Código ou Nome do Cliente"
+                        enableSuggestions="true"
+                        value="{modelParametros>/Kunnr}"
+                        suggest="onSuggestCliente"
+                        search="onChangeCliente"
+                        suggestionItems="{ path: 'modelClientes>/', sorter: { path: 'Kunnr', descending: false }}"
+                    >
+                        <suggestionItems>
+                            <SuggestionItem
+                                text="{modelClientes>Kunnr}"
+                                description="{modelClientes>Name1}"
+                                key="{modelClientes>Kunnr}"
+                            />
+                        </suggestionItems>
+                    </SearchField>
+                    <Label text="Rede" />
+                    <SearchField
+                        id="idRede"
+                        busyIndicatorDelay="0"
+                        placeholder="Digite Código ou Nome da Rede"
+                        enableSuggestions="true"
+                        value="{modelParametros>/Kvgr4}"
+                        search="onChangeRede"
+                        suggest="onSuggestRede"
+                        suggestionItems="{ path: 'modelRedes>/', sorter: { path: 'Kvgr4', descending: false }}"
+                    >
+                        <suggestionItems>
+                            <SuggestionItem
+                                text="{modelRedes>Kvgr4}"
+                                description="{modelRedes>DescKvgr4}"
+                                key="{modelRedes>Kvgr4}"
+                            />
+                        </suggestionItems>
+                    </SearchField>
+                    <Label text="Categoria" />
+                    <SearchField
+                        id="idCategoria"
+                        busyIndicatorDelay="0"
+                        placeholder="Digite Código ou Nome da Categoria"
+                        enableSuggestions="true"
+                        value="{modelParametros>/Mvgr1}"
+                        search="onChangeCategoria"
+                        suggest="onSuggestCategoria"
+                        suggestionItems="{ path: 'modelCategoria>/', sorter: { path: 'Mvgr1', descending: false }}"
+                    >
+                        <suggestionItems>
+                            <SuggestionItem
+                                text="{modelCategoria>Mvgr1}"
+                                description="{modelCategoria>DescMvgr1}"
+                                key="{modelCategoria>Mvgr1}"
+                            />
+                        </suggestionItems>
+                    </SearchField>
+                    <Label text="SubCategoria" />
+                    <SearchField
+                        id="idSubCategoria"
+                        busyIndicatorDelay="0"
+                        placeholder="Digite Código ou Nome da SubCategoria"
+                        enableSuggestions="true"
+                        value="{modelParametros>/Mvgr2}"
+                        search="onChangeSubCategoria"
+                        suggest="onSuggestSubCategoria"
+                        suggestionItems="{ path: 'modelSubCategoria>/', sorter: { path: 'Mvgr2', descending: false }}"
+                    >
+                        <suggestionItems>
+                            <SuggestionItem
+                                text="{modelSubCategoria>Mvgr2}"
+                                description="{modelSubCategoria>DescMvgr2}"
+                                key="{modelSubCategoria>Mvgr2}"
+                            />
+                        </suggestionItems>
+                    </SearchField>
+                    <Label text="Família" />
+                    <SearchField
+                        id="idFamilia"
+                        busyIndicatorDelay="0"
+                        placeholder="Digite Código ou Nome da Família"
+                        enableSuggestions="true"
+                        value="{modelParametros>/Mvgr3}"
+                        search="onChangeFamilia"
+                        suggest="onSuggestFamilia"
+                        suggestionItems="{ path: 'modelFamilia>/', sorter: { path: 'Mvgr3', descending: false }}"
+                    >
+                        <suggestionItems>
+                            <SuggestionItem
+                                text="{modelFamilia>Mvgr3}"
+                                description="{modelFamilia>DescMvgr3}"
+                                key="{modelFamilia>Mvgr3}"
+                            />
+                        </suggestionItems>
+                    </SearchField>
+                    <Label text="Gramatura" />
+                    <SearchField
+                        id="idGramatura"
+                        busyIndicatorDelay="0"
+                        placeholder="Digite Código ou Nome da Gramatura"
+                        enableSuggestions="true"
+                        value="{modelParametros>/Mvgr4}"
+                        search="onChangeGramatura"
+                        suggest="onSuggestGramatura"
+                        suggestionItems="{ path: 'modelGramatura>/', sorter: { path: 'Mvgr4', descending: false }}"
+                    >
+                        <suggestionItems>
+                            <SuggestionItem
+                                text="{modelGramatura>Mvgr4}"
+                                description="{modelGramatura>DescMvgr4}"
+                                key="{modelGramatura>Mvgr4}"
+                            />
+                        </suggestionItems>
+                    </SearchField>
+                    <Label text="Marca" />
+                    <SearchField
+                        id="idMarca"
+                        busyIndicatorDelay="0"
+                        placeholder="Digite Código ou Nome da Marca"
+                        enableSuggestions="true"
+                        value="{modelParametros>/Mvgr5}"
+                        search="onChangeMarca"
+                        suggest="onSuggestMarca"
+                        suggestionItems="{ path: 'modelMarca>/', sorter: { path: 'Mvgr5', descending: false }}"
+                    >
+                        <suggestionItems>
+                            <SuggestionItem
+                                text="{modelMarca>Mvgr5}"
+                                description="{modelMarca>DescMvgr5}"
+                                key="{modelMarca>Mvgr5}"
+                            />
+                        </suggestionItems>
+                    </SearchField>
+                    <Label text="Produtos" />
+                    <SearchField
+                        id="idProdutos"
+                        busyIndicatorDelay="0"
+                        placeholder="Digite Código ou Nome da Produto"
+                        enableSuggestions="true"
+                        value="{modelParametros>/Matnr}"
+                        suggest="onSuggestProdutos"
+                        search="onChangeProdutos"
+                        suggestionItems="{ path: 'modelProdutos>/', sorter: { path: 'Matnr', descending: false }}"
+                    >
+                        <suggestionItems>
+                            <SuggestionItem
+                                text="{modelProdutos>Matnr}"
+                                description="{modelProdutos>Maktx}"
+                                key="{modelProdutos>Matnr}"
+                            />
+                        </suggestionItems>
+                    </SearchField>
+                    <Label text="Percentual Máximo" />
+                    <Input
+                        id="idPerc"
+                        placeholder=""
+                        value="{path :'modelParametros>/PercCadastrado', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+                        enabled="false"
+                        valueState="Warning"
+                        description="%"
+                    />
+                    <Label text="Percentual à Cadastrar" />
+                    <Input
+                        id="idPercCadastrar"
+                        autocomplete="false"
+                        type="Number"
+                        description="%"
+                        value="{path :'modelParametros>/PercCadastrar'}"
+                        enabled="true"
+                        valueState="None"
+                    />
+                    <Label text="" />
+                </f:content>
+                <Button
+                    text="Procurar Desconto"
+                    icon="sap-icon://search"
+                    press="onBuscarDesconto"
+                    type="Default"
+                    tooltip="Cadastrar Percentual de Rebaixa"
+                />
+                <Button
+                    text="Cadastrar Percentual"
+                    icon="sap-icon://add"
+                    press="onCadastrarDesconto"
+                    type="Emphasized"
+                    tooltip="Cadastrar Percentual de Rebaixa"
+                />
+            </f:SimpleForm>
+        </content>
+    </Page>
 </mvc:View>
