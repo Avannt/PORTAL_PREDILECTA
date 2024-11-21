@@ -988,7 +988,7 @@ sap.ui.define([
 
 							Pedido = that.onFormatNumberPedido(Pedido);
 
-							debugger;
+							
 
 							delete Pedido.__metadata;
 
@@ -1180,7 +1180,8 @@ sap.ui.define([
 				ValDescDispCe: 0,
 				ValDescInformCe: 0,
 				ValDescDispBolCe: 0,
-				ValDescInformBolCe: 0
+				ValDescInformBolCe: 0,
+				ValDescInformBoletoReduzid: 0
 			});
 
 			this.setModelGlobal(modelPedido, "modelPedido");
@@ -1379,7 +1380,7 @@ sap.ui.define([
 
 								}
 
-								debugger;
+								
 
 								if (result.Zterm == "") {
 									//Setar pagamento avista. Se tiver contrato mas nao tiver forma de pagamento do contrato definida
@@ -1416,7 +1417,7 @@ sap.ui.define([
 
 								} else if (result.Zterm != "" && contrato != "" && limiteCred == 1) {
 
-									//Regra para limpar forma de pagamento quando o cliente nao 
+									//Regra para limpar forma de pagamento quando o cliente nao
 									//possui limite de credito mas existe contrato ativo com Indice e Forma de pagamento setada
 									that.getModelGlobal("modelPedido").setProperty("/Vencimento", "");
 									that.getModel("modelPedido").setProperty("/IndiceFinal", 0);
@@ -2031,6 +2032,7 @@ sap.ui.define([
 
 							that.onValidacoesCampanha();
 							that.onValidacoesCampanhaEscal();
+							that.onCalculaDescBoletoReduzido();
 
 							that.getModel("modelPedido").refresh();
 						}
@@ -2852,7 +2854,7 @@ sap.ui.define([
 					columns: aCols,
 					context: {
 						application: "Aplicação Força de Vendas",
-						// version: "${version}",
+						// version: "0.0.1",
 						title: "Espelho do Pedido",
 						modifiedBy: "Repres: " + this.getModelGlobal("modelAux").getProperty("/Usuario"),
 						metaSheetName: "Cabeçalho Pedido",
@@ -3153,7 +3155,7 @@ sap.ui.define([
 		},
 
 		onChangeTabPreco: function (oEvent) {
-			debugger;
+			
 
 			this.getModelGlobal("modelAux").setProperty("/ObrigaSalvar", true);
 			var TabPreco = this.getModelGlobal("modelPedido").getProperty("/Pltyp");
@@ -3169,6 +3171,41 @@ sap.ui.define([
 					}
 				}
 			}
+		},
+
+		onCalculaDescBoletoReduzido: function(oEvent){
+
+			try {
+
+				var DescBoletoAplicado = oEvent.getSource().getValue();
+			} catch (error){
+				
+				DescBoletoAplicado = this.getModel("modelPedido").getProperty("/ValDescAplicarBol");
+			}
+
+			var itens = this.getModel("modelItensPedidoGrid").getData();			
+
+			var PercPond = 0;
+			var ValPond = 0;
+			var ValTotalPond = 0;
+			var PercTotalPond = 0;			
+			var TotalPed = 0;			
+			
+			for(var i=0; i<itens.length; i++){
+
+				PercPond = (parseFloat(itens[i].AliquotaIcm) + parseFloat(itens[i].PercCofins) + parseFloat(itens[i].PercPis)) / 100;
+				ValPond = PercPond * parseFloat(itens[i].ValPrecoInform * itens[i].QtdPedida);
+				PercTotalPond = Math.abs(PercTotalPond) + Math.abs(ValPond);
+				TotalPed = parseFloat(TotalPed) + parseFloat(itens[i].ValPrecoInform * itens[i].QtdPedida);
+			}
+
+			// PercTotalPond = PercTotalPond * 100;
+			var PercFinal = PercTotalPond / TotalPed;
+
+			ValTotalPond = DescBoletoAplicado - ( PercFinal * DescBoletoAplicado);
+			ValTotalPond = parseFloat(Math.round((ValTotalPond + Number.EPSILON) * 100 ) / 100);
+			
+			this.getModel("modelPedido").setProperty("/ValDescInformBoletoReduzid", ValTotalPond);
 		}
 	});
 });

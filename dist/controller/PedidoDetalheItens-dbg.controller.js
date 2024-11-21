@@ -42,16 +42,18 @@ sap.ui.define([
 
 			new Promise(function (res, rej) {
 
-				that.onBuscarProdutos(CodRepres, res, rej, that);
+				that.onBuscarProdutos(CodRepres, Werks, res, rej, that);
 
 			}).then(function (data) {
 
-				that.vetorProdutos = data.filter(function (a, b) {
-					if (a.Werks == Werks) {
-						delete a.__metadata;
-						return a;
-					}
-				});
+				// that.vetorProdutos = data.filter(function (a, b) {
+				// 	if (a.Werks == Werks) {
+				// 		delete a.__metadata;
+				// 		return a;
+				// 	}
+				// });
+
+				that.vetorProdutos = data;
 
 				that.getModel("modelProdutos").setData(that.vetorProdutos);
 				that.getView().byId("IdItemPedido").setBusy(false);

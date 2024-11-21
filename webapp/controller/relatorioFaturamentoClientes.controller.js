@@ -533,7 +533,7 @@ sap.ui.define([
 						}
 					}
 
-					// debugger;
+					//
 
 					for (var k = 0; k < that.vetorFatClientes.length; k++) {
 

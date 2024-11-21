@@ -440,7 +440,7 @@
                                             <Input
                                                 id="idIndice"
                                                 enabled="false"
-                                                value="{path: 'modelPedido>/IndiceFinal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} %"
+                                                value="{path: 'modelPedido>/IndiceFinal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '100' }} %"
                                             >
                                                 <layoutData>
                                                     <layout:GridData
@@ -778,7 +778,7 @@
                                     <Table
                                         id="table_pedidos"
                                         width="100%"
-                                        items="{ path:'modelItensPedidoGrid>/', sorter: { path: 'IndexItem', ascending: true }}"
+                                        items="{ path:'modelItensPedidoGrid>/', sorter: { path: 'IndexItem', descending: false }}"
                                         updateFinished="onListUpdateFinished"
                                         mode="Delete"
                                         delete="onDeletarItem"
@@ -925,7 +925,7 @@
                                                         textAlign="Left"
                                                     />
                                                     <!--<Text-->
-                                                    <!--	text="R$: {path: 'modelItensPedidoGrid>ValPrecoUnit', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"-->
+                                                    <!--	text="R$: {path: 'modelItensPedidoGrid>ValPrecoUnit', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, co+nstraints : { minimum: '0', maximum: '99' }}"-->
                                                     <!--	textAlign="Left"/>-->
                                                     <Text
                                                         text="R$: {path: 'modelItensPedidoGrid>ValPrecoInform', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
@@ -944,8 +944,8 @@
                                                         width="30px"
                                                         backgroundPosition="Center"
                                                     />
-                                                    <!--<ObjectListItem number="{path : 'modelItensPedidoGrid>PercLucro', formatter: '.myFormatterCodEmpresa' }%" numberState="{= ${modelItensPedidoGrid>PercLucro} >= 0 ? 'Success' : 'Error' }" hAlign="Right"/>-->
-                                                    <!--<ObjectListItem number="{path : 'modelItensPedidoGrid>PercLucro', formatter: '.myFormatterRentabilidade' }%" numberState="{= ${modelItensPedidoGrid>PercLucro} >= 0 ? 'Success' : 'Error' }" hAlign="Right"/>-->
+                                                    <!--<ObjectListItem number="{path : 'modelItensPedidoGrid>PercLucro', formatter: '.myFormatterCodEmpresa' }%" numberState="{= ${modelItensPedidoGrid>PercLucro} >= 0 ? 'Success' : 'Error' }" hAlign="Righ+t"/>-->
+                                                    <!--<ObjectListItem number="{path : 'modelItensPedidoGrid>PercLucro', formatter: '.myFormatterRentabilidade' }%" numberState="{= ${modelItensPedidoGrid>PercLucro} >= 0 ? 'Success' : 'Error' }" hAlign="R+ight"/>-->
                                                 </cells>
                                             </ColumnListItem>
                                         </items>
@@ -982,7 +982,7 @@
                                             <Label text="Desconto Disponível" />
                                             <Input
                                                 id="idDescontoDisponivel"
-                                                value="{path: 'modelPedido>/ValDescDisp', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+                                                value="{path: 'modelPedido>/ValDescDisp', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '100' }}"
                                                 enabled="false"
                                                 class="desabilitado marginBottomInpu"
                                             />
@@ -1042,6 +1042,13 @@
                                                 enabled="true"
                                                 type="Number"
                                                 value="{modelPedido>/ValDescAplicarBol}"
+                                                liveChange="onCalculaDescBoletoReduzido"
+                                            />
+                                            <Input
+                                                id="idDescontoAplicarBoletoReduz"
+                                                enabled="false"
+                                                type="Text"
+                                                value="{path: 'modelPedido>/ValDescInformBoletoReduzid', type: 'sap.ui.model.type.Float', formatOptions: { milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }}"
                                             />
                                         </f:content>
                                     </f:SimpleForm>

@@ -174,7 +174,7 @@ sap.ui.define([
 
 				new Promise(function (res, rej) {
 
-					that.onBuscarProdutos(that.CodRepres, res, rej, that);
+					that.onBuscarProdutos(that.CodRepres, '', res, rej, that);
 
 				}).then(function (data) {
 
@@ -583,7 +583,7 @@ sap.ui.define([
 
 		onCadastrarDesconto: function () {
 
-			var that = this; 
+			var that = this;
 
 			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
 			that.oModel = that.getModelGlobal("modelAux").getProperty("/DBModel");
@@ -601,7 +601,7 @@ sap.ui.define([
 					}
 				});
 
-			} 
+			}
 			// else if (parseFloat(aux.PercCadastrado) == 0 ) {
 
 			// 	MessageBox.show("Preencher a Empresa!", {
@@ -613,7 +613,7 @@ sap.ui.define([
 			// 		}
 			// 	});
 
-			// } 
+			// }
 			else if (aux.PercCadastrar < 0) {
 
 				MessageBox.show("Cadastre o percentual positivo! ", {

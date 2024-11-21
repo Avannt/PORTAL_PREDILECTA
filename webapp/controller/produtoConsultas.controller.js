@@ -15,6 +15,7 @@ sap.ui.define([
 		},
 
 		_onCreateModel: function () {
+			
 			var that = this;
 			var vetorTabPrecoAux = [];
 			that.vetorTodosPrecos = [];

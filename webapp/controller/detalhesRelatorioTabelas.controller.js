@@ -231,10 +231,10 @@ sap.ui.define([
 							value: parametros.Exibicao
 						}, {	
 							key: 'RCA',
-							value: parametros.CodRepres 
+							value: parametros.CodRepres
 						}, {	
 							key: 'Data Emissão Tabela',
-							value: data + " - " + horario 
+							value: data + " - " + horario
 						}
 						]
 					}]

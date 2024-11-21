@@ -141,7 +141,7 @@ sap.ui.define([
 
 			new Promise(function (res, rej) {
 
-				that.onBuscarProdutos(repres, res, rej, that);
+				that.onBuscarProdutos(repres, '', res, rej, that);
 
 			}).then(function (retorno) {
 
@@ -768,7 +768,7 @@ sap.ui.define([
 
 			var oModelDelay = new JSONModel({
 				"table"  : false,
-				"Pedido" : pedido 
+				"Pedido" : pedido
 			});
 
 			this.getView().setModel(oModelDelay, "modelTela");

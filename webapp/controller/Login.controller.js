@@ -21,13 +21,13 @@ sap.ui.define([
 				var that = this;
 
 				this.onInicializaModels();
-				/* 
+				/*
 				Alterar aqui o ambiente:
 				PRD => ReleasePRD = TRUEa
 				QAS => ReleasePRD = FALSE
 				*/
 				this.getModelGlobal("modelAux").setProperty("/ReleasePRD", false);
-				this.getModelGlobal("modelAux").setProperty("/VersaoApp", "3.0");
+				this.getModelGlobal("modelAux").setProperty("/VersaoApp", "3.7");
 				this.getModelGlobal("modelAux").setProperty("/Werks", "1000");
 				this.getModelGlobal("modelAux").setProperty("/EditarIndexItem", 0);
 				this.getModelGlobal("modelAux").setProperty("/bConectado", false);
@@ -366,11 +366,11 @@ sap.ui.define([
 				// 	type: 'get',
 				// 	dataType: 'text',
 				// 	success: function (data) {
-				// 		debugger;
+				// 		
 				// 		alert(data.query.results.body.p);
 				// 	},
 				// 	error: function (jqXHR, textStatus, errorThrow) {
-				// 		debugger;
+				// 		
 				// 		alert(jqXHR['responseText']);
 				// 	}
 				// });
@@ -381,7 +381,7 @@ sap.ui.define([
 				// 	dataType: "text",
 				// 	success: function (data) {
 				// 		alert(data);
-				// 		debugger;
+				// 		
 				// 	},
 				// 	error: function (xhr, ajaxOptions, thrownError) {
 				// 		alert("Status: " + xhr.status + "     Error: " + thrownError);
@@ -403,7 +403,7 @@ sap.ui.define([
 					"',IvImei='" + Imei + "',IvVersaoApp='" + VersaoApp + "')", {
 					success: function (retorno) {
 
-						debugger;
+						
 
 						that.getModelGlobal("modelAux").setProperty("/CodRepres", CodRepres);
 						that.getModelGlobal("modelAux").setProperty("/NomeRepres", retorno.EvNomeRepres);
@@ -566,7 +566,7 @@ sap.ui.define([
 				// // downloadFile();
 				// }).catch(function (error) {
 
-				// 	debugger;
+				// 	
 				// });
 
 				// onApiLoad();

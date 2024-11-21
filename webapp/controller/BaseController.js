@@ -226,11 +226,11 @@ sap.ui.define([
 			});
 		},
 
-		onBuscarProdutos: function (CodRepres, res, rej, that) {
+		onBuscarProdutos: function (CodRepres, Werks, res, rej, that) {
 
 			that.oModel.read("/Produtos", {
 				urlParameters: {
-					"$filter": "IvUsuario eq '" + CodRepres + "'"
+					"$filter": "Usuario eq '" + CodRepres + "' and Werks eq '" + Werks + "'"
 				},
 				success: function (retorno) {
 
@@ -246,7 +246,7 @@ sap.ui.define([
 		onBuscarTipoPedido: function (Usuario, Kunnr, Centro, Kvgr4, Kvgr5, res, rej, that) {
 
 			that.oModel.read("/P_TipoPedidosR(IvRepres='" + Usuario + "',IvCliente='" + Kunnr + "',IvCentro='" + Centro + "',IvKvgr4='" +
-				Kvgr4 + "',IvKvgr5='" + Kvgr5 + "')", {	
+				Kvgr4 + "',IvKvgr5='" + Kvgr5 + "')", {
 				success: function (retorno) {
 
 					res(retorno);
@@ -264,16 +264,16 @@ sap.ui.define([
 				success: function (result) {
 
 					that.vetorTabPrecos = [];
-					
+
 					that.vetorTabPrecos.push(result);
 
 					if (result.Pltyp != Pedido.Pltyp && Pedido.Pltyp != "") {
-						
+
 						var aux = {
 							Pltyp: Pedido.Pltyp,
 							Ptext: Pedido.PltypDesc
 						};
-						
+
 						that.vetorTabPrecos.push(aux);
 					}
 
@@ -694,7 +694,7 @@ sap.ui.define([
 			}
 			);
 		},
-		
+
 		onCriarBP: function (Cliente, res, rej, that) {
 
 			that.oModel.callFunction("/P_CriarBP", {
@@ -787,7 +787,7 @@ sap.ui.define([
 		},
 
 		onExpandFiltro: function (Event) {
-			
+
 			var filter = Event.getSource();
 
 			if (filter.getExpanded()) {

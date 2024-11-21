@@ -139,7 +139,7 @@ sap.ui.define([
 
 			new Promise(function (res, rej) {
 
-				that.onBuscarProdutos(repres, res, rej, that);
+				that.onBuscarProdutos(repres, '', res, rej, that);
 
 			}).then(function (retorno) {
 
@@ -612,7 +612,7 @@ sap.ui.define([
 						}
 					}
 
-					// debugger;
+					//
 
 					for (var k = 0; k < that.vetorFatItens.length; k++) {
 

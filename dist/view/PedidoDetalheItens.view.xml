@@ -1,417 +1,703 @@
-<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:layout="sap.ui.layout" xmlns:form="sap.ui.layout.form"
-	displayBlock="true" controllerName="application.controller.PedidoDetalheItens">
-	<App>
-		<pages>
-			<Page id="idItens" title="Itens do Pedido WEB" contentOnlyBusy="true" busy="false" floatingFooter="false" navButtonPress="onNavBack"
-				showNavButton="true" busyIndicatorDelay="1">
-				<content>
-					<Table id="idTableItens" growingScrollToLoad="true" inset="false" noDataText="Nenhum item inserido!" mode="Delete" delete="onDeletarItem"
-						alternateRowColors="true" busyIndicatorDelay="0" items="{ path: 'modelItensPedidoGrid>/', sorter: { path: 'IndexItem', ascending: true }}"
-						itemPress="onEditarItemPress">
-						<headerToolbar>
-							<Toolbar height="100%" class="backGround">
-								<form:SimpleForm minWidth="1024" maxContainerCols="3" editable="true" layout="ResponsiveGridLayout" labelSpanL="1" labelSpanM="2"
-									emptySpanL="0" emptySpanM="0" columnsL="3" columnsM="3">
-									<form:content>
-										<Label text="Item">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Label>
-										<SearchField class="camposDialog" id="IdItemPedido" placeholder="Digite Código ou Nome do Produto" enableSuggestions="true"
-											value="{modelItem>/Matnr}" search="onItemChange" suggest="onSuggestProdutos" busyIndicatorDelay="0"
-											suggestionItems="{ path: 'modelProdutos>/', sorter: { path: 'Matnr', ascending: true }}">
-											<suggestionItems>
-												<SuggestionItem text="{modelProdutos>Matnr}" description="{modelProdutos>Maktx}" key="{modelProdutos>Matnr}"/>
-											</suggestionItems>
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</SearchField>
-										<Label text="Descrição">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Label>
-										<Input id="idDescricao" enabled="false" class="desabilitado" value="{modelItem>/Maktx}">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Input>
-										<Label text="Preço Tab">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Label>
-										<Input id="idPrecoTabela" enabled="false" class="desabilitado"
-											value="{path: 'modelItem>/ValPrecoOrig', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Input>
-										<Label text="Canal">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Label>
-										<Input id="idCanal" enabled="false" class="desabilitado"
-											value="{path: 'modelItem>/PercCanal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} % ({path: 'modelItem>/CondPercCanal'})">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Input>
-										<Label text="Tab - Canal">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Label>
-										<Input id="idTabelaCanal"
-											value="{path: 'modelItem>/ValPrecoUnit', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
-											enabled="false" class="desabilitado">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Input>
-										<Label text="Máx. Prom.">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Label>
-										<Input id="idMaxPromocao"
-											value="{path: 'modelItem>/PercPromoMax', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} % ({modelItem>/CondPercPromoMax})"
-											enabled="false" class="desabilitado">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Input>
-										<Label text="Quantidade">
-											<layoutData>
-												<layout:GridData span="L2 M2" linebreakL="true"/>
-											</layoutData>
-										</Label>
-										<Input id="idQuantidade" value="{modelItem>/QtdPedida}" class="camposDialog" editable="true" change="onQuantidadeChange" submit="onFocusQnt"
-											liveChange="onLiveChangeQuantidade" type="Number">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Input>
-										<Label text="Preço venda">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Label>
-										<Input id="idPrecoVenda" value="{path: 'modelItem>/ValPrecoInform'}" class="camposDialog" editable="true" change="onPrecoVendaChange"
-											liveChange="onLiveChangePrecoVenda" submit="onFocusVenda" type="Number">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Input>
-										<Label text="Promoção (%)">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Label>
-										<Input id="idPromocao" class="camposDialog" value="{ path: 'modelItem>/PercPromo' }" editable="true" change="onPromocaoChange"
-											liveChange="onLiveChangePromocao" submit="onFocusPromo" type="Number">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData >
-										</Input>
-										<Label text="Preço total">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Label>
-										<Input id="idPrecoTotal" enabled="false" class="desabilitado"
-											value="{path: 'modelItem>/ValorTotal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' } }">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Input>
-										<Label text="Total c/ ST">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Label>
-										<Input id="idTotalComST" enabled="false" class="desabilitado"
-											value="{path: 'modelItem>/ValTotItemSt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Input>
-										<Label text="Preço Caixa c/ ST">
-											<layoutData>
-												<layout:GridData span="L2 M2" linebreakL="true"/>
-											</layoutData>
-										</Label>
-										<Input id="idPrecoComST" enabled="false" class="desabilitado"
-											value="{path: 'modelItem>/ValPrecoUnitSt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Input>
-										<Label text="Preço Unid.">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Label>
-										<Input id="idPrecoUnidade"
-											value="{path: 'modelItem>/ValPrecoUnitFat', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
-											enabled="false" class="camposDialogPRECOUNI">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Input>
-										<Label text="Preço Unid. c/ ST">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Label>
-										<Input id="idPrecoUnidadeComST" enabled="false"
-											value="{path: 'modelItem>/ValPrecoUnitStFat', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
-											class="camposDialogPRECOUNI">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Input>
-										<Label text="Verba Disp.">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Label>
-										<Input id="idVerbaDisponivel" enabled="false"
-											value="{path: 'modelItem>/VerbaRepres', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
-											class="desabilitado">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Input>
-										<Label text="Verba">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Label>
-										<Input id="idVerba" enabled="false"
-											value="{path: 'modelItem>/ValVerbaItem', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
-											class="desabilitado">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Input>
-										<Label text="Preço Mínimo" visible="false">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Label>
-										<Input id="idPrecoMinimo" visible="false" enabled="false"
-											value="{path: 'modelItem>/ValPrecoMin', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
-											class="desabilitado">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Input>
-										<Label text="Rebaixa">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Label>
-										<Input id="idRebaixa" enabled="false"
-											value="{path: 'modelItem>/ValPctDescontoReduc', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} % ({path: 'modelItem>/CondCampFlex'})"
-											class="desabilitado">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Input>
-										<Label text="Rentab. (%)">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Label>
-										<Image id="idRentImg" src="{path : 'modelItem>/RentImg'}" width="40%">
-											<layoutData>
-												<layout:GridData span="L1 M1"/>
-											</layoutData>
-										</Image>
-										<Input id="idRentabilidade" value="{path : 'modelItem>/PercLucro'} %" enabled="false" class="desabilitado" visible="false">
-											<layoutData>
-												<layout:GridData span="L1 M1"/>
-											</layoutData>
-										</Input>
-										<Label text="Qt. Ult. Compra">
-											<layoutData>
-												<layout:GridData span="L2 M2" linebreakL="true" linebreakM="true"/>
-											</layoutData>
-										</Label>
-										<Input id="idQuantidadeUltimaCompra"
-											value="{path : 'modelItem>/QtdUltCompra', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
-											enabled="false" class="desabilitado">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Input>
-										<Label text="Dt. Ult. Compra">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Label>
-										<Input id="idDataUltimaCompra" value="{path : 'modelItem>/DataUltCompra'}" enabled="false" class="desabilitado">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Input>
-										<Label text="Vl. Ult. Compra">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Label>
-										<Input id="idValorUltimaCompra"
-											value="{path : 'modelItem>/ValorUltCompra', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
-											enabled="false" class="desabilitado">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Input>
-										<Label text="Vl. Reajuste">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Label>
-										<Input id="idValorAjuste"
-											value="{path : 'modelItem>/ValorAjuste', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
-											enabled="false" class="desabilitado">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Input>
-										<Label text="Subs. Trib.">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Label>
-										<Input id="idSubstituicaoTributaria"
-											value="{path: 'modelItem>/PerSubTri', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} %"
-											enabled="false" class="desabilitado">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Input>
-										<Label text="Contrato (%)">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Label>
-										<Input id="idContrato" enabled="false" class="desabilitado"
-											value="{path: 'modelItem>/PctDescContrato', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} %">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Input>
-										<Label text="U.M.">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Label>
-										<Input id="idUnidadeMedida" enabled="false" value="{path: 'modelItem>/Vrkme'}" class="desabilitado">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Input>
-										<Label text="Qtd Pallet.">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Label>
-										<Input id="idQuantidadePallet" value="{path: 'modelItem>/QntPallet'}" enabled="false" class="desabilitado">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Input>
-										<Label text="">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Label>
-										<Image src="{modelItem>/PathImg}" width="100%" height="70%">
-											<layoutData>
-												<layout:GridData span="L2 M2"/>
-											</layoutData>
-										</Image>
-									</form:content>
-								</form:SimpleForm>
-							</Toolbar>
-						</headerToolbar>
-						<columns>
-							<Column minScreenWidth="420px" width="30px" hAlign="Left" visible="false">
-								<Text text="Id" textAlign="Left"/>
-							</Column>
-							<Column minScreenWidth="320px" hAlign="Left" width="100px">
-								<Text text="Item" textAlign="Left"/>
-							</Column>
-							<Column minScreenWidth="665px" demandPopin="false" hAlign="Left">
-								<Text text="Descrição" textAlign="Left"/>
-							</Column>
-							<Column minScreenWidth="420px" demandPopin="false" hAlign="Left" width="40px">
-								<Text text="UM" textAlign="Left"/>
-							</Column>
-							<Column minScreenWidth="320px" hAlign="Left">
-								<Text text="Qnt" textAlign="Left"/>
-							</Column>
-							<Column minScreenWidth="815px" demandPopin="false" hAlign="Left">
-								<Text text="P. Tab. Líq" textAlign="Left"/>
-							</Column>
-							<Column minScreenWidth="320px" demandPopin="false" hAlign="Left">
-								<Text text="P. Vend." textAlign="Left"/>
-							</Column>
-							<Column minScreenWidth="360px" demandPopin="false" hAlign="Left">
-								<Text text="Vlr Total" textAlign="Left"/>
-							</Column>
-							<Column minScreenWidth="740px" demandPopin="false" hAlign="Left">
-								<Text text="T + ST" textAlign="Left"/>
-							</Column>
-							<Column minScreenWidth="470px" demandPopin="false" width="60px" hAlign="Center">
-								<Text text="Rent." textAlign="Left"/>
-							</Column>
-						</columns>
-						<items class="margins">
-							<ColumnListItem type="Active">
-								<cells>
-									<Text text="{path : 'modelItensPedidoGrid>IndexItem', type: 'sap.ui.model.type.Integer'}" visible="true" textAlign="Left"/>
-									<Text text="{modelItensPedidoGrid>Matnr}" textAlign="Left"/>
-									<Text text="{path: 'modelItensPedidoGrid>Maktx'}" textAlign="Left"/>
-									<Text text="{modelItensPedidoGrid>Vrkme}" textAlign="Left"/>
-									<Text text="{modelItensPedidoGrid>QtdPedida}" textAlign="Left"/>
-									<Text
-										text="R$: {path: 'modelItensPedidoGrid>ValPrecoTabelaMin', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
-										textAlign="Left"/>
-									<!--<Text-->
-									<!--	text="R$: {path: 'modelItensPedidoGrid>ValPrecoUnit', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"-->
-									<!--	textAlign="Left"/>-->
-									<Text
-										text="R$: {path: 'modelItensPedidoGrid>ValPrecoInform', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
-										textAlign="Left"/>
-									<Text
-										text="R$: {path: 'modelItensPedidoGrid>ValorTotal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
-										textAlign="Left"/>
-									<Text
-										text="R$: {path: 'modelItensPedidoGrid>ValTotItemSt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
-										textAlign="Left"/>
-									<Image src="{path : 'modelItensPedidoGrid>RentImg'}" width="30px" backgroundPosition="Center"/>
-								</cells>
-							</ColumnListItem>
-						</items>
-					</Table>
-				</content>
-				<footer>
-					<Bar>
-						<contentLeft></contentLeft>
-						<contentRight>
-							<!--<Button id="idBtnEditar" type="Emphasized" text="Atualizar" icon="sap-icon://edit" press="onAtualizarItemPress" visible="false"/>-->
-							<Button id="idBtnAdd" type="Accept" text="Inserir" icon="sap-icon://save" press="onInserirItem"/>
-							<Button id="idButton" type="Default" text="Limpar" icon="sap-icon://refresh" press="onResetaTela"/>
-						</contentRight>
-					</Bar>
-				</footer>
-			</Page>
-		</pages>
-	</App>
+<mvc:View
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:layout="sap.ui.layout"
+    xmlns:form="sap.ui.layout.form"
+    displayBlock="true"
+    controllerName="application.controller.PedidoDetalheItens"
+>
+    <App>
+        <pages>
+            <Page
+                id="idItens"
+                title="Itens do Pedido WEB"
+                contentOnlyBusy="true"
+                busy="false"
+                floatingFooter="false"
+                navButtonPress="onNavBack"
+                showNavButton="true"
+                busyIndicatorDelay="1"
+            >
+                <content>
+                    <Table
+                        id="idTableItens"
+                        growingScrollToLoad="true"
+                        inset="false"
+                        noDataText="Nenhum item inserido!"
+                        mode="Delete"
+                        delete="onDeletarItem"
+                        alternateRowColors="true"
+                        busyIndicatorDelay="0"
+                        items="{ path: 'modelItensPedidoGrid>/', sorter: { path: 'IndexItem', ascending: true }}"
+                        itemPress="onEditarItemPress"
+                    >
+                        <headerToolbar>
+                            <Toolbar
+                                height="100%"
+                                class="backGround"
+                            >
+                                <form:SimpleForm
+                                    minWidth="1024"
+                                    maxContainerCols="3"
+                                    editable="true"
+                                    layout="ResponsiveGridLayout"
+                                    labelSpanL="1"
+                                    labelSpanM="2"
+                                    emptySpanL="0"
+                                    emptySpanM="0"
+                                    columnsL="3"
+                                    columnsM="3"
+                                >
+                                    <form:content>
+                                        <Label text="Item">
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Label>
+                                        <SearchField
+                                            class="camposDialog"
+                                            id="IdItemPedido"
+                                            placeholder="Digite Código ou Nome do Produto"
+                                            enableSuggestions="true"
+                                            value="{modelItem>/Matnr}"
+                                            search="onItemChange"
+                                            suggest="onSuggestProdutos"
+                                            busyIndicatorDelay="0"
+                                            suggestionItems="{ path: 'modelProdutos>/', sorter: { path: 'Matnr', ascending: true }}"
+                                        >
+                                            <suggestionItems>
+                                                <SuggestionItem
+                                                    text="{modelProdutos>Matnr}"
+                                                    description="{modelProdutos>Maktx}"
+                                                    key="{modelProdutos>Matnr}"
+                                                />
+                                            </suggestionItems>
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </SearchField>
+                                        <Label text="Descrição">
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Label>
+                                        <Input
+                                            id="idDescricao"
+                                            enabled="false"
+                                            class="desabilitado"
+                                            value="{modelItem>/Maktx}"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Input>
+                                        <Label text="Preço Tab">
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Label>
+                                        <Input
+                                            id="idPrecoTabela"
+                                            enabled="false"
+                                            class="desabilitado"
+                                            value="{path: 'modelItem>/ValPrecoOrig', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Input>
+                                        <Label text="Canal">
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Label>
+                                        <Input
+                                            id="idCanal"
+                                            enabled="false"
+                                            class="desabilitado"
+                                            value="{path: 'modelItem>/PercCanal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} % ({path: 'modelItem>/CondPercCanal'})"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Input>
+                                        <Label text="Tab - Canal">
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Label>
+                                        <Input
+                                            id="idTabelaCanal"
+                                            value="{path: 'modelItem>/ValPrecoUnit', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+                                            enabled="false"
+                                            class="desabilitado"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Input>
+                                        <Label text="Máx. Prom.">
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Label>
+                                        <Input
+                                            id="idMaxPromocao"
+                                            value="{path: 'modelItem>/PercPromoMax', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} % ({modelItem>/CondPercPromoMax})"
+                                            enabled="false"
+                                            class="desabilitado"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Input>
+                                        <Label text="Quantidade">
+                                            <layoutData>
+                                                <layout:GridData
+                                                    span="L2 M2"
+                                                    linebreakL="true"
+                                                />
+                                            </layoutData>
+                                        </Label>
+                                        <Input
+                                            id="idQuantidade"
+                                            value="{modelItem>/QtdPedida}"
+                                            class="camposDialog"
+                                            editable="true"
+                                            change="onQuantidadeChange"
+                                            submit="onFocusQnt"
+                                            liveChange="onLiveChangeQuantidade"
+                                            type="Number"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Input>
+                                        <Label text="Preço venda">
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Label>
+                                        <Input
+                                            id="idPrecoVenda"
+                                            value="{path: 'modelItem>/ValPrecoInform'}"
+                                            class="camposDialog"
+                                            editable="true"
+                                            change="onPrecoVendaChange"
+                                            liveChange="onLiveChangePrecoVenda"
+                                            submit="onFocusVenda"
+                                            type="Number"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Input>
+                                        <Label text="Promoção (%)">
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Label>
+                                        <Input
+                                            id="idPromocao"
+                                            class="camposDialog"
+                                            value="{ path: 'modelItem>/PercPromo' }"
+                                            editable="true"
+                                            change="onPromocaoChange"
+                                            liveChange="onLiveChangePromocao"
+                                            submit="onFocusPromo"
+                                            type="Number"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Input>
+                                        <Label text="Preço total">
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Label>
+                                        <Input
+                                            id="idPrecoTotal"
+                                            enabled="false"
+                                            class="desabilitado"
+                                            value="{path: 'modelItem>/ValorTotal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' } }"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Input>
+                                        <Label text="Total c/ ST">
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Label>
+                                        <Input
+                                            id="idTotalComST"
+                                            enabled="false"
+                                            class="desabilitado"
+                                            value="{path: 'modelItem>/ValTotItemSt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Input>
+                                        <Label text="Preço Caixa c/ ST">
+                                            <layoutData>
+                                                <layout:GridData
+                                                    span="L2 M2"
+                                                    linebreakL="true"
+                                                />
+                                            </layoutData>
+                                        </Label>
+                                        <Input
+                                            id="idPrecoComST"
+                                            enabled="false"
+                                            class="desabilitado"
+                                            value="{path: 'modelItem>/ValPrecoUnitSt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Input>
+                                        <Label text="Preço Unid.">
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Label>
+                                        <Input
+                                            id="idPrecoUnidade"
+                                            value="{path: 'modelItem>/ValPrecoUnitFat', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+                                            enabled="false"
+                                            class="camposDialogPRECOUNI"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Input>
+                                        <Label text="Preço Unid. c/ ST">
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Label>
+                                        <Input
+                                            id="idPrecoUnidadeComST"
+                                            enabled="false"
+                                            value="{path: 'modelItem>/ValPrecoUnitStFat', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+                                            class="camposDialogPRECOUNI"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Input>
+                                        <Label text="Verba Disp.">
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Label>
+                                        <Input
+                                            id="idVerbaDisponivel"
+                                            enabled="false"
+                                            value="{path: 'modelItem>/VerbaRepres', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+                                            class="desabilitado"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Input>
+                                        <Label text="Verba">
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Label>
+                                        <Input
+                                            id="idVerba"
+                                            enabled="false"
+                                            value="{path: 'modelItem>/ValVerbaItem', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+                                            class="desabilitado"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Input>
+                                        <Label
+                                            text="Preço Mínimo"
+                                            visible="false"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Label>
+                                        <Input
+                                            id="idPrecoMinimo"
+                                            visible="false"
+                                            enabled="false"
+                                            value="{path: 'modelItem>/ValPrecoMin', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+                                            class="desabilitado"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Input>
+                                        <Label text="Rebaixa">
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Label>
+                                        <Input
+                                            id="idRebaixa"
+                                            enabled="false"
+                                            value="{path: 'modelItem>/ValPctDescontoReduc', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} % ({path: 'modelItem>/CondCampFlex'})"
+                                            class="desabilitado"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Input>
+                                        <Label text="Rentab. (%)">
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Label>
+                                        <Image
+                                            id="idRentImg"
+                                            src="{path : 'modelItem>/RentImg'}"
+                                            width="40%"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L1 M1" />
+                                            </layoutData>
+                                        </Image>
+                                        <Input
+                                            id="idRentabilidade"
+                                            value="{path : 'modelItem>/PercLucro'} %"
+                                            enabled="false"
+                                            class="desabilitado"
+                                            visible="false"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L1 M1" />
+                                            </layoutData>
+                                        </Input>
+                                        <Label text="Qt. Ult. Compra">
+                                            <layoutData>
+                                                <layout:GridData
+                                                    span="L2 M2"
+                                                    linebreakL="true"
+                                                    linebreakM="true"
+                                                />
+                                            </layoutData>
+                                        </Label>
+                                        <Input
+                                            id="idQuantidadeUltimaCompra"
+                                            value="{path : 'modelItem>/QtdUltCompra', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+                                            enabled="false"
+                                            class="desabilitado"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Input>
+                                        <Label text="Dt. Ult. Compra">
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Label>
+                                        <Input
+                                            id="idDataUltimaCompra"
+                                            value="{path : 'modelItem>/DataUltCompra'}"
+                                            enabled="false"
+                                            class="desabilitado"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Input>
+                                        <Label text="Vl. Ult. Compra">
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Label>
+                                        <Input
+                                            id="idValorUltimaCompra"
+                                            value="{path : 'modelItem>/ValorUltCompra', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+                                            enabled="false"
+                                            class="desabilitado"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Input>
+                                        <Label text="Vl. Reajuste">
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Label>
+                                        <Input
+                                            id="idValorAjuste"
+                                            value="{path : 'modelItem>/ValorAjuste', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+                                            enabled="false"
+                                            class="desabilitado"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Input>
+                                        <Label text="Subs. Trib.">
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Label>
+                                        <Input
+                                            id="idSubstituicaoTributaria"
+                                            value="{path: 'modelItem>/PerSubTri', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} %"
+                                            enabled="false"
+                                            class="desabilitado"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Input>
+                                        <Label text="Contrato (%)">
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Label>
+                                        <Input
+                                            id="idContrato"
+                                            enabled="false"
+                                            class="desabilitado"
+                                            value="{path: 'modelItem>/PctDescContrato', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} %"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Input>
+                                        <Label text="U.M.">
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Label>
+                                        <Input
+                                            id="idUnidadeMedida"
+                                            enabled="false"
+                                            value="{path: 'modelItem>/Vrkme'}"
+                                            class="desabilitado"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Input>
+                                        <Label text="Qtd Pallet.">
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Label>
+                                        <Input
+                                            id="idQuantidadePallet"
+                                            value="{path: 'modelItem>/QntPallet'}"
+                                            enabled="false"
+                                            class="desabilitado"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Input>
+                                        <Label text="">
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Label>
+                                        <Image
+                                            src="{modelItem>/PathImg}"
+                                            width="100%"
+                                            height="70%"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" />
+                                            </layoutData>
+                                        </Image>
+                                    </form:content>
+                                </form:SimpleForm>
+                            </Toolbar>
+                        </headerToolbar>
+                        <columns>
+                            <Column
+                                minScreenWidth="420px"
+                                width="30px"
+                                hAlign="Left"
+                                visible="false"
+                            >
+                                <Text
+                                    text="Id"
+                                    textAlign="Left"
+                                />
+                            </Column>
+                            <Column
+                                minScreenWidth="320px"
+                                hAlign="Left"
+                                width="100px"
+                            >
+                                <Text
+                                    text="Item"
+                                    textAlign="Left"
+                                />
+                            </Column>
+                            <Column
+                                minScreenWidth="665px"
+                                demandPopin="false"
+                                hAlign="Left"
+                            >
+                                <Text
+                                    text="Descrição"
+                                    textAlign="Left"
+                                />
+                            </Column>
+                            <Column
+                                minScreenWidth="420px"
+                                demandPopin="false"
+                                hAlign="Left"
+                                width="40px"
+                            >
+                                <Text
+                                    text="UM"
+                                    textAlign="Left"
+                                />
+                            </Column>
+                            <Column
+                                minScreenWidth="320px"
+                                hAlign="Left"
+                            >
+                                <Text
+                                    text="Qnt"
+                                    textAlign="Left"
+                                />
+                            </Column>
+                            <Column
+                                minScreenWidth="815px"
+                                demandPopin="false"
+                                hAlign="Left"
+                            >
+                                <Text
+                                    text="P. Tab. Líq"
+                                    textAlign="Left"
+                                />
+                            </Column>
+                            <Column
+                                minScreenWidth="320px"
+                                demandPopin="false"
+                                hAlign="Left"
+                            >
+                                <Text
+                                    text="P. Vend."
+                                    textAlign="Left"
+                                />
+                            </Column>
+                            <Column
+                                minScreenWidth="360px"
+                                demandPopin="false"
+                                hAlign="Left"
+                            >
+                                <Text
+                                    text="Vlr Total"
+                                    textAlign="Left"
+                                />
+                            </Column>
+                            <Column
+                                minScreenWidth="740px"
+                                demandPopin="false"
+                                hAlign="Left"
+                            >
+                                <Text
+                                    text="T + ST"
+                                    textAlign="Left"
+                                />
+                            </Column>
+                            <Column
+                                minScreenWidth="470px"
+                                demandPopin="false"
+                                width="60px"
+                                hAlign="Center"
+                            >
+                                <Text
+                                    text="Rent."
+                                    textAlign="Left"
+                                />
+                            </Column>
+                        </columns>
+                        <items class="margins">
+                            <ColumnListItem type="Active">
+                                <cells>
+                                    <Text
+                                        text="{path : 'modelItensPedidoGrid>IndexItem', type: 'sap.ui.model.type.Integer'}"
+                                        visible="true"
+                                        textAlign="Left"
+                                    />
+                                    <Text
+                                        text="{modelItensPedidoGrid>Matnr}"
+                                        textAlign="Left"
+                                    />
+                                    <Text
+                                        text="{path: 'modelItensPedidoGrid>Maktx'}"
+                                        textAlign="Left"
+                                    />
+                                    <Text
+                                        text="{modelItensPedidoGrid>Vrkme}"
+                                        textAlign="Left"
+                                    />
+                                    <Text
+                                        text="{modelItensPedidoGrid>QtdPedida}"
+                                        textAlign="Left"
+                                    />
+                                    <Text
+                                        text="R$: {path: 'modelItensPedidoGrid>ValPrecoTabelaMin', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99'}}"
+                                        textAlign="Left"
+                                    />
+                                    <Text
+                                        text="R$: {path: 'modelItensPedidoGrid>ValPrecoInform', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+                                        textAlign="Left"
+                                    />
+                                    <Text
+                                        text="R$: {path: 'modelItensPedidoGrid>ValorTotal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+                                        textAlign="Left"
+                                    />
+                                    <Text
+                                        text="R$: {path: 'modelItensPedidoGrid>ValTotItemSt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+                                        textAlign="Left"
+                                    />
+                                    <Image
+                                        src="{path : 'modelItensPedidoGrid>RentImg'}"
+                                        width="30px"
+                                        backgroundPosition="Center"
+                                    />
+                                </cells>
+                            </ColumnListItem>
+                        </items>
+                    </Table>
+                </content>
+                <footer>
+                    <Bar>
+                        <contentLeft />
+                        <contentRight>
+                            <!--<Button id="idBtnEditar" type="Emphasized" text="Atualizar" icon="sap-icon://edit" press="onAtualizarItemPress" visible="false"/>-->
+                            <Button
+                                id="idBtnAdd"
+                                type="Accept"
+                                text="Inserir"
+                                icon="sap-icon://save"
+                                press="onInserirItem"
+                            />
+                            <Button
+                                id="idButton"
+                                type="Default"
+                                text="Limpar"
+                                icon="sap-icon://refresh"
+                                press="onResetaTela"
+                            />
+                        </contentRight>
+                    </Bar>
+                </footer>
+            </Page>
+        </pages>
+    </App>
 </mvc:View>

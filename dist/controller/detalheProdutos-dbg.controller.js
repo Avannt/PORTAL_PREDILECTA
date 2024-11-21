@@ -66,7 +66,7 @@ sap.ui.define([
 
 			that.oModel.read("/Produtos", {
 				urlParameters: {
-					"$filter": "IvUsuario eq '" + repres + "'"
+					"$filter": "Usuario eq '" + repres + "' and Werks eq '" + werks + "'"
 				},
 				success: function (retorno) {
 

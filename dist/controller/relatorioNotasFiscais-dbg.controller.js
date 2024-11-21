@@ -438,7 +438,7 @@ sap.ui.define([
 
 			var that = this;
 
-			debugger;
+			
 
 			var NF = that.getModel("modelParamDialog").getProperty("/Nfenum");
 			var Werks = that.getModel("modelParamDialog").getProperty("/Werks");
@@ -490,7 +490,7 @@ sap.ui.define([
 					vetorStatus.nodes[3].stateText = "OK - " + retorno.DataLibPortaria;
 					vetorStatus.nodes[3].texts = "Mercadoria saiu da fabrica.";
 
-					debugger;
+					
 					if (retorno.Inco1 == 'FOB') {
 
 						vetorStatus.nodes.splice(4, 1);
@@ -539,31 +539,63 @@ sap.ui.define([
 							if (retorno.DataEntregaReal != '' && retorno.DataEntregaReal != "00/00/0000" && retorno.DataEntregaReal != "undefined") {
 
 								//Index 6 - Entrega Final
-								vetorStatus.lanes[5].state = "Positive";
-								vetorStatus.nodes[6].state = "Positive";
-								vetorStatus.nodes[5].focused = true;
-								vetorStatus.nodes[6].stateText = "OK - " + retorno.DataEntregaReal;
+								try{
 
-								if (retorno.DataAgendada != "" && retorno.DataAgendada != "00/00/0000" && retorno.DataAgendada != "undefined") {
+									vetorStatus.lanes[5].state = "Positive";
+									vetorStatus.nodes[6].state = "Positive";
+									vetorStatus.nodes[5].focused = true;
+									vetorStatus.nodes[6].stateText = "OK - " + retorno.DataEntregaReal;
+	
+									if (retorno.DataAgendada != "" && retorno.DataAgendada != "00/00/0000" && retorno.DataAgendada != "undefined") {
+	
+										vetorStatus.nodes[6].texts = ["Data agendada: " + retorno.DataAgendada];
+	
+									} else if (retorno.DataEstimadaEntrega != "" && retorno.DataAgendada != "00/00/0000" && retorno.DataAgendada != "undefined") {
+	
+										vetorStatus.nodes[6].texts = ["Prev Entrega: " + retorno.DataEstimadaEntrega];
+									}
+								} catch(x){
 
-									vetorStatus.nodes[6].texts = ["Data agendada: " + retorno.DataAgendada];
+									vetorStatus.lanes[4].state = "Positive";
+									vetorStatus.nodes[5].state = "Positive";
+									vetorStatus.nodes[4].focused = true;
+									vetorStatus.nodes[5].stateText = "OK - " + retorno.DataEntregaReal;
+	
+									if (retorno.DataAgendada != "" && retorno.DataAgendada != "00/00/0000" && retorno.DataAgendada != "undefined") {
+	
+										vetorStatus.nodes[5].texts = ["Data agendada: " + retorno.DataAgendada];
+	
+									} else if (retorno.DataEstimadaEntrega != "" && retorno.DataAgendada != "00/00/0000" && retorno.DataAgendada != "undefined") {
+	
+										vetorStatus.nodes[5].texts = ["Prev Entrega: " + retorno.DataEstimadaEntrega];
+									}
 
-								} else if (retorno.DataEstimadaEntrega != "" && retorno.DataAgendada != "00/00/0000" && retorno.DataAgendada != "undefined") {
-
-									vetorStatus.nodes[6].texts = ["Prev Entrega: " + retorno.DataEstimadaEntrega];
 								}
 
 							} else {
 
-								if (retorno.DataAgendada != "" && retorno.DataAgendada != "00/00/0000" && retorno.DataAgendada != "undefined") {
+								try {
 
-									vetorStatus.nodes[6].texts = ["Data agendada: " + retorno.DataAgendada];
+									if (retorno.DataAgendada != "" && retorno.DataAgendada != "00/00/0000" && retorno.DataAgendada != "undefined") {
+	
+										vetorStatus.nodes[6].texts = ["Data agendada: " + retorno.DataAgendada];
+	
+									} else if (retorno.DataEstimadaEntrega != "" && retorno.DataAgendada != "00/00/0000" && retorno.DataAgendada != "undefined") {
+	
+										vetorStatus.nodes[6].texts = ["Prev Entrega: " + retorno.DataEstimadaEntrega];
+									}
+								} catch(x){
 
-								} else if (retorno.DataEstimadaEntrega != "" && retorno.DataAgendada != "00/00/0000" && retorno.DataAgendada != "undefined") {
-
-									vetorStatus.nodes[6].texts = ["Prev Entrega: " + retorno.DataEstimadaEntrega];
+									
+									if (retorno.DataAgendada != "" && retorno.DataAgendada != "00/00/0000" && retorno.DataAgendada != "undefined") {
+										
+										vetorStatus.nodes[5].texts = ["Data agendada: " + retorno.DataAgendada];
+										
+									} else if (retorno.DataEstimadaEntrega != "" && retorno.DataAgendada != "00/00/0000" && retorno.DataAgendada != "undefined") {
+										
+										vetorStatus.nodes[5].texts = ["Prev Entrega: " + retorno.DataEstimadaEntrega];
+									}
 								}
-
 							}
 
 						} else {
@@ -615,7 +647,7 @@ sap.ui.define([
 
 
 
-				debugger;
+				
 				var ultimono = vetorStatus.nodes.length;
 				var ultimoIndex = vetorStatus.lanes.length - 1;
 
@@ -623,7 +655,7 @@ sap.ui.define([
 
 					var campoNF = vetorOcorrencias[i].NF;
 
-					debugger;
+					
 
 					if (campoNF.includes(NF)) {
 

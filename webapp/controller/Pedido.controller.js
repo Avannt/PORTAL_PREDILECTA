@@ -343,7 +343,7 @@ sap.ui.define([
 								sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
 							} else {
 
-								// debugger;
+								//
 
 								var dataAtual = new Date();
 								var regime = that.getModel("Cliente").getData().RegimeEspecial;
