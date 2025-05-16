@@ -197,7 +197,7 @@
                                                 forceSelection="false"
                                                 selectedKey="{modelPedido>/Werks}"
                                                 showSecondaryValues="false"
-                                                items="{ path: 'modelCentros>/', sorter: { path: 'Werks', ascending: true }}"
+                                                items="{ path: 'modelCentros>/', sorter: { path: 'Werks', descending: false }}"
                                                 change="onChangeEstabelecimento"
                                                 busyIndicatorDelay="0"
                                                 busy="{modelBusy>Centro}"
@@ -895,6 +895,17 @@
                                                     textAlign="Left"
                                                 />
                                             </Column>
+                                            <Column
+                                                minScreenWidth="1024px"
+                                                demandPopin="true"
+                                                width="80px"
+                                                hAlign="Center"
+                                            >
+                                                <Text
+                                                    text="Rent.%"
+                                                    textAlign="Left"
+                                                />
+                                            </Column>
                                         </columns>
                                         <items class="margins">
                                             <ColumnListItem type="Inactive">
@@ -945,7 +956,7 @@
                                                         backgroundPosition="Center"
                                                     />
                                                     <!--<ObjectListItem number="{path : 'modelItensPedidoGrid>PercLucro', formatter: '.myFormatterCodEmpresa' }%" numberState="{= ${modelItensPedidoGrid>PercLucro} >= 0 ? 'Success' : 'Error' }" hAlign="Righ+t"/>-->
-                                                    <!--<ObjectListItem number="{path : 'modelItensPedidoGrid>PercLucro', formatter: '.myFormatterRentabilidade' }%" numberState="{= ${modelItensPedidoGrid>PercLucro} >= 0 ? 'Success' : 'Error' }" hAlign="R+ight"/>-->
+                                                    <ObjectListItem number="{path : 'modelItensPedidoGrid>PercLucro', formatter: '.myFormatterRentabilidade' }%" numberState="{= ${modelItensPedidoGrid>PercLucro} >= 0 ? 'Success' : 'Error' }" hAlign="Right"/>
                                                 </cells>
                                             </ColumnListItem>
                                         </items>
@@ -1017,6 +1028,7 @@
                                                 enabled="true"
                                                 type="Number"
                                                 value="{modelPedido>/ValDescAplicar}"
+                                                change="onCalculaPrecoDebitarVerba"
                                             />
                                             <Label
                                                 text="Motivo Desconto Boleto"
@@ -1043,12 +1055,21 @@
                                                 type="Number"
                                                 value="{modelPedido>/ValDescAplicarBol}"
                                                 liveChange="onCalculaDescBoletoReduzido"
+                                                change="onCalculaPrecoDebitarVerba"
                                             />
                                             <Input
                                                 id="idDescontoAplicarBoletoReduz"
                                                 enabled="false"
                                                 type="Text"
                                                 value="{path: 'modelPedido>/ValDescInformBoletoReduzid', type: 'sap.ui.model.type.Float', formatOptions: { milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }}"
+                                            />
+                                            
+                                            <Label text="Valor a debitar da verba" />                                            
+                                            <Input
+                                                id="idValDispSemDebitarVerba"
+                                                value="R$ {path: 'modelPedido>/ValFatModeradorVerba', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '100' }}"
+                                                enabled="false"
+                                                class="desabilitado marginBottomInpu"
                                             />
                                         </f:content>
                                     </f:SimpleForm>
@@ -1203,7 +1224,7 @@
                                             <Label text="Desconto Disponível" />
                                             <Input
                                                 id="idDescontoDisponivelCe"
-                                                value="{path: 'modelPedido>/ValDescDispCe', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+                                                value="{ path: 'modelPedido>/ValDescDispCe', type: 'sap.ui.model.type.Float', formatOptions: { milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
                                                 enabled="false"
                                                 class="desabilitado"
                                             />
@@ -1354,13 +1375,19 @@
                                                 enabled="false"
                                                 class="desabilitado"
                                             />
-                                            <Label text="Valor Verba" />
+                                            <Label text="Valor de Investimento" />
                                             <Input
+                                                id="idVerbaPedido"
+                                                value="R$ {path: 'modelPedido>/ValFatModeradorVerba', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' } }"
+                                                enabled="false"
+                                                class="desabilitado"
+                                            />
+                                            <!-- <Input
                                                 id="idVerbaPedido"
                                                 value="R$ {path: 'modelPedido>/TotalVerba', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' } }"
                                                 enabled="false"
                                                 class="desabilitado"
-                                            />
+                                            /> -->
                                             <Label
                                                 text="Rentabilidade do pedido (%)"
                                             />

@@ -62,7 +62,7 @@ sap.ui.define([
 
 			var werks = oEvent.getSource().getSelectedKey();
 
-			that.byId("masterProdutos").setBusy(true);
+			that.byId("master").setBusy(true);
 
 			that.oModel.read("/Produtos", {
 				urlParameters: {
@@ -84,14 +84,14 @@ sap.ui.define([
 						}
 					}
 
-					that.byId("masterProdutos").setBusy(false);
+					that.byId("master").setBusy(false);
 					that.getModel("modelProdutos").setData(that.vetorProdutos);
 					that.onFilterCentro(werks);
 					
 				},
 				error: function (error) {
 
-					that.byId("masterProdutos").setBusy(false);
+					that.byId("master").setBusy(false);
 					that.onMensagemErroODATA(error);
 				}
 			});
@@ -112,7 +112,7 @@ sap.ui.define([
 		onSelectionChange: function (oEvent) {
 
 			var that = this;
-			// that.byId("detailProdutos").setBusy(true);
+			// that.byId("detail").setBusy(true);
 
 			// that.getModelGlobal("Cliente_G").setData(Cliente);
 			// this.getModelGlobal("modelAux").setProperty("/Usuario", Cliente.Lifnr);
@@ -127,7 +127,7 @@ sap.ui.define([
 			this.getModel("modelProduto").setData(Produto);
 			this.getSplitContObj().toDetail(this.createId("detail"));
 			
-			// that.byId("detailProdutos").setBusy(false);
+			// that.byId("detail").setBusy(false);
 		},
 
 		onNavBack: function () {

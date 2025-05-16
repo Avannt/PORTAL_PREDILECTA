@@ -15,12 +15,12 @@ builder:
       configuration:
         target:
           destination: PREDILECTADEV
-          url: http://predilecta:8000
+          url: http://predilectadev:8000
           client: '110'
         app:
           name: ZPORTAL
           description: ''
           package: Z_SF
-          transport: S4DK943250
+          transport: S4DK945259
         exclude:
           - /test/

@@ -123,14 +123,57 @@ sap.ui.define([
 				var oModelClientes = new JSONModel(vetorClientes);
 				that.setModel(oModelClientes, "modelClientes");
 
-				var oModelRede = new JSONModel(vetorRede);
-				that.setModel(oModelRede, "modelRedes");
+				// var oModelRede = new JSONModel(vetorRede);
+				// that.setModel(oModelRede, "modelRedes");
 
-				var oModelBandeira = new JSONModel(vetorBandeira);
-				that.setModel(oModelBandeira, "modelBandeiras");
+				// var oModelBandeira = new JSONModel(vetorBandeira);
+				// that.setModel(oModelBandeira, "modelBandeiras");
 
 				var oModelRepres = new JSONModel(vetorRepres);
 				that.setModel(oModelRepres, "modelRepres");
+
+			}).catch(function (error) {
+
+				that.onMensagemErroODATA(error);
+			});
+
+			new Promise(function (res1, rej1) {
+
+				// var parametros = that.getModel("modelParametros").getData();
+				// var VkorgIni = "";
+				// var VkorgFin = "";
+
+				// var Centros = that.getModel("modelCentros").getData();
+
+				// for(var i=0; i<Centros.length; i++){
+				// 	if(Centros[i].Werks == parametros.WerksIni){
+
+				// 		VkorgIni = Centros[i].Bukrs;
+				// 	}
+
+				// 	if(Centros[i].Werks == parametros.WerksFim){
+
+				// 		VkorgFin = Centros[i].Bukrs;
+				// 	}
+				// }
+				// parametros.LifnrIni, parametros.LifnrFim, VkorgIni, VkorgFin,
+
+				that.onBuscarRedesClientesRange(res1, rej1, that);
+
+			}).then(function (dados) {
+
+				var vetorRede = [];
+
+				vetorRede = dados;
+
+				var oModelRede = new JSONModel(vetorRede);
+				that.setModel(oModelRede, "modelRedes");
+				that.setModel(oModelRede, "modelBandeiras");
+
+				setTimeout(function () {
+
+					that.byId("idClienteIni").focus();
+				}, 500);
 
 			}).catch(function (error) {
 
@@ -144,12 +187,15 @@ sap.ui.define([
 			}).then(function (retorno) {
 
 				var vetorMaterial = retorno;
+				var vetorMaterialAux = [];
 				var vetorCategoria = [];
 				var vetorSubCategoria = [];
 				var vetorFamilia = [];
 				var vetorMarca = [];
 
 				for (var i = 0; i < vetorMaterial.length; i++) {
+
+					var vAchouMaterial = false;
 					var vAchouCategoria = false;
 					var vAchouSubCategoria = false;
 					var vAchouFamilia = false;
@@ -159,6 +205,15 @@ sap.ui.define([
 
 						if ((vetorMaterial[i].Mvgr1 == vetorCategoria[j].Mvgr1) || vetorMaterial[i].Mvgr1 == "") {
 							vAchouCategoria = true;
+
+							break;
+						}
+					}
+
+					for (var x = 0; x < vetorMaterialAux.length; x++) {
+
+						if ((vetorMaterial[i].Matnr == vetorMaterialAux[x].Matnr) || vetorMaterial[i].Matnr == "") {
+							vAchouMaterial = true;
 
 							break;
 						}
@@ -191,6 +246,10 @@ sap.ui.define([
 						}
 					}
 
+					if (vAchouMaterial == false) {
+						vetorMaterialAux.push(vetorMaterial[i]);
+					}
+					
 					if (vAchouCategoria == false) {
 						vetorCategoria.push(vetorMaterial[i]);
 					}
@@ -207,7 +266,7 @@ sap.ui.define([
 						vetorMarca.push(vetorMaterial[i]);
 					}
 				}
-				var oModelMaterial = new JSONModel(vetorMaterial);
+				var oModelMaterial = new JSONModel(vetorMaterialAux);
 				that.setModel(oModelMaterial, "modelMaterial");
 
 				var oModelCategoria = new JSONModel(vetorCategoria);

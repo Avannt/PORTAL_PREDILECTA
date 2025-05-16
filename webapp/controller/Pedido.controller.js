@@ -181,21 +181,21 @@ sap.ui.define([
 
 		formatRentabilidade: function (Value) {
 
-			if (Value == 0) {
+			// if (Value == 0) {
 
-				this.byId("table_pedidos").getColumns()[7].setVisible(false);
-				return Value;
+			// 	this.byId("table_pedidos").getColumns()[7].setVisible(false);
+			// 	return Value;
 
-			} else if (Value > -3) {
+			// } else if (Value > -3) {
 
-				this.byId("table_pedidos").getColumns()[7].setVisible(false);
-				return "";
+			// 	this.byId("table_pedidos").getColumns()[7].setVisible(false);
+			// 	return "";
 
-			} else {
+			// } else {
 
 				this.byId("table_pedidos").getColumns()[7].setVisible(true);
 				return Value + "%";
-			}
+			// }
 		},
 
 		onAfterRendering: function () {
@@ -253,6 +253,7 @@ sap.ui.define([
 		},
 
 		onPressDetailBack: function () {
+			
 			this.getSplitContObj().backDetail();
 		},
 
@@ -362,7 +363,7 @@ sap.ui.define([
 									MessageBox.show(Pedido.MsgErro, {
 										icon: sap.m.MessageBox.Icon.WARNING,
 										title: "Alerta de pendências!",
-										actions: ["Ver Título", "Continuar", "Cancelar"],
+										actions: ["Continuar","Ver Título","Cancelar"],
 										onClose: function (oAction) {
 
 											if (oAction == "Ver Título") {

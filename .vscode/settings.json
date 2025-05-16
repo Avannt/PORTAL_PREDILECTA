@@ -1,3 +1,4 @@
 {
-    "window.density.editorTabHeight": "compact"
+    "window.density.editorTabHeight": "compact",
+    "SAP HANA Database Explorer.UseObjectsDefinitionForSqlGeneration.RetentionTime": 7
 }

@@ -24,8 +24,8 @@
 					</Column>
 					<Column hAlign="Left">
 						<Text text="Empresa" />
-					</Column>
-					<Column>
+					</Column>					
+					<Column minScreenWidth="1000px" demandPopin="true" popinDisplay="Inline">
 						<Text text="Período" />
 					</Column>
 					<Column>

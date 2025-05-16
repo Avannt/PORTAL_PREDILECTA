@@ -29,7 +29,7 @@
                         delete="onDeletarItem"
                         alternateRowColors="true"
                         busyIndicatorDelay="0"
-                        items="{ path: 'modelItensPedidoGrid>/', sorter: { path: 'IndexItem', ascending: true }}"
+                        items="{ path: 'modelItensPedidoGrid>/', sorter: { path: 'IndexItem', descending: false }}"
                         itemPress="onEditarItemPress"
                     >
                         <headerToolbar>
@@ -305,7 +305,7 @@
                                                 <layout:GridData span="L2 M2" />
                                             </layoutData>
                                         </Input>
-                                        <Label text="Verba">
+                                        <Label text="Investimento Preço">
                                             <layoutData>
                                                 <layout:GridData span="L2 M2" />
                                             </layoutData>
@@ -379,12 +379,36 @@
                                                 <layout:GridData span="L1 M1" />
                                             </layoutData>
                                         </Input>
+                                        <Label text="% Fator Moderador Verba">
+                                            <layoutData>
+                                                <layout:GridData span="L2 M2" linebreakM="true" />
+                                            </layoutData>
+                                        </Label>
+                                        <Input
+                                            id="idFatorModeradorVerba"
+                                            value="{path : 'modelPedido>/PercFatModeradorVerba', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} %"
+                                            enabled="false"
+                                            class="desabilitado"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L1 M1" />
+                                            </layoutData>
+                                        </Input>
+                                        <Input
+                                            id="idValFatorModeradorVerba"
+                                            value="R$ {path : 'modelItem>/ValFatModeradorVerba', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+                                            enabled="false"
+                                            class="desabilitado"
+                                        >
+                                            <layoutData>
+                                                <layout:GridData span="L1 M1" />
+                                            </layoutData>
+                                        </Input>
                                         <Label text="Qt. Ult. Compra">
                                             <layoutData>
                                                 <layout:GridData
                                                     span="L2 M2"
                                                     linebreakL="true"
-                                                    linebreakM="true"
                                                 />
                                             </layoutData>
                                         </Label>
@@ -415,7 +439,7 @@
                                         </Input>
                                         <Label text="Vl. Ult. Compra">
                                             <layoutData>
-                                                <layout:GridData span="L2 M2" />
+                                                <layout:GridData span="L2 M2" linebreakM="true"/>
                                             </layoutData>
                                         </Label>
                                         <Input

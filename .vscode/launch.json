@@ -75,7 +75,7 @@
       "env": {
         "FIORI_TOOLS_URL_PARAMS": "sap-ui-xx-viewCache=false&sap-language=PT",
         "run.config": "{\"handlerId\":\"fiori_tools\",\"runnableId\":\"/home/user/projects/PORTAL_PREDILECTA\"}",
-        "FIORI_TOOLS_BACKEND_CONFIG": "[{\"path\":\"/sap\",\"destination\":\"PREDILECTAPRD\"}]"
+        "FIORI_TOOLS_BACKEND_CONFIG": "[{\"path\":\"/sap\",\"url\":\"http://predilectaqas:8010\",\"destination\":\"PREDILECTAPRD\"}]"
       }
     }
   ],

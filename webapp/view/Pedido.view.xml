@@ -1,9 +1,9 @@
 <mvc:View xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" controllerName="application.controller.Pedido"
 	displayBlock="true">
-	<SplitContainer id="SplitCont" initialDetail="detail" initialMaster="master" mode="ShowHideMode">
+	<SplitContainer id="SplitCont" initialDetail="detail" initialMaster="master" mode="ShowHideMode" >
 		<detailPages>
-			<Page id="detail" title="Pedidos" navButtonPress="navBack2">
-				<!--showNavButton="{device>/system/phone}"-->
+			<Page id="detail" title="Pedidos" navButtonPress="navBack2" showNavButton="{device>/system/phone}">
+				
 				<content>
 					<ObjectHeader id="objectHeader" title="{Cliente>/Name1}" number="{Cliente>/Kunnr}">
 						<statuses>

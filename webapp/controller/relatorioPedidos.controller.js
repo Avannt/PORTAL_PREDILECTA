@@ -81,27 +81,27 @@ sap.ui.define([
 				var vetorRepres = [];
 
 				for (var i = 0; i < vetorClientes.length; i++) {
-					var vAchouRede = false;
-					var vAchouBandeira = false;
+					// var vAchouRede = false;
+					// var vAchouBandeira = false;
 					var vAchouRepres = false;
 
-					for (var j = 0; j < vetorRede.length; j++) {
+					// for (var j = 0; j < vetorRede.length; j++) {
 
-						if ((vetorClientes[i].Kvgr4 == vetorRede[j].Kvgr4) || vetorClientes[i].Kvgr4 == "") {
-							vAchouRede = true;
+					// 	if ((vetorClientes[i].Kvgr4 == vetorRede[j].Kvgr4) || vetorClientes[i].Kvgr4 == "") {
+					// 		vAchouRede = true;
 
-							break;
-						}
-					}
+					// 		break;
+					// 	}
+					// }
 
-					for (var k = 0; k < vetorBandeira.length; k++) {
+					// for (var k = 0; k < vetorBandeira.length; k++) {
 
-						if ((vetorClientes[i].Kvgr5 == vetorBandeira[k].Kvgr5) || vetorClientes[i].Kvgr5 == "") {
-							vAchouBandeira = true;
+					// 	if ((vetorClientes[i].Kvgr5 == vetorBandeira[k].Kvgr5) || vetorClientes[i].Kvgr5 == "") {
+					// 		vAchouBandeira = true;
 
-							break;
-						}
-					}
+					// 		break;
+					// 	}
+					// }
 
 					for (var m = 0; m < vetorRepres.length; m++) {
 
@@ -111,12 +111,14 @@ sap.ui.define([
 							break;
 						}
 					}
-					if (vAchouRede == false) {
-						vetorRede.push(vetorClientes[i]);
-					}
-					if (vAchouBandeira == false) {
-						vetorBandeira.push(vetorClientes[i]);
-					}
+					
+					// if (vAchouRede == false) {
+					// 	vetorRede.push(vetorClientes[i]);
+					// }
+					// if (vAchouBandeira == false) {
+					// 	vetorBandeira.push(vetorClientes[i]);
+					// }
+
 					if (vAchouRepres == false) {
 						vetorRepres.push(vetorClientes[i]);
 					}
@@ -125,14 +127,57 @@ sap.ui.define([
 				var oModelClientes = new JSONModel(vetorClientes);
 				that.setModel(oModelClientes, "modelClientes");
 
-				var oModelRede = new JSONModel(vetorRede);
-				that.setModel(oModelRede, "modelRedes");
+				// var oModelRede = new JSONModel(vetorRede);
+				// that.setModel(oModelRede, "modelRedes");
 
-				var oModelBandeira = new JSONModel(vetorBandeira);
-				that.setModel(oModelBandeira, "modelBandeiras");
+				// var oModelBandeira = new JSONModel(vetorBandeira);
+				// that.setModel(oModelBandeira, "modelBandeiras");
 
 				var oModelRepres = new JSONModel(vetorRepres);
 				that.setModel(oModelRepres, "modelRepres");
+
+			}).catch(function (error) {
+
+				that.onMensagemErroODATA(error);
+			});
+
+			new Promise(function (res1, rej1) {
+
+				// var parametros = that.getModel("modelParametros").getData();
+				// var VkorgIni = "";
+				// var VkorgFin = "";
+
+				// var Centros = that.getModel("modelCentros").getData();
+
+				// for(var i=0; i<Centros.length; i++){
+				// 	if(Centros[i].Werks == parametros.WerksIni){
+
+				// 		VkorgIni = Centros[i].Bukrs;
+				// 	}
+
+				// 	if(Centros[i].Werks == parametros.WerksFim){
+
+				// 		VkorgFin = Centros[i].Bukrs;
+				// 	}
+				// }
+				// parametros.LifnrIni, parametros.LifnrFim, VkorgIni, VkorgFin,
+
+				that.onBuscarRedesClientesRange(res1, rej1, that);
+
+			}).then(function (dados) {
+
+				var vetorRede = [];
+
+				vetorRede = dados;
+
+				var oModelRede = new JSONModel(vetorRede);
+				that.setModel(oModelRede, "modelRedes");
+				that.setModel(oModelRede, "modelBandeiras");
+
+				setTimeout(function () {
+
+					that.byId("idClienteIni").focus();
+				}, 500);
 
 			}).catch(function (error) {
 

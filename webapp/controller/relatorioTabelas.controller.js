@@ -88,7 +88,9 @@ sap.ui.define([
 				DescTabelaPreco: "",
 				DescTipoFrete: "",
 				NomeCliente: "",
-				DescVencto: ""
+				DescVencto: "",
+				Bukrs: "",
+				Name1: ""
 			};
 
 			var modelTela = new JSONModel(aux);
@@ -145,7 +147,7 @@ sap.ui.define([
 		onCarregarPrecos: function () {
 
 			var that = this;
-			
+
 			var parametros = this.getModelGlobal("modelTela").getData();
 
 			if (parametros.Werks == "") {
@@ -249,16 +251,18 @@ sap.ui.define([
 
 					this.getModelGlobal("modelCentro").setData(this.vetorCentros[i]);
 					that.getModelGlobal("modelTela").setProperty("/UFOrigem", this.vetorCentros[i].Regio);
+					that.getModelGlobal("modelTela").setProperty("/Bukrs", this.vetorCentros[i].Bukrs);
+
 					break;
 				}
 			}
 
 			new Promise(function (res, rej) {
 
+				that.byId("idCliente").setBusy(true);
 				that.onBuscarClientes(repres, res, rej, that);
 
 			}).then(function (retorno) {
-
 				var vetorClientes = retorno;
 
 				var oModelClientes = new JSONModel(vetorClientes);
@@ -274,63 +278,88 @@ sap.ui.define([
 				that.getModelGlobal("modelTela").setProperty("/Kvgr2", "");
 				that.getModelGlobal("modelTela").setProperty("/DescKvgr2", "");
 
+				that.byId("idCliente").setBusy(false);
 				that.byId("idCliente").focus();
-
+				
+				
 			}).catch(function (error) {
 
+				that.byId("idCliente").setBusy(false);
 				that.onMensagemErroODATA(error);
 			});
-
 		},
 
 		onChangeCliente: function (oEvent) {
 
 			var that = this;
-			
+
 			new Promise(function (res, rej) {
 
 				var Repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
 				var Cliente = that.getModelGlobal("modelTela").getProperty("/Kunnr");
-				
+
 				that.oModel.read("/ClienteR(IvUsuario='" + Repres + "',IvCliente='" + Cliente + "')", {
 					success: function (retorno) {
 
 						that.vetorCliente = retorno;
 						var oModelCliente = new JSONModel(that.vetorCliente);
 						that.setModelGlobal(oModelCliente, "modelCliente");
-						
+
 						that.getModelGlobal("modelTela").setProperty("/NomeCliente", that.vetorCliente.Kunnr + " - " + that.vetorCliente.Name1);
-						
-						var oModelTbPreco = new JSONModel(that.vetorTabPrecos);
-						that.setModel(oModelTbPreco, "modelTbPreco");
-
-						var vAux = {
-							Kunnr: retorno.Kunnr,
-							Name1: retorno.Name1,
-							Pltyp: retorno.Pltyp,
-							Ptext: retorno.DescPltyp
-						};
-
-						that.vetorTabPrecos.push(vAux);
-
-						that.getModel("modelTbPreco").setData(that.vetorTabPrecos);
-						that.getModelGlobal("modelTela").setProperty("/Pltyp", that.vetorTabPrecos[0].Pltyp);
 						that.getModelGlobal("modelTela").setProperty("/UFDestino", retorno.Regio);
-						that.getModelGlobal("modelTela").setProperty("/Kvgr2", retorno.Kvgr2);
-						that.getModelGlobal("modelTela").setProperty("/DescKvgr2", retorno.Kvgr2 + " - " + retorno.DescKvgr2);
-						
+						that.getModelGlobal("modelTela").setProperty("/Name1", retorno.Name1);
+
 						res();
 
 					},
 					error: function (error) {
+
 						that.onMensagemErroODATA(error);
-						 rej();
+						rej();
 					}
 				});
 
 			}).then(function (data) {
-				that.getModelGlobal("modelTela").setProperty("/DescTabelaPreco", that.byId("idTabelaPreco").getSelectedItem().getText());
-				that.onBuscarContrato();
+
+				new Promise(function (resFrete, rejFrete) {
+
+					var Bukrs = that.getModel("modelTela").getProperty("/Bukrs");
+					var Cliente = that.getModel("modelTela").getProperty("/Kunnr");
+
+					that.onBuscarClienteEmpresa(Cliente, Bukrs, resFrete, rejFrete, that);
+
+				}).then(function (retorno) {
+
+					var oModelTbPreco = new JSONModel(that.vetorTabPrecos);
+					that.setModel(oModelTbPreco, "modelTbPreco");
+
+					var vAux = {
+						Kunnr: retorno.Kunnr,
+						Name1: that.getModelGlobal("modelTela").setProperty("/Name1"),
+						Pltyp: retorno.Pltyp,
+						Ptext: retorno.DescPltyp
+					};
+
+					that.vetorTabPrecos.push(vAux);
+
+					that.getModel("modelTbPreco").setData(that.vetorTabPrecos);
+
+					that.getModelGlobal("modelTela").setProperty("/Pltyp", that.vetorTabPrecos[0].Pltyp);
+					that.getModelGlobal("modelTela").setProperty("/Kvgr2", retorno.Kvgr2);
+					that.getModelGlobal("modelTela").setProperty("/DescKvgr2", retorno.Kvgr2 + " - " + retorno.DescKvgr2);
+
+					that.getModelGlobal("modelTela").setProperty("/DescTabelaPreco", that.byId("idTabelaPreco").getSelectedItem().getText());
+					that.onBuscarContrato();
+
+				}).catch(function (error) {
+
+					that.onMensagemErroODATA(error);
+				});
+
+
+				// that.getModelGlobal("modelTela").setProperty("/DescTabelaPreco", that.byId("idTabelaPreco").getSelectedItem().getText());
+				// that.onBuscarContrato();
+
 			}).catch(function (error) {
 
 				that.onMensagemErroODATA(error);
@@ -342,13 +371,13 @@ sap.ui.define([
 			var that = this;
 
 			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
-			
+
 			that.getModelGlobal("modelTela").setProperty("/Vencto", "");
 			that.getModelGlobal("modelTela").setProperty("/Indice", 0);
-			
+
 			that.vetorVencimentos = [];
 			that.vetorContratos = [];
-			
+
 			that.oModel.read("/Vencimentos", {
 				success: function (retorno) {
 					that.vetorVencimentos = retorno.results;
@@ -413,11 +442,11 @@ sap.ui.define([
 								that.getModelGlobal("modelTela").setProperty("/Indice", 0);
 							}
 						}
-						
+
 						if (that.getModelGlobal("modelTela").getProperty("/Vencimento") == "") {
 
 							that.byId("idVencimento").setEnabled(true);
-							
+
 						} else {
 
 							that.byId("idVencimento").setEnabled(false);
@@ -425,7 +454,7 @@ sap.ui.define([
 
 						that.getModelGlobal("modelTela").setProperty("/Vencimento", result.Zterm);
 						// that.getModelGlobal("modelTela").setProperty("/Contrato", result.ContratoInterno);
-						
+
 						that.getModelGlobal("modelTela").setProperty("/DescVencto", that.byId("idVencimento").getSelectedItem().getText());
 						that.byId("idVencimento").setEnabled(false);
 
@@ -434,30 +463,28 @@ sap.ui.define([
 						// that.getModel("modelTela").setData(that.vetorVencimentos);
 						that.byId("idVencimento").setEnabled(true);
 					}
-
 				},
 				error: function (error) {
 
 					that.onMensagemErroODATA(error);
-
 				}
 			});
 		},
-		
+
 		onChangeTabelaPreco: function (e) {
 
 			var that = this;
-			
+
 			that.getModelGlobal("modelTela").setProperty("/DescTabelaPreco", e.getSource().getSelectedItem().getText());
-			
+
 		},
-		
+
 		onChangeTipoFrete: function (e) {
 
 			var that = this;
-			
+
 			that.getModelGlobal("modelTela").setProperty("/DescTipoFrete", e.getSource().getSelectedItem().getText());
-			
+
 		},
 
 		onChangeVencimento: function (e) {
@@ -465,7 +492,7 @@ sap.ui.define([
 			var that = this;
 
 			var selectedValue = e.getSource().getSelectedKey();
-			
+
 			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
 			that.oModel = that.getModelGlobal("modelAux").getProperty("/DBModel");
 			that.getModelGlobal("modelTela").setProperty("/DescVencto", e.getSource().getSelectedItem().getText());
@@ -484,7 +511,7 @@ sap.ui.define([
 
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Kunnr", sap.ui.model.FilterOperator.StartsWith, sValue),
-				new sap.ui.model.Filter("Name1", sap.ui.model.FilterOperator.Contains, sValue)
+			new sap.ui.model.Filter("Name1", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);

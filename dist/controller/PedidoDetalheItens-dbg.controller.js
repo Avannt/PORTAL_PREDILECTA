@@ -187,7 +187,8 @@ sap.ui.define([
 				Draft: false,
 				DataUltCompraUltMes: null,
 				QtdUltCompraUltMes: 0,
-				ValorUltCompraUltMes: 0
+				ValorUltCompraUltMes: 0,
+				ValFatModeradorVerba: 0
 			};
 
 			var modelItem = new JSONModel(this.ItemPedido);

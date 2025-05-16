@@ -44,16 +44,50 @@ sap.ui.define([
 			that.vetorCliente = [];
 			that.vetorTbPreco = [];
 
-			that.oModel.read("/ClienteR(IvUsuario='" + repres + "',IvCliente='" + codigoCliente + "')", {
-				success: function (retorno) {
+			new Promise(function (resFrete, rejFrete) {
 
-					that.vetorCliente = retorno;
-					var oModelCliente = new JSONModel(that.vetorCliente);
+				that.oModel.read("/ClienteR(IvUsuario='" + repres + "',IvCliente='" + codigoCliente + "')", {
+					success: function (retorno) {
 
-					that.setModel(oModelCliente, "modelCliente");
+						resFrete(retorno)
 
-					var oModelTbPreco = new JSONModel(that.vetorTbPreco);
-					that.setModel(oModelTbPreco, "modelTbPreco");
+					},
+					error: function (error) {
+						rejFrete(error);
+					}
+				});
+
+			}).then(function (retorno) {
+
+				that.vetorCliente = retorno;
+				var oModelCliente = new JSONModel(that.vetorCliente);
+				that.setModel(oModelCliente, "modelCliente");
+
+				var oModelTbPreco = new JSONModel(that.vetorTbPreco);
+				that.setModel(oModelTbPreco, "modelTbPreco");
+
+				new Promise(function (resFrete, rejFrete) {
+
+					var Bukrs = '1';
+					var Cliente = that.getModel("modelCliente").getProperty("/Kunnr");
+
+					that.onBuscarClienteEmpresa(Cliente, Bukrs, resFrete, rejFrete, that);
+
+				}).then(function (retorno) {
+
+					that.getModel("modelCliente").setProperty("/Kvgr1", retorno.Kvgr1);
+					that.getModel("modelCliente").setProperty("/DescKvgr1", retorno.DescKvgr1);
+					that.getModel("modelCliente").setProperty("/Kvgr2", retorno.Kvgr2);
+					that.getModel("modelCliente").setProperty("/DescKvgr2", retorno.DescKvgr2);
+					that.getModel("modelCliente").setProperty("/Kvgr3", retorno.Kvgr3);
+					that.getModel("modelCliente").setProperty("/DescKvgr3", retorno.DescKvgr3);
+					that.getModel("modelCliente").setProperty("/Kvgr4", retorno.Kvgr4);
+					that.getModel("modelCliente").setProperty("/DescKvgr4", retorno.DescKvgr4);
+					that.getModel("modelCliente").setProperty("/Kvgr5", retorno.Kvgr5);
+					that.getModel("modelCliente").setProperty("/DescKvgr5", retorno.DescKvgr5);
+					that.getModel("modelCliente").setProperty("/Bzirk", retorno.Bzirk);
+					that.getModel("modelCliente").setProperty("/Pltyp", retorno.Pltyp);
+					that.getModel("modelCliente").setProperty("/Inco1", retorno.Inco1);
 
 					var vAux = {
 						Kunnr: retorno.Kunnr,
@@ -63,103 +97,112 @@ sap.ui.define([
 					};
 
 					that.vetorTbPreco.push(vAux);
-
 					that.getModel("modelTbPreco").setData(that.vetorTbPreco);
 
-				},
-				error: function (error) {
-					that.onMensagemErroODATA(error);
-				}
-			});
+					that.byId("table_ContratosAtivos").setBusy(true);
+					that.oModel.read("/Contratos", {
+						urlParameters: {
+							"$filter": "IvUsuario eq '" + repres + "' and IvCliente eq '" + codigoCliente + "'"
+						},
+						success: function (retorno) {
 
-			that.oModel.read("/Contratos", {
-				urlParameters: {
-					"$filter": "IvUsuario eq '" + repres + "'"
-				},
-				success: function (retorno) {
-					that.vetorContratosTotal = retorno.results;
-					
-					var sKvgr4 = that.getModel("modelCliente").getProperty("/Kvgr4");
-					
-					that.vetorContratos = that.vetorContratosTotal.filter(function (a) {
-						if (a.Kvgr4 == sKvgr4) {
-							return a;
+							that.vetorContratosTotal = retorno.results;
+
+							var sKvgr4 = that.getModel("modelCliente").getProperty("/Kvgr4");
+
+							that.vetorContratos = that.vetorContratosTotal.filter(function (a) {
+								if (a.Kvgr4 == sKvgr4) {
+
+									return a;
+								}
+							});
+
+							var oModelContratos = new JSONModel(that.vetorContratos);
+							that.setModel(oModelContratos, "modelContratos");
+
+							that.byId("table_ContratosAtivos").setBusy(false);
+						},
+						error: function (error) {
+
+							that.onMensagemErroODATA(error);
+							that.byId("table_ContratosAtivos").setBusy(false);
 						}
 					});
-					
-					var oModelContratos = new JSONModel(that.vetorContratos);
-					that.setModel(oModelContratos, "modelContratos");
-				},
-				error: function (error) {
-					that.onMensagemErroODATA(error);
-				}
-			});
 
-			that.oModel.read("/TitulosAbertos", {
-				urlParameters: {
-					"$filter": "IvUsuario eq '" + repres + "'"
-				},
-				success: function (retorno) {
-					that.vetorTitulosTotal = retorno.results;
-					
-					var sKunnr = that.getModel("modelCliente").getProperty("/Kunnr");
-					
-					that.vetorTitulos = that.vetorTitulosTotal.filter(function (a) {
-						if (a.Kunnr == sKunnr) {
-							return a;
-						}
-					});
-					
-					var oModelTitulos = new JSONModel(that.vetorTitulos);
-					that.setModel(oModelTitulos, "modelTitulos");
+					that.oModel.read("/TitulosAbertos", {
+						urlParameters: {
+							"$filter": "IvUsuario eq '" + repres + "'"
+						},
+						success: function (retorno) {
+							that.vetorTitulosTotal = retorno.results;
 
-					// var sValue = that.getModel("modelCliente").getProperty("/Kunnr");
-					// var aFilters = [];
-					// var oFilter = [new sap.ui.model.Filter("Kunnr", sap.ui.model.FilterOperator.Contains, sValue)];
+							var sKunnr = that.getModel("modelCliente").getProperty("/Kunnr");
 
-					// var allFilters = new sap.ui.model.Filter(oFilter, false);
-					// aFilters.push(allFilters);
-					// this.byId("tabDuplicatas").getBinding("items").filter(aFilters, "Application");
+							that.vetorTitulos = that.vetorTitulosTotal.filter(function (a) {
+								if (a.Kunnr == sKunnr) {
+									return a;
+								}
+							});
 
-					that.vetorTitulosTotal = [];
-					var oModelTitulosTotal = new JSONModel(that.vetorTitulosTotal);
-					that.setModel(oModelTitulosTotal, "modelTitulosTotal");
+							var oModelTitulos = new JSONModel(that.vetorTitulos);
+							that.setModel(oModelTitulos, "modelTitulos");
 
-					var vTotalEmp = 0;
-					for (var i = 0; i < that.vetorTitulos.length; i++) {
-						var vAchouEmpresa = false;
-						for (var j = 0; j < that.vetorTitulosTotal.length; j++) {
+							// var sValue = that.getModel("modelCliente").getProperty("/Kunnr");
+							// var aFilters = [];
+							// var oFilter = [new sap.ui.model.Filter("Kunnr", sap.ui.model.FilterOperator.Contains, sValue)];
 
-							if (that.vetorTitulos[i].Bukrs == that.vetorTitulosTotal[j].Bukrs) {
+							// var allFilters = new sap.ui.model.Filter(oFilter, false);
+							// aFilters.push(allFilters);
+							// this.byId("tabDuplicatas").getBinding("items").filter(aFilters, "Application");
 
-								vAchouEmpresa = true;
+							that.vetorTitulosTotal = [];
+							var oModelTitulosTotal = new JSONModel(that.vetorTitulosTotal);
+							that.setModel(oModelTitulosTotal, "modelTitulosTotal");
 
-								that.vetorTitulosTotal[j].ValTotal = parseFloat(that.vetorTitulosTotal[j].ValTotal) + Math.round(parseFloat(that.vetorTitulos[
-									i].Dmbtr) * 100) / 100;
-								that.vetorTitulosTotal[j].ValTotal = parseFloat(that.vetorTitulosTotal[j].ValTotal).toFixed(2);
+							var vTotalEmp = 0;
+							for (var i = 0; i < that.vetorTitulos.length; i++) {
+								var vAchouEmpresa = false;
+								for (var j = 0; j < that.vetorTitulosTotal.length; j++) {
 
+									if (that.vetorTitulos[i].Bukrs == that.vetorTitulosTotal[j].Bukrs) {
+
+										vAchouEmpresa = true;
+
+										that.vetorTitulosTotal[j].ValTotal = parseFloat(that.vetorTitulosTotal[j].ValTotal) + Math.round(parseFloat(that.vetorTitulos[
+											i].Dmbtr) * 100) / 100;
+										that.vetorTitulosTotal[j].ValTotal = parseFloat(that.vetorTitulosTotal[j].ValTotal).toFixed(2);
+
+									}
+								}
+								if (vAchouEmpresa == false) {
+									var vAux = {
+										Bukrs: that.vetorTitulos[i].Bukrs,
+										Butxt: that.vetorTitulos[i].Butxt,
+										ValTotal: parseFloat(that.vetorTitulos[i].Dmbtr)
+									};
+
+									that.vetorTitulosTotal.push(vAux);
+
+								}
+								vTotalEmp += parseFloat(that.vetorTitulos[i].ValTotal);
 							}
+
+							// that.byId("master").setBusy(false);
+							that.getModel("modelTitulosTotal").setData(that.vetorTitulosTotal);
+
+						},
+						error: function (error) {
+							that.onMensagemErroODATA(error);
 						}
-						if (vAchouEmpresa == false) {
-							var vAux = {
-								Bukrs: that.vetorTitulos[i].Bukrs,
-								Butxt: that.vetorTitulos[i].Butxt,
-								ValTotal: parseFloat(that.vetorTitulos[i].Dmbtr)
-							};
+					});
 
-							that.vetorTitulosTotal.push(vAux);
+				}).catch(function (error) {
 
-						}
-						vTotalEmp += parseFloat(that.vetorTitulos[i].ValTotal);
-					}
-
-					// that.byId("master").setBusy(false);
-					that.getModel("modelTitulosTotal").setData(that.vetorTitulosTotal);
-
-				},
-				error: function (error) {
 					that.onMensagemErroODATA(error);
-				}
+				});
+			}).catch(function (error) {
+
+				that.onMensagemErroODATA(error);
 			});
 		}
 	});

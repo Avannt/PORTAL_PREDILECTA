@@ -6,8 +6,10 @@ sap.ui.define([
 	"sap/ui/core/UIComponent",
 	"sap/m/MessageBox",
 	"sap/ui/model/json/JSONModel",
-	"sap/ui/core/format/FileSizeFormat"
-], function (Controller, History, UIComponent, MessageBox, JSONModel, FileSizeFormat) {
+	"sap/ui/core/format/FileSizeFormat",
+	'sap/ui/model/Filter',
+	'sap/ui/model/FilterOperator'
+], function (Controller, History, UIComponent, MessageBox, JSONModel, FileSizeFormat, Filter, FilterOperator) {
 	"use strict";
 
 	return Controller.extend("application.controller.BaseController", {
@@ -204,6 +206,10 @@ sap.ui.define([
 				if (property == "LogVerbaRentNeg" || property == "LogProposta") {
 					Obj[property] = String(Obj[property]) == "true" ? true : false;
 				}
+
+				if (Obj[property] == 'isNaN') {
+					Obj[property] = "0.00";
+				}
 			}
 
 			return Obj;
@@ -250,6 +256,20 @@ sap.ui.define([
 				success: function (retorno) {
 
 					res(retorno);
+				},
+				error: function (error) {
+
+					rej(error);
+				}
+			});
+		},
+
+		onBuscarClienteEmpresa: function (Kunnr, Bukrs, res, rej, that) {
+
+			that.oModel.read("/P_Cliente_Empresa(Kunnr='" + Kunnr + "',Vkorg='" + Bukrs + "')", {
+				success: function (result) {
+
+					res(result);
 				},
 				error: function (error) {
 
@@ -403,6 +423,61 @@ sap.ui.define([
 				urlParameters: {
 					"$filter": "IvUsuario eq '" + CodRepres + "'"
 				},
+				success: function (retorno) {
+
+					res(retorno.results);
+				},
+				error: function (error) {
+					rej(error);
+				}
+			});
+		},
+
+		onBuscarRedesClientes: function (CodRepres, Empresa, res, rej, that) {
+
+			that.oModel.read("/P_ClientesRedes", {
+				urlParameters: {
+					"$filter": "Usuario eq '" + CodRepres + "' and Vkorg eq '" + Empresa + "'"
+				},
+				success: function (retorno) {
+
+					res(retorno.results);
+				},
+				error: function (error) {
+					rej(error);
+				}
+			});
+		},
+
+		onBuscarRedesClientesRange: function (res, rej, that) {
+
+			// RepresIni, RepresFin, EmpresaIni, EmpresaFin, 
+
+			// var filters = [];
+
+			// var oFilterRepres = new Filter({
+			// 	path: "Repres",
+			// 	operator: FilterOperator.EQ,
+			// 	value1: RepresIni,
+			// 	value2: RepresFin
+			// });
+
+			// filters.push(oFilterRepres);
+
+			// var oFilterEmpresa = new Filter({
+			// 	path: "Vkorg",
+			// 	operator: FilterOperator.EQ,
+			// 	value1: EmpresaIni,
+			// 	value2: EmpresaFin
+			// });
+
+			// filters.push(oFilterEmpresa);
+
+			that.oModel.read("/P_ClientesRedesRangeSet", {
+				// Filter: [ oFilterRepres, oFilterEmpresa ],
+				// urlParameters: {
+				// 	"$filter": "Repres eq '" + RepresIni + "' and Vkorg eq '" + EmpresaIni + "'"
+				// },
 				success: function (retorno) {
 
 					res(retorno.results);

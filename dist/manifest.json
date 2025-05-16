@@ -36,13 +36,14 @@
             "phone": true
         },
         "supportedThemes": [
-            "sap_bluecrystal"
+            "sap_fiori_3", "sap_horizon"
         ],
         "icons": {
             "icon": "sap-icon://cart-2"
         }
     },
     "sap.ui5": {
+        "flexEnabled": true,
         "_version": "1.2.0",
         "rootView": {
             "viewName": "application.view.App",

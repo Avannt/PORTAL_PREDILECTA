@@ -111,14 +111,57 @@ sap.ui.define([
 				var oModelClientes = new JSONModel(vetorClientes);
 				that.setModel(oModelClientes, "modelClientes");
 
-				var oModelRede = new JSONModel(vetorRede);
-				that.setModel(oModelRede, "modelRedes");
+				// var oModelRede = new JSONModel(vetorRede);
+				// that.setModel(oModelRede, "modelRedes");
 
-				var oModelBandeira = new JSONModel(vetorBandeira);
-				that.setModel(oModelBandeira, "modelBandeiras");
+				// var oModelBandeira = new JSONModel(vetorBandeira);
+				// that.setModel(oModelBandeira, "modelBandeiras");
 
 				var oModelRepres = new JSONModel(vetorRepres);
 				that.setModel(oModelRepres, "modelRepres");
+
+			}).catch(function (error) {
+
+				that.onMensagemErroODATA(error);
+			});
+
+			new Promise(function (res1, rej1) {
+
+				// var parametros = that.getModel("modelParametros").getData();
+				// var VkorgIni = "";
+				// var VkorgFin = "";
+
+				// var Centros = that.getModel("modelCentros").getData();
+
+				// for(var i=0; i<Centros.length; i++){
+				// 	if(Centros[i].Werks == parametros.WerksIni){
+
+				// 		VkorgIni = Centros[i].Bukrs;
+				// 	}
+
+				// 	if(Centros[i].Werks == parametros.WerksFim){
+
+				// 		VkorgFin = Centros[i].Bukrs;
+				// 	}
+				// }
+				// parametros.LifnrIni, parametros.LifnrFim, VkorgIni, VkorgFin,
+
+				that.onBuscarRedesClientesRange(res1, rej1, that);
+
+			}).then(function (dados) {
+
+				var vetorRede = [];
+
+				vetorRede = dados;
+
+				var oModelRede = new JSONModel(vetorRede);
+				that.setModel(oModelRede, "modelRedes");
+				that.setModel(oModelRede, "modelBandeiras");
+
+				setTimeout(function () {
+
+					that.byId("idClienteIni").focus();
+				}, 500);
 
 			}).catch(function (error) {
 

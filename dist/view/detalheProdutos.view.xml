@@ -17,7 +17,7 @@
     >
         <masterPages>
             <Page
-                id="masterProdutos"
+                id="master"
                 title="Produtos"
                 class="sapUiStdPage"
                 showNavButton="true"
@@ -149,11 +149,11 @@
         </masterPages>
         <detailPages>
             <Page
-                id="detailProdutos"
+                id="detail"
                 title="Produtos"
                 class="sapUiStdPage"
-                showNavButton="true"
-                navButtonPress="onPressDetailBack"
+                navButtonPress="onPressDetailBack"                
+                showNavButton="{device>/system/phone}"
             >
                 <content>
                     <IconTabBar id="idTopLevelIconTabBar">

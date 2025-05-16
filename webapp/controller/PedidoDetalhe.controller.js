@@ -223,6 +223,8 @@ sap.ui.define([
 
 			that.byId("idTopLevelIconTabBar").setSelectedKey("tab1");
 
+			debugger
+
 			that.onCriarModelPedido();
 
 			var vetorPromises = [];
@@ -545,24 +547,14 @@ sap.ui.define([
 			this.getModelGlobal("modelPedido").setProperty("/HoraIni", data[1]);
 			this.getModelGlobal("modelPedido").setProperty("/DataFim", data[0]);
 			this.getModelGlobal("modelPedido").setProperty("/HoraFim", data[1]);
+
+			this.getModelGlobal("modelPedido").setProperty("/Txjcd", this.getModel("modelCliente").getProperty("/Txjcd").replace(" ", "_"));
 			this.getModelGlobal("modelPedido").setProperty("/Kunnr", this.getModel("modelCliente").getProperty("/Kunnr"));
-			this.getModelGlobal("modelPedido").setProperty("/Kvgr1", this.getModel("modelCliente").getProperty("/Kvgr1"));
-			this.getModelGlobal("modelPedido").setProperty("/Kvgr2", this.getModel("modelCliente").getProperty("/Kvgr2"));
-			this.getModelGlobal("modelPedido").setProperty("/Kvgr3", this.getModel("modelCliente").getProperty("/Kvgr3"));
-			this.getModelGlobal("modelPedido").setProperty("/Kvgr4", this.getModel("modelCliente").getProperty("/Kvgr4"));
-			this.getModelGlobal("modelPedido").setProperty("/Kvgr5", this.getModel("modelCliente").getProperty("/Kvgr5"));
-			this.getModelGlobal("modelPedido").setProperty("/Bzirk", this.getModel("modelCliente").getProperty("/Bzirk"));
-			this.getModelGlobal("modelPedido").setProperty("/Txjcd", this.getModel("modelCliente").getProperty("/Txjcd"));
-			this.getModelGlobal("modelPedido").setProperty("/Pltyp", this.getModel("modelCliente").getProperty("/Pltyp"));
 			this.getModelGlobal("modelPedido").setProperty("/EmailRepres", this.getModelGlobal("modelAux").getProperty("/Email"));
 			this.getModelGlobal("modelPedido").setProperty("/Tdt", this.getModel("modelCliente").getProperty("/Tdt"));
 			this.getModelGlobal("modelPedido").setProperty("/EmailCliente", this.getModel("modelCliente").getProperty("/EmailComprador"));
 
 			this.getModelGlobal("modelAux").setProperty("/ItensPedidoTab", 0);
-
-			if (this.getModel("modelCliente").getProperty("/Inco1") != "") {
-				this.getModelGlobal("modelPedido").setProperty("/Inco1", this.getModel("modelCliente").getProperty("/Inco1"));
-			}
 
 			this.onCarregarTipoPedido(this.getModelGlobal("modelPedido").getData());
 		},
@@ -588,6 +580,12 @@ sap.ui.define([
 				that.byId("idTipoPedido").setEnabled(bloqueio);
 				that.byId("idLocalEntrega").setEnabled(bloqueio);
 				that.byId("idTipoTransporte").setEnabled(bloqueio);
+
+				//Não deixar trocar o tipo de transporte quando vier do cliente.
+				if (that.getModel("modelCliente").getProperty("/Inco1") != "") {
+
+					that.byId("idTipoTransporte").setEnabled(false);
+				}
 
 				if (status == 3 || status == 2) {
 
@@ -988,24 +986,29 @@ sap.ui.define([
 
 							Pedido = that.onFormatNumberPedido(Pedido);
 
-							
-
 							delete Pedido.__metadata;
 
 							that.oModel.create("/P_PedidoPR", Pedido, {
 								method: "POST",
 								success: function (data) {
 
-									MessageBox.show("Pedido: " + data.NrPedido + " Salvo!", {
-										icon: MessageBox.Icon.SUCCESS,
-										title: "Inclusão do Pedido!",
-										actions: [MessageBox.Action.OK],
-										onClose: function () {
-
-											that.byId("idPedidoDetalhe").setBusy(false);
-											that.onLiberarAbas();
-										}
+									sap.m.MessageToast.show("Pedido salvo com sucesso!", {
+										duration: 5000
 									});
+
+									that.byId("idPedidoDetalhe").setBusy(false);
+									that.onLiberarAbas();
+
+									// MessageBox.show("Pedido: " + data.NrPedido + " Salvo!", {
+									// 	icon: MessageBox.Icon.SUCCESS,
+									// 	title: "Inclusão do Pedido!",
+									// 	actions: [MessageBox.Action.OK],
+									// 	onClose: function () {
+
+									// 		that.byId("idPedidoDetalhe").setBusy(false);
+									// 		that.onLiberarAbas();
+									// 	}
+									// });
 
 								},
 								error: function (error) {
@@ -1181,7 +1184,8 @@ sap.ui.define([
 				ValDescInformCe: 0,
 				ValDescDispBolCe: 0,
 				ValDescInformBolCe: 0,
-				ValDescInformBoletoReduzid: 0
+				ValDescInformBoletoReduzid: 0,
+				PercFatModeradorVerba: 0
 			});
 
 			this.setModelGlobal(modelPedido, "modelPedido");
@@ -1207,6 +1211,8 @@ sap.ui.define([
 
 			that.getModelGlobal("modelAux").setProperty("/ObrigaSalvar", true);
 
+			debugger
+
 			for (var i = 0; i < that.vetorCentros.length; i++) {
 
 				if (that.vetorCentros[i].Werks == Centro) {
@@ -1229,14 +1235,15 @@ sap.ui.define([
 					that.getModelGlobal("modelPedido").setProperty("/LogProposta", that.vetorCentros[i].LogProposta);
 					that.getModelGlobal("modelPedido").setProperty("/Gerencia", that.vetorCentros[i].Gerencia);
 					that.getModelGlobal("modelPedido").setProperty("/Supervisor", that.vetorCentros[i].Supervisor);
+					that.getModelGlobal("modelPedido").setProperty("/PercFatModeradorVerba", that.vetorCentros[i].PercFatModeradorVerba);
 
 					//Locais de entregas
 					that.vetorLocaisEntregasAux = [];
 
 					for (var i = 0; i < that.vetorLocaisEntregas.length; i++) {
 
-						if (that.getModelGlobal("modelPedido").getProperty("/Bukrs") == that.vetorLocaisEntregas[i].Bukrs || that.vetorLocaisEntregas[i]
-							.Bukrs == "") {
+						if (that.getModelGlobal("modelPedido").getProperty("/Bukrs") == that.vetorLocaisEntregas[i].Bukrs ||
+							that.vetorLocaisEntregas[i].Bukrs == "") {
 
 							that.vetorLocaisEntregasAux.push(that.vetorLocaisEntregas[i]);
 						}
@@ -1261,270 +1268,260 @@ sap.ui.define([
 
 			}
 
-			new Promise(function (res, rej) {
+			new Promise(function (resFrete, rejFrete) {
 
-				that.byId("idTipoPedido").setBusy(true);
+				var Cliente = that.getModel("modelCliente").getProperty("/Kunnr");
+				var Bukrs = that.getModel("modelPedido").getProperty("/Bukrs");
 
-				var Kunnr = that.getModelGlobal("modelPedido").getProperty("/Kunnr");
-				var Kvgr4 = that.getModelGlobal("modelPedido").getProperty("/Kvgr4");
-				var Kvgr5 = that.getModelGlobal("modelPedido").getProperty("/Kvgr5");
-				var Centro = that.getModelGlobal("modelPedido").getProperty("/Werks");
+				that.onBuscarClienteEmpresa(Cliente, Bukrs, resFrete, rejFrete, that);
 
-				that.onBuscarTipoPedido(that.Usuario, Kunnr, Centro, Kvgr4, Kvgr5, res, rej, that);
+			}).then(function (dataFrete) {
 
-			}).then(function (TipoPedido) {
+				that.getModel("modelCliente").setProperty("/Kvgr1", dataFrete.Kvgr1);
+				that.getModel("modelCliente").setProperty("/Kvgr2", dataFrete.Kvgr2);
+				that.getModel("modelCliente").setProperty("/Kvgr3", dataFrete.Kvgr3);
+				that.getModel("modelCliente").setProperty("/Kvgr4", dataFrete.Kvgr4);
+				that.getModel("modelCliente").setProperty("/Kvgr5", dataFrete.Kvgr5);
+				that.getModel("modelCliente").setProperty("/Bzirk", dataFrete.Bzirk);
+				that.getModel("modelCliente").setProperty("/Pltyp", dataFrete.Pltyp);
+				that.getModel("modelCliente").setProperty("/Inco1", dataFrete.Inco1);
 
-				// that.vetorTipoPedidos = [];
+				that.getModelGlobal("modelPedido").setProperty("/Kvgr1", that.getModel("modelCliente").getProperty("/Kvgr1"));
+				that.getModelGlobal("modelPedido").setProperty("/Kvgr2", that.getModel("modelCliente").getProperty("/Kvgr2"));
+				that.getModelGlobal("modelPedido").setProperty("/Kvgr3", that.getModel("modelCliente").getProperty("/Kvgr3"));
+				that.getModelGlobal("modelPedido").setProperty("/Kvgr4", that.getModel("modelCliente").getProperty("/Kvgr4"));
+				that.getModelGlobal("modelPedido").setProperty("/Kvgr5", that.getModel("modelCliente").getProperty("/Kvgr5"));
+				that.getModelGlobal("modelPedido").setProperty("/Bzirk", that.getModel("modelCliente").getProperty("/Bzirk"));
+				that.getModelGlobal("modelPedido").setProperty("/Pltyp", that.getModel("modelCliente").getProperty("/Pltyp"));
+				that.getModelGlobal("modelPedido").setProperty("/Inco1", that.getModel("modelCliente").getProperty("/Inco1"));
 
-				// if (TipoPedido.DatFimValid !== null) {
 
-				// 	var aux = {
-				// 		TipoPedido: "Proposta"
-				// 	};
+				if (that.getModel("modelCliente").getProperty("/Inco1") != "") {
 
-				// 	that.vetorTipoPedidos.push(aux);
+					that.byId("idTipoTransporte").setEnabled(false);
+					that.getModelGlobal("modelPedido").setProperty("/Inco1", that.getModel("modelCliente").getProperty("/Inco1"));
+				} else {
 
-				// 	aux = {
-				// 		TipoPedido: "Normal"
-				// 	};
-
-				// 	that.vetorTipoPedidos.push(aux);
-
-				// } else {
-
-				// 	that.vetorTipoPedidos = [];
-				// 	aux = {
-				// 		TipoPedido: "Normal"
-				// 	};
-
-				// 	that.vetorTipoPedidos.push(aux);
-				// }
-
-				// that.getModel("modelTipoPedidos").setData(that.vetorTipoPedidos);
-
-				that.onCarregarTipoPedido(that.getModelGlobal("modelPedido").getData(), TipoPedido);
-
-				if (that.getModel("modelTipoPedidos").getData().length == 1) {
-
-					that.getModel("modelPedido").setProperty("/TipoPedido", (that.vetorTipoPedidos[0].TipoPedido));
+					that.byId("idTipoTransporte").setEnabled(true);
 				}
 
-				that.byId("idTipoPedido").setBusy(false);
-
-				//Vencimentos
 				new Promise(function (res, rej) {
 
-					that.byId("idVencimento1").setEnabled(true);
-					that.byId("idContrato").setBusy(true);
-					that.byId("idVencimento1").setBusy(true);
+					that.byId("idTipoPedido").setBusy(true);
 
-					that.oModel.read("/P_ContratoR(IvBukrs='" + that.getModel("modelPedido").getProperty("/Bukrs") + "',IvKvgr4='" + that.getModel(
-						"modelPedido").getProperty("/Kvgr4") + "')", {
-						// urlParameters: {
-						// 	"$filter": "IvKvgr4 eq '" + that.getModel("modelPedido").getProperty("/Kvgr4") + "' and IvBukrs eq '" + that.getModel("modelPedido").getProperty("/Bukrs") + "'"
-						// },
-						success: function (result) {
+					var Kunnr = that.getModelGlobal("modelPedido").getProperty("/Kunnr");
+					var Kvgr4 = that.getModelGlobal("modelPedido").getProperty("/Kvgr4");
+					var Kvgr5 = that.getModelGlobal("modelPedido").getProperty("/Kvgr5");
+					var Centro = that.getModelGlobal("modelPedido").getProperty("/Werks");
 
-							// that.byId("idContrato").setVisible(false);
-							// that.byId("idLabelContrato").setVisible(true);
+					that.onBuscarTipoPedido(that.Usuario, Kunnr, Centro, Kvgr4, Kvgr5, res, rej, that);
 
-							that.byId("idContrato").setBusy(false);
-							that.byId("idVencimento1").setBusy(false);
+				}).then(function (TipoPedido) {
 
-							var vetorVenc = that.getModel("modelVencimentos1").getData();
-							var vetorVencContrato = [];
+					// that.vetorTipoPedidos = [];
 
-							if (result.ContratoInterno != "") {
+					// if (TipoPedido.DatFimValid !== null) {
 
+					// 	var aux = {
+					// 		TipoPedido: "Proposta"
+					// 	};
+
+					// 	that.vetorTipoPedidos.push(aux);
+
+					// 	aux = {
+					// 		TipoPedido: "Normal"
+					// 	};
+
+					// 	that.vetorTipoPedidos.push(aux);
+
+					// } else {
+
+					// 	that.vetorTipoPedidos = [];
+					// 	aux = {
+					// 		TipoPedido: "Normal"
+					// 	};
+
+					// 	that.vetorTipoPedidos.push(aux);
+					// }
+
+					// that.getModel("modelTipoPedidos").setData(that.vetorTipoPedidos);
+
+					that.onCarregarTipoPedido(that.getModelGlobal("modelPedido").getData(), TipoPedido);
+
+					if (that.getModel("modelTipoPedidos").getData().length == 1) {
+
+						that.getModel("modelPedido").setProperty("/TipoPedido", (that.vetorTipoPedidos[0].TipoPedido));
+					}
+
+					that.byId("idTipoPedido").setBusy(false);
+
+					//Vencimentos
+					new Promise(function (res, rej) {
+
+						that.byId("idVencimento1").setEnabled(true);
+						that.byId("idContrato").setBusy(true);
+						that.byId("idVencimento1").setBusy(true);
+
+						that.oModel.read("/P_ContratoR(IvBukrs='" + that.getModel("modelPedido").getProperty("/Bukrs") + "',IvKvgr4='" + that.getModel(
+							"modelPedido").getProperty("/Kvgr4") + "')", {
+							// urlParameters: {
+							// 	"$filter": "IvKvgr4 eq '" + that.getModel("modelPedido").getProperty("/Kvgr4") + "' and IvBukrs eq '" + that.getModel("modelPedido").getProperty("/Bukrs") + "'"
+							// },
+							success: function (result) {
+
+								// that.byId("idContrato").setVisible(false);
 								// that.byId("idLabelContrato").setVisible(true);
 
-								var encontrou = "false";
-								var indiceVec = 0;
+								that.byId("idContrato").setBusy(false);
+								that.byId("idVencimento1").setBusy(false);
 
-								for (var j = 0; j < vetorVenc.length; j++) {
+								var vetorVenc = that.getModel("modelVencimentos1").getData();
+								var vetorVencContrato = [];
 
-									if (vetorVenc[j].Zterm == result.Zterm) {
-										encontrou = "true";
+								if (result.ContratoInterno != "") {
+
+									// that.byId("idLabelContrato").setVisible(true);
+
+									var encontrou = "false";
+									var indiceVec = 0;
+
+									for (var j = 0; j < vetorVenc.length; j++) {
+
+										if (vetorVenc[j].Zterm == result.Zterm) {
+											encontrou = "true";
+
+											if (String(result.AtlOrdem) == "true") {
+
+												that.getModel("modelPedido").setProperty("/IndiceFinal", result.IndiceContrato);
+											} else {
+
+												that.getModel("modelPedido").setProperty("/IndiceFinal", vetorVenc[j].Kbetr);
+											}
+
+											break;
+										}
+									}
+
+									if (encontrou == "false" && result.Zterm != "") {
+
+										var aux = {
+											Zterm: result.Zterm,
+											IdVencimento: result.Zterm,
+											DescCond: result.DescCond
+										};
+
+										vetorVencContrato.push(aux);
+										that.getModel("modelVencimentos1").setData(vetorVencContrato);
 
 										if (String(result.AtlOrdem) == "true") {
 
 											that.getModel("modelPedido").setProperty("/IndiceFinal", result.IndiceContrato);
 										} else {
 
-											that.getModel("modelPedido").setProperty("/IndiceFinal", vetorVenc[j].Kbetr);
+											//Não possui vencimento cadastrado e vinculado para o representante.
+											that.getModel("modelPedido").setProperty("/IndiceFinal", 0);
 										}
 
-										break;
 									}
-								}
 
-								if (encontrou == "false" && result.Zterm != "") {
+									if (result.Zterm == "") {
+										//Setar pagamento avista. Se tiver contrato mas nao tiver forma de pagamento do contrato definida
 
-									var aux = {
-										Zterm: result.Zterm,
-										IdVencimento: result.Zterm,
-										DescCond: result.DescCond
-									};
+										that.getModel("modelPedido").setProperty("/Vencimento", vetorVenc[0].Zterm);
+										that.getModel("modelPedido").setProperty("/IndiceFinal", vetorVenc[0].Kbetr);
+										that.getModelGlobal("modelPedido").setProperty("/Contrato", result.ContratoInterno);
 
-									vetorVencContrato.push(aux);
-									that.getModel("modelVencimentos1").setData(vetorVencContrato);
-
-									if (String(result.AtlOrdem) == "true") {
-
-										that.getModel("modelPedido").setProperty("/IndiceFinal", result.IndiceContrato);
 									} else {
 
-										//Não possui vencimento cadastrado e vinculado para o representante.
+										that.getModelGlobal("modelPedido").setProperty("/Vencimento", result.Zterm); //Forma de pagamento setada no contrato
+										that.getModelGlobal("modelPedido").setProperty("/Contrato", result.ContratoInterno);
+									}
+
+									if (that.getModel("modelPedido").getProperty("/Vencimento") == "") {
+
+										that.byId("idVencimento1").setEnabled(true);
+
+									} else {
+
+										that.byId("idVencimento1").setEnabled(false);
+									}
+
+									var contrato = that.getModelGlobal("modelPedido").getProperty("/Contrato");
+									var limiteCred = parseFloat(that.getModel("modelCliente").getProperty("/CreditLimit"));
+
+									//Regra para quando tiver contrato e a rede for OUTROS. limpar tudo e deixar o kra setar a cond de pagto
+									// if(contrato != "" && result.Kvgr4 == 1){
+									if (contrato != "" && String(result.AtlOrdem) == "false" && result.Zterm == "") {
+
+										that.byId("idVencimento1").setEnabled(true);
+										that.getModelGlobal("modelPedido").setProperty("/Vencimento", "");
+										that.getModel("modelPedido").setProperty("/IndiceFinal", 0);
+
+									} else if (result.Zterm != "" && contrato != "" && limiteCred == 1) {
+
+										//Regra para limpar forma de pagamento quando o cliente nao
+										//possui limite de credito mas existe contrato ativo com Indice e Forma de pagamento setada
+										that.getModelGlobal("modelPedido").setProperty("/Vencimento", "");
 										that.getModel("modelPedido").setProperty("/IndiceFinal", 0);
 									}
 
-								}
-
-								
-
-								if (result.Zterm == "") {
-									//Setar pagamento avista. Se tiver contrato mas nao tiver forma de pagamento do contrato definida
-
-									that.getModel("modelPedido").setProperty("/Vencimento", vetorVenc[0].Zterm);
-									that.getModel("modelPedido").setProperty("/IndiceFinal", vetorVenc[0].Kbetr);
-									that.getModelGlobal("modelPedido").setProperty("/Contrato", result.ContratoInterno);
+									// that.byId("idVencimento1").setEnabled(false);
 
 								} else {
 
-									that.getModelGlobal("modelPedido").setProperty("/Vencimento", result.Zterm); //Forma de pagamento setada no contrato
-									that.getModelGlobal("modelPedido").setProperty("/Contrato", result.ContratoInterno);
+									that.getModel("modelVencimentos1").setData(that.vetorVencimentoTotal);
 								}
 
-								if (that.getModel("modelPedido").getProperty("/Vencimento") == "") {
-
-									that.byId("idVencimento1").setEnabled(true);
-
-								} else {
-
-									that.byId("idVencimento1").setEnabled(false);
-								}
-
-								var contrato = that.getModelGlobal("modelPedido").getProperty("/Contrato");
-								var limiteCred = parseFloat(that.getModel("modelCliente").getProperty("/CreditLimit"));
-
-								//Regra para quando tiver contrato e a rede for OUTROS. limpar tudo e deixar o kra setar a cond de pagto
-								// if(contrato != "" && result.Kvgr4 == 1){
-								if (contrato != "" && String(result.AtlOrdem) == "false" && result.Zterm == "") {
-
-									that.byId("idVencimento1").setEnabled(true);
-									that.getModelGlobal("modelPedido").setProperty("/Vencimento", "");
-									that.getModel("modelPedido").setProperty("/IndiceFinal", 0);
-
-								} else if (result.Zterm != "" && contrato != "" && limiteCred == 1) {
-
-									//Regra para limpar forma de pagamento quando o cliente nao
-									//possui limite de credito mas existe contrato ativo com Indice e Forma de pagamento setada
-									that.getModelGlobal("modelPedido").setProperty("/Vencimento", "");
-									that.getModel("modelPedido").setProperty("/IndiceFinal", 0);
-								}
-
-								// that.byId("idVencimento1").setEnabled(false);
-
-							} else {
-
-								that.getModel("modelVencimentos1").setData(that.vetorVencimentoTotal);
-							}
-
-							res();
-						},
-						error: function (error) {
-
-							that.onMensagemErroODATA(error);
-							rej();
-						}
-					});
-
-				}).then(function (data) {
-
-					new Promise(function (resLead, rejLead) {
-
-						that.byId("idDataEntregaSujerida").setBusy(true);
-
-						var dataSujerida = "";
-						var date = new Date();
-
-						Date.prototype.addDays = function (days) {
-							var dat = new Date(this.valueOf());
-							dat.setDate(dat.getDate() + parseInt(days, 10));
-							return dat.toLocaleDateString("pt-BR");
-						};
-
-						var IvTxjcd = that.getModelGlobal("modelPedido").getProperty("/Txjcd").replace(" ", "_");
-
-						that.oModel.read("/P_LeadTimeR(IvBukrs='" + that.getModel("modelPedido").getProperty("/Bukrs") +
-							"',IvRegCliente='" + that.getModelGlobal("modelPedido").getProperty("/RegCliente") +
-							"',IvRegCentro='" + that.getModelGlobal("modelPedido").getProperty("/RegCentro") +
-							"',IvTxjcd='" + IvTxjcd + "')", {
-							// urlParameters: {
-							// 	"$filter": "IvKvgr4 eq '" + that.getModel("modelPedido").getProperty("/Kvgr4") + "' and IvBukrs eq '" + that.getModel("modelPedido").getProperty("/Bukrs") + "'"
-							// },
-							success: function (result) {
-
-								var LeadTime = result.Kbetr;
-
-								that.getModel("modelPedido").setProperty("/LeadTime", LeadTime);
-
-								dataSujerida = date.addDays(LeadTime);
-								that.getModel("modelPedido").setProperty("/DataEntregaSujerida", dataSujerida);
-
-								that.byId("idDataEntregaSujerida").setBusy(false);
-
-								resLead();
+								res();
 							},
 							error: function (error) {
 
-								rejLead();
 								that.onMensagemErroODATA(error);
+								rej();
 							}
 						});
 
 					}).then(function (data) {
 
-						// var CodRepres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
-						// var Usuario = that.getModelGlobal("modelAux").getProperty("/Usuario");
+						new Promise(function (resLead, rejLead) {
 
-						new Promise(function (resTab, rejTab) {
+							that.byId("idDataEntregaSujerida").setBusy(true);
 
-							that.oModel.read("/TipoIntegraBol", {
-								urlParameters: {
-									"$filter": "IvUsuario eq '" + that.Usuario + "'"
-								},
-								success: function (retoroTipIntegraBol) {
+							var dataSujerida = "";
+							var date = new Date();
 
-									var vetorTipoIntegraBol = retoroTipIntegraBol.results;
+							Date.prototype.addDays = function (days) {
+								var dat = new Date(this.valueOf());
+								dat.setDate(dat.getDate() + parseInt(days, 10));
+								return dat.toLocaleDateString("pt-BR");
+							};
 
-									var Cliente = that.getModel("modelCliente").getProperty("/Kunnr");
-									var Bukrs = that.getModel("modelPedido").getProperty("/Bukrs");
-									var encontrou = "false";
+							var IvTxjcd = that.getModelGlobal("modelPedido").getProperty("/Txjcd");
 
-									for (var j = 0; j < vetorTipoIntegraBol.length; j++) {
+							that.oModel.read("/P_LeadTimeR(IvBukrs='" + that.getModel("modelPedido").getProperty("/Bukrs") +
+								"',IvRegCliente='" + that.getModelGlobal("modelPedido").getProperty("/RegCliente") +
+								"',IvRegCentro='" + that.getModelGlobal("modelPedido").getProperty("/RegCentro") +
+								"',IvTxjcd='" + IvTxjcd + "')", {
+								// urlParameters: {
+								// 	"$filter": "IvKvgr4 eq '" + that.getModel("modelPedido").getProperty("/Kvgr4") + "' and IvBukrs eq '" + that.getModel("modelPedido").getProperty("/Bukrs") + "'"
+								// },
+								success: function (result) {
 
-										if (Cliente == vetorTipoIntegraBol[j].Kunnr && Bukrs == vetorTipoIntegraBol[j].Bukrs) {
-											encontrou = "true";
-											break;
-										}
-									}
+									var LeadTime = result.Kbetr;
 
-									if (encontrou == "true") {
+									that.getModel("modelPedido").setProperty("/LeadTime", LeadTime);
 
-										that.getModelGlobal("modelPedido").setProperty("/TipoIntegrBol", "CONTAS A RECEBER");
+									dataSujerida = date.addDays(LeadTime);
+									that.getModel("modelPedido").setProperty("/DataEntregaSujerida", dataSujerida);
 
-									} else {
+									that.byId("idDataEntregaSujerida").setBusy(false);
 
-										that.getModelGlobal("modelPedido").setProperty("/TipoIntegrBol", "CONTAS A PAGAR");
-									}
-
-									resTab();
+									resLead();
 								},
 								error: function (error) {
 
+									rejLead();
 									that.onMensagemErroODATA(error);
-									rejTab();
 								}
 							});
 
@@ -1533,20 +1530,66 @@ sap.ui.define([
 							// var CodRepres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
 							// var Usuario = that.getModelGlobal("modelAux").getProperty("/Usuario");
 
-							var Cliente = that.getModel("modelCliente").getProperty("/Kunnr");
-							var Bukrs = that.getModel("modelPedido").getProperty("/Bukrs");
+							new Promise(function (resTab, rejTab) {
 
-							that.oModel.read("/P_TabPrecos(IvKunnr='" + Cliente + "',IvBukrs='" + Bukrs + "',IvRepres='" + that.Repres + "')", {
-								success: function (result) {
+								that.oModel.read("/TipoIntegraBol", {
+									urlParameters: {
+										"$filter": "IvUsuario eq '" + that.Usuario + "'"
+									},
+									success: function (retoroTipIntegraBol) {
 
-									that.vetorTabPrecos = [];
+										var vetorTipoIntegraBol = retoroTipIntegraBol.results;
 
-									that.vetorTabPrecos.push(result);
-									that.getModel("modelTabPrecos").setData(that.vetorTabPrecos);
-								},
-								error: function (error) {
-									that.onMensagemErroODATA(error);
-								}
+										var Cliente = that.getModel("modelCliente").getProperty("/Kunnr");
+										var Bukrs = that.getModel("modelPedido").getProperty("/Bukrs");
+										var encontrou = "false";
+
+										for (var j = 0; j < vetorTipoIntegraBol.length; j++) {
+
+											if (Cliente == vetorTipoIntegraBol[j].Kunnr && Bukrs == vetorTipoIntegraBol[j].Bukrs) {
+												encontrou = "true";
+												break;
+											}
+										}
+
+										if (encontrou == "true") {
+
+											that.getModelGlobal("modelPedido").setProperty("/TipoIntegrBol", "CONTAS A RECEBER");
+
+										} else {
+
+											that.getModelGlobal("modelPedido").setProperty("/TipoIntegrBol", "CONTAS A PAGAR");
+										}
+
+										resTab();
+									},
+									error: function (error) {
+
+										that.onMensagemErroODATA(error);
+										rejTab();
+									}
+								});
+
+							}).then(function (data) {
+
+								var Cliente = that.getModel("modelCliente").getProperty("/Kunnr");
+								var Bukrs = that.getModel("modelPedido").getProperty("/Bukrs");
+
+								that.oModel.read("/P_TabPrecos(IvKunnr='" + Cliente + "',IvBukrs='" + Bukrs + "',IvRepres='" + that.Repres + "')", {
+									success: function (result) {
+
+										that.vetorTabPrecos = [];
+
+										that.vetorTabPrecos.push(result);
+										that.getModel("modelTabPrecos").setData(that.vetorTabPrecos);
+									},
+									error: function (error) {
+										that.onMensagemErroODATA(error);
+									}
+								});
+
+							}).catch(function () {
+								that.byId("idDataEntregaSujerida").setBusy(false);
 							});
 
 						}).catch(function () {
@@ -1554,22 +1597,21 @@ sap.ui.define([
 						});
 
 					}).catch(function () {
-						that.byId("idDataEntregaSujerida").setBusy(false);
+
+						that.byId("idContrato").setBusy(false);
+						that.byId("idVencimento1").setBusy(false);
 					});
 
-				}).catch(function () {
+				}).catch(function (error) {
 
-					that.byId("idContrato").setBusy(false);
-					that.byId("idVencimento1").setBusy(false);
+					that.byId("idTipoPedido").setBusy(false);
+					that.onMensagemErroODATA(error);
 				});
-
 			}).catch(function (error) {
 
-				console.log(error);
-				that.byId("idTipoPedido").setBusy(false);
-				// that.onMensagemErroODATA(error);
+				that.byId("idTipoTransporte").setBusy(false);
+				that.onMensagemErroODATA(error);
 			});
-
 		},
 
 		onCarregarLocalEntrega: function (Bukrs) {
@@ -2033,6 +2075,7 @@ sap.ui.define([
 							that.onValidacoesCampanha();
 							that.onValidacoesCampanhaEscal();
 							that.onCalculaDescBoletoReduzido();
+							that.onCalculaPrecoDebitarVerba();
 
 							that.getModel("modelPedido").refresh();
 						}
@@ -2074,7 +2117,7 @@ sap.ui.define([
 
 			var Maior = Math.max(ValDescBoletoPerm, ValDescAplicarBol);
 
-			if(Maior == ValDescAplicarBol && ValDescAplicarBol != ValDescBoletoPerm){
+			if (Maior == ValDescAplicarBol && ValDescAplicarBol != ValDescBoletoPerm) {
 
 				this.byId("idTopLevelIconTabBar").setSelectedKey("tab4");
 				this.byId("idDescontoAplicarBoleto").focus();
@@ -2522,6 +2565,7 @@ sap.ui.define([
 								Pedido.DataFim = "";
 								Pedido.HoraFim = "";
 								Pedido.Completo = false;
+								that.byId("idPedidoDetalhe").setBusy(false);
 							}
 						});
 
@@ -2564,7 +2608,11 @@ sap.ui.define([
 											sap.m.MessageBox.show(dataPedSalvo.MsgErro, {
 												icon: sap.m.MessageBox.Icon.ERROR,
 												title: "Não Permitido",
-												actions: [MessageBox.Action.OK]
+												actions: [MessageBox.Action.OK],
+												onClose: function () {
+
+													that.byId("idPedidoDetalhe").setBusy(false);
+												}
 											});
 
 										} else {
@@ -2988,7 +3036,7 @@ sap.ui.define([
 			that._ItemDialog.open();
 
 		},
-		
+
 		onEnviarEmailPedido: function () {
 
 			var that = this;
@@ -3155,7 +3203,6 @@ sap.ui.define([
 		},
 
 		onChangeTabPreco: function (oEvent) {
-			
 
 			this.getModelGlobal("modelAux").setProperty("/ObrigaSalvar", true);
 			var TabPreco = this.getModelGlobal("modelPedido").getProperty("/Pltyp");
@@ -3164,8 +3211,8 @@ sap.ui.define([
 
 				var vetorTabPreco = this.getModel("modelTabPrecos").getData();
 				for (var i = 0; i < vetorTabPreco.length; i++) {
-					
-					if (vetorTabPreco[i].Pltyp == TabPreco){
+
+					if (vetorTabPreco[i].Pltyp == TabPreco) {
 						this.getModelGlobal("modelPedido").setProperty("/PltypDesc", vetorTabPreco[i].Ptext);
 						break;
 					}
@@ -3173,25 +3220,25 @@ sap.ui.define([
 			}
 		},
 
-		onCalculaDescBoletoReduzido: function(oEvent){
+		onCalculaDescBoletoReduzido: function (oEvent) {
 
 			try {
 
 				var DescBoletoAplicado = oEvent.getSource().getValue();
-			} catch (error){
-				
+			} catch (error) {
+
 				DescBoletoAplicado = this.getModel("modelPedido").getProperty("/ValDescAplicarBol");
 			}
 
-			var itens = this.getModel("modelItensPedidoGrid").getData();			
+			var itens = this.getModel("modelItensPedidoGrid").getData();
 
 			var PercPond = 0;
 			var ValPond = 0;
 			var ValTotalPond = 0;
-			var PercTotalPond = 0;			
-			var TotalPed = 0;			
-			
-			for(var i=0; i<itens.length; i++){
+			var PercTotalPond = 0;
+			var TotalPed = 0;
+
+			for (var i = 0; i < itens.length; i++) {
 
 				PercPond = (parseFloat(itens[i].AliquotaIcm) + parseFloat(itens[i].PercCofins) + parseFloat(itens[i].PercPis)) / 100;
 				ValPond = PercPond * parseFloat(itens[i].ValPrecoInform * itens[i].QtdPedida);
@@ -3202,10 +3249,95 @@ sap.ui.define([
 			// PercTotalPond = PercTotalPond * 100;
 			var PercFinal = PercTotalPond / TotalPed;
 
-			ValTotalPond = DescBoletoAplicado - ( PercFinal * DescBoletoAplicado);
-			ValTotalPond = parseFloat(Math.round((ValTotalPond + Number.EPSILON) * 100 ) / 100);
-			
+			ValTotalPond = DescBoletoAplicado - (PercFinal * DescBoletoAplicado);
+			ValTotalPond = parseFloat(Math.round((ValTotalPond + Number.EPSILON) * 100) / 100);
+
 			this.getModel("modelPedido").setProperty("/ValDescInformBoletoReduzid", ValTotalPond);
+		},
+
+		onCalculaPrecoDebitarVerba: function () {
+
+			debugger;
+			var pedido = this.getModel("modelPedido").getData();
+			var itens = this.getModel("modelItensPedidoGrid").getData();
+
+			var DescAplicado = this.getModel("modelPedido").getProperty("/ValDescAplicar");
+			var DescBoletoAplicado = this.getModel("modelPedido").getProperty("/ValDescAplicarBol");
+
+			var descTotalRealizado = parseFloat(DescAplicado) + parseFloat(DescBoletoAplicado);
+
+			var valTotalDispInvestir = 0;
+			var valTotUtilizadoPreco = 0;
+			var valTotLiqTab = 0;
+			var valDebitarVerba = 0;
+			var valFatModerador = 0;
+			var valFatModeradorTotal = 0;
+
+			for (var i = 0; i < itens.length; i++) {
+
+				valTotalDispInvestir += parseFloat((itens[i].ValPrecoTabelaMin - itens[i].ValPrecoMin) * itens[i].QtdPedida);
+				valTotalDispInvestir = Math.round(valTotalDispInvestir * 100) / 100;
+
+				// if (parseFloat(itens[i].ValPrecoInform - itens[i].ValPrecoTabelaMin) > 0) {
+
+				// 	valTotUtilizadoPreco = 0;
+				// } else {
+
+				// 	valTotUtilizadoPreco += Math.abs(parseFloat((itens[i].ValPrecoInform - itens[i].ValPrecoTabelaMin) * itens[i].QtdPedida));
+				// 	valTotUtilizadoPreco = Math.round(valTotUtilizadoPreco * 100) / 100;
+				// }
+
+				if (parseFloat(itens[i].ValPrecoInform - itens[i].ValPrecoTabelaMin) > 0) {
+
+					valTotUtilizadoPreco += parseFloat((itens[i].ValPrecoInform - itens[i].ValPrecoTabelaMin) * itens[i].QtdPedida);
+					valTotUtilizadoPreco = Math.round(valTotUtilizadoPreco * 100) / 100;
+				} else {
+
+					valTotUtilizadoPreco += parseFloat((itens[i].ValPrecoInform - itens[i].ValPrecoTabelaMin) * itens[i].QtdPedida);
+					valTotUtilizadoPreco = Math.round(valTotUtilizadoPreco * 100) / 100;
+				}
+
+				valTotLiqTab += parseFloat(itens[i].ValPrecoTabelaMin * itens[i].QtdPedida);
+				valTotLiqTab = Math.round(valTotLiqTab * 100) / 100;
+
+				// valFatModerador += parseFloat(itens[i].ValFatModeradorVerba); //Já tem quantidade
+
+				valFatModeradorTotal += (parseFloat(pedido.PercFatModeradorVerba) / 100 ) * itens[i].ValPrecoTabelaMin * itens[i].QtdPedida;
+				valFatModeradorTotal = Math.round(valFatModeradorTotal * 100) / 100;
+			}
+
+			if (valTotUtilizadoPreco + descTotalRealizado >= Math.abs(valFatModeradorTotal)) {
+
+				valDebitarVerba = valTotUtilizadoPreco + descTotalRealizado - Math.abs(valFatModeradorTotal);
+				valDebitarVerba = Math.round(valDebitarVerba * 100) / 100;
+
+			} else {
+
+				if (valTotUtilizadoPreco + descTotalRealizado < Math.abs(valFatModeradorTotal)) {
+
+					valDebitarVerba = 0;
+
+				} else {
+					if (valTotUtilizadoPreco >= descTotalRealizado) {
+
+						valDebitarVerba = descTotalRealizado;
+
+					} else {
+
+						if (valTotUtilizadoPreco + descTotalRealizado >= Math.abs(valFatModerador)) {
+
+							valDebitarVerba = (descTotalRealizado + valTotUtilizadoPreco) - Math.abs(valFatModerador);
+							valDebitarVerba = Math.round(valDebitarVerba * 100) / 100;
+
+						} else {
+
+							valDebitarVerba = 0;
+						}
+					}
+				}
+			}
+
+			this.getModel("modelPedido").setProperty("/ValFatModeradorVerba", valDebitarVerba);
 		}
 	});
 });

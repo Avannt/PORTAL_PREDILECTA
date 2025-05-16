@@ -70,6 +70,7 @@ sap.ui.define([
 				var vetorRepres = [];
 
 				for (var i = 0; i < vetorClientes.length; i++) {
+
 					var vAchouRede = false;
 					var vAchouBandeira = false;
 					var vAchouRepres = false;
@@ -100,6 +101,7 @@ sap.ui.define([
 							break;
 						}
 					}
+
 					if (vAchouRede == false) {
 						vetorRede.push(vetorClientes[i]);
 					}
@@ -114,14 +116,57 @@ sap.ui.define([
 				var oModelClientes = new JSONModel(vetorClientes);
 				that.setModel(oModelClientes, "modelClientes");
 
-				var oModelRede = new JSONModel(vetorRede);
-				that.setModel(oModelRede, "modelRedes");
+				// var oModelRede = new JSONModel(vetorRede);
+				// that.setModel(oModelRede, "modelRedes");
 
-				var oModelBandeira = new JSONModel(vetorBandeira);
-				that.setModel(oModelBandeira, "modelBandeiras");
+				// var oModelBandeira = new JSONModel(vetorBandeira);
+				// that.setModel(oModelBandeira, "modelBandeiras");
 
 				var oModelRepres = new JSONModel(vetorRepres);
 				that.setModel(oModelRepres, "modelRepres");
+
+			}).catch(function (error) {
+
+				that.onMensagemErroODATA(error);
+			});
+
+			new Promise(function (res1, rej1) {
+
+				// var parametros = that.getModel("modelParametros").getData();
+				// var VkorgIni = "";
+				// var VkorgFin = "";
+
+				// var Centros = that.getModel("modelCentros").getData();
+
+				// for(var i=0; i<Centros.length; i++){
+				// 	if(Centros[i].Werks == parametros.WerksIni){
+
+				// 		VkorgIni = Centros[i].Bukrs;
+				// 	}
+
+				// 	if(Centros[i].Werks == parametros.WerksFim){
+
+				// 		VkorgFin = Centros[i].Bukrs;
+				// 	}
+				// }
+				// parametros.LifnrIni, parametros.LifnrFim, VkorgIni, VkorgFin,
+
+				that.onBuscarRedesClientesRange(res1, rej1, that);
+
+			}).then(function (dados) {
+
+				var vetorRede = [];
+
+				vetorRede = dados;
+
+				var oModelRede = new JSONModel(vetorRede);
+				that.setModel(oModelRede, "modelRedes");
+				that.setModel(oModelRede, "modelBandeiras");
+
+				setTimeout(function () {
+
+					that.byId("idClienteIni").focus();
+				}, 500);
 
 			}).catch(function (error) {
 
@@ -133,7 +178,9 @@ sap.ui.define([
 					"$filter": "IvUsuario eq '" + repres + "'"
 				},
 				success: function (retorno) {
+
 					var vetorCentros = retorno.results;
+
 					var oModelCentros = new JSONModel(vetorCentros);
 					that.setModel(oModelCentros, "modelCentros");
 				},
@@ -438,8 +485,6 @@ sap.ui.define([
 
 			var that = this;
 
-			
-
 			var NF = that.getModel("modelParamDialog").getProperty("/Nfenum");
 			var Werks = that.getModel("modelParamDialog").getProperty("/Werks");
 			var Name1Redesp = that.getModel("modelParamDialog").getProperty("/Name1Redesp");
@@ -490,7 +535,7 @@ sap.ui.define([
 					vetorStatus.nodes[3].stateText = "OK - " + retorno.DataLibPortaria;
 					vetorStatus.nodes[3].texts = "Mercadoria saiu da fabrica.";
 
-					
+
 					if (retorno.Inco1 == 'FOB') {
 
 						vetorStatus.nodes.splice(4, 1);
@@ -524,7 +569,7 @@ sap.ui.define([
 
 							vetorStatus.nodes.splice(4, 0, aux);
 						}
-						
+
 						if (retorno.DataRedesp != '' && retorno.DataRedesp != "00/00/0000" && retorno.DataRedesp != "undefined") {
 							// var dataReal = retorno.DataEntregaReal.substring(6, 10) + retorno.DataEntregaReal.substring(3, 5) + retorno.DataEntregaReal.substring(0, 2);
 							// var dataPortaria = retorno.DataLibPortaria.substring(6, 10) + retorno.DataLibPortaria.substring(3, 5) + retorno.DataLibPortaria.substring(0, 2);
@@ -539,34 +584,34 @@ sap.ui.define([
 							if (retorno.DataEntregaReal != '' && retorno.DataEntregaReal != "00/00/0000" && retorno.DataEntregaReal != "undefined") {
 
 								//Index 6 - Entrega Final
-								try{
+								try {
 
 									vetorStatus.lanes[5].state = "Positive";
 									vetorStatus.nodes[6].state = "Positive";
 									vetorStatus.nodes[5].focused = true;
 									vetorStatus.nodes[6].stateText = "OK - " + retorno.DataEntregaReal;
-	
+
 									if (retorno.DataAgendada != "" && retorno.DataAgendada != "00/00/0000" && retorno.DataAgendada != "undefined") {
-	
+
 										vetorStatus.nodes[6].texts = ["Data agendada: " + retorno.DataAgendada];
-	
+
 									} else if (retorno.DataEstimadaEntrega != "" && retorno.DataAgendada != "00/00/0000" && retorno.DataAgendada != "undefined") {
-	
+
 										vetorStatus.nodes[6].texts = ["Prev Entrega: " + retorno.DataEstimadaEntrega];
 									}
-								} catch(x){
+								} catch (x) {
 
 									vetorStatus.lanes[4].state = "Positive";
 									vetorStatus.nodes[5].state = "Positive";
 									vetorStatus.nodes[4].focused = true;
 									vetorStatus.nodes[5].stateText = "OK - " + retorno.DataEntregaReal;
-	
+
 									if (retorno.DataAgendada != "" && retorno.DataAgendada != "00/00/0000" && retorno.DataAgendada != "undefined") {
-	
+
 										vetorStatus.nodes[5].texts = ["Data agendada: " + retorno.DataAgendada];
-	
+
 									} else if (retorno.DataEstimadaEntrega != "" && retorno.DataAgendada != "00/00/0000" && retorno.DataAgendada != "undefined") {
-	
+
 										vetorStatus.nodes[5].texts = ["Prev Entrega: " + retorno.DataEstimadaEntrega];
 									}
 
@@ -577,22 +622,22 @@ sap.ui.define([
 								try {
 
 									if (retorno.DataAgendada != "" && retorno.DataAgendada != "00/00/0000" && retorno.DataAgendada != "undefined") {
-	
+
 										vetorStatus.nodes[6].texts = ["Data agendada: " + retorno.DataAgendada];
-	
+
 									} else if (retorno.DataEstimadaEntrega != "" && retorno.DataAgendada != "00/00/0000" && retorno.DataAgendada != "undefined") {
-	
+
 										vetorStatus.nodes[6].texts = ["Prev Entrega: " + retorno.DataEstimadaEntrega];
 									}
-								} catch(x){
+								} catch (x) {
 
-									
+
 									if (retorno.DataAgendada != "" && retorno.DataAgendada != "00/00/0000" && retorno.DataAgendada != "undefined") {
-										
+
 										vetorStatus.nodes[5].texts = ["Data agendada: " + retorno.DataAgendada];
-										
+
 									} else if (retorno.DataEstimadaEntrega != "" && retorno.DataAgendada != "00/00/0000" && retorno.DataAgendada != "undefined") {
-										
+
 										vetorStatus.nodes[5].texts = ["Prev Entrega: " + retorno.DataEstimadaEntrega];
 									}
 								}
@@ -601,8 +646,8 @@ sap.ui.define([
 						} else {
 
 							if (retorno.DataEntregaReal != '' && retorno.DataEntregaReal != "00/00/0000" && retorno.DataEntregaReal != "undefined") {
-								
-								if(possuiRedespacho){
+
+								if (possuiRedespacho) {
 
 									vetorStatus.lanes[6].state = "Positive";
 									vetorStatus.nodes[6].state = "Positive";
@@ -647,7 +692,7 @@ sap.ui.define([
 
 
 
-				
+
 				var ultimono = vetorStatus.nodes.length;
 				var ultimoIndex = vetorStatus.lanes.length - 1;
 
@@ -655,7 +700,7 @@ sap.ui.define([
 
 					var campoNF = vetorOcorrencias[i].NF;
 
-					
+
 
 					if (campoNF.includes(NF)) {
 
@@ -906,6 +951,53 @@ sap.ui.define([
 			});
 		},
 
+		onChangeRepres: function () {
+
+			var that = this;
+
+			new Promise(function (res1, rej1) {
+
+				var parametros = that.getModel("modelParametros").getData();
+				var VkorgIni = "";
+				var VkorgFin = "";
+
+				var Centros = that.getModel("modelCentros").getData();
+
+				for(var i=0; i<Centros.length; i++){
+					if(Centros[i].Werks == parametros.WerksIni){
+
+						VkorgIni = Centros[i].Bukrs;
+					}
+
+					if(Centros[i].Werks == parametros.WerksFim){
+
+						VkorgFin = Centros[i].Bukrs;
+					}
+				}
+
+				that.onBuscarRedesClientesRange(parametros.LifnrIni, parametros.LifnrFim, VkorgIni, VkorgFin, res1, rej1, that);
+
+			}).then(function (dados) {
+
+				var vetorRede = [];
+
+				vetorRede = dados;
+
+				var oModelRede = new JSONModel(vetorRede);
+				that.setModel(oModelRede, "modelRedes");
+				that.setModel(oModelRede, "modelBandeiras");
+
+				setTimeout(function () {
+
+					that.byId("idClienteIni").focus();
+				}, 500);
+
+			}).catch(function (error) {
+
+				that.onMensagemErroODATA(error);
+			});
+		},
+
 		onPressBtnFiltrar: function () {
 
 			var that = this;
@@ -1149,6 +1241,7 @@ sap.ui.define([
 
 			this.byId("idRepreFim").suggest();
 		},
+
 		onCriarModelStatus: function () {
 
 			var omodelParametros = new JSONModel({

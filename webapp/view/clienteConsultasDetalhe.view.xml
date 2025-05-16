@@ -124,7 +124,7 @@
 							<IconTabFilter id="tabContratos" text="Contratos" icon="sap-icon://document-text" key="tab4">
 								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
 									<Table id="table_ContratosAtivos" width="100%"
-										items="{path: 'modelContratos>/', sorter : [{ path : 'Bukrs', ascending : true, group: true }] }" updateFinished="onListUpdateFinished"
+										items="{path: 'modelContratos>/', sorter : [{ path : 'Bukrs', descending : false, group: true }] }" updateFinished="onListUpdateFinished"
 										itemPress="onItemPress" noDataText="Nenhum contrato Ativo cadastrado para o cliente" busyIndicatorDelay="0">
 										<columns>
 											<Column >
@@ -132,6 +132,9 @@
 											</Column>
 											<Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
 												<Text text="Empresa"/>
+											</Column>
+											<Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+												<Text text="Componente"/>
 											</Column>
 											<Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
 												<Text text="Linha Prod"/>
@@ -161,6 +164,7 @@
 													<!--<Text text="{modelContratos>Compo}-{modelContratos>DescCompo}" />-->
 													<Text text="{path: 'modelContratos>IndexSum'}"/>
 													<Text text="{path: 'modelContratos>Bukrs'}-{path : 'modelContratos>NomeEmpresa', formatter: '.onFormatterText'}"/>
+													<Text text="{path: 'modelContratos>DescCompo'}"/>
 													<Text text="{modelContratos>Versg}-{modelContratos>DescVersg}"/>
 													<Text text="{modelContratos>Mvgr1}-{modelContratos>DescMvgr1}"/>
 													<Text text="{modelContratos>Mvgr5}-{modelContratos>DescMvgr5}"/>
