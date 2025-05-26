@@ -907,7 +907,7 @@
                                                 />
                                             </Column>
                                         </columns>
-                                        <items class="margins">
+                                        <items>
                                             <ColumnListItem type="Inactive">
                                                 <cells>
                                                     <Text
@@ -956,7 +956,10 @@
                                                         backgroundPosition="Center"
                                                     />
                                                     <!--<ObjectListItem number="{path : 'modelItensPedidoGrid>PercLucro', formatter: '.myFormatterCodEmpresa' }%" numberState="{= ${modelItensPedidoGrid>PercLucro} >= 0 ? 'Success' : 'Error' }" hAlign="Righ+t"/>-->
-                                                    <ObjectListItem number="{path : 'modelItensPedidoGrid>PercLucro', formatter: '.myFormatterRentabilidade' }%" numberState="{= ${modelItensPedidoGrid>PercLucro} >= 0 ? 'Success' : 'Error' }" hAlign="Right"/>
+                                                    <ObjectListItem
+                                                        number="{path : 'modelItensPedidoGrid>PercLucro', formatter: '.myFormatterRentabilidade' }%"
+                                                        numberState="{= ${modelItensPedidoGrid>PercLucro} >= 0 ? 'Success' : 'Error' }"
+                                                    />
                                                 </cells>
                                             </ColumnListItem>
                                         </items>
@@ -990,10 +993,17 @@
                                         title="Desconto Nota Fiscal/Boleto"
                                     >
                                         <f:content>
+                                            <Label text="Desconto Trader" />
+                                            <Text
+                                                text="{path: 'modelPedido>/ValDescTrader', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '100' }}"
+                                            />
+                                            <Text
+                                                text="{path: 'modelPedido>/PercDescTrader', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '100' }} %"
+                                            />
                                             <Label text="Desconto Disponível" />
                                             <Input
                                                 id="idDescontoDisponivel"
-                                                value="{path: 'modelPedido>/ValDescDisp', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '100' }}"
+                                                value="R$ {path: 'modelPedido>/ValDescDisp', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '100' }}"
                                                 enabled="false"
                                                 class="desabilitado marginBottomInpu"
                                             />
@@ -1063,8 +1073,10 @@
                                                 type="Text"
                                                 value="{path: 'modelPedido>/ValDescInformBoletoReduzid', type: 'sap.ui.model.type.Float', formatOptions: { milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }}"
                                             />
-                                            
-                                            <Label text="Valor a debitar da verba" />                                            
+
+                                            <Label
+                                                text="Valor a debitar da verba"
+                                            />
                                             <Input
                                                 id="idValDispSemDebitarVerba"
                                                 value="R$ {path: 'modelPedido>/ValFatModeradorVerba', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '100' }}"
@@ -1375,7 +1387,9 @@
                                                 enabled="false"
                                                 class="desabilitado"
                                             />
-                                            <Label text="Valor de Investimento" />
+                                            <Label
+                                                text="Valor de Investimento"
+                                            />
                                             <Input
                                                 id="idVerbaPedido"
                                                 value="R$ {path: 'modelPedido>/ValFatModeradorVerba', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' } }"
