@@ -1164,6 +1164,7 @@ sap.ui.define([
 				MotivoDescBoleto2: "",
 				Gerencia: "",
 				Supervisor: "",
+				Bzirk: "",
 				ValDescDisp: 0,
 				ValDescAplicar: 0,
 				ValDescAplicarBol: 0,
@@ -1234,6 +1235,7 @@ sap.ui.define([
 					that.getModelGlobal("modelPedido").setProperty("/LogVerbaRentNeg", that.vetorCentros[i].LogVerbaRentNeg);
 					that.getModelGlobal("modelPedido").setProperty("/LogProposta", that.vetorCentros[i].LogProposta);
 					that.getModelGlobal("modelPedido").setProperty("/Gerencia", that.vetorCentros[i].Gerencia);
+					that.getModelGlobal("modelPedido").setProperty("/Bzirk", that.vetorCentros[i].Bzirk);
 					that.getModelGlobal("modelPedido").setProperty("/Supervisor", that.vetorCentros[i].Supervisor);
 					that.getModelGlobal("modelPedido").setProperty("/PercFatModeradorVerba", that.vetorCentros[i].PercFatModeradorVerba);
 
@@ -1282,7 +1284,7 @@ sap.ui.define([
 				that.getModel("modelCliente").setProperty("/Kvgr3", dataFrete.Kvgr3);
 				that.getModel("modelCliente").setProperty("/Kvgr4", dataFrete.Kvgr4);
 				that.getModel("modelCliente").setProperty("/Kvgr5", dataFrete.Kvgr5);
-				that.getModel("modelCliente").setProperty("/Bzirk", dataFrete.Bzirk);
+				// that.getModel("modelCliente").setProperty("/Bzirk", dataFrete.Bzirk);
 				that.getModel("modelCliente").setProperty("/Pltyp", dataFrete.Pltyp);
 				that.getModel("modelCliente").setProperty("/Inco1", dataFrete.Inco1);
 
@@ -1291,7 +1293,7 @@ sap.ui.define([
 				that.getModelGlobal("modelPedido").setProperty("/Kvgr3", that.getModel("modelCliente").getProperty("/Kvgr3"));
 				that.getModelGlobal("modelPedido").setProperty("/Kvgr4", that.getModel("modelCliente").getProperty("/Kvgr4"));
 				that.getModelGlobal("modelPedido").setProperty("/Kvgr5", that.getModel("modelCliente").getProperty("/Kvgr5"));
-				that.getModelGlobal("modelPedido").setProperty("/Bzirk", that.getModel("modelCliente").getProperty("/Bzirk"));
+				// that.getModelGlobal("modelPedido").setProperty("/Bzirk", that.getModel("modelCliente").getProperty("/Bzirk"));
 				that.getModelGlobal("modelPedido").setProperty("/Pltyp", that.getModel("modelCliente").getProperty("/Pltyp"));
 				that.getModelGlobal("modelPedido").setProperty("/Inco1", that.getModel("modelCliente").getProperty("/Inco1"));
 
