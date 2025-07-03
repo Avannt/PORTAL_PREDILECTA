@@ -73,7 +73,8 @@ sap.ui.define([
 				Matnr: "",
 				Usuario: "",
 				PercCadastrar: "",
-				PercCadastrado: ""
+				PercCadastrado: "",
+				TabResult: ""
 			};
 
 			var omodelParametros = new JSONModel(parametros);
@@ -610,6 +611,7 @@ sap.ui.define([
 						that.getModel("modelParametros").setProperty("/PercCadastrado", oData.Mvgr3);
 						that.getModel("modelParametros").setProperty("/PercCadastrado", oData.Mvgr4);
 						that.getModel("modelParametros").setProperty("/PercCadastrado", oData.Mvgr5);
+						that.getModel("modelParametros").setProperty("/TabResult", oData.TabResult);
 
 						that.getModel("modelParametros").setProperty("/PercCadastrado", oData.PercCadastrado);
 					}

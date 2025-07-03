@@ -993,12 +993,16 @@
                                         title="Desconto Nota Fiscal/Boleto"
                                     >
                                         <f:content>
-                                            <Label text="Desconto Trader" />
-                                            <Text
-                                                text="{path: 'modelPedido>/ValDescTrader', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '100' }}"
+                                            <Label text="Investimento Trade" />
+                                            <Input
+                                                value="R$ {path: 'modelPedido>/ValDescTrader', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '100' }}"
+                                                enabled="false"
+                                                class="desabilitado marginBottomInpu"
                                             />
-                                            <Text
-                                                text="{path: 'modelPedido>/PercDescTrader', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '100' }} %"
+                                            <Input
+                                                value="{path: 'modelPedido>/PercDescTrader', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '100' }} %"
+                                                enabled="false"
+                                                class="desabilitado marginBottomInpu"
                                             />
                                             <Label text="Desconto Disponível" />
                                             <Input

@@ -19,8 +19,7 @@ builder:
           client: '110'
         app:
           name: ZPORTAL
-          description: ''
           package: Z_SF
-          transport: S4DK945540
+          transport: S4DK945703
         exclude:
           - /test/

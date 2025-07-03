@@ -2102,7 +2102,9 @@ sap.ui.define([
 				pedido.ValDescAplicar = 0;
 			}
 
-			var ValDescDisp = pedido.ValDescDisp;
+			var ValDescDisp = parseFloat(pedido.ValDescDisp);
+			var ValDescTrader = parseFloat(pedido.ValDescTrader);
+			var ValDescDispTotal = parseFloat(ValDescTrader) + parseFloat(ValDescDisp);
 			var MotivoDescNota = pedido.MotivoDescNota;
 			var ValDescAplicar = parseFloat(pedido.ValDescAplicar);
 			var MotivoDescBoleto1 = pedido.MotivoDescBoleto1;
@@ -2114,7 +2116,7 @@ sap.ui.define([
 				console.log("Valor Desconto Disp foi zerado por estar negativo.");
 			}
 
-			var ValDescBoletoPerm = (ValDescDisp * pedido.PercFlexBoleto) / 100;
+			var ValDescBoletoPerm = ((ValDescDisp + ValDescTrader) * pedido.PercFlexBoleto) / 100;
 			ValDescBoletoPerm = parseFloat(ValDescBoletoPerm).toFixed(2);
 
 			var Maior = Math.max(ValDescBoletoPerm, ValDescAplicarBol);
@@ -2125,18 +2127,21 @@ sap.ui.define([
 				this.byId("idDescontoAplicarBoleto").focus();
 
 				this.byId("idDescontoAplicarBoleto").setValueState("Error");
-				this.byId("idDescontoAplicarBoleto").setValueStateText("O valor permitido para desconto Boleto é de R$ " + ValDescBoletoPerm);
+				
+				var valor = this.onFormatNumberController(ValDescBoletoPerm);
+				this.byId("idDescontoAplicarBoleto").setValueStateText("O valor permitido para desconto Boleto é de R$ " + valor);
 
-			} else if ((ValDescAplicarBol + ValDescAplicar) > ValDescDisp) {
+			} else if ((ValDescAplicarBol + ValDescAplicar) > (ValDescDisp + ValDescTrader)) {
 
 				this.byId("idTopLevelIconTabBar").setSelectedKey("tab4");
 				this.byId("idDescontoAplicar").focus();
 
 				this.byId("idDescontoAplicar").setValueState("Error");
 				this.byId("idDescontoAplicarBoleto").setValueState("Error");
-
-				this.byId("idDescontoAplicar").setValueStateText("A soma dos descontos é maior que o permitido de R$ " + ValDescDisp);
-				this.byId("idDescontoAplicarBoleto").setValueStateText("A soma dos descontos é maior que o permitido de R$ " + ValDescDisp);
+				
+				var valor = this.onFormatNumberController(ValDescDispTotal);
+				this.byId("idDescontoAplicar").setValueStateText("A soma dos descontos é maior que o permitido de R$ " + ValDescDispTotal);
+				this.byId("idDescontoAplicarBoleto").setValueStateText("A soma dos descontos é maior que o permitido de R$ " + ValDescDispTotal);
 
 			} else {
 
@@ -2201,7 +2206,9 @@ sap.ui.define([
 				this.byId("idDescontoAplicarCamp").focus();
 
 				this.byId("idDescontoAplicarCamp").setValueState("Error");
-				this.byId("idDescontoAplicarCamp").setValueStateText("A soma dos descontos é maior que o permitido de R$ " + ValDescCampDisp);
+				
+				var valor = this.onFormatNumberController(ValDescCampDisp);
+				this.byId("idDescontoAplicarCamp").setValueStateText("A soma dos descontos é maior que o permitido de R$ " + valor);
 				return;
 
 			} else {
@@ -2246,8 +2253,9 @@ sap.ui.define([
 				this.byId("idDescontoAplicarCampBol").focus();
 
 				this.byId("idDescontoAplicarCampBol").setValueState("Error");
-				this.byId("idDescontoAplicarCampBol").setValueStateText("A soma dos descontos é maior que o permitido de R$ " +
-					ValDescCampDispBol);
+				
+				var valor = this.onFormatNumberController(ValDescCampDispBol);
+				this.byId("idDescontoAplicarCampBol").setValueStateText("A soma dos descontos é maior que o permitido de R$ " +	valor);
 				return;
 
 			} else {
@@ -2281,6 +2289,7 @@ sap.ui.define([
 				this.byId("idBtnCamp").setVisible(true);
 			}
 		},
+
 		onValidacoesCampanhaEscal: function () {
 
 			var pedido = this.getModel("modelPedido").getData();
@@ -2309,7 +2318,9 @@ sap.ui.define([
 				this.byId("idDescontoAplicarCe").focus();
 
 				this.byId("idDescontoAplicarCe").setValueState("Error");
-				this.byId("idDescontoAplicarCe").setValueStateText("A soma dos descontos é maior que o permitido de R$ " + ValDescDispCe);
+				
+				var valor = this.onFormatNumberController(ValDescDispCe);
+				this.byId("idDescontoAplicarCe").setValueStateText("A soma dos descontos é maior que o permitido de R$ " + valor);
 				return;
 
 			} else {
@@ -2350,8 +2361,9 @@ sap.ui.define([
 				this.byId("idDescontoAplicarCampBolEscal").focus();
 
 				this.byId("idDescontoAplicarCampBolEscal").setValueState("Error");
-				this.byId("idDescontoAplicarCampBolEscal").setValueStateText("A soma dos descontos é maior que o permitido de R$ " +
-					ValDescDispBolCe);
+				
+				var valor = this.onFormatNumberController(ValDescDispBolCe);
+				this.byId("idDescontoAplicarCampBolEscal").setValueStateText("A soma dos descontos é maior que o permitido de R$ " + valor);
 				return;
 
 			} else {
@@ -3265,8 +3277,16 @@ sap.ui.define([
 
 			var DescAplicado = this.getModel("modelPedido").getProperty("/ValDescAplicar");
 			var DescBoletoAplicado = this.getModel("modelPedido").getProperty("/ValDescAplicarBol");
+			var DescTrade = parseFloat(this.getModel("modelPedido").getProperty("/ValDescTrader"));
+			var ValDescDisp = parseFloat(this.getModel("modelPedido").getProperty("/ValDescDisp"));
 
 			var descTotalRealizado = parseFloat(DescAplicado) + parseFloat(DescBoletoAplicado);
+
+			var DescTrade = this.getModel("modelPedido").getProperty("/ValDescAplicarBol");
+			if(descTotalRealizado > ValDescDisp){
+
+				descTotalRealizado = ValDescDisp;
+			}
 
 			var valTotalDispInvestir = 0;
 			var valTotUtilizadoPreco = 0;

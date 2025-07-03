@@ -8,8 +8,9 @@ sap.ui.define([
 	"sap/ui/model/json/JSONModel",
 	"sap/ui/core/format/FileSizeFormat",
 	'sap/ui/model/Filter',
-	'sap/ui/model/FilterOperator'
-], function (Controller, History, UIComponent, MessageBox, JSONModel, FileSizeFormat, Filter, FilterOperator) {
+	'sap/ui/model/FilterOperator',
+	"sap/ui/core/format/NumberFormat"
+], function (Controller, History, UIComponent, MessageBox, JSONModel, FileSizeFormat, Filter, FilterOperator, NumberFormat) {
 	"use strict";
 
 	return Controller.extend("application.controller.BaseController", {
@@ -879,6 +880,22 @@ sap.ui.define([
 			if (this._ItemDialog) {
 				this._ItemDialog.destroy(true);
 			}
+		},
+
+		onFormatNumberController: function (value) {
+
+			var oFormatOptions = {
+
+				decimalSeparator: ",",
+				minIntegerDigits: 1,
+				maxIntegerDigits: 10,
+				minFractionDigits: 2,
+				maxFractionDigits: 2
+			};
+
+			value = parseFloat(value);
+			var oFloatFormat = NumberFormat.getFloatInstance(oFormatOptions);
+			return oFloatFormat.format(value);
 		}
 
 	});

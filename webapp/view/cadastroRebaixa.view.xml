@@ -250,14 +250,19 @@
                         </suggestionItems>
                     </SearchField>
                     <Label text="Percentual Máximo" />
-                    <Input
+                    <Text
+                        id="idPerc"
+                        text="{path :'modelParametros>/PercCadastrado', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} % ({path :'modelParametros>/TabResult'})"
+                        
+                    />
+                    <!-- <Input
                         id="idPerc"
                         placeholder=""
                         value="{path :'modelParametros>/PercCadastrado', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
                         enabled="false"
                         valueState="Warning"
                         description="%"
-                    />
+                    /> -->
                     <Label text="Percentual à Cadastrar" />
                     <Input
                         id="idPercCadastrar"
