@@ -152,7 +152,7 @@ sap.ui.define([
 
 			that.getModel().read("/P_AnexosQ", {
 				urlParameters: {
-					"$filter": "IvCodMensagem eq '" + CodMsg + "'"
+					"$filter": "CodMensagem eq '" + CodMsg + "'"
 				},
 				success: function (data) {
 

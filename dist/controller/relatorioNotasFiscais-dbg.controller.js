@@ -493,7 +493,7 @@ sap.ui.define([
 
 			this.oProcessFlow = this._ItemDialog.getContent("fnClass")[0];
 
-			this.oProcessFlow.setZoomLevel(sap.suite.ui.commons.ProcessFlowZoomLevel.One);
+			//this.oProcessFlow.setZoomLevel(sap.suite.ui.commons.ProcessFlowZoomLevel.One);
 			this._ItemDialog.setBusy(true);
 
 			new Promise(function (res, rej) {

@@ -26,8 +26,8 @@ sap.ui.define([
 
 				Bukrs: "",
 				CodMotivVerba: "",
-				DatMovto: "",
-				HraMovto: "",
+				DatMovto: null,
+				HraMovto: null,
 				IdMovtoVerba: "",
 				IvUsuario: "",
 				Lifnr: "",
@@ -49,7 +49,7 @@ sap.ui.define([
 			
 			var ChaveAcesso = Bukrs + "." + Periodo;
 			
-			this.byId("idTopLevelIconTabBar").setSelectedKey("tab1");
+			this.byId("idVerbaConsultaIconTabBar").setSelectedKey("tab1");
 
 			var oItemVerbas = [];
 			

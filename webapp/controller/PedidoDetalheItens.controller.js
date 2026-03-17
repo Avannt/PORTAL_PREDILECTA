@@ -423,7 +423,17 @@ sap.ui.define([
 
 					if (Item.TipoErro == "E") {
 
-						MessageBox.show(Item.MsgErro, {
+						var msg = Item.MsgErro || "";
+
+						// identifica se é erro de item já inserido
+						if (msg.indexOf("já foi inserido") !== -1) {
+
+							that._carregarItemJaInserido(msg);
+
+							return; // não mostra MessageBox
+						}
+
+						MessageBox.show(msg, {
 							icon: MessageBox.Icon.WARNING,
 							title: "Não Permitido",
 							actions: [MessageBox.Action.OK],
@@ -482,10 +492,49 @@ sap.ui.define([
 			});
 		},
 
+		_carregarItemJaInserido: function (msg) {
+
+			var that = this;
+
+			that.byId("idItens").setBusy(false);
+
+			// ⭐ extrai código do material da mensagem
+			// exemplo: "Item: 0001 já foi inserido!"
+			var match = msg.match(/Item:\s*(\d+)/i);
+
+			if (!match) return;
+
+			var matnr = match[1];
+
+			// ⭐ busca item no grid já inserido
+			var aItens = this.getModel("modelItensPedidoGrid").getData() || [];
+
+			var oItemEncontrado = aItens.find(function (o) {
+				return String(o.Matnr) === String(matnr);
+			});
+
+			if (!oItemEncontrado) return;
+
+			// ⭐ carrega igual onEditarItemPress
+			this.getModelGlobal("modelItem").setData(oItemEncontrado);
+
+			this.getModel("modelVar").setProperty("/Editar", true);
+
+			this.byId("idBtnAdd").setText("Salvar");
+			this.byId("IdItemPedido").setEnabled(false);
+			this.byId("idBtnAdd").setVisible(true);
+
+			sap.m.MessageToast.show("Item já existente. Entrando em modo edição.");
+
+			setTimeout(function () {
+				that.byId("idQuantidade").focus();
+			}, 400);
+		},
+
 		onInserirItem: function () {
 
 			var that = this;
-			
+
 			var objItem = that.getModel("modelItem").getData();
 
 			new Promise(function (res, rej) {

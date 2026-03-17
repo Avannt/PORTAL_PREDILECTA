@@ -542,7 +542,7 @@
                 <Property Name="Contrato" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:label="Contrato" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="ValDescInformBolCe" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="2" sap:unicode="false" sap:label="Valor Desc Inf B CE" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="DataEntrega" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Data de Entrega" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <Property Name="DataEntregaSujerida" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Data de Entrega" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="DataEntregaSugerida" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Data de Entrega" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="DataEnvio" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Data Envio" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="DataFim" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Campo de caracteres do comprimento 10" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="DataIni" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Campo de caracteres do comprimento 10" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
@@ -919,7 +919,7 @@
                 <Property Name="Completo" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Campo de seleção" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="Contrato" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:label="Contrato" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="DataEntrega" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Data de Entrega" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <Property Name="DataEntregaSujerida" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Data de Entrega" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="DataEntregaSugerida" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Data de Entrega" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="DataEnvio" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Data Envio" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="DataFim" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Campo de caracteres do comprimento 10" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="DataIni" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Campo de caracteres do comprimento 10" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
@@ -1491,7 +1491,7 @@
                 <Property Name="Tdt" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="DataEnvio" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="HoraEnvio" Type="Edm.String" Nullable="false" MaxLength="8" sap:unicode="false" sap:label="" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <Property Name="DataEntregaSujerida" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="DataEntregaSugerida" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="LeadTime" Type="Edm.Decimal" Nullable="false" Precision="14" Scale="3" sap:unicode="false" sap:label="" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="DataIniConv" Type="Edm.DateTime" Nullable="false" Precision="7" sap:unicode="false" sap:label="" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
             </EntityType>
@@ -1605,7 +1605,7 @@
                 <Property Name="Tdt" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="DataEnvio" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="HoraEnvio" Type="Edm.String" Nullable="false" MaxLength="8" sap:unicode="false" sap:label="" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <Property Name="DataEntregaSujerida" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="DataEntregaSugerida" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="LeadTime" Type="Edm.Decimal" Nullable="false" Precision="14" Scale="3" sap:unicode="false" sap:label="" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
             </EntityType>
             <EntityType Name="EnviaEmailDanfe" sap:content-version="1">

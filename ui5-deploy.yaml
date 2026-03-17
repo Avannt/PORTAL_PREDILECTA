@@ -1,5 +1,3 @@
-# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
-
 specVersion: "3.1"
 metadata:
   name: application
@@ -16,10 +14,10 @@ builder:
         target:
           destination: PREDILECTADEV
           url: http://predilectadev:8000
-          client: '110'
+          client: "110"
         app:
           name: ZPORTAL
           package: Z_SF
-          transport: S4DK945703
+          transport: S4DK949591
         exclude:
           - /test/

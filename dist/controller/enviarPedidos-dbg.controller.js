@@ -350,9 +350,7 @@ sap.ui.define([
 							var Url = that.getModelGlobal("modelAux").getProperty("/Url");
 
 							var oModelPed = new ODataModel({
-								serviceUrl: Url,
-								// userName: "t_rcardilo",
-								// password: "sap123"
+								serviceUrl: Url
 							});
 
 							oModelPed.setUseBatch(true);

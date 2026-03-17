@@ -4,40 +4,39 @@
 		<pages>
 			<Page title="Consultas de Verbas" showNavButton="true" navButtonPress="onNavBack">
 				<content>
-					<IconTabBar id="idTopLevelIconTabBar">
+					<IconTabBar id="idVerbaConsultaIconTabBar" stretchContentHeight="true" >
 						<items>
 							<IconTabFilter id="tabInfoVerba" key="tab1" text="Dados Verba" icon="sap-icon://hint">
 								<content>
-									<f:SimpleForm id="SimpleFormChange471" editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="4"
+									<f:SimpleForm layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="4"
 										labelSpanS="12" adjustLabelSpan="false" emptySpanXL="3" emptySpanL="3" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
 										singleContainerFullSize="false" bindingContexts="modelVerba">
 										<f:content>
 											<Label text="Representante"/>
-											<Input id="idCodigoCliente" enabled="false" value="{modelVerba>/Lifnr} - {modelVerba>/Name1Rep}" />
+											<Input enabled="false" value="{modelVerba>/Lifnr} - {modelVerba>/Name1Rep}" />
 											<Label text="Empresa"/>
-											<Input id="idNomeEmpresa" enabled="false" value="{modelVerba>/Bukrs} - {modelVerba>/Butxt}" />
+											<Input enabled="false" value="{modelVerba>/Bukrs} - {modelVerba>/Butxt}" />
 											<Label text="Período"/>
-											<Input id="idPeriodo" enabled="false" value="{path:'modelVerba>/Periodo', formatter: '.formatPeriodo'}" />
+											<Input enabled="false" value="{path:'modelVerba>/Periodo', formatter: '.formatPeriodo'}" />
 											<Label text="Verba Inicial"/>
-											<Input id="idVerbaInicial" enabled="false" value="R$: {path: 'modelVerba>/ValSdoIni', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" />
+											<Input enabled="false" value="R$: {path: 'modelVerba>/ValSdoIni', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" />
 											<Label text="Débito"/>
-											<Input id="idDebito" enabled="false" value="R$: {path: 'modelVerba>/ValSdoDb', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" />
+											<Input enabled="false" value="R$: {path: 'modelVerba>/ValSdoDb', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" />
 											<Label text="Crédito"/>
-											<Input id="idCredito" enabled="false" value="R$: {path: 'modelVerba>/ValSdoCr', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" />
+											<Input enabled="false" value="R$: {path: 'modelVerba>/ValSdoCr', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" />
 											<Label text="Verba Final"/>
-											<Input id="idVerbaFinal" enabled="false" value="R$: {path: 'modelVerba>/ValSdoFim', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"  />
+											<Input enabled="false" value="R$: {path: 'modelVerba>/ValSdoFim', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"  />
 										</f:content>
 									</f:SimpleForm>
 								</content>
 							</IconTabFilter>
-							<IconTabFilter id="tabMovimentacao" key="tab2" text="Movimentação" icon="sap-icon://table-view">
-								<Table id="table_TabelaPrecos" width="100%" class="table" items="{ path: 'modelMov>/', sorter: {path :'IdMovtoVerba', ascending: true }}" updateFinished="onListUpdateFinished"
+							<IconTabFilter key="tab2" text="Movimentação" icon="sap-icon://table-view">
+								<Table width="100%" class="table" items="{ path: 'modelMov>/', sorter: {path :'DatMovto', descending: true }}" updateFinished="onListUpdateFinished" growingThreshold="60" growingTriggerText="Próximo >>>"
 									noDataText="Nenhuma movimentação cadastrada para o cliente" busyIndicatorDelay="{detailView>/lineItemTableDelay}" fixedLayout="false">
 									<headerToolbar>
-										<Toolbar id="lineItemsToolbar">
-											<Title id="lineItemsHeader" text="Tabela Movimentação "/>
+										<Toolbar>
+											<Title text="Tabela Movimentação "/>
 											<ToolbarSpacer/>
-											<!--<Button icon="sap-icon://add" press="onAddPedido"/>-->
 										</Toolbar>
 									</headerToolbar>
 									<columns>

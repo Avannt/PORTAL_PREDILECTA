@@ -67,7 +67,7 @@
                                             <Label text="CPF/CNPJ" />
                                             <Input
                                                 id="idCNPJ"
-                                                value="{modelCliente>/Stcd1} {modelCliente/Stcd2} "
+                                                value="{path: 'modelCliente>/Stcd1', formatter: '.onFormatCnpj'} {path: 'modelCliente/Stcd2', formatter: '.onFormatCpf'} "
                                                 enabled="false"
                                             />
                                             <Label text="Telefone" />
@@ -184,7 +184,7 @@
                                         columnsM="3"
                                     >
                                         <f:content>
-                                            <Label text="Estabelecimento*">
+                                            <Label text="Estabelecimento">
                                                 <layoutData>
                                                     <layout:GridData
                                                         span="L2 M2"
@@ -232,7 +232,8 @@
                                                 </layoutData>
                                             </Input>
                                             <Label
-                                                text="Tipo pedido *"
+                                                text="Tipo pedido"
+                                                required="true"
                                                 wrapping="true"
                                             >
                                                 <layoutData>
@@ -260,7 +261,7 @@
                                                     />
                                                 </layoutData>
                                             </Select>
-                                            <Label text="Data pedido *">
+                                            <Label text="Data pedido">
                                                 <layoutData>
                                                     <layout:GridData
                                                         span="L2 M2"
@@ -281,7 +282,8 @@
                                                 </layoutData>
                                             </Input>
                                             <Label
-                                                text="Pedido origem cliente *"
+                                                text="Pedido origem cliente "
+                                                required="true"
                                             >
                                                 <layoutData>
                                                     <layout:GridData
@@ -302,7 +304,10 @@
                                                     />
                                                 </layoutData>
                                             </Input>
-                                            <Label text="Tabela de preço *">
+                                            <Label
+                                                text="Tabela de preço "
+                                                required="true"
+                                            >
                                                 <layoutData>
                                                     <layout:GridData
                                                         span="L2 M2"
@@ -330,7 +335,10 @@
                                                     />
                                                 </layoutData>
                                             </Select>
-                                            <Label text="Tipo transporte *">
+                                            <Label
+                                                text="Tipo transporte "
+                                                required="true"
+                                            >
                                                 <layoutData>
                                                     <layout:GridData
                                                         span="L2 M2"
@@ -377,7 +385,10 @@
                                                     />
                                                 </layoutData>
                                             </Input>
-                                            <Label text="Vencimento(s) *">
+                                            <Label
+                                                text="Vencimento(s) "
+                                                required="true"
+                                            >
                                                 <layoutData>
                                                     <layout:GridData
                                                         span="L2 M2"
@@ -429,7 +440,10 @@
                                                     />
                                                 </layoutData>
                                             </Input>
-                                            <Label text="Índice *">
+                                            <Label
+                                                text="Índice "
+                                                required="true"
+                                            >
                                                 <layoutData>
                                                     <layout:GridData
                                                         span="L2 M2"
@@ -448,7 +462,10 @@
                                                     />
                                                 </layoutData>
                                             </Input>
-                                            <Label text="Local entrega *">
+                                            <Label
+                                                text="Local entrega "
+                                                required="true"
+                                            >
                                                 <layoutData>
                                                     <layout:GridData
                                                         span="L2 M2"
@@ -474,7 +491,10 @@
                                                     />
                                                 </layoutData>
                                             </Select>
-                                            <Label text="Data entrega">
+                                            <Label
+                                                text="Data entrega"
+                                                required="true"
+                                            >
                                                 <layoutData>
                                                     <layout:GridData
                                                         span="L2 M2"
@@ -527,13 +547,13 @@
                                                 </layoutData>
                                             </Label>
                                             <DatePicker
-                                                id="idDataEntregaSujerida"
+                                                id="idDataEntregaSugerida"
                                                 required="true"
                                                 displayFormat="dd/MM/yyyy"
                                                 valueFormat="dd/MM/yyyy"
                                                 enabled="false"
                                                 valueState="Warning"
-                                                value="{modelPedido>/DataEntregaSujerida}"
+                                                value="{modelPedido>/DataEntregaSugerida}"
                                             >
                                                 <layoutData>
                                                     <layout:GridData
@@ -565,7 +585,8 @@
                                                 </layoutData>
                                             </CheckBox>
                                             <Label
-                                                text="Data limite faturamento *"
+                                                text="Data limite faturamento"
+                                                required="true"
                                             >
                                                 <layoutData>
                                                     <layout:GridData
@@ -756,7 +777,6 @@
                                 icon="sap-icon://add"
                                 key="tab3"
                                 count="{modelAux>/ItensPedidoTab}"
-                                enabled="false"
                             >
                                 <ScrollContainer
                                     height="100%"
@@ -765,6 +785,20 @@
                                     vertical="true"
                                 >
                                     <Toolbar id="lineItemsToolbar">
+                                        <content>
+                                            <MessageStrip
+                                                xmlns:mvc="sap.ui.core.mvc"
+                                                xmlns:core="sap.ui.core"
+                                                xmlns:layout="sap.ui.layout"
+                                                xmlns:f="sap.ui.layout.form"
+                                                xmlns="sap.m"
+                                                text="Atenção aos itens com volume zerado, são os itens em campanha, para validar, inserir o volume no item."
+                                                showIcon="true"
+                                                id="strip0"
+                                                customIcon="sap-icon://accounting-document-verification"
+                                                type="Warning"
+                                            />
+                                        </content>
                                         <Title id="lineItemsHeader" />
                                         <ToolbarSpacer />
                                         <Label text="Adicionar Itens" />
@@ -788,7 +822,7 @@
                                         growing="true"
                                         growingThreshold="99"
                                         alternateRowColors="true"
-                                        growingTriggerText="Próximo "
+                                        growingTriggerText="Próximo >>"
                                         busyIndicatorDelay="0"
                                         fixedLayout="false"
                                     >
@@ -909,6 +943,13 @@
                                         </columns>
                                         <items>
                                             <ColumnListItem type="Inactive">
+                                                <customData>
+                                                    <core:CustomData
+                                                        key="mydata"
+                                                        value="{path: 'modelItensPedidoGrid>IdCorGrid', type: 'sap.ui.model.type.String'}"
+                                                        writeToDom="true"
+                                                    />
+                                                </customData>
                                                 <cells>
                                                     <Text
                                                         text="{path : 'modelItensPedidoGrid>IndexItem', type: 'sap.ui.model.type.Integer'}"
@@ -932,7 +973,7 @@
                                                         textAlign="Left"
                                                     />
                                                     <Text
-                                                        text="R$: {path: 'modelItensPedidoGrid>ValPrecoTabelaMin', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+                                                        text="R$: {path: 'modelItensPedidoGrid>ValPrecoMinBase', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
                                                         textAlign="Left"
                                                     />
                                                     <!--<Text-->
@@ -957,8 +998,8 @@
                                                     />
                                                     <!--<ObjectListItem number="{path : 'modelItensPedidoGrid>PercLucro', formatter: '.myFormatterCodEmpresa' }%" numberState="{= ${modelItensPedidoGrid>PercLucro} >= 0 ? 'Success' : 'Error' }" hAlign="Righ+t"/>-->
                                                     <ObjectListItem
-                                                        number="{path : 'modelItensPedidoGrid>PercLucro', formatter: '.myFormatterRentabilidade' }%"
-                                                        numberState="{= ${modelItensPedidoGrid>PercLucro} >= 0 ? 'Success' : 'Error' }"
+                                                        number="{path : 'modelItensPedidoGrid>PercLucro', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' } }%"
+                                                        numberState="{= ${modelItensPedidoGrid>PercLucro} &gt;= 0 ? 'Success' : 'Error' }"
                                                     />
                                                 </cells>
                                             </ColumnListItem>
@@ -1420,6 +1461,12 @@
                                                 enabled="false"
                                                 visible="false"
                                                 class="desabilitado"
+                                            />
+                                            <Label
+                                                text="Mensagens de integração"
+                                            />
+                                            <Text
+                                                text="{modelPedido>/TipoErro}-{modelPedido&gt;/MsgErro}"
                                             />
                                         </f:content>
                                     </f:SimpleForm>

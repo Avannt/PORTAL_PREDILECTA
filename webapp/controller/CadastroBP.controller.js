@@ -148,7 +148,7 @@ sap.ui.define([
                 that.getModel("modelValidaBP").setProperty("/CnpjVE", "Error");
                 that.getModel("modelValidaBP").setProperty("/CnpjTE", "Preencher o campo CPF / CNPJ com 14 caracteres.");
 
-            }
+            } 
             // else if (cliente.Ie.length == 0) {
 
             // 	that.getModel("modelValidaBP").setProperty("/IeVE", "Error");
@@ -191,10 +191,10 @@ sap.ui.define([
             //     that.getModel("modelValidaBP").setProperty("/Telefone3TE", "Preencher o campo Telefone com 11 caracteres.");
 
             // } 
-            else if (cliente.Ie.length > 12) {
+            else if (cliente.Ie.length > 20) {
 
                 that.getModel("modelValidaBP").setProperty("/IeVE", "Error");
-                that.getModel("modelValidaBP").setProperty("/IeTE", "Quantidade de 12 caracteres excedida para o campo de Inscrição Estadual.");
+                that.getModel("modelValidaBP").setProperty("/IeTE", "Quantidade de 20 caracteres excedida para o campo de Inscrição Estadual.");
 
             } 
             else if (cliente.EmailXml.lenght == 0) {
@@ -248,10 +248,10 @@ sap.ui.define([
                 that.getModel("modelValidaBP").setProperty("/CidadeVE", "Error");
                 that.getModel("modelValidaBP").setProperty("/CidadeTE", "Preencher o campo Cidade.");
 
-            } else if (cliente.Estado.length == 0) {
+            } else if (cliente.Estado.length == 0 || cliente.Estado.length == 0) {
 
                 that.getModel("modelValidaBP").setProperty("/EstadoVE", "Error");
-                that.getModel("modelValidaBP").setProperty("/EstadoTE", "Preencher o campo Estado.");
+                that.getModel("modelValidaBP").setProperty("/EstadoTE", "Selecione o campo Estado.");
 
             } else if (cliente.Numero.length > 6) {
 
@@ -329,17 +329,37 @@ sap.ui.define([
 
                                 that.byId("idPage").setBusy(false);
 
-                                if (returnData.Type == "E") {
+                                if (returnData.Type == "E" && ( returnData.EvBp != '' && returnData.EvBp != undefined ) && ( !returnData.Message.toUpperCase().includes("CPF") || !returnData.Message.toUpperCase().includes("CNPJ") )) {
 
-                                    MessageBox.show(returnData.Message, {
-                                        icon: MessageBox.Icon.ERROR,
+                                    MessageBox.show("BP " + returnData.EvBp + " criado com sucesso! Mas com divergências! Clique em visualizar detalhes.", {
+                                        icon: MessageBox.Icon.WARNING,
                                         title: "Criação BP!",
+                                        details: returnData.Message,
                                         actions: ["OK"],
                                         onClose: function (oAction) {
-
                                         }
                                     });
 
+                                } else if( returnData.Message.toUpperCase().includes("CPF") || returnData.Message.toUpperCase().includes("CNPJ")) {
+
+                                    MessageBox.show(returnData.Message, {
+                                        icon: MessageBox.Icon.WARNING,
+                                        title: "Criação BP!",
+                                        actions: ["OK"],
+                                        onClose: function (oAction) {
+                                        }
+                                    });
+
+                                } else if( returnData.Type == "E" ){
+
+                                    MessageBox.show('O BP não foi criado, clique em mais detalhes para visualizar o erro.', {
+                                        icon: MessageBox.Icon.ERROR,
+                                        details: returnData.Message,
+                                        title: "Criação BP!",
+                                        actions: ["OK"],
+                                        onClose: function (oAction) {
+                                        }
+                                    });
                                 } else {
 
                                     MessageBox.show("BP " + returnData.EvBp + " criado com sucesso!", {
@@ -474,6 +494,7 @@ sap.ui.define([
                 that.onMensagemErroODATA(error);
             });
         },
+
         onDialogRedespachoAfterOpen: function (oEvent) {
 
             var that = this;
@@ -505,6 +526,7 @@ sap.ui.define([
                 that.onMensagemErroODATA(error);
             });
         },
+        
         onDialogRedespachoAfterOpen: function (oEvent) {
 
             var that = this;

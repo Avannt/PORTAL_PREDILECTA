@@ -23,7 +23,7 @@ sap.ui.define([
 			var that = this;
 
 			that.onInicializaModels();
-			
+
 			that.device = that.getModel("device").getData();
 
 			that.byId("idEmpresa").setBusy(true);
@@ -40,7 +40,7 @@ sap.ui.define([
 				that.setModel(oModelEmpresas, "modelEmpresas");
 
 				setTimeout(function () {
-					if(!that.device.system.phone){
+					if (!that.device.system.phone) {
 
 						that.byId("idEmpresa").focus();
 					}
@@ -114,7 +114,7 @@ sap.ui.define([
 
 					setTimeout(function () {
 
-						if(!that.device.system.phone){
+						if (!that.device.system.phone) {
 
 							that.byId("idRepres").focus();
 						}
@@ -148,7 +148,7 @@ sap.ui.define([
 				new Promise(function (res1, rej1) {
 
 					that.onBuscarRedesClientes(that.getModel("modelParametros").getProperty("/Lifnr"), that.getModel("modelParametros").getProperty("/Bukrs"), res1, rej1, that);
-				
+
 				}).then(function (dados) {
 
 					var vetorRede = [];
@@ -177,7 +177,7 @@ sap.ui.define([
 					that.setModel(oModelRede, "modelRedes");
 
 					setTimeout(function () {
-						if(!that.device.system.phone){
+						if (!that.device.system.phone) {
 
 							that.byId("idCliente").focus();
 						}
@@ -338,7 +338,7 @@ sap.ui.define([
 
 		onChangeRede: function () {
 
-			if(!this.device.system.phone){
+			if (!this.device.system.phone) {
 
 				this.byId("idCategoria").focus();
 			}
@@ -347,7 +347,7 @@ sap.ui.define([
 
 		onChangeCliente: function () {
 
-			if(!this.device.system.phone){
+			if (!this.device.system.phone) {
 
 				this.byId("idRede").focus();
 			}
@@ -365,7 +365,7 @@ sap.ui.define([
 		},
 
 		onChangeCategoria: function () {
-			if(!this.device.system.phone){
+			if (!this.device.system.phone) {
 
 				this.byId("idSubCategoria").focus();
 			}
@@ -373,7 +373,7 @@ sap.ui.define([
 		},
 
 		onChangeSubCategoria: function () {
-			if(!this.device.system.phone){
+			if (!this.device.system.phone) {
 
 				this.byId("idSubCategoria").focus();
 			}
@@ -382,7 +382,7 @@ sap.ui.define([
 		},
 
 		onChangeFamilia: function () {
-			if(!this.device.system.phone){
+			if (!this.device.system.phone) {
 
 				this.byId("idGramatura").focus();
 			}
@@ -390,7 +390,7 @@ sap.ui.define([
 		},
 
 		onChangeGramatura: function () {
-			if(!this.device.system.phone){
+			if (!this.device.system.phone) {
 
 				this.byId("idMarca").focus();
 			}
@@ -398,7 +398,7 @@ sap.ui.define([
 		},
 
 		onChangeMarca: function () {
-			if(!this.device.system.phone){
+			if (!this.device.system.phone) {
 
 				this.byId("idProdutos").focus();
 			}
@@ -624,7 +624,102 @@ sap.ui.define([
 			});
 		},
 
-		onCadastrarDesconto: function () {
+		// 1) Camada baixa: apenas chama o OData e retorna Promise
+		_callPercRebaixa: function (parametros) {
+			const oModel = this.getModelGlobal("modelAux").getProperty("/DBModel");
+
+			return new Promise((resolve, reject) => {
+				oModel.callFunction("/P_Get_PercRebaixa", {
+					method: "POST",
+					urlParameters: parametros,
+					success: function (oData /*, oResponse */) {
+						resolve(oData);
+					},
+					error: function (oError) {
+						reject(oError);
+					}
+				});
+			});
+		},
+
+		// 2) Camada alta: prepara params, controla busy, trata erros e atualiza models
+		onBuscarDescontoPromise: function () {
+			const aux = this.getModel("modelParametros").getData();
+
+			const parametros = {
+				Vkorg: aux.Bukrs,
+				Lifnr: aux.Lifnr,
+				Kunnr: aux.Kunnr,
+				Kvgr4: aux.Kvgr4,
+				Mvgr1: aux.Mvgr1,
+				Mvgr2: aux.Mvgr2,
+				Mvgr3: aux.Mvgr3,
+				Mvgr4: aux.Mvgr4,
+				Mvgr5: aux.Mvgr5,
+				Matnr: aux.Matnr,
+				Usuario: this.getModelGlobal("modelAux").getProperty("/CodRepres")
+			};
+
+			this.byId("master").setBusy(true);
+
+			return this._callPercRebaixa(parametros)
+				.then((oData) => {
+					// Tratamento de "erro de negócio"
+					if (oData && oData.TipoErro === "E") {
+						// Exibe e lança erro para permitir .catch() na cadeia
+						sap.m.MessageBox.show(oData.MsgErro, {
+							icon: sap.m.MessageBox.Icon.WARNING,
+							title: "Não Permitido",
+							actions: [sap.m.MessageBox.Action.OK],
+							onClose: () => this._onLoadFields && this._onLoadFields()
+						});
+
+						const err = new Error(oData.MsgErro || "Erro de negócio");
+						err.code = "BUSINESS_RULE";
+						err.payload = oData;
+						throw err;
+					}
+
+					// Atualiza modelos conforme seu código original.
+					// OBS: no código original você setava várias vezes "/PercCadastrado".
+					// Se quiser preservar exatamente, mantenho a última como fonte final.
+					const m = this.getModel("modelParametros");
+
+					// Caso queira guardar individualmente, descomente estas linhas:
+					// m.setProperty("/PercMvgr1", oData.Mvgr1);
+					// m.setProperty("/PercMvgr2", oData.Mvgr2);
+					// m.setProperty("/PercMvgr3", oData.Mvgr3);
+					// m.setProperty("/PercMvgr4", oData.Mvgr4);
+					// m.setProperty("/PercMvgr5", oData.Mvgr5);
+
+					// Mantendo o comportamento original (sobrescrevendo /PercCadastrado):
+					// (Se preferir, remova as 5 linhas abaixo e use as individuais acima.)
+					m.setProperty("/PercCadastrado", oData.Mvgr1);
+					m.setProperty("/PercCadastrado", oData.Mvgr2);
+					m.setProperty("/PercCadastrado", oData.Mvgr3);
+					m.setProperty("/PercCadastrado", oData.Mvgr4);
+					m.setProperty("/PercCadastrado", oData.Mvgr5);
+
+					m.setProperty("/TabResult", oData.TabResult);
+					m.setProperty("/PercCadastrado", oData.PercCadastrado);
+
+					// Devolve o resultado para a próxima etapa da cadeia
+					return oData;
+				})
+				.catch((oError) => {
+					// Trata erro técnico de OData aqui (continua propagando)
+					if (typeof this.onMensagemErroODATA === "function") {
+						this.onMensagemErroODATA(oError);
+					}
+					throw oError;
+				})
+				.finally(() => {
+					this.byId("master").setBusy(false);
+				});
+		},
+
+
+		onCadastrarDesconto1: function () {
 
 			var that = this;
 
@@ -641,7 +736,7 @@ sap.ui.define([
 					actions: [MessageBox.Action.OK],
 					onClose: function () {
 
-						if(!that.device.system.phone){
+						if (!that.device.system.phone) {
 
 							that.byId("idEmpresa").focus();
 						}
@@ -671,7 +766,7 @@ sap.ui.define([
 
 						aux.PercCadastrar = "";
 
-						if(!that.device.system.phone){
+						if (!that.device.system.phone) {
 
 							that.byId("idPercCadastrar").focus();
 						}
@@ -688,7 +783,7 @@ sap.ui.define([
 
 						aux.PercCadastrar = "";
 
-						if(!that.device.system.phone){
+						if (!that.device.system.phone) {
 
 							that.byId("idPercCadastrar").focus();
 						}
@@ -703,7 +798,7 @@ sap.ui.define([
 					actions: [MessageBox.Action.OK],
 					onClose: function () {
 
-						if(!that.device.system.phone){
+						if (!that.device.system.phone) {
 
 							that.byId("idRepres").focus();
 						}
@@ -731,7 +826,7 @@ sap.ui.define([
 					actions: [MessageBox.Action.OK],
 					onClose: function () {
 
-						if(!that.device.system.phone){
+						if (!that.device.system.phone) {
 
 							that.byId("idCliente").focus();
 						}
@@ -745,8 +840,8 @@ sap.ui.define([
 					title: "Não Permitido",
 					actions: [MessageBox.Action.OK],
 					onClose: function () {
-						
-						if(!that.device.system.phone){
+
+						if (!that.device.system.phone) {
 
 							that.byId("idCliente").focus();
 						}
@@ -754,6 +849,18 @@ sap.ui.define([
 				});
 
 
+			} else if (!aux.Kunnr || !aux.Kvgr4) {
+
+				MessageBox.show("Preencher o Cliente ou a Rede para continuar.", {
+					icon: MessageBox.Icon.WARNING,
+					title: "Não Permitido",
+					actions: [MessageBox.Action.OK],
+					onClose: function () {
+
+						that.byId("idCliente").focus();
+						that.getModelGlobal("modelParametros").setProperty("/PercCadastrado", 0);
+					}
+				});
 			} else {
 
 				var parametros = {
@@ -815,6 +922,205 @@ sap.ui.define([
 				});
 			}
 
+		},
+
+		// Helper baixo-nível: chama o OData de SET e retorna Promise
+		_callSetPercRebaixa: function (parametros) {
+			const oModel = this.getModelGlobal("modelAux").getProperty("/DBModel");
+			return new Promise((resolve, reject) => {
+				oModel.callFunction("/P_Set_PercRebaixa", {
+					method: "POST",
+					urlParameters: parametros,
+					success: function (oData /*, oResponse */) { resolve(oData); },
+					error: function (oError) { reject(oError); }
+				});
+			});
+		},
+
+		// Agora chamando primeiro a busca por Promise e depois o cadastro:
+		onCadastrarDesconto: async function () {
+			const that = this;
+
+			// Models e dados atuais
+			const aux = this.getModel("modelParametros").getData();
+
+			// ======= VALIDAÇÕES PRÉVIAS (não dependem do PercCadastrado) =======
+			if (!aux.Bukrs) {
+				sap.m.MessageBox.show("Preencher a Empresa!", {
+					icon: sap.m.MessageBox.Icon.WARNING,
+					title: "Não Permitido",
+					actions: [sap.m.MessageBox.Action.OK],
+					onClose: () => { if (!that.device.system.phone) { that.byId("idEmpresa").focus(); } }
+				});
+				return;
+			}
+
+			if (aux.PercCadastrar < 0) {
+				sap.m.MessageBox.show("Cadastre o percentual positivo! ", {
+					icon: sap.m.MessageBox.Icon.WARNING,
+					title: "Não Permitido",
+					actions: [sap.m.MessageBox.Action.OK],
+					onClose: function () {
+						aux.PercCadastrar = "";
+						if (!that.device.system.phone) { that.byId("idPercCadastrar").focus(); }
+					}
+				});
+				return;
+			}
+
+			if (aux.PercCadastrar === "" || aux.PercCadastrar === undefined) {
+				sap.m.MessageBox.show("Informe o percentual a cadastrar! ", {
+					icon: sap.m.MessageBox.Icon.WARNING,
+					title: "Não Permitido",
+					actions: [sap.m.MessageBox.Action.OK],
+					onClose: function () {
+						aux.PercCadastrar = "";
+						if (!that.device.system.phone) { that.byId("idPercCadastrar").focus(); }
+					}
+				});
+				return;
+			}
+
+			if (!aux.Lifnr) {
+				sap.m.MessageBox.show("Preencher o Representante!", {
+					icon: sap.m.MessageBox.Icon.WARNING,
+					title: "Não Permitido",
+					actions: [sap.m.MessageBox.Action.OK],
+					onClose: function () { if (!that.device.system.phone) { that.byId("idRepres").focus(); } }
+				});
+				return;
+			}
+
+			if (!aux.Kunnr && !aux.Kvgr4) {
+
+				MessageBox.show("Preencher o Cliente ou a Rede para continuar.", {
+					icon: MessageBox.Icon.WARNING,
+					title: "Não Permitido",
+					actions: [MessageBox.Action.OK],
+					onClose: function () {
+
+						that.byId("idCliente").focus();
+						that.getModel("modelParametros").setProperty("/PercCadastrado", 0);
+					}
+				});
+
+				return;
+			}
+
+			if ((aux.Kunnr && aux.Kunnr !== "") && (aux.Kvgr4 && aux.Kvgr4 !== "")) {
+				sap.m.MessageBox.show("Preencher apenas o Cliente ou a Rede, para realização do cadastro da condição!", {
+					icon: sap.m.MessageBox.Icon.WARNING,
+					title: "Não Permitido",
+					actions: [sap.m.MessageBox.Action.OK],
+					onClose: function () {
+						that.getModel("modelParametros").setProperty("/Kunnr", "");
+						that.getModel("modelParametros").setProperty("/Kvgr4", "");
+					}
+				});
+				return;
+			}
+
+			try {
+				// ======= 1) BUSCAR DESCONTO (PROMISE) PARA ATUALIZAR PercCadastrado =======
+				await this.onBuscarDescontoPromise(); // controla busy internamente e trata erros de negócio
+
+				// Recarrega aux após a busca (PercCadastrado pode ter sido atualizado)
+				const auxAtual = this.getModel("modelParametros").getData();
+
+				// ======= VALIDAÇÕES QUE DEPENDEM DO PercCadastrado =======
+				if (auxAtual.PercCadastrado === "" || auxAtual.PercCadastrado === undefined) {
+					sap.m.MessageBox.show("Pesquise o valor já cadastrado antes de iniciar um novo cadastro!", {
+						icon: sap.m.MessageBox.Icon.WARNING,
+						title: "Não Permitido",
+						actions: [sap.m.MessageBox.Action.OK],
+						onClose: function () {
+							if (!that.device.system.phone) { that.byId("idCliente").focus(); }
+						}
+					});
+					return;
+				}
+
+				const percCad = parseFloat(auxAtual.PercCadastrado);
+				const percSet = parseFloat(auxAtual.PercCadastrar);
+
+				if (!isFinite(percCad) || !isFinite(percSet)) {
+					sap.m.MessageBox.show("Percentuais inválidos. Verifique os valores informados.", {
+						icon: sap.m.MessageBox.Icon.WARNING,
+						title: "Não Permitido",
+						actions: [sap.m.MessageBox.Action.OK]
+					});
+					return;
+				}
+
+				if (percCad < percSet) {
+					sap.m.MessageBox.show("Valor máx permitido é de: " + auxAtual.PercCadastrado + "%", {
+						icon: sap.m.MessageBox.Icon.WARNING,
+						title: "Não Permitido",
+						actions: [sap.m.MessageBox.Action.OK],
+						onClose: function () {
+							if (!that.device.system.phone) { that.byId("idCliente").focus(); }
+						}
+					});
+					return;
+				}
+
+				// ======= 2) EFETIVAR CADASTRO (SET) =======
+				const parametros = {
+					Vkorg: auxAtual.Bukrs,
+					Lifnr: auxAtual.Lifnr,
+					Kunnr: auxAtual.Kunnr,
+					Kvgr4: auxAtual.Kvgr4,
+					Mvgr1: auxAtual.Mvgr1,
+					Mvgr2: auxAtual.Mvgr2,
+					Mvgr3: auxAtual.Mvgr3,
+					Mvgr4: auxAtual.Mvgr4,
+					Mvgr5: auxAtual.Mvgr5,
+					Matnr: auxAtual.Matnr,
+					Usuario: this.getModelGlobal("modelAux").getProperty("/CodRepres"),
+					PercCadastrado: String(percCad),
+					PercCadastrar: String(percSet)
+				};
+
+				this.byId("master").setBusy(true);
+
+				const oData = await this._callSetPercRebaixa(parametros);
+
+				this.byId("master").setBusy(false);
+
+				if (oData && oData.TipoErro === "E") {
+					sap.m.MessageBox.show(oData.MsgErro, {
+						icon: sap.m.MessageBox.Icon.WARNING,
+						title: "Não Permitido",
+						actions: [sap.m.MessageBox.Action.OK],
+						onClose: () => { this._onLoadFields && this._onLoadFields(); }
+					});
+					return;
+				}
+
+				sap.m.MessageBox.show("Condição cadastrada com sucesso!", {
+					icon: sap.m.MessageBox.Icon.SUCCESS,
+					title: "Feito!",
+					details: oData && oData.MsgErro,
+					actions: [sap.m.MessageBox.Action.OK],
+					onClose: function () {
+						// opcional: that._onLoadFields();
+					}
+				});
+
+			} catch (err) {
+				// Pode ser erro técnico do OData ou erro de negócio lançado pela onBuscarDescontoPromise
+				this.byId("master").setBusy(false);
+				if (err && err.code === "BUSINESS_RULE") {
+					// já exibimos MessageBox dentro da buscar; só interrompe o fluxo
+					return;
+				}
+				if (typeof this.onMensagemErroODATA === "function") {
+					this.onMensagemErroODATA(err);
+				} else {
+					// fallback
+					sap.m.MessageBox.error("Falha ao cadastrar desconto.");
+				}
+			}
 		}
 	});
 });

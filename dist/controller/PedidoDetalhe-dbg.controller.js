@@ -59,6 +59,18 @@ sap.ui.define([
 								that.byId("idTopLevelIconTabBar").setSelectedKey("tab3");
 							}
 
+							if (that.temCorGridUm(that.vetorItensPedido)) {
+
+								that.byId("strip0").setVisible(true);
+							} else {
+
+								that.byId("strip0").setVisible(false);
+							}
+
+							that.getModelGlobal("modelItensPedidoGrid").setData(that.vetorItensPedido);
+							that.getModelGlobal("modelItensPedidoGrid").refresh();
+							that.getModelGlobal("modelAux").setProperty("/ItensPedidoTab", that.vetorItensPedido.length);
+
 							var Pedido = that.getModelGlobal("modelPedido").getData();
 							var Repres = that.Usuario;
 
@@ -160,6 +172,11 @@ sap.ui.define([
 			that.vetorVencimentoTotal = [];
 			that.vetorTipoPedidosTotal = [];
 
+			this.setModel(new sap.ui.model.json.JSONModel({
+				totalValor: 0,
+				totalSaldo: 0
+			}), "modelTotais");
+
 			that.getModelGlobal("modelAux").getProperty("/ObrigaSalvar", false);
 
 			that.getModelGlobal("modelAux").getProperty("/ItensPedidoTab", 0);
@@ -223,7 +240,7 @@ sap.ui.define([
 
 			that.byId("idTopLevelIconTabBar").setSelectedKey("tab1");
 
-			debugger
+
 
 			that.onCriarModelPedido();
 
@@ -705,13 +722,6 @@ sap.ui.define([
 		},
 
 		onLiberarItensPedido: function () {
-
-			Date.prototype.addDays = function (days) {
-				var dat = new Date(this.valueOf());
-				dat.setDate(dat.getDate() + parseInt(days, 10));
-				return dat.toLocaleDateString("pt-BR");
-			};
-
 			var that = this;
 
 			var Pedido = that.getModelGlobal("modelPedido").getData();
@@ -720,10 +730,23 @@ sap.ui.define([
 			var validaDataLimite = that.onValidaDataMenorAtual(Pedido.DataLimite);
 			var validaDataEntrega = that.onValidaDataMenorAtual(Pedido.DataEntrega);
 
-			var date = new Date();
-			var dataLimiteEntrega = date.addDays(this.getModelGlobal("modelAux").getProperty("/MaxDiasEntrega"));
+			// var date = new Date();
+			// var dataLimiteEntrega = date.addDays(this.getModelGlobal("modelAux").getProperty("/MaxDiasEntrega"));
+
+			var maxDias = Number(this.getModelGlobal("modelAux").getProperty("/MaxDiasEntrega") || 0);
+
+			var hoje = new Date();
+			hoje.setHours(0, 0, 0, 0);
+
+			var dtLimite = this.addDays(hoje, maxDias);// Date
+			var dataLimiteEntrega = this.formatDateBR(dtLimite);
+
 			var validaLimiteDataEntrega = that.onValidaDataLimiteEntrega(Pedido.DataEntrega, dataLimiteEntrega);
-			var validaMinDataEntrega = that.onValidaDataLimiteEntrega(Pedido.DataEntrega, Pedido.DataEntregaSujerida);
+			var validaMinDataEntrega = that.onValidaDataLimiteEntrega(Pedido.DataEntrega, Pedido.DataEntregaSugerida);
+
+			var dtEntrega = this.parseDateBR(Pedido.DataEntrega);
+			var dtEntregaSugerida = this.parseDateBR(Pedido.DataEntregaSugerida);
+
 			that.onBuscarDescTabPreco(Pedido.Pltyp);
 
 			var caracSpecRefPedido = this.containsSpecialChars(Pedido.PedidoOrigem);
@@ -833,6 +856,38 @@ sap.ui.define([
 						that.byId("idDataEntrega").focus();
 						that.byId("idDataEntrega").setValueState("Error");
 
+					}
+				});
+
+			} else if (!dtEntrega) {
+
+				sap.m.MessageBox.show("Data de Entrega inválida.", {
+					icon: sap.m.MessageBox.Icon.ERROR,
+					title: "Preecher campo(s)",
+					actions: [MessageBox.Action.OK],
+					onClose: function () {
+
+						that.byId("idTopLevelIconTabBar").setSelectedKey("tab2");
+						that.byId("idDataEntrega").focus();
+						that.byId("idDataEntrega").setValueState("Error");
+
+						return;
+					}
+				});
+
+			} else if (!dtEntregaSugerida) {
+
+				sap.m.MessageBox.show("Data de Entrega Sugerida inválida.", {
+					icon: sap.m.MessageBox.Icon.ERROR,
+					title: "Preecher campo(s)",
+					actions: [MessageBox.Action.OK],
+					onClose: function () {
+
+						that.byId("idTopLevelIconTabBar").setSelectedKey("tab2");
+						that.byId("idDataEntregaSugerida").focus();
+						that.byId("idDataEntregaSugerida").setValueState("Error");
+
+						return;
 					}
 				});
 
@@ -999,16 +1054,54 @@ sap.ui.define([
 									that.byId("idPedidoDetalhe").setBusy(false);
 									that.onLiberarAbas();
 
-									// MessageBox.show("Pedido: " + data.NrPedido + " Salvo!", {
-									// 	icon: MessageBox.Icon.SUCCESS,
-									// 	title: "Inclusão do Pedido!",
-									// 	actions: [MessageBox.Action.OK],
-									// 	onClose: function () {
+									new Promise(function (res, rej) {
 
-									// 		that.byId("idPedidoDetalhe").setBusy(false);
-									// 		that.onLiberarAbas();
-									// 	}
-									// });
+										that.byId("table_pedidos").setBusy(true);
+
+										that.onInserirItensPedidoCampanha(res, rej, that.getModelGlobal("modelAux").getProperty("/NrPedido"));
+
+									}).then(function (dataItens) {
+
+										new Promise(function (res, rej) {
+
+											that.onBuscarItensPedido(res, rej, that.getModelGlobal("modelAux").getProperty("/NrPedido"));
+
+										}).then(function (dataItens) {
+
+											that.vetorItensPedido = dataItens;
+
+											if (that.vetorItensPedido.length > 0) {
+
+												that.byId("idTopLevelIconTabBar").setSelectedKey("tab3");
+											}
+
+											if (that.temCorGridUm(that.vetorItensPedido)) {
+
+												that.byId("strip0").setVisible(true);
+											} else {
+
+												that.byId("strip0").setVisible(false);
+											}
+
+											that.getModelGlobal("modelItensPedidoGrid").setData(that.vetorItensPedido);
+											that.getModelGlobal("modelItensPedidoGrid").refresh();
+											that.getModelGlobal("modelAux").setProperty("/ItensPedidoTab", that.vetorItensPedido.length);
+											that.byId("table_pedidos").setBusy(false);
+
+										}).catch(function (error) {
+
+											that.byId("table_pedidos").setBusy(false);
+											that.byId("idPedidoDetalhe").setBusy(false);
+											that.onMensagemErroODATA(error);
+											sap.ui.core.UIComponent.getRouterFor(that).navTo("pedido");
+										});
+									}).catch(function (error) {
+
+										that.byId("table_pedidos").setBusy(false);
+										that.byId("idPedidoDetalhe").setBusy(false);
+										that.onMensagemErroODATA(error);
+										sap.ui.core.UIComponent.getRouterFor(that).navTo("pedido");
+									});
 
 								},
 								error: function (error) {
@@ -1127,7 +1220,7 @@ sap.ui.define([
 				Kunnr: "",
 				RegCliente: "",
 				DataLimite: dataLimite,
-				DataEntregaSujerida: dataLimite,
+				DataEntregaSugerida: dataLimite,
 				DataEntrega: "",
 				LocalEntrega: "",
 				MsgPedido1: "",
@@ -1212,7 +1305,7 @@ sap.ui.define([
 
 			that.getModelGlobal("modelAux").setProperty("/ObrigaSalvar", true);
 
-			debugger
+
 
 			for (var i = 0; i < that.vetorCentros.length; i++) {
 
@@ -1487,45 +1580,40 @@ sap.ui.define([
 
 						new Promise(function (resLead, rejLead) {
 
-							that.byId("idDataEntregaSujerida").setBusy(true);
-
-							var dataSujerida = "";
-							var date = new Date();
-
-							Date.prototype.addDays = function (days) {
-								var dat = new Date(this.valueOf());
-								dat.setDate(dat.getDate() + parseInt(days, 10));
-								return dat.toLocaleDateString("pt-BR");
-							};
+							that.byId("idDataEntregaSugerida").setBusy(true);
 
 							var IvTxjcd = that.getModelGlobal("modelPedido").getProperty("/Txjcd");
 
-							that.oModel.read("/P_LeadTimeR(IvBukrs='" + that.getModel("modelPedido").getProperty("/Bukrs") +
+
+							that.oModel.read(
+								"/P_LeadTimeR(IvBukrs='" + that.getModel("modelPedido").getProperty("/Bukrs") +
 								"',IvRegCliente='" + that.getModelGlobal("modelPedido").getProperty("/RegCliente") +
 								"',IvRegCentro='" + that.getModelGlobal("modelPedido").getProperty("/RegCentro") +
-								"',IvTxjcd='" + IvTxjcd + "')", {
-								// urlParameters: {
-								// 	"$filter": "IvKvgr4 eq '" + that.getModel("modelPedido").getProperty("/Kvgr4") + "' and IvBukrs eq '" + that.getModel("modelPedido").getProperty("/Bukrs") + "'"
-								// },
-								success: function (result) {
+								"',IvTxjcd='" + IvTxjcd + "')",
+								{
+									success: function (result) {
+										var leadTime = Number(result.Kbetr || 0);
+										that.getModel("modelPedido").setProperty("/LeadTime", leadTime);
 
-									var LeadTime = result.Kbetr;
+										// usa Date "limpa" (sem horário) + soma dias
+										var hoje = new Date();
+										hoje.setHours(0, 0, 0, 0);
 
-									that.getModel("modelPedido").setProperty("/LeadTime", LeadTime);
+										var dtSug = that.addDays(hoje, leadTime);
+										var dataSugerida = that.formatDateBR(dtSug);
 
-									dataSujerida = date.addDays(LeadTime);
-									that.getModel("modelPedido").setProperty("/DataEntregaSujerida", dataSujerida);
+										that.getModel("modelPedido").setProperty("/DataEntregaSugerida", dataSugerida);
 
-									that.byId("idDataEntregaSujerida").setBusy(false);
-
-									resLead();
-								},
-								error: function (error) {
-
-									rejLead();
-									that.onMensagemErroODATA(error);
+										that.byId("idDataEntregaSugerida").setBusy(false);
+										resLead();
+									},
+									error: function (error) {
+										that.byId("idDataEntregaSugerida").setBusy(false);
+										rejLead();
+										that.onMensagemErroODATA(error);
+									}
 								}
-							});
+							);
 
 						}).then(function (data) {
 
@@ -1591,11 +1679,11 @@ sap.ui.define([
 								});
 
 							}).catch(function () {
-								that.byId("idDataEntregaSujerida").setBusy(false);
+								that.byId("idDataEntregaSugerida").setBusy(false);
 							});
 
 						}).catch(function () {
-							that.byId("idDataEntregaSujerida").setBusy(false);
+							that.byId("idDataEntregaSugerida").setBusy(false);
 						});
 
 					}).catch(function () {
@@ -1615,8 +1703,7 @@ sap.ui.define([
 				that.onMensagemErroODATA(error);
 			});
 		},
-
-		onCarregarLocalEntrega: function (Bukrs) {
+Entrega: function (Bukrs) {
 
 			var that = this;
 
@@ -1631,6 +1718,7 @@ sap.ui.define([
 			that.getModel("modelLocaisEntregas").setData(that.vetorLocaisEntregasAux);
 			that.getModel("modelLocaisEntregas").refresh();
 
+		onCarregarLocal
 		},
 
 		onCarregarTipoPedido: function (Ped, TipoPedido) {
@@ -1746,38 +1834,80 @@ sap.ui.define([
 			that.getModelGlobal("modelAux").setProperty("/ObrigaSalvar", true);
 		},
 
+		// onChangeDataEntrega: function (Event) {
+
+		// 	Date.prototype.addDays = function (days) {
+		// 		var dat = new Date(this.valueOf());
+		// 		dat.setDate(dat.getDate() + parseInt(days, 10));
+		// 		return dat.toLocaleDateString("pt-BR");
+		// 	};
+
+		// 	Date.prototype.remDays = function (days) {
+		// 		var dat = new Date(this.valueOf());
+		// 		dat.setDate(dat.getDate() - parseInt(days - 1, 10));
+		// 		return dat.toLocaleDateString("pt-BR");
+		// 	};
+
+		// 	this.getModelGlobal("modelAux").setProperty("/ObrigaSalvar", true);
+
+		// 	var Pedido = this.getModelGlobal("modelPedido").getData();
+
+		// 	var DataEntrega = this.myFormatterDataRevert(Pedido.DataEntrega);
+		// 	var DataEntregaSugerida = this.myFormatterDataRevert(Pedido.DataEntregaSugerida);
+
+		// 	if (DataEntrega > DataEntregaSugerida) {
+
+		// 		var date = new Date(Date.UTC(DataEntrega[1].ano, DataEntrega[1].mes - 1, DataEntrega[1].dia));
+		// 		var dateDataLimite = date.remDays(Pedido.LeadTime);
+		// 		this.getModelGlobal("modelPedido").setProperty("/DataLimite", dateDataLimite);
+
+		// 	} else {
+
+		// 		var data = this.onDataHora();
+		// 		var dataLimite = data[2].dia + "/" + data[2].mes + "/" + data[2].ano;
+		// 		this.getModelGlobal("modelPedido").setProperty("/DataLimite", dataLimite);
+		// 	}
+		// },
+
 		onChangeDataEntrega: function (Event) {
-
-			Date.prototype.addDays = function (days) {
-				var dat = new Date(this.valueOf());
-				dat.setDate(dat.getDate() + parseInt(days, 10));
-				return dat.toLocaleDateString("pt-BR");
-			};
-
-			Date.prototype.remDays = function (days) {
-				var dat = new Date(this.valueOf());
-				dat.setDate(dat.getDate() - parseInt(days - 1, 10));
-				return dat.toLocaleDateString("pt-BR");
-			};
-
 			this.getModelGlobal("modelAux").setProperty("/ObrigaSalvar", true);
 
 			var Pedido = this.getModelGlobal("modelPedido").getData();
 
-			var DataEntrega = this.myFormatterDataRevert(Pedido.DataEntrega);
-			var DataEntregaSujerida = this.myFormatterDataRevert(Pedido.DataEntregaSujerida);
+			// Se seu Pedido.DataEntrega já vem em dd/MM/yyyy, use direto
+			// Se você realmente precisa do myFormatterDataRevert, me avisa que ajusto.
+			var dtEntrega = this.parseDateBR(Pedido.DataEntrega);
+			var dtSugerida = this.parseDateBR(Pedido.DataEntregaSugerida);
 
-			if (DataEntrega > DataEntregaSujerida) {
+			// validações básicas
+			if (!dtEntrega) {
 
-				var date = new Date(Date.UTC(DataEntrega[1].ano, DataEntrega[1].mes - 1, DataEntrega[1].dia));
-				var dateDataLimite = date.remDays(Pedido.LeadTime);
-				this.getModelGlobal("modelPedido").setProperty("/DataLimite", dateDataLimite);
+				sap.m.MessageToast.show("Data de Entrega inválida.");
+				return;
+			}
+			if (!dtSugerida) {
 
+				// se não existir sugerida, cai no padrão "hoje"
+				var hoje1 = new Date();
+				hoje1.setHours(0, 0, 0, 0);
+				this.getModelGlobal("modelPedido").setProperty("/DataLimite", this.formatDateBR(hoje1));
+				return;
+			}
+
+			// compara por timestamp (seguro)
+			if (dtEntrega.getTime() > dtSugerida.getTime()) {
+
+				var lead = Number(Pedido.LeadTime || 0);
+
+				// DataLimite = DataEntrega - LeadTime
+				var dtLimite = this.removeDays(dtEntrega, lead);
+				this.getModelGlobal("modelPedido").setProperty("/DataLimite", this.formatDateBR(dtLimite));
 			} else {
 
-				var data = this.onDataHora();
-				var dataLimite = data[2].dia + "/" + data[2].mes + "/" + data[2].ano;
-				this.getModelGlobal("modelPedido").setProperty("/DataLimite", dataLimite);
+				// senão: DataLimite = hoje
+				var hoje = new Date();
+				hoje.setHours(0, 0, 0, 0);
+				this.getModelGlobal("modelPedido").setProperty("/DataLimite", this.formatDateBR(hoje));
 			}
 		},
 
@@ -1872,13 +2002,22 @@ sap.ui.define([
 								}).then(function (dataItens) {
 
 									that.vetorItensPedido = dataItens;
-									that.getModelGlobal("modelItensPedidoGrid").setData(that.vetorItensPedido);
-									that.getModelGlobal("modelItensPedidoGrid").refresh();
 
 									if (that.vetorItensPedido.length == 0) {
+
 										that.onBloquearCabecalho(true);
 									}
 
+									if (that.temCorGridUm(that.vetorItensPedido)) {
+
+										that.byId("strip0").setVisible(true);
+									} else {
+
+										that.byId("strip0").setVisible(false);
+									}
+
+									that.getModelGlobal("modelItensPedidoGrid").setData(that.vetorItensPedido);
+									that.getModelGlobal("modelItensPedidoGrid").refresh();
 									that.getModelGlobal("modelAux").setProperty("/ItensPedidoTab", that.vetorItensPedido.length);
 									that.byId("table_pedidos").setBusy(false);
 
@@ -2127,7 +2266,7 @@ sap.ui.define([
 				this.byId("idDescontoAplicarBoleto").focus();
 
 				this.byId("idDescontoAplicarBoleto").setValueState("Error");
-				
+
 				var valor = this.onFormatNumberController(ValDescBoletoPerm);
 				this.byId("idDescontoAplicarBoleto").setValueStateText("O valor permitido para desconto Boleto é de R$ " + valor);
 
@@ -2138,7 +2277,7 @@ sap.ui.define([
 
 				this.byId("idDescontoAplicar").setValueState("Error");
 				this.byId("idDescontoAplicarBoleto").setValueState("Error");
-				
+
 				var valor = this.onFormatNumberController(ValDescDispTotal);
 				this.byId("idDescontoAplicar").setValueStateText("A soma dos descontos é maior que o permitido de R$ " + ValDescDispTotal);
 				this.byId("idDescontoAplicarBoleto").setValueStateText("A soma dos descontos é maior que o permitido de R$ " + ValDescDispTotal);
@@ -2206,7 +2345,7 @@ sap.ui.define([
 				this.byId("idDescontoAplicarCamp").focus();
 
 				this.byId("idDescontoAplicarCamp").setValueState("Error");
-				
+
 				var valor = this.onFormatNumberController(ValDescCampDisp);
 				this.byId("idDescontoAplicarCamp").setValueStateText("A soma dos descontos é maior que o permitido de R$ " + valor);
 				return;
@@ -2253,9 +2392,9 @@ sap.ui.define([
 				this.byId("idDescontoAplicarCampBol").focus();
 
 				this.byId("idDescontoAplicarCampBol").setValueState("Error");
-				
+
 				var valor = this.onFormatNumberController(ValDescCampDispBol);
-				this.byId("idDescontoAplicarCampBol").setValueStateText("A soma dos descontos é maior que o permitido de R$ " +	valor);
+				this.byId("idDescontoAplicarCampBol").setValueStateText("A soma dos descontos é maior que o permitido de R$ " + valor);
 				return;
 
 			} else {
@@ -2318,7 +2457,7 @@ sap.ui.define([
 				this.byId("idDescontoAplicarCe").focus();
 
 				this.byId("idDescontoAplicarCe").setValueState("Error");
-				
+
 				var valor = this.onFormatNumberController(ValDescDispCe);
 				this.byId("idDescontoAplicarCe").setValueStateText("A soma dos descontos é maior que o permitido de R$ " + valor);
 				return;
@@ -2361,7 +2500,7 @@ sap.ui.define([
 				this.byId("idDescontoAplicarCampBolEscal").focus();
 
 				this.byId("idDescontoAplicarCampBolEscal").setValueState("Error");
-				
+
 				var valor = this.onFormatNumberController(ValDescDispBolCe);
 				this.byId("idDescontoAplicarCampBolEscal").setValueStateText("A soma dos descontos é maior que o permitido de R$ " + valor);
 				return;
@@ -2588,15 +2727,21 @@ sap.ui.define([
 						sap.m.MessageBox.show("Pedido salvo com sucesso !! \n\n Deseja enviar o pedido agora ?", {
 							icon: sap.m.MessageBox.Icon.SUCCESS,
 							title: "Sucesso!",
-							actions: [sap.m.MessageBox.Action.YES, sap.m.MessageBox.Action.NO],
+							actions: [sap.m.MessageBox.Action.YES, sap.m.MessageBox.Action.NO, 'Exporta Excel'],
+							emphasizedAction: "Exporta Excel",
+
 							onClose: function (oAction) {
 
 								that.onResetarDadosPedido();
 
-								if (oAction == sap.m.MessageBox.Action.NO) {
+								if (oAction == 'Exporta Excel') {
 
+									that.onExportarPedidoExcel();
 									sap.ui.core.UIComponent.getRouterFor(that).navTo("pedido");
 
+								} else if (oAction == sap.m.MessageBox.Action.NO) {
+
+									sap.ui.core.UIComponent.getRouterFor(that).navTo("pedido");
 								} else {
 
 									new Promise(function (res, rej) {
@@ -3268,10 +3413,27 @@ sap.ui.define([
 
 			this.getModel("modelPedido").setProperty("/ValDescInformBoletoReduzid", ValTotalPond);
 		},
+		
+		onCarregarLocalEntrega: function (Bukrs) {
+
+			var that = this;
+
+			for (var i = 0; i < that.vetorLocaisEntregas.length; i++) {
+
+				if (Bukrs == that.vetorLocaisEntregas[i].Bukrs || that.vetorLocaisEntregas[i].Bukrs == "") {
+
+					that.vetorLocaisEntregasAux.push(that.vetorLocaisEntregas[i]);
+				}
+			}
+
+			that.getModel("modelLocaisEntregas").setData(that.vetorLocaisEntregasAux);
+			that.getModel("modelLocaisEntregas").refresh();
+
+		},
 
 		onCalculaPrecoDebitarVerba: function () {
 
-			debugger;
+			;
 			var pedido = this.getModel("modelPedido").getData();
 			var itens = this.getModel("modelItensPedidoGrid").getData();
 
@@ -3283,7 +3445,7 @@ sap.ui.define([
 			var descTotalRealizado = parseFloat(DescAplicado) + parseFloat(DescBoletoAplicado);
 
 			var DescTrade = this.getModel("modelPedido").getProperty("/ValDescAplicarBol");
-			if(descTotalRealizado > ValDescDisp){
+			if (descTotalRealizado > ValDescDisp) {
 
 				descTotalRealizado = ValDescDisp;
 			}
@@ -3324,7 +3486,7 @@ sap.ui.define([
 
 				// valFatModerador += parseFloat(itens[i].ValFatModeradorVerba); //Já tem quantidade
 
-				valFatModeradorTotal += (parseFloat(pedido.PercFatModeradorVerba) / 100 ) * itens[i].ValPrecoTabelaMin * itens[i].QtdPedida;
+				valFatModeradorTotal += (parseFloat(pedido.PercFatModeradorVerba) / 100) * itens[i].ValPrecoTabelaMin * itens[i].QtdPedida;
 				valFatModeradorTotal = Math.round(valFatModeradorTotal * 100) / 100;
 			}
 
@@ -3360,6 +3522,28 @@ sap.ui.define([
 			}
 
 			this.getModel("modelPedido").setProperty("/ValFatModeradorVerba", valDebitarVerba);
-		}
+		},
+		_calcularTotaisPedidos: function () {
+
+			var aData = this.getModel("modelPedidos").getData() || [];
+
+			var totalValor = 0;
+			var totalSaldo = 0;
+
+			aData.forEach(function (o) {
+
+				totalValor += Number(o.ValSSt) || 0;
+				totalSaldo += Number(o.ValSdoSSt) || 0;
+
+			});
+
+			this.getModel("modelTotais").setData({
+				totalValor: totalValor,
+				totalSaldo: totalSaldo
+			});
+
+		},
+
+
 	});
 });

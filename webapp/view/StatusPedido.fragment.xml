@@ -40,6 +40,7 @@
                         stateText="{StatusPed>stateText}"
                         texts="{StatusPed>texts}"
                         focused="{StatusPed>focused}"
+
                     />
                 </nodes>
                 <lanes>
@@ -48,6 +49,7 @@
                         iconSrc="{StatusPed>icon}"
                         text="{StatusPed>label}"
                         position="{StatusPed>position}"
+                        zoomLevel="1"
                     />
                 </lanes>
             </ProcessFlow>

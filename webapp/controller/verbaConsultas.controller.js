@@ -53,7 +53,7 @@ sap.ui.define([
 			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
 			var Name1 = that.getModelGlobal("modelAux").getProperty("/NomeRepres").replaceAll(" ", "_");
 			var Bukrs = this.getModel("modelTela").getProperty("/Bukrs");
-			var Periodo = "0122021";
+			var Periodo = "";
 
 			that.byId("detail").setBusy(true);
 
@@ -62,6 +62,8 @@ sap.ui.define([
 					"$filter": "IvUsuario eq '" + repres + "'"
 				},
 				success: function (retorno) {
+
+					debugger
 
 					var result = retorno.results[0];
 					var aux = that.getModel("modelTela").getData();
@@ -167,7 +169,7 @@ sap.ui.define([
 
 			var aux2 = {
 				Bukrs: "",
-				DatUltMovto: "",
+				DatUltMovto: null,
 				IdSaldo: "",
 				IvUsuario: "",
 				Lifnr: "",

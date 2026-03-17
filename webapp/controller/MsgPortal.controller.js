@@ -32,100 +32,16 @@ sap.ui.define([
 			var that = this;
 
 			that.onCriarModels();
+			
+			var CodRepres = this.getModelGlobal("modelAux").getProperty("/CodRepres");
 
 			that.oModel.read("/P_Msgs", {
-				// urlParameters: {
-				// 	"$filter": "IvUsuario eq '" + repres + "'"
-				// },
+				urlParameters: {
+					"$filter": "Usuario eq '" + CodRepres + "'"
+				},
 				success: function (retorno) {
 
 					that.vetorMsg = retorno.results;
-
-					// for (var i = 0; i < vetorMsg.length; i++) {
-
-					// 	var mimeType = vetorMsg[i].NmArquivoFisico.split(".");
-					// 	mimeType = mimeType[mimeType.length - 1];
-
-					// 	if (mimeType == "xlsx" && mimeType == "xls") {
-
-					// 		mimeType = "application/vnd.ms-excel";
-
-					// 	} else if (mimeType == "jpeg") {
-
-					// 		mimeType = "image/jpeg";
-
-					// 	} else if (mimeType == "txt") {
-
-					// 		mimeType = "text/plain";
-
-					// 	} else if (mimeType == "png") {
-
-					// 		mimeType = "image/png";
-
-					// 	} else if (mimeType == "docx") {
-
-					// 		mimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-
-					// 	} else if (mimeType == "pptx") {
-
-					// 		mimeType = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
-
-					// 	} else if (mimeType == "pdf") {
-
-					// 		mimeType = "application/pdf";
-
-					// 	} else {
-
-					// 		mimeType = "application/octet-stream";
-					// 	}
-
-					// 	var status = "None";
-
-					// 	if (vetorMsg[i].Prioridade == "01") {
-					// 		status = "Success";
-					// 	} else if (vetorMsg[i].Prioridade == "02") {
-					// 		status = "Warning";
-					// 	} else if (vetorMsg[i].Prioridade == "03") {
-					// 		status = "Error";
-					// 	}
-
-					// 	var vAux = {
-					// 		"documentId": vetorMsg[i].CodMensagem,
-					// 		"fileName": vetorMsg[i].NmArquivoFisico,
-					// 		"mimeType": mimeType,
-					// 		"thumbnailUrl": "",
-					// 		"url": vetorMsg[i].UrlDownload,
-					// 		"attributes": [{
-					// 			"title": "Título da Mensagem",
-					// 			"text": vetorMsg[i].TituloMensagem,
-					// 			"active": true
-					// 		}, {
-					// 			"title": "Texto",
-					// 			"text": vetorMsg[i].TextoMensagem,
-					// 			"active": true
-					// 		}, {
-					// 			"title": "Ini Validade",
-					// 			"text": vetorMsg[i].DatIniValid,
-					// 			"active": false
-					// 		}, {
-					// 			"title": "Fim Validade",
-					// 			"text": vetorMsg[i].DatFimValid,
-					// 			"active": false
-					// 		}],
-					// 		"statuses": [{
-					// 			"title": "Prioridade",
-					// 			"text": vetorMsg[i].DescPrioridade,
-					// 			"state": status
-					// 		}],
-					// 		// "markers": [{
-					// 		// }
-					// 		// 	"type": "Flagged"
-					// 		// ],
-					// 		"selected": false
-					// 	};
-
-					// 	that.vetorMsg.items.push(vAux);
-					// }
 
 					that.getModel("modelMsg").setData(that.vetorMsg);
 				},

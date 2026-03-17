@@ -58,6 +58,11 @@ sap.ui.define([
 				StatusCancelado: true,
 			};
 
+			this.setModel(new sap.ui.model.json.JSONModel({
+				totalValor: 0,
+				totalSaldo: 0
+			}), "modelTotais");
+
 			var omodelParametros = new JSONModel(vAux);
 			that.setModel(omodelParametros, "modelParametros");
 
@@ -111,7 +116,7 @@ sap.ui.define([
 							break;
 						}
 					}
-					
+
 					// if (vAchouRede == false) {
 					// 	vetorRede.push(vetorClientes[i]);
 					// }
@@ -294,7 +299,7 @@ sap.ui.define([
 		},
 
 		ongetHeaderGroupBukrs: function (oContext) {
-			return oContext.getProperty("Bukrs") + ' - ' + oContext.getProperty("Butxt");
+			return oContext.getProperty("Werks") + ' - ' + oContext.getProperty("Butxt");
 		},
 
 		createColumnConfig: function () {
@@ -503,7 +508,7 @@ sap.ui.define([
 		},
 
 		onExport: function () {
-			
+
 			var aCols, oRowBinding, oSettings, oSheet, oTable;
 
 			if (!this._oTable) {
@@ -535,7 +540,7 @@ sap.ui.define([
 			var sValue = evt.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Werks", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("NomeCentro", sap.ui.model.FilterOperator.Contains, sValue)
+			new sap.ui.model.Filter("NomeCentro", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
@@ -615,6 +620,8 @@ sap.ui.define([
 
 					that.getModel("modelPedidos").setData(that.vetorPedidos);
 					that.byId("master").setBusy(false);
+
+					that._calcularTotaisPedidos(that.vetorPedidos);
 				},
 				error: function (error) {
 					that.byId("master").setBusy(false);
@@ -638,7 +645,7 @@ sap.ui.define([
 			var sValue = evt.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Werks", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("NomeCentro", sap.ui.model.FilterOperator.Contains, sValue)
+			new sap.ui.model.Filter("NomeCentro", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
@@ -653,7 +660,7 @@ sap.ui.define([
 			var sValue = evt.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Kunnr", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Name1", sap.ui.model.FilterOperator.Contains, sValue)
+			new sap.ui.model.Filter("Name1", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
@@ -668,7 +675,7 @@ sap.ui.define([
 			var sValue = evt.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Kunnr", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Name1", sap.ui.model.FilterOperator.Contains, sValue)
+			new sap.ui.model.Filter("Name1", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
@@ -683,7 +690,7 @@ sap.ui.define([
 			var sValue = evt.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Kvgr4", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("DescKvgr4", sap.ui.model.FilterOperator.Contains, sValue)
+			new sap.ui.model.Filter("DescKvgr4", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
@@ -699,7 +706,7 @@ sap.ui.define([
 			var sValue = evt.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Kvgr4", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("DescKvgr4", sap.ui.model.FilterOperator.Contains, sValue)
+			new sap.ui.model.Filter("DescKvgr4", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
@@ -715,7 +722,7 @@ sap.ui.define([
 			var sValue = evt.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Kvgr5", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("DescKvgr5", sap.ui.model.FilterOperator.Contains, sValue)
+			new sap.ui.model.Filter("DescKvgr5", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
@@ -731,7 +738,7 @@ sap.ui.define([
 			var sValue = evt.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Kvgr5", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("DescKvgr5", sap.ui.model.FilterOperator.Contains, sValue)
+			new sap.ui.model.Filter("DescKvgr5", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
@@ -747,7 +754,7 @@ sap.ui.define([
 			var sValue = evt.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Lifnr", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Name1Rep", sap.ui.model.FilterOperator.Contains, sValue)
+			new sap.ui.model.Filter("Name1Rep", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
@@ -763,7 +770,7 @@ sap.ui.define([
 			var sValue = evt.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Lifnr", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Name1Rep", sap.ui.model.FilterOperator.Contains, sValue)
+			new sap.ui.model.Filter("Name1Rep", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
@@ -779,7 +786,7 @@ sap.ui.define([
 			var sValue = evt.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Matnr", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Maktx", sap.ui.model.FilterOperator.Contains, sValue)
+			new sap.ui.model.Filter("Maktx", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
@@ -795,7 +802,7 @@ sap.ui.define([
 			var sValue = evt.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Matnr", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Maktx", sap.ui.model.FilterOperator.Contains, sValue)
+			new sap.ui.model.Filter("Maktx", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
@@ -807,13 +814,13 @@ sap.ui.define([
 		},
 
 		onDialogOpen: function (evt) {
-			
+
 			var pedido = evt.getSource().getBindingContext("modelPedidos").getObject().Vbeln;
-			
+
 
 			var oModelDelay = new JSONModel({
-				"table"  : false,
-				"Pedido" : pedido
+				"table": false,
+				"Pedido": pedido
 			});
 
 			this.getView().setModel(oModelDelay, "modelTela");
@@ -833,11 +840,11 @@ sap.ui.define([
 
 			this._ItemDialog.open();
 		},
-		
+
 		onBuscarItens: function (evt) {
 
 			var that = this;
-			
+
 			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
 			var Pedido = that.getModel("modelTela").getProperty("/Pedido");
 
@@ -846,33 +853,49 @@ sap.ui.define([
 					"$filter": "IvVbeln eq '" + Pedido + "'"
 				},
 				success: function (retorno) {
-					
+
 					var oModel = new JSONModel(retorno.results);
 					that.setModel(oModel, "modelItensPed");
+
+					that._calcularTotaisPedidos(retorno.results);
 				},
 				error: function (error) {
-					
+
 					that.onMensagemErroODATA(error);
 				}
 			});
 		},
-		
-		formatterText: function(fValue) {
+
+		_calcularTotaisPedidos: function (aData) {
+
+			var totalValor = 0;
+			var totalSaldo = 0;
+
+			aData.forEach(function (o) {
+				totalValor += Number(o.ValSSt) || 0;
+				totalSaldo += Number(o.ValSdoSSt) || 0;
+			});
+
+			this.getModel("modelTotais").setProperty("/totalValor", totalValor.toFixed(2));
+			this.getModel("modelTotais").setProperty("/totalSaldo", totalSaldo.toFixed(2));
+		},
+
+		formatterText: function (fValue) {
 			try {
 				var valor = fValue;
-				
+
 				if (valor == 1) {
-					
+
 					return "Error";
 				} else if (valor == 2) {
-					
+
 					return "Warning";
 				} else {
-					
+
 					return "Success";
 				}
 			} catch (err) {
-				
+
 				return "None";
 			}
 		}

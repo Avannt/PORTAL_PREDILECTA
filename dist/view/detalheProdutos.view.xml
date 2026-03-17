@@ -250,7 +250,7 @@
                                                 <Label text="Validade" />
                                                 <Input
                                                     id="idValidade"
-                                                    value="{modelProduto>/Mhdhb} (Meses)"
+                                                    value="{modelProduto>/Mhdhb} (Dias)"
                                                     enabled="false"
                                                 />
                                                 <Label

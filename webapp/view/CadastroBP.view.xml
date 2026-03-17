@@ -146,6 +146,8 @@
                                                             showSecondaryValues="true"
                                                             items="{/P_Estados}"
                                                             selectedKey="{modelBP>/Estado}"
+                                                            valueState="{modelValidaBP>/EstadoVE}"
+                                                            valueStateText="{modelValidaBP>/EstadoTE}"
                                                         >
                                                             <core:ListItem
                                                                 key="{Estado}"

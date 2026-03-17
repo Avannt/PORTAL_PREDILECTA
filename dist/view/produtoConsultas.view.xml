@@ -96,7 +96,7 @@
 												<Label text="Peso Liquido"/>
 												<Input id="idPesoLiquido" value="{path: 'modelProduto>/Ntgew', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} {modelProduto>/Gewei}" enabled="false"/>
 												<Label text="Validade"/>
-												<Input id="idValidade" value="{modelProduto>/Mhdhb} (Meses)" enabled="false"/>
+												<Input id="idValidade" value="{modelProduto>/Mhdhb} (Dias)" enabled="false"/>
 												<Label text="Quantidade no pallet"/>
 												<Input id="idQuantidadeNoPallet" value="{modelProduto>/QntPallet}" enabled="false"/>
 												<Label text="Unidade Medida"/>

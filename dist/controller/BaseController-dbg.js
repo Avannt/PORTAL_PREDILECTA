@@ -60,6 +60,13 @@ sap.ui.define([
 			return hours + ":" + minutes + ":" + seconds;
 		},
 
+		temCorGridUm: function (vetorItensPedido) {
+			for (const item of (vetorItensPedido || [])) {
+				if (item && item.IdCorGrid === "1") return true; // para aqui
+			}
+			return false;
+		},
+
 		onNavBack: function (oEvent) {
 
 			var oHistory, sPreviousHash;
@@ -214,6 +221,23 @@ sap.ui.define([
 			}
 
 			return Obj;
+		},
+
+		onBuscarPedidosCount: function (Cliente, CodRepres, Envio, res, rej, that) {
+
+			that.oModel.read("/P_PedidoQ/$count", {
+				urlParameters: {
+					"$filter": "IvUsuario eq '" + CodRepres + "' and IvKunnr eq '" + Cliente + "' and IvEnvio eq " + Envio
+				},
+				success: function (data) {
+
+					res(data);
+				},
+				error: function (error) {
+
+					rej(error);
+				}
+			});
 		},
 
 		onBuscarPedidos: function (Cliente, CodRepres, Envio, res, rej, that) {
@@ -394,6 +418,25 @@ sap.ui.define([
 				success: function (dataItens) {
 
 					res(dataItens.results);
+				},
+				error: function (error) {
+
+					rej(error);
+				}
+			});
+		},
+
+		onInserirItensPedidoCampanha: function (res, rej, NrPedido) {
+
+			var that = this;
+
+			that.oModel.read("/P_ItensCampMsgs(NrPedido='" + NrPedido + "')", {
+				// urlParameters: {
+				// 	"$filter": 
+				// },
+				success: function (dataItens) {
+
+					res();
 				},
 				error: function (error) {
 
@@ -896,7 +939,87 @@ sap.ui.define([
 			value = parseFloat(value);
 			var oFloatFormat = NumberFormat.getFloatInstance(oFormatOptions);
 			return oFloatFormat.format(value);
-		}
+		},
 
+		onChangeDataEntrega: function (oEvent) {
+			const oModelPedido = this.getModel("modelPedido");
+			const oPedido = oModelPedido.getData();
+
+			// 1. Ativa sinalizador de alteração
+			this.getModelGlobal("modelAux").setProperty("/ObrigaSalvar", true);
+
+			// 2. Parse das datas usando os métodos auxiliares (evita manipulação manual de strings)
+			// Assumindo que Pedido.DataEntrega está no formato DD/MM/YYYY
+			const dEntrega = this.parseDateBR(oPedido.DataEntrega);
+			const dSugerida = this.parseDateBR(oPedido.DataEntregaSugerida);
+
+			let sDataLimiteFinal;
+
+			// 3. Lógica de negócio para Data Limite
+			if (dEntrega && dSugerida && dEntrega > dSugerida) {
+				// Se a entrega for após a sugerida, subtrai o LeadTime
+				// Usamos removeDays que retorna um objeto Date, depois formatamos
+				const dLimiteCalculada = this.removeDays(dEntrega, oPedido.LeadTime);
+				sDataLimiteFinal = this.formatDateBR(dLimiteCalculada);
+			} else {
+				// Caso contrário, utiliza a data atual do sistema (método auxiliar onDataHora)
+				const oDataHoje = this.onDataHora();
+				// Se onDataHora retorna um objeto com dia, mes, ano:
+				sDataLimiteFinal = `${oDataHoje[2].dia}/${oDataHoje[2].mes}/${oDataHoje[2].ano}`;
+			}
+
+			// 4. Atualiza o modelo uma única vez
+			oModelPedido.setProperty("/DataLimite", sDataLimiteFinal);
+		},
+
+		addDays: function (date, days) {
+
+			var d = new Date(date.getTime());        // cópia
+			d.setDate(d.getDate() + Number(days || 0));
+			d.setHours(0, 0, 0, 0);                  // evita bug de DST/horário
+			return d;
+		},
+
+		removeDays: function (date, days) {
+			var d = new Date(date.getTime());      // cópia
+			d.setDate(d.getDate() - Number(days || 0));
+			d.setHours(0, 0, 0, 0);                // evita variação por horário/DST
+			return d;
+		},
+
+		parseDateBR: function (s) {
+
+			if (!s) return null;
+
+			var m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(s);
+			if (!m) return null;
+
+			var dd = Number(m[1]);
+			var mm = Number(m[2]);
+			var yyyy = Number(m[3]);
+
+			// cria a data
+			var d = new Date(yyyy, mm - 1, dd);
+			d.setHours(0, 0, 0, 0);
+
+			// valida se “voltou” (ex.: 31/11 vira 01/12)
+			if (d.getFullYear() !== yyyy || d.getMonth() !== (mm - 1) || d.getDate() !== dd) {
+				return null; // inválida
+			}
+			return d;
+		},
+
+		removeDaysBR: function (date, days) {
+
+			return formatDateBR(removeDays(date, days));
+		},
+
+		formatDateBR: function (date) {
+
+			var dd = String(date.getDate()).padStart(2, "0");
+			var mm = String(date.getMonth() + 1).padStart(2, "0");
+			var yyyy = date.getFullYear();
+			return dd + "/" + mm + "/" + yyyy;
+		}
 	});
 });

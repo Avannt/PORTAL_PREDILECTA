@@ -29,6 +29,8 @@
                         delete="onDeletarItem"
                         alternateRowColors="true"
                         busyIndicatorDelay="0"
+                        growingThreshold="99"
+                        growingTriggerText="Próximo >>"
                         items="{ path: 'modelItensPedidoGrid>/', sorter: { path: 'IndexItem', descending: false }}"
                         itemPress="onEditarItemPress"
                     >
@@ -381,7 +383,10 @@
                                         </Input>
                                         <Label text="% Fator Moderador Verba">
                                             <layoutData>
-                                                <layout:GridData span="L2 M2" linebreakM="true" />
+                                                <layout:GridData
+                                                    span="L2 M2"
+                                                    linebreakM="true"
+                                                />
                                             </layoutData>
                                         </Label>
                                         <Input
@@ -414,7 +419,7 @@
                                         </Label>
                                         <Input
                                             id="idQuantidadeUltimaCompra"
-                                            value="{path : 'modelItem>/QtdUltCompra', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+                                            value="{path : 'modelItem>/QtdUltCompraUltMes', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
                                             enabled="false"
                                             class="desabilitado"
                                         >
@@ -429,7 +434,7 @@
                                         </Label>
                                         <Input
                                             id="idDataUltimaCompra"
-                                            value="{path : 'modelItem>/DataUltCompra'}"
+                                            value="{path : 'modelItem>/DataUltCompraUltMes', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' }}"
                                             enabled="false"
                                             class="desabilitado"
                                         >
@@ -439,12 +444,15 @@
                                         </Input>
                                         <Label text="Vl. Ult. Compra">
                                             <layoutData>
-                                                <layout:GridData span="L2 M2" linebreakM="true"/>
+                                                <layout:GridData
+                                                    span="L2 M2"
+                                                    linebreakM="true"
+                                                />
                                             </layoutData>
                                         </Label>
                                         <Input
                                             id="idValorUltimaCompra"
-                                            value="{path : 'modelItem>/ValorUltCompra', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+                                            value="{path : 'modelItem>/ValorUltCompraUltMes', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
                                             enabled="false"
                                             class="desabilitado"
                                         >
@@ -649,8 +657,15 @@
                                 />
                             </Column>
                         </columns>
-                        <items class="margins">
+                        <items>
                             <ColumnListItem type="Active">
+                                <customData>
+                                    <core:CustomData
+                                        key="mydata"
+                                        value="{path: 'modelItensPedidoGrid>IdCorGrid', type: 'sap.ui.model.type.String'}"
+                                        writeToDom="true"
+                                    />
+                                </customData>
                                 <cells>
                                     <Text
                                         text="{path : 'modelItensPedidoGrid>IndexItem', type: 'sap.ui.model.type.Integer'}"
@@ -674,7 +689,7 @@
                                         textAlign="Left"
                                     />
                                     <Text
-                                        text="R$: {path: 'modelItensPedidoGrid>ValPrecoTabelaMin', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99'}}"
+                                        text="R$: {path: 'modelItensPedidoGrid>ValPrecoMinBase', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99'}}"
                                         textAlign="Left"
                                     />
                                     <Text

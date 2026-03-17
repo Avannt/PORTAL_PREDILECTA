@@ -13,7 +13,6 @@
     font-size: 10px !important;
 }
 
-
 .removePadding {
     padding-top: 0px !important;
     padding-left: 0px !important;
@@ -23,7 +22,6 @@
     margin-left: 0px !important;
     margin-right: 0px !important;
     margin-botton: 0px !important;
-
 }
 
 li[data-mydataItensEntrega='0'], li[data-mydataItensEntrega='0'] + tr.sapMSelectListItem {	
@@ -31,10 +29,7 @@ li[data-mydataItensEntrega='0'], li[data-mydataItensEntrega='0'] + tr.sapMSelect
 }
 
 tr[data-mydata="1"], tr[data-mydata="1"] + tr.sapMListTblSubRow {	
-  background:  #FF8484 !important;
-}
-tr[data-mydata2="1"], tr[data-mydata="1"] + tr.sapMListTblSubRow {	
-  background:  #b88414 !important;
+  background:  #fff8d6 !important;
 }
 
 tr[data-mydataAprov="0"], tr[data-mydataAprov="0"] + tr.sapMListTblSubRow {	

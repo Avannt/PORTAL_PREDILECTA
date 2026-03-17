@@ -27,7 +27,7 @@ sap.ui.define([
 				QAS => ReleasePRD = FALSE
 				*/
 				this.getModelGlobal("modelAux").setProperty("/ReleasePRD", false);
-				this.getModelGlobal("modelAux").setProperty("/VersaoApp", "4.5");
+				this.getModelGlobal("modelAux").setProperty("/VersaoApp", "5.0");
 				this.getModelGlobal("modelAux").setProperty("/Werks", "1000");
 				this.getModelGlobal("modelAux").setProperty("/EditarIndexItem", 0);
 				this.getModelGlobal("modelAux").setProperty("/bConectado", false);
@@ -391,7 +391,7 @@ sap.ui.define([
 				var that = this;
 
 				// this.getView().byId("idPageLogin").setBusy(true);
-				var CodRepres = this.byId("idLogin").getValue();
+				var CodRepres = this.byId("idLogin").getValue().trim();
 				var Senha = this.byId("idSenha").getValue();
 				var Imei = "WEB";
 
@@ -401,9 +401,7 @@ sap.ui.define([
 
 				oModel.read("/Logins(IvUsuario='" + CodRepres + "',IvSenha='" + Senha + "',IvSistOper='" + SistemaOp +
 					"',IvImei='" + Imei + "',IvVersaoApp='" + VersaoApp + "')", {
-					success: function (retorno) {
-
-						
+					success: function (retorno) {						
 
 						that.getModelGlobal("modelAux").setProperty("/CodRepres", CodRepres);
 						that.getModelGlobal("modelAux").setProperty("/NomeRepres", retorno.EvNomeRepres);
@@ -413,7 +411,7 @@ sap.ui.define([
 						that.getModelGlobal("modelAux").setProperty("/Email", retorno.EvEmail);
 						that.getModelGlobal("modelAux").setProperty("/DiasPedPend", retorno.EvDiasPedPend);
 						that.getModelGlobal("modelAux").setProperty("/MaxDiasEntrega", retorno.EvMaxDiasEntrg);
-						that.getModelGlobal("modelAux").setProperty("/DiasTituloVenc", retorno.EvMDiasTituloVenc);
+						that.getModelGlobal("modelAux").setProperty("/DiasTituloVenc", retorno.EvDiasTituloVenc);
 
 						oModel.read("/Menus", {
 							urlParameters: {
