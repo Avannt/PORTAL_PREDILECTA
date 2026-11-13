@@ -18,6 +18,7 @@
             <!--itemPress="onItemPress" -->
             <Table
                 id="table_pedidos"
+                itemPress="onItemPress"
                 width="100%"
                 backgroundDesign="Translucent"
                 items="{ path:'Pedidos>/', sorter: { path: 'NrPedido', descending: true}}"
@@ -86,16 +87,33 @@
                     >
                         <Text text="V. Total" />
                     </Column>
+                    <Column
+                        width="120px"
+                        hAlign="Center"
+                    >
+                        <Text
+                            text="Rentab. %"
+                            textDirection="LTR"
+                        />
+                    </Column>
+                    <Column width="80px">
+                        <Text text="Rentab" />
+                    </Column>
+                    <Column width="auto">
+                        <Text text="Status" />
+                    </Column>
                 </columns>
                 <items>
                     <ColumnListItem type="Active">
                         <cells>
                             <Text
-                                text="{path : 'Pedidos>Bukrs', formatter:'.myFormatterCodEmpresa'}"
+                                text="{Pedidos>Bukrs} - {Pedidos>Werks} - {Pedidos>WerksDesc}"
                             />
+                            <!-- text="{path : 'Pedidos>Bukrs', formatter:'.myFormatterCodEmpresa'}" -->
                             <Text
-                                text="{path : 'Pedidos>Kunnr', formatter:'.myFormatterCliente'}"
+                                text="{Pedidos>Kunnr} - {Pedidos>KunnrDesc}"
                             />
+                            <!-- text="{path : 'Pedidos>Kunnr', formatter:'.myFormatterCliente'}" -->
                             <Text text="{Pedidos>Lifnr} - {Pedidos>NrPedido}" />
                             <Text
                                 text="R$: {path : 'Pedidos>TotalVerba', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
@@ -105,6 +123,28 @@
                             />
                             <Text
                                 text="R$: {path : 'Pedidos>ValorTotal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+                            />
+
+                            <ObjectListItem
+                                number="{path: 'Pedidos>RentTotal'}"
+                                numberState="{= ${Pedidos>RentTotal} >= 0 ? 'Success' : 'Error' }"
+                            />
+
+                            <Image
+                                src="{Pedidos>RentTotalImg}"
+                                width="40%"
+                            />
+
+                            <ObjectStatus
+                                text="{Pedidos>SituacaoPedido}"
+                                icon="{
+                                            path:'Pedidos>IdStatusPedido',
+                                            formatter:'.formatterStatusIcon'
+                                        }"
+                                state="{
+                                            path:'Pedidos>IdStatusPedido',
+                                            formatter:'.formatterStatusState'
+                                        }"
                             />
                         </cells>
                     </ColumnListItem>

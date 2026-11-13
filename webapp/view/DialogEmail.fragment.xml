@@ -13,13 +13,13 @@
         stretch="true"
         class="customizedDialog"
         busyIndicatorDelay="0"
-		contentWidth="50%"
+        contentWidth="50%"
     >
         <content>
             <f:Form
                 id="idForm"
                 editable="true"
-                ariaLabelledBy="Title1"
+                
             >
                 <f:layout>
                     <f:ResponsiveGridLayout
@@ -34,20 +34,20 @@
                         columnsM="8"
                     />
                 </f:layout>
-                <f:FormContainer ariaLabelledBy="Title1">
+                <f:FormContainer >
                     <f:formElements>
-                        <f:FormElement label="">
-                            <f:fields>							
-								<CheckBox
-									text="NFe"
-									selected="{modelParamDialog>/Nfe}"
-								/>
+                        <f:FormElement label="Opções de Envio">
+                            <f:fields>
+                                <CheckBox
+                                    text="NFe"
+                                    selected="{modelParamDialog>/Nfe}"
+                                />
                             </f:fields>
-                            <f:fields>							
-								<CheckBox
-									text="Boleto"
-									selected="{modelParamDialog>/Boleto}"
-								/>
+                            <f:fields>
+                                <CheckBox
+                                    text="Boleto"
+                                    selected="{modelParamDialog>/Boleto}"
+                                />
                             </f:fields>
                         </f:FormElement>
                         <f:FormElement label="NF-e">

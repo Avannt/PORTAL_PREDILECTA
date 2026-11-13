@@ -9,9 +9,14 @@ sap.ui.define([
 	"sap/ui/core/format/FileSizeFormat",
 	'sap/ui/model/Filter',
 	'sap/ui/model/FilterOperator',
-	"sap/ui/core/format/NumberFormat"
-], function (Controller, History, UIComponent, MessageBox, JSONModel, FileSizeFormat, Filter, FilterOperator, NumberFormat) {
+	"sap/ui/core/format/NumberFormat",
+	"sap/ui/core/format/DateFormat"
+], function (Controller, History, UIComponent, MessageBox, JSONModel, FileSizeFormat, Filter, FilterOperator, NumberFormat, DateFormat) {
 	"use strict";
+
+	var oFormatoData = DateFormat.getDateInstance({
+		pattern: "dd/MM/yyyy"
+	});
 
 	return Controller.extend("application.controller.BaseController", {
 
@@ -60,10 +65,20 @@ sap.ui.define([
 			return hours + ":" + minutes + ":" + seconds;
 		},
 
-		temCorGridUm: function (vetorItensPedido) {
-			for (const item of (vetorItensPedido || [])) {
-				if (item && item.IdCorGrid === "1") return true; // para aqui
-			}
+		// IdCorGrid descontinuado: mantidos os métodos existentes para compatibilidade.
+		_normalizarIdCorGrid: function (vIdCorGrid) { return vIdCorGrid; },
+
+		ehItemPedidoDigitado: function (oItem) {
+			// Regra anterior comentada: return !!oItem && this._normalizarIdCorGrid(oItem.IdCorGrid) === "0";
+			return !!oItem;
+		},
+
+		contarItensPedidoDigitados: function (aItens) {
+			return (aItens || []).filter(this.ehItemPedidoDigitado, this).length;
+		},
+
+		temCorGridUm: function () {
+			// Classificação antiga desativada. As sugestões já usam modelItensCampanha.
 			return false;
 		},
 
@@ -150,19 +165,64 @@ sap.ui.define([
 			}
 		},
 
+		// onFormatCancelaSaldo: function (value) {
+
+		// 	if (value != undefined) {
+
+		// 		if (value == "S" || value == "SIM") {
+
+		// 			return "Não";
+
+		// 		} else if (value == "N") {
+
+		// 			return "Sim";
+		// 		}
+		// 	}
+		// },
+
+		_normalizarIndicador: function (value) {
+			return value == null ? "" : String(value).trim().toUpperCase();
+		},
+
 		onFormatCancelaSaldo: function (value) {
+			var sValue = this._normalizarIndicador(value);
+			return sValue === "S" || sValue === "SIM" ? "Não" : "Sim";
+		},
 
-			if (value != undefined) {
+		onFormatOpTriangular: function (value) {
+			var sValue = this._normalizarIndicador(value);
+			return sValue === "S" || sValue === "SIM" ? "Sim" : "Não";
+		},
 
-				if (value == "S") {
+		onFormatRegimeEspecial: function (value) {
+			if (value === undefined || value === null || value === "") {
+				return "Não";
+			}
 
-					return "Não";
+			var oData = null;
+			var sValue = String(value).trim();
 
-				} else if (value == "N") {
+			if (value instanceof Date) {
+				oData = value;
+			} else {
+				var aDataOData = /^\/Date\((-?\d+)(?:[+-]\d+)?\)\/$/.exec(sValue);
+				var aDataISO = /^(\d{4})-(\d{2})-(\d{2})/.exec(sValue);
+				var aDataBrasileira = /^(\d{2})[./-](\d{2})[./-](\d{4})$/.exec(sValue);
 
-					return "Sim";
+				if (aDataOData) {
+					oData = new Date(Number(aDataOData[1]));
+				} else if (aDataISO) {
+					oData = new Date(Date.UTC(Number(aDataISO[1]), Number(aDataISO[2]) - 1, Number(aDataISO[3])));
+				} else if (aDataBrasileira) {
+					oData = new Date(Date.UTC(Number(aDataBrasileira[3]), Number(aDataBrasileira[2]) - 1, Number(aDataBrasileira[1])));
 				}
 			}
+
+			if (!(oData instanceof Date) || isNaN(oData.getTime())) {
+				return "Não";
+			}
+
+			return "Sim - válido até " + oFormatoData.format(oData, true);
 		},
 
 		onFormatTelefone: function (value) {
@@ -197,12 +257,21 @@ sap.ui.define([
 			}
 		},
 
+		onDeleteProperties: function (Obj) {
+
+			delete Obj.__metadata;
+			delete Obj.WerksDesc;
+			delete Obj.KunnrDesc;
+
+			return Obj;
+		},
 		onFormatNumberPedido: function (Obj) {
 
 			for (var property in Obj) {
 
 				if (property != "Completo" && property != "CheckIncentivo" && property != "EnviarEmailCliente" && property != "DataIniConv" &&
-					property != "EnviarEmailRepres" && property != "LogVerbaRentNeg" && property != "TotalItens" && property != "LogProposta") {
+					property != "EnviarEmailRepres" && property != "LogVerbaRentNeg" && property != "TotalItens" && property != "LogProposta"
+					&& property != "IsGerente" && property != "IsDivisor" && property != "IsSupervisor") {
 
 					Obj[property] = String(Obj[property]);
 				}
@@ -254,6 +323,41 @@ sap.ui.define([
 
 					rej(error);
 				}
+			});
+		},
+
+		onBuscarCliente: function (res, rej, Cliente, Usuario, that) {
+
+			that.oModel.read("/ClienteR(IvUsuario='" + Usuario + "',IvCliente='" + Cliente + "')", {
+				success: function (data) {
+
+					res(data);
+				},
+				error: function (error) {
+
+					rej(error);
+				}
+			});
+		},
+
+		// Histórico de compras: entidade e filtros de entrada confirmados no serviço SEGW.
+		onBuscarItensJaComprados: function (Pedido, CodRepres, res, rej) {
+			var sEntitySet = "/P_HistoricoCompras";
+			if (!sEntitySet) { res(null); return; }
+			if (!Pedido || !Pedido.Kunnr || !Pedido.Bukrs || !Pedido.Werks || !CodRepres) { rej(new Error("Cliente, empresa, centro e representante são necessários para consultar o histórico.")); return; }
+
+			// Parâmetros de entrada publicados pela entidade; os campos de retorno não têm o prefixo Iv.
+			var aFiltros = [new Filter("IvKunnr", FilterOperator.EQ, Pedido.Kunnr), new Filter("IvBukrs", FilterOperator.EQ, Pedido.Bukrs), new Filter("IvWerks", FilterOperator.EQ, Pedido.Werks), new Filter("IvUsuario", FilterOperator.EQ, CodRepres)];
+			var oModel = this.getModelGlobal("modelAux").getProperty("/DBModel");
+			oModel.read(sEntitySet, {
+				filters: aFiltros,
+				success: function (oData) {
+					if (!oData || !Array.isArray(oData.results)) { rej(new Error("O histórico deve retornar uma coleção OData em results.")); return; }
+					if (oData.__next) { rej(new Error("A entidade de histórico retornou uma página parcial. Ajuste esta integração para buscar as páginas seguintes antes de preencher a grade.")); return; }
+					// Retornar uma linha por material, com os campos da compra mais recente. Não chamar onFormatNumberItem aqui.
+					res(oData.results);
+				},
+				error: rej
 			});
 		},
 
@@ -407,6 +511,8 @@ sap.ui.define([
 			});
 		},
 
+		temItensLista: function (aItens) { return Array.isArray(aItens) && aItens.length > 0; },
+
 		onBuscarItensPedido: function (res, rej, NrPedido) {
 
 			var that = this;
@@ -417,7 +523,14 @@ sap.ui.define([
 				},
 				success: function (dataItens) {
 
-					res(dataItens.results);
+					res(dataItens.results.map(function (oItem) {
+
+						var oCopia = Object.assign({}, oItem);
+
+						// IdCorGrid é preservado como recebido; não participa da classificação dos itens.
+
+						return oCopia;
+					}));
 				},
 				error: function (error) {
 
@@ -426,23 +539,77 @@ sap.ui.define([
 			});
 		},
 
+		// Consulta coleção de campanhas; não insere itens no pedido.
 		onInserirItensPedidoCampanha: function (res, rej, NrPedido) {
 
-			var that = this;
+			if (!NrPedido) { rej(new Error("Informe o número do pedido para consultar as campanhas.")); return; }
 
-			that.oModel.read("/P_ItensCampMsgs(NrPedido='" + NrPedido + "')", {
-				// urlParameters: {
-				// 	"$filter": 
-				// },
+			this.oModel.read("/P_ItensCampPedidoQ", {
+				filters: [new Filter("NrPedido", FilterOperator.EQ, String(NrPedido))],
 				success: function (dataItens) {
-
-					res();
-				},
-				error: function (error) {
-
-					rej(error);
-				}
+					if (!dataItens || !Array.isArray(dataItens.results)) { rej(new Error("A consulta /P_ItensCampPedidoQ deve retornar uma coleção OData em results. Confira o GET_ENTITYSET da SEGW.")); return; }
+					if (dataItens.__next) { rej(new Error("A consulta de campanhas retornou uma página parcial. Configure o retorno completo antes de exibir as sugestões.")); return; }
+					res(dataItens.results);
+				}, error: rej
 			});
+		},
+
+		_contextoCampanhaPedido: function () {
+
+			var oPedido = this.getModelGlobal("modelPedido").getData() || {};
+			return JSON.stringify([oPedido.NrPedido, oPedido.Kunnr, oPedido.Bukrs, oPedido.Werks, oPedido.Usuario]);
+		},
+
+		_inicializarModeloCampanha: function () {
+			if (!this.getModelGlobal("modelItensCampanha")) { this.setModelGlobal(new JSONModel([]), "modelItensCampanha"); }
+		},
+
+		onCarregarItensCampanha: function (NrPedido) {
+
+			this._inicializarModeloCampanha();
+
+			var that = this, oModelo = this.getModelGlobal("modelItensCampanha"), sContexto = this._contextoCampanhaPedido();
+			var iConsulta = (oModelo._consultaCampanha || 0) + 1;
+			oModelo._consultaCampanha = iConsulta;
+			oModelo.setData([]);
+
+			if (!NrPedido || String(this.getModelGlobal("modelPedido").getProperty("/NrPedido")) !== String(NrPedido)) {
+
+				return Promise.resolve([]);
+			}
+
+			return new Promise(function (res, rej) { that.onInserirItensPedidoCampanha(res, rej, NrPedido); }).then(function (aCampanhas) {
+
+				if (iConsulta !== oModelo._consultaCampanha || sContexto !== that._contextoCampanhaPedido()) { return []; }
+				var mMateriais = Object.create(null);
+
+				var aUnicos = aCampanhas.filter(function (oItem) {
+					if (!oItem || !oItem.Matnr) { return false; }
+					var sMaterial = String(oItem.Matnr).replace(/^0+/, "");
+					if (mMateriais[sMaterial]) { return false; }
+					mMateriais[sMaterial] = true;
+					return true;
+				}).map(function (oItem) { return Object.assign({}, oItem); });
+
+				oModelo.setData(aUnicos);
+				that._retirarCampanhasJaDigitadas();
+				return oModelo.getData();
+
+			}).catch(function (oErro) {
+
+				if (iConsulta !== oModelo._consultaCampanha || sContexto !== that._contextoCampanhaPedido()) { return []; }
+				throw oErro;
+			});
+		},
+
+		_retirarCampanhasJaDigitadas: function () {
+			var oCampanhas = this.getModelGlobal("modelItensCampanha");
+			if (!oCampanhas) { return; }
+			var oItens = this.getModelGlobal("modelItensPedidoGrid");
+			var aDigitados = oItens ? oItens.getData() || [] : [];
+			var mDigitados = Object.create(null);
+			aDigitados.forEach(function (oItem) { if (oItem) { mDigitados[String(oItem.Matnr).replace(/^0+/, "")] = true; } });
+			oCampanhas.setData((oCampanhas.getData() || []).filter(function (oItem) { return !mDigitados[String(oItem.Matnr).replace(/^0+/, "")]; }));
 		},
 
 		onDeletarItemPedido: function (res, rej, NrPedido, Matnr) {
@@ -555,12 +722,44 @@ sap.ui.define([
 					Obj[property] = String(Obj[property]);
 				}
 
-				if (property == "ExcIncent" || property == "ExcVerba" || property == "Draft") {
+				if (property == "ExcIncent" || property == "ExcVerba" || property == "Draft" || property == "ForaPolitica") {
 					Obj[property] = String(Obj[property]) == "true" ? true : false;
 				}
 			}
 
 			return Obj;
+		},
+
+
+		onCalculaRentabilidade: function () {
+
+			var pedido = this.getModel("modelPedido").getData();
+			var itens = this.getModel("modelItensPedidoGrid").getData();
+
+			var ValTotalItens = this.getModel("modelPedido").getProperty("/ValorTotal");
+			var ValDescAplicar = this.getModel("modelPedido").getProperty("/ValDescAplicar");
+			var ValDescInformBoletoReduzid = this.getModel("modelPedido").getProperty("/ValDescInformBoletoReduzid");
+			var ValLucro = this.getModel("modelPedido").getProperty("/ValLucro");
+
+			var descTotalRealizado = parseFloat(ValLucro) - (parseFloat(ValDescAplicar) + parseFloat(ValDescInformBoletoReduzid));
+			// this.getModel("modelPedido").setProperty("/ValLucro", descTotalRealizado);
+
+			var ValResultante = descTotalRealizado / ValTotalItens;
+			ValResultante = Math.round(ValResultante * 10000) / 10000;
+
+			var PercLucroTotal = parseFloat(ValResultante * 100).toFixed(2);
+			this.getModel("modelPedido").setProperty("/RentTotal", PercLucroTotal);
+
+			if (PercLucroTotal >= 3) {
+
+				this.getModel("modelPedido").setProperty("/RentTotalImg", './img/S.png');
+			} else if (PercLucroTotal < 0) {
+
+				this.getModel("modelPedido").setProperty("/RentTotalImg", './img/R.png');
+			} else {
+
+				this.getModel("modelPedido").setProperty("/RentTotalImg", './img/N.png');
+			}
 		},
 
 		myFormatterDataMobile: function (value) {
@@ -802,16 +1001,31 @@ sap.ui.define([
 				}
 			}
 
-			sap.m.MessageBox.show(
-				errorLog, {
-				icon: sap.m.MessageBox.Icon.WARNING,
-				title: "Erro!",
-				actions: [sap.m.MessageBox.Action.OK],
-				onClose: function (oAction) {
+			if (errorLog.includes("encaminhado para aprovação") > 0) {
 
+				sap.m.MessageBox.show(
+					errorLog, {
+					icon: sap.m.MessageBox.Icon.WARNING,
+					title: "Pedido Pendente de Aprovação!",
+					actions: [sap.m.MessageBox.Action.OK],
+					onClose: function (oAction) {
+
+					}
 				}
+				);
+			} else {
+
+				sap.m.MessageBox.show(
+					errorLog, {
+					icon: sap.m.MessageBox.Icon.WARNING,
+					title: "Erro!",
+					actions: [sap.m.MessageBox.Action.OK],
+					onClose: function (oAction) {
+
+					}
+				}
+				);
 			}
-			);
 		},
 
 		onCriarBP: function (Cliente, res, rej, that) {
@@ -1020,6 +1234,66 @@ sap.ui.define([
 			var mm = String(date.getMonth() + 1).padStart(2, "0");
 			var yyyy = date.getFullYear();
 			return dd + "/" + mm + "/" + yyyy;
+		},
+
+		formatterStatusIcon: function (status) {
+
+			switch (String(status.trim())) {
+
+				case "1":
+					return "sap-icon://edit";
+
+				case "2":
+					return "sap-icon://pending";
+
+				case "3":
+					return "sap-icon://accept";
+
+				case "4":
+					return "sap-icon://process";
+
+				default:
+					return "sap-icon://question-mark";
+			}
+
+		},
+		formatterStatusState: function (status) {
+
+			switch (String(status.trim())) {
+
+				case "1":
+					return "None";
+
+				case "2":
+					return "Information";
+
+				case "3":
+					return "Success";
+
+				case "4":
+					return "Warning";
+
+				default:
+					return "None";
+			}
+
+		},
+		formatterForaPoliticaTexto: function (bValor) {
+			return (bValor === true || bValor === "true" || bValor === "X")
+				? "Nāo"
+				: "Sim";
+		},
+
+		formatterForaPoliticaIcon: function (bValor) {
+			return (bValor === true || bValor === "true" || bValor === "X")
+				? "sap-icon://decline"
+				: "sap-icon://accept";
+		},
+
+		formatterForaPoliticaState: function (bValor) {
+			return (bValor === true || bValor === "true" || bValor === "X")
+				? "Error"
+				: "Success";
 		}
 	});
 });

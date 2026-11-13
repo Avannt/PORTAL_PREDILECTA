@@ -68,7 +68,7 @@ sap.ui.define([
             var Obj = {
                 Repres: this.getModelGlobal("modelAux").getProperty("/CodRepres"),
                 NomeRazao: "",
-                Cnpj: "",
+                CpfCpnj: "",
                 Telefone: "",
                 Email: "",
                 Ie: "",
@@ -108,7 +108,7 @@ sap.ui.define([
             {
                 key: "Isenção"
             }];
-            
+
             var modelObj = new JSONModel(aux);
             this.setModel(modelObj, "modelRegime");
 
@@ -129,260 +129,484 @@ sap.ui.define([
 
         onCriarCliente: function () {
 
-            var that = this;
+            const that = this;
 
-            var cliente = this.getModel("modelBP").getData();
+            const oModel = this.getView().getModel("modelBP").getData();
+            const oValida = this.getView().getModel("modelValidaBP");
 
-            if (cliente.NomeRazao.length == 0) {
+            let bErro = false;
 
-                that.getModel("modelValidaBP").setProperty("/NomeRazaoVE", "Error");
-                that.getModel("modelValidaBP").setProperty("/NomeRazaoTE", "Preencher o campo nome do BP.");
+            const setErro = (campo, msg) => {
+                oValida.setProperty(`/${campo}VE`, "Error");
+                oValida.setProperty(`/${campo}TE`, msg);
+                bErro = true;
+            };
 
-            } else if (cliente.Cnpj.length > 14) {
+            const limpar = (campo) => {
+                oValida.setProperty(`/${campo}VE`, "None");
+                oValida.setProperty(`/${campo}TE`, "");
+            };
 
-                that.getModel("modelValidaBP").setProperty("/CnpjVE", "Error");
-                that.getModel("modelValidaBP").setProperty("/CnpjTE", "Quantidade de 14 caracteres excedida para o campo de CPF / CNPJ.");
+            const isEmpty = (v) => !v || v.toString().trim().length === 0;
 
-            } else if (cliente.Cnpj.length < 14) {
+            const somenteNumeros = (v) => v ? v.replace(/\D/g, '') : "";
 
-                that.getModel("modelValidaBP").setProperty("/CnpjVE", "Error");
-                that.getModel("modelValidaBP").setProperty("/CnpjTE", "Preencher o campo CPF / CNPJ com 14 caracteres.");
+            // =========================
+            // 📧 EMAILS
+            // =========================
 
-            } 
-            // else if (cliente.Ie.length == 0) {
+            [
+                { campo: "EmailXml", obrigatorio: true },
+                { campo: "EmailComprador", obrigatorio: true },
+                { campo: "EmailFinanceiro", obrigatorio: false },
+                { campo: "EmailContabil", modelField: "EmailContabilidade", obrigatorio: false }
+            ].forEach(e => {
 
-            // 	that.getModel("modelValidaBP").setProperty("/IeVE", "Error");
-            // 	that.getModel("modelValidaBP").setProperty("/IeTE", "Preencher o campo de Inscrição Estadual.");
+                const value = oModel[e.modelField || e.campo];
 
-            // } 
-            // else if (cliente.TelComprador.length > 11) {
+                if (e.obrigatorio && isEmpty(value)) {
+                    setErro(e.campo, "Preencher e-mail");
+                    return;
+                }
 
-            //     that.getModel("modelValidaBP").setProperty("/Telefone1VE", "Error");
-            //     that.getModel("modelValidaBP").setProperty("/Telefone1TE", "Quantidade de 11 caracteres excedida para o campo de telefone.");
+                if (value && !that._validarEmail(value)) {
+                    setErro(e.campo, "E-mail inválido");
+                } else {
+                    limpar(e.campo);
+                }
+            });
 
-            // }
-            // else if (cliente.TelContabilidade.length > 11) {
+            // =========================
+            // 📞 TELEFONES (SOMENTE TAMANHO)
+            // =========================
 
-            //     that.getModel("modelValidaBP").setProperty("/Telefone2VE", "Error");
-            //     that.getModel("modelValidaBP").setProperty("/Telefone2TE", "Quantidade de 11 caracteres excedida para o campo de telefone.");
+            [
+                { campo: "Telefone1", model: "TelComprador", obrigatorio: true },
+                { campo: "TelefoneFinanceiro", model: "TelFinanceiro" },
+                { campo: "TelefoneContabilidade", model: "TelContabilidade" }
+            ].forEach(t => {
 
-            // }
-            // else if (cliente.TelFinanceiro.length == 0) {
+                let value = oModel[t.model];
+                let numero = somenteNumeros(value);
 
-            //     that.getModel("modelValidaBP").setProperty("/Telefone3VE", "Error");
-            //     that.getModel("modelValidaBP").setProperty("/Telefone3TE", "Quantidade de 11 caracteres excedida para o campo de telefone.");
+                if (t.obrigatorio && isEmpty(numero)) {
+                    setErro(t.campo, "Preencher telefone");
+                    return;
+                }
 
-            // }
-             else if (cliente.TelComprador.length == 0) {
+                if (numero && !(numero.length === 10 || numero.length === 11)) {
+                    setErro(t.campo, "Telefone deve ter 10 ou 11 dígitos");
+                } else {
+                    limpar(t.campo);
+                }
+            });
 
-                that.getModel("modelValidaBP").setProperty("/Telefone1VE", "Error");
-                that.getModel("modelValidaBP").setProperty("/Telefone1TE", "Preencher o Telefone.");
+            // =========================
+            // 🧾 CAMPOS GERAIS
+            // =========================
 
-            } 
-            // else if (cliente.TelFinanceiro.length == 0) {
-
-            //     that.getModel("modelValidaBP").setProperty("/Telefone2VE", "Error");
-            //     that.getModel("modelValidaBP").setProperty("/Telefone2TE", "Preencher o campo Telefone com 11 caracteres.");
-
-            // } 
-            // else if (cliente.TelContabilidade.length == 0) {
-
-            //     that.getModel("modelValidaBP").setProperty("/Telefone3VE", "Error");
-            //     that.getModel("modelValidaBP").setProperty("/Telefone3TE", "Preencher o campo Telefone com 11 caracteres.");
-
-            // } 
-            else if (cliente.Ie.length > 20) {
-
-                that.getModel("modelValidaBP").setProperty("/IeVE", "Error");
-                that.getModel("modelValidaBP").setProperty("/IeTE", "Quantidade de 20 caracteres excedida para o campo de Inscrição Estadual.");
-
-            } 
-            else if (cliente.EmailXml.lenght == 0) {
-
-                that.getModel("modelValidaBP").setProperty("/EmailXmlVE", "Error");
-                that.getModel("modelValidaBP").setProperty("/EmailXmlTE", "Preencher E-mail.");
-
-            } 
-            else if (cliente.EmailComprador.lenght == 0) {
-                
-                that.getModel("modelValidaBP").setProperty("/EmailCompradorVE", "Error");
-                that.getModel("modelValidaBP").setProperty("/EmailCompradorTE", "Preencher E-mail.");
-
-            } 
-            else if (cliente.EmailXml.includes("@") == false & cliente.EmailXml.lenght > 0) {
-
-                that.getModel("modelValidaBP").setProperty("/EmailXmlVE", "Error");
-                that.getModel("modelValidaBP").setProperty("/EmailXmlTE", "Verifique se o E-mail está válido.");
-
-            } 
-            else if (cliente.EmailFinanceiro.includes("@") == false & cliente.EmailFinanceiro.lenght > 0) {
-
-                that.getModel("modelValidaBP").setProperty("/EmailFinanceiroVE", "Error");
-                that.getModel("modelValidaBP").setProperty("/EmailFinanceiroTE", "Verifique se o E-mail está válido.");
-
-            } 
-            else if (cliente.EmailContabilidade.includes("@") == false & cliente.EmailContabilidade.lenght > 0) {
-
-                that.getModel("modelValidaBP").setProperty("/EmailContabilVE", "Error");
-                that.getModel("modelValidaBP").setProperty("/EmailContabilTE", "Verifique se o E-mail está válido.");
-
-            } 
-            else if (cliente.EmailComprador.includes("@") == false & cliente.EmailComprador.lenght > 0) {
-                
-                that.getModel("modelValidaBP").setProperty("/EmailCompradorVE", "Error");
-                that.getModel("modelValidaBP").setProperty("/EmailCompradorTE", "Verifique se o E-mail está válido.");
-
-            } 
-            else if (cliente.Cep.length == 0) {
-
-                that.getModel("modelValidaBP").setProperty("/CepVE", "Error");
-                that.getModel("modelValidaBP").setProperty("/CepTE", "Preencher o campo CEP.");
-
-            } else if (cliente.Cep.length > 9 || cliente.Cep.includes("-") == false) {
-
-                that.getModel("modelValidaBP").setProperty("/CepVE", "Error");
-                that.getModel("modelValidaBP").setProperty("/CepTE", "CEP deve ser de 9 caracteres e com hífem (-).");
-
-            } else if (cliente.Cidade.length == 0) {
-
-                that.getModel("modelValidaBP").setProperty("/CidadeVE", "Error");
-                that.getModel("modelValidaBP").setProperty("/CidadeTE", "Preencher o campo Cidade.");
-
-            } else if (cliente.Estado.length == 0 || cliente.Estado.length == 0) {
-
-                that.getModel("modelValidaBP").setProperty("/EstadoVE", "Error");
-                that.getModel("modelValidaBP").setProperty("/EstadoTE", "Selecione o campo Estado.");
-
-            } else if (cliente.Numero.length > 6) {
-
-                that.getModel("modelValidaBP").setProperty("/NumeroVE", "Error");
-                that.getModel("modelValidaBP").setProperty("/NumeroTE", "Quantidade de 6 caracteres excedida para o campo Número.");
-
-            } else if (cliente.Numero.length == 0) {
-
-                that.getModel("modelValidaBP").setProperty("/NumeroVE", "Error");
-                that.getModel("modelValidaBP").setProperty("/NumeroTE", "Preencher o campo Número.");
-
-            } else if (cliente.Rua.length == 0) {
-
-                that.getModel("modelValidaBP").setProperty("/RuaVE", "Error");
-                that.getModel("modelValidaBP").setProperty("RuaTE", "Preencher o campo Rua.");
-
-            } else if (cliente.Bairro.length == 0) {
-
-                that.getModel("modelValidaBP").setProperty("/BairroVE", "Error");
-                that.getModel("modelValidaBP").setProperty("BairroTE", "Preencher o campo Bairro.");
-
+            if (isEmpty(oModel.NomeRazao)) {
+                setErro("NomeRazao", "Preencher o nome do BP");
             } else {
-
-                this.setModel(models.createValidaBPModel(), "modelValidaBP");
-
-                MessageBox.show("Deseja criar o cliente?", {
-                    icon: MessageBox.Icon.INFORMATION,
-                    title: "Criação",
-                    actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
-                    onClose: function (oAction) {
-
-                        if (oAction == sap.m.MessageBox.Action.YES) {
-
-                            that.byId("idPage").setBusy(true);
-
-                            new Promise(function (res, rej) {
-
-                                var Obj = {
-                                    NomeRazao: that.getModel("modelBP").getProperty("/NomeRazao"),
-                                    CpfCpnj: that.getModel("modelBP").getProperty("/Cnpj"),
-                                    Telefone: that.getModel("modelBP").getProperty("/Telefone"),
-                                    Email: that.getModel("modelBP").getProperty("/Email"),
-                                    Ie: that.getModel("modelBP").getProperty("/Ie"),
-                                    IsProdutorRural: that.getModel("modelBP").getProperty("/IsProdutorRural"),
-                                    Cep: that.getModel("modelBP").getProperty("/Cep"),
-                                    Rua: that.getModel("modelBP").getProperty("/Rua"),
-                                    Complemento: that.getModel("modelBP").getProperty("/Complemento"),
-                                    Numero: that.getModel("modelBP").getProperty("/Numero"),
-                                    Bairro: that.getModel("modelBP").getProperty("/Bairro"),
-                                    Cidade: that.getModel("modelBP").getProperty("/Cidade"),
-                                    Estado: that.getModel("modelBP").getProperty("/Estado"),
-                                    EmailXml: that.getModel("modelBP").getProperty("/EmailXml"),
-                                    EmailComprador: that.getModel("modelBP").getProperty("/EmailComprador"),
-                                    TelComprador: that.getModel("modelBP").getProperty("/TelComprador"),
-                                    EmailFinanceiro: that.getModel("modelBP").getProperty("/EmailFinanceiro"),
-                                    TelFinanceiro: that.getModel("modelBP").getProperty("/TelFinanceiro"),
-                                    EmailContabilidade: that.getModel("modelBP").getProperty("/EmailContabilidade"),
-                                    TelContabilidade: that.getModel("modelBP").getProperty("/TelContabilidade"),
-                                    CodSuframa: that.getModel("modelBP").getProperty("/CodSuframa"),
-                                    ObsNf1: that.getModel("modelBP").getProperty("/ObsNf1"),
-                                    ObsNf2: that.getModel("modelBP").getProperty("/ObsNf2"),
-                                    Rede: that.getModel("modelBP").getProperty("/Rede"),
-                                    Bandeira: that.getModel("modelBP").getProperty("/Bandeira"),
-                                    ReceberSaldo: that.getModel("modelBP").getProperty("/ReceberSaldo"),
-                                    PedidoParcial: that.getModel("modelBP").getProperty("/PedidoParcial"),
-                                    Repres: that.getModel("modelBP").getProperty("/Repres"),
-                                    DeclarImposto: that.getModel("modelBP").getProperty("/DeclarImposto"),
-                                    NomeComprador: that.getModel("modelBP").getProperty("/NomeComprador"),
-                                    RegimeEspecial: that.getModel("modelBP").getProperty("/RegimeEspecial")                                    
-                                };
-
-                                that.onCriarBP(Obj, res, rej, that);
-
-                            }).then(function (returnData) {
-
-                                that.byId("idPage").setBusy(false);
-
-                                if (returnData.Type == "E" && ( returnData.EvBp != '' && returnData.EvBp != undefined ) && ( !returnData.Message.toUpperCase().includes("CPF") || !returnData.Message.toUpperCase().includes("CNPJ") )) {
-
-                                    MessageBox.show("BP " + returnData.EvBp + " criado com sucesso! Mas com divergências! Clique em visualizar detalhes.", {
-                                        icon: MessageBox.Icon.WARNING,
-                                        title: "Criação BP!",
-                                        details: returnData.Message,
-                                        actions: ["OK"],
-                                        onClose: function (oAction) {
-                                        }
-                                    });
-
-                                } else if( returnData.Message.toUpperCase().includes("CPF") || returnData.Message.toUpperCase().includes("CNPJ")) {
-
-                                    MessageBox.show(returnData.Message, {
-                                        icon: MessageBox.Icon.WARNING,
-                                        title: "Criação BP!",
-                                        actions: ["OK"],
-                                        onClose: function (oAction) {
-                                        }
-                                    });
-
-                                } else if( returnData.Type == "E" ){
-
-                                    MessageBox.show('O BP não foi criado, clique em mais detalhes para visualizar o erro.', {
-                                        icon: MessageBox.Icon.ERROR,
-                                        details: returnData.Message,
-                                        title: "Criação BP!",
-                                        actions: ["OK"],
-                                        onClose: function (oAction) {
-                                        }
-                                    });
-                                } else {
-
-                                    MessageBox.show("BP " + returnData.EvBp + " criado com sucesso!", {
-                                        icon: MessageBox.Icon.SUCCESS,
-                                        title: "BP!",
-                                        actions: ["OK"],
-                                        onClose: function (oAction) {
-
-                                            that.onDialogCancelar();
-                                            that.onCriarModelBP();
-                                        }
-                                    });
-                                }
-                            }).catch(function (error) {
-
-                                that.byId("idPage").setBusy(false);
-                                that.onMensagemErroODATA(error);
-                            });
-                        }
-                    }
-                });
+                limpar("NomeRazao");
             }
+
+            // NOME COMPRADOR (OBRIGATÓRIO)
+            if (isEmpty(oModel.NomeComprador)) {
+                setErro("NomeComprador", "Preencher nome do comprador");
+            } else {
+                limpar("NomeComprador");
+            }
+
+            oModel.CpfCpnj = oModel.CpfCpnj.trim();
+            if (!oModel.CpfCpnj || oModel.CpfCpnj.length !== 14) {
+                setErro("CpfCpnj", "CNPJ deve conter 14 caracteres");
+            } else {
+                limpar("CpfCpnj");
+            }
+
+            // 🔥 INSCRIÇÃO ESTADUAL (AGORA OBRIGATÓRIA)
+            if (isEmpty(oModel.Ie)) {
+                setErro("Ie", "Preencher Inscrição Estadual");
+            } else if (oModel.Ie.length > 20) {
+                setErro("Ie", "Máximo de 20 caracteres");
+            } else {
+                limpar("Ie");
+            }
+
+            const validarCEP = (cep) => /^\d{5}-\d{3}$/.test(cep);
+
+            if (isEmpty(oModel.Cep)) {
+                setErro("Cep", "Preencher o CEP");
+            } else if (!validarCEP(oModel.Cep)) {
+                setErro("Cep", "Formato inválido. Use: 00000-000");
+            } else {
+                limpar("Cep");
+            }
+
+            if (isEmpty(oModel.Cidade)) {
+                setErro("Cidade", "Preencher a cidade");
+            } else {
+                limpar("Cidade");
+            }
+
+            if (isEmpty(oModel.Estado)) {
+                setErro("Estado", "Selecionar o estado");
+            } else {
+                limpar("Estado");
+            }
+
+            if (isEmpty(oModel.Numero)) {
+                setErro("Numero", "Preencher o número");
+            } else if (oModel.Numero.length > 6) {
+                setErro("Numero", "Máximo de 6 caracteres");
+            } else {
+                limpar("Numero");
+            }
+
+            if (isEmpty(oModel.Rua)) {
+                setErro("Rua", "Preencher a rua");
+            } else {
+                limpar("Rua");
+            }
+
+            if (isEmpty(oModel.Bairro)) {
+                setErro("Bairro", "Preencher o bairro");
+            } else {
+                limpar("Bairro");
+            }
+
+            // DIAS DE RECEBIMENTO
+            if (isEmpty(oModel.ObsNf1)) {
+                setErro("ObsNf1", "Preencher dias de recebimento");
+            } else {
+                limpar("ObsNf1");
+            }
+
+            // HORÁRIO DE RECEBIMENTO
+            if (isEmpty(oModel.ObsNf2)) {
+                setErro("ObsNf2", "Preencher horário de recebimento");
+            } else {
+                limpar("ObsNf2");
+            }
+
+            // =========================
+            // 🚫 ERRO
+            // =========================
+
+            if (bErro) {
+                sap.m.MessageToast.show("Corrija os campos destacados");
+                return;
+            }
+
+            // =========================
+            // ✅ LIMPA VALIDAÇÃO
+            // =========================
+
+            this.setModel(models.createValidaBPModel(), "modelValidaBP");
+
+            // =========================
+            // 🚀 CONTINUA PROCESSO
+            // =========================
+
+            MessageBox.show("Deseja criar o cliente?", {
+                icon: MessageBox.Icon.INFORMATION,
+                title: "Criação",
+                actions: [MessageBox.Action.YES, MessageBox.Action.CANCEL],
+                onClose: function (oAction) {
+
+                    if (oAction === MessageBox.Action.YES) {
+
+                        that.byId("idPage").setBusy(true);
+
+                        new Promise(function (res, rej) {
+
+                            const Obj = { ...oModel };
+
+                            that.onCriarBP(Obj, res, rej, that);
+
+                        }).then(function (returnData) {
+
+                            that.byId("idPage").setBusy(false);
+
+                            if (returnData.Type === "E") {
+                                MessageBox.error(returnData.Message);
+                            } else {
+                                MessageBox.success("BP " + returnData.EvBp + " criado com sucesso!", {
+                                    onClose: function () {
+                                        that.onDialogCancelar();
+                                        that.onCriarModelBP();
+                                    }
+                                });
+                            }
+
+                        }).catch(function (error) {
+
+                            that.byId("idPage").setBusy(false);
+                            that.onMensagemErroODATA(error);
+
+                        });
+                    }
+                }
+            });
         },
+
+        // onCriarCliente: function () {
+
+        //     var that = this;
+
+        //     var cliente = this.getModel("modelBP").getData();
+
+        //     if (cliente.NomeRazao.length == 0) {
+
+        //         that.getModel("modelValidaBP").setProperty("/NomeRazaoVE", "Error");
+        //         that.getModel("modelValidaBP").setProperty("/NomeRazaoTE", "Preencher o campo nome do BP.");
+
+        //     } else if (cliente.Cnpj.length > 14) {
+
+        //         that.getModel("modelValidaBP").setProperty("/CpfCpnjVE", "Error");
+        //         that.getModel("modelValidaBP").setProperty("/CpfCpnjTE", "Quantidade de 14 caracteres excedida para o campo de CPF / CNPJ.");
+
+        //     } else if (cliente.Cnpj.length < 14) {
+
+        //         that.getModel("modelValidaBP").setProperty("/CpfCpnjVE", "Error");
+        //         that.getModel("modelValidaBP").setProperty("/CpfCpnjTE", "Preencher o campo CPF / CNPJ com 14 caracteres.");
+
+        //     } 
+        //     // else if (cliente.Ie.length == 0) {
+
+        //     // 	that.getModel("modelValidaBP").setProperty("/IeVE", "Error");
+        //     // 	that.getModel("modelValidaBP").setProperty("/IeTE", "Preencher o campo de Inscrição Estadual.");
+
+        //     // } 
+        //     // else if (cliente.TelComprador.length > 11) {
+
+        //     //     that.getModel("modelValidaBP").setProperty("/Telefone1VE", "Error");
+        //     //     that.getModel("modelValidaBP").setProperty("/Telefone1TE", "Quantidade de 11 caracteres excedida para o campo de telefone.");
+
+        //     // }
+        //     // else if (cliente.TelContabilidade.length > 11) {
+
+        //     //     that.getModel("modelValidaBP").setProperty("/Telefone2VE", "Error");
+        //     //     that.getModel("modelValidaBP").setProperty("/Telefone2TE", "Quantidade de 11 caracteres excedida para o campo de telefone.");
+
+        //     // }
+        //     // else if (cliente.TelFinanceiro.length == 0) {
+
+        //     //     that.getModel("modelValidaBP").setProperty("/Telefone3VE", "Error");
+        //     //     that.getModel("modelValidaBP").setProperty("/Telefone3TE", "Quantidade de 11 caracteres excedida para o campo de telefone.");
+
+        //     // }
+        //      else if (cliente.TelComprador.length == 0) {
+
+        //         that.getModel("modelValidaBP").setProperty("/Telefone1VE", "Error");
+        //         that.getModel("modelValidaBP").setProperty("/Telefone1TE", "Preencher o Telefone.");
+
+        //     } 
+        //     // else if (cliente.TelFinanceiro.length == 0) {
+
+        //     //     that.getModel("modelValidaBP").setProperty("/Telefone2VE", "Error");
+        //     //     that.getModel("modelValidaBP").setProperty("/Telefone2TE", "Preencher o campo Telefone com 11 caracteres.");
+
+        //     // } 
+        //     // else if (cliente.TelContabilidade.length == 0) {
+
+        //     //     that.getModel("modelValidaBP").setProperty("/Telefone3VE", "Error");
+        //     //     that.getModel("modelValidaBP").setProperty("/Telefone3TE", "Preencher o campo Telefone com 11 caracteres.");
+
+        //     // } 
+        //     else if (cliente.Ie.length > 20) {
+
+        //         that.getModel("modelValidaBP").setProperty("/IeVE", "Error");
+        //         that.getModel("modelValidaBP").setProperty("/IeTE", "Quantidade de 20 caracteres excedida para o campo de Inscrição Estadual.");
+
+        //     } 
+        //     else if (cliente.EmailXml.lenght == 0) {
+
+        //         that.getModel("modelValidaBP").setProperty("/EmailXmlVE", "Error");
+        //         that.getModel("modelValidaBP").setProperty("/EmailXmlTE", "Preencher E-mail.");
+
+        //     } 
+        //     else if (cliente.EmailComprador.lenght == 0) {
+
+        //         that.getModel("modelValidaBP").setProperty("/EmailCompradorVE", "Error");
+        //         that.getModel("modelValidaBP").setProperty("/EmailCompradorTE", "Preencher E-mail.");
+
+        //     } 
+        //     else if (cliente.EmailXml.includes("@") == false & cliente.EmailXml.lenght > 0) {
+
+        //         that.getModel("modelValidaBP").setProperty("/EmailXmlVE", "Error");
+        //         that.getModel("modelValidaBP").setProperty("/EmailXmlTE", "Verifique se o E-mail está válido.");
+
+        //     } 
+        //     else if (cliente.EmailFinanceiro.includes("@") == false & cliente.EmailFinanceiro.lenght > 0) {
+
+        //         that.getModel("modelValidaBP").setProperty("/EmailFinanceiroVE", "Error");
+        //         that.getModel("modelValidaBP").setProperty("/EmailFinanceiroTE", "Verifique se o E-mail está válido.");
+
+        //     } 
+        //     else if (cliente.EmailContabilidade.includes("@") == false & cliente.EmailContabilidade.lenght > 0) {
+
+        //         that.getModel("modelValidaBP").setProperty("/EmailContabilVE", "Error");
+        //         that.getModel("modelValidaBP").setProperty("/EmailContabilTE", "Verifique se o E-mail está válido.");
+
+        //     } 
+        //     else if (cliente.EmailComprador.includes("@") == false & cliente.EmailComprador.lenght > 0) {
+
+        //         that.getModel("modelValidaBP").setProperty("/EmailCompradorVE", "Error");
+        //         that.getModel("modelValidaBP").setProperty("/EmailCompradorTE", "Verifique se o E-mail está válido.");
+
+        //     } 
+        //     else if (cliente.Cep.length == 0) {
+
+        //         that.getModel("modelValidaBP").setProperty("/CepVE", "Error");
+        //         that.getModel("modelValidaBP").setProperty("/CepTE", "Preencher o campo CEP.");
+
+        //     } else if (cliente.Cep.length > 9 || cliente.Cep.includes("-") == false) {
+
+        //         that.getModel("modelValidaBP").setProperty("/CepVE", "Error");
+        //         that.getModel("modelValidaBP").setProperty("/CepTE", "CEP deve ser de 9 caracteres e com hífem (-).");
+
+        //     } else if (cliente.Cidade.length == 0) {
+
+        //         that.getModel("modelValidaBP").setProperty("/CidadeVE", "Error");
+        //         that.getModel("modelValidaBP").setProperty("/CidadeTE", "Preencher o campo Cidade.");
+
+        //     } else if (cliente.Estado.length == 0 || cliente.Estado.length == 0) {
+
+        //         that.getModel("modelValidaBP").setProperty("/EstadoVE", "Error");
+        //         that.getModel("modelValidaBP").setProperty("/EstadoTE", "Selecione o campo Estado.");
+
+        //     } else if (cliente.Numero.length > 6) {
+
+        //         that.getModel("modelValidaBP").setProperty("/NumeroVE", "Error");
+        //         that.getModel("modelValidaBP").setProperty("/NumeroTE", "Quantidade de 6 caracteres excedida para o campo Número.");
+
+        //     } else if (cliente.Numero.length == 0) {
+
+        //         that.getModel("modelValidaBP").setProperty("/NumeroVE", "Error");
+        //         that.getModel("modelValidaBP").setProperty("/NumeroTE", "Preencher o campo Número.");
+
+        //     } else if (cliente.Rua.length == 0) {
+
+        //         that.getModel("modelValidaBP").setProperty("/RuaVE", "Error");
+        //         that.getModel("modelValidaBP").setProperty("RuaTE", "Preencher o campo Rua.");
+
+        //     } else if (cliente.Bairro.length == 0) {
+
+        //         that.getModel("modelValidaBP").setProperty("/BairroVE", "Error");
+        //         that.getModel("modelValidaBP").setProperty("BairroTE", "Preencher o campo Bairro.");
+
+        //     } else {
+
+        //         this.setModel(models.createValidaBPModel(), "modelValidaBP");
+
+        //         MessageBox.show("Deseja criar o cliente?", {
+        //             icon: MessageBox.Icon.INFORMATION,
+        //             title: "Criação",
+        //             actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
+        //             onClose: function (oAction) {
+
+        //                 if (oAction == sap.m.MessageBox.Action.YES) {
+
+        //                     that.byId("idPage").setBusy(true);
+
+        //                     new Promise(function (res, rej) {
+
+        //                         var Obj = {
+        //                             NomeRazao: that.getModel("modelBP").getProperty("/NomeRazao"),
+        //                             CpfCpnj: that.getModel("modelBP").getProperty("/Cnpj"),
+        //                             Telefone: that.getModel("modelBP").getProperty("/Telefone"),
+        //                             Email: that.getModel("modelBP").getProperty("/Email"),
+        //                             Ie: that.getModel("modelBP").getProperty("/Ie"),
+        //                             IsProdutorRural: that.getModel("modelBP").getProperty("/IsProdutorRural"),
+        //                             Cep: that.getModel("modelBP").getProperty("/Cep"),
+        //                             Rua: that.getModel("modelBP").getProperty("/Rua"),
+        //                             Complemento: that.getModel("modelBP").getProperty("/Complemento"),
+        //                             Numero: that.getModel("modelBP").getProperty("/Numero"),
+        //                             Bairro: that.getModel("modelBP").getProperty("/Bairro"),
+        //                             Cidade: that.getModel("modelBP").getProperty("/Cidade"),
+        //                             Estado: that.getModel("modelBP").getProperty("/Estado"),
+        //                             EmailXml: that.getModel("modelBP").getProperty("/EmailXml"),
+        //                             EmailComprador: that.getModel("modelBP").getProperty("/EmailComprador"),
+        //                             TelComprador: that.getModel("modelBP").getProperty("/TelComprador"),
+        //                             EmailFinanceiro: that.getModel("modelBP").getProperty("/EmailFinanceiro"),
+        //                             TelFinanceiro: that.getModel("modelBP").getProperty("/TelFinanceiro"),
+        //                             EmailContabilidade: that.getModel("modelBP").getProperty("/EmailContabilidade"),
+        //                             TelContabilidade: that.getModel("modelBP").getProperty("/TelContabilidade"),
+        //                             CodSuframa: that.getModel("modelBP").getProperty("/CodSuframa"),
+        //                             ObsNf1: that.getModel("modelBP").getProperty("/ObsNf1"),
+        //                             ObsNf2: that.getModel("modelBP").getProperty("/ObsNf2"),
+        //                             Rede: that.getModel("modelBP").getProperty("/Rede"),
+        //                             Bandeira: that.getModel("modelBP").getProperty("/Bandeira"),
+        //                             ReceberSaldo: that.getModel("modelBP").getProperty("/ReceberSaldo"),
+        //                             PedidoParcial: that.getModel("modelBP").getProperty("/PedidoParcial"),
+        //                             Repres: that.getModel("modelBP").getProperty("/Repres"),
+        //                             DeclarImposto: that.getModel("modelBP").getProperty("/DeclarImposto"),
+        //                             NomeComprador: that.getModel("modelBP").getProperty("/NomeComprador"),
+        //                             RegimeEspecial: that.getModel("modelBP").getProperty("/RegimeEspecial")                                    
+        //                         };
+
+        //                         that.onCriarBP(Obj, res, rej, that);
+
+        //                     }).then(function (returnData) {
+
+        //                         that.byId("idPage").setBusy(false);
+
+        //                         if (returnData.Type == "E" && ( returnData.EvBp != '' && returnData.EvBp != undefined ) && ( !returnData.Message.toUpperCase().includes("CPF") || !returnData.Message.toUpperCase().includes("CNPJ") )) {
+
+        //                             MessageBox.show("BP " + returnData.EvBp + " criado com sucesso! Mas com divergências! Clique em visualizar detalhes.", {
+        //                                 icon: MessageBox.Icon.WARNING,
+        //                                 title: "Criação BP!",
+        //                                 details: returnData.Message,
+        //                                 actions: ["OK"],
+        //                                 onClose: function (oAction) {
+        //                                 }
+        //                             });
+
+        //                         } else if( returnData.Message.toUpperCase().includes("CPF") || returnData.Message.toUpperCase().includes("CNPJ")) {
+
+        //                             MessageBox.show(returnData.Message, {
+        //                                 icon: MessageBox.Icon.WARNING,
+        //                                 title: "Criação BP!",
+        //                                 actions: ["OK"],
+        //                                 onClose: function (oAction) {
+        //                                 }
+        //                             });
+
+        //                         } else if( returnData.Type == "E" ){
+
+        //                             MessageBox.show('O BP não foi criado, clique em mais detalhes para visualizar o erro.', {
+        //                                 icon: MessageBox.Icon.ERROR,
+        //                                 details: returnData.Message,
+        //                                 title: "Criação BP!",
+        //                                 actions: ["OK"],
+        //                                 onClose: function (oAction) {
+        //                                 }
+        //                             });
+        //                         } else {
+
+        //                             MessageBox.show("BP " + returnData.EvBp + " criado com sucesso!", {
+        //                                 icon: MessageBox.Icon.SUCCESS,
+        //                                 title: "BP!",
+        //                                 actions: ["OK"],
+        //                                 onClose: function (oAction) {
+
+        //                                     that.onDialogCancelar();
+        //                                     that.onCriarModelBP();
+        //                                 }
+        //                             });
+        //                         }
+        //                     }).catch(function (error) {
+
+        //                         that.byId("idPage").setBusy(false);
+        //                         that.onMensagemErroODATA(error);
+        //                     });
+        //                 }
+        //             }
+        //         });
+        //     }
+        // },
 
         onCnaeSearchFieldSuggest: function (oEvent) {
 
@@ -526,7 +750,7 @@ sap.ui.define([
                 that.onMensagemErroODATA(error);
             });
         },
-        
+
         onDialogRedespachoAfterOpen: function (oEvent) {
 
             var that = this;
@@ -624,6 +848,20 @@ sap.ui.define([
                 that.getModel("modelParamTela").setProperty("/AutorizadoDialog", false);
                 that.onMensagemErroODATA(error);
             });
-        }
+        },
+
+        _validarEmail: function (email) {
+            if (!email) return true; // opcional
+
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return regex.test(email);
+        },
+
+        _validarTelefone: function (tel) {
+            if (!tel) return true; // opcional
+
+            const regex = /^\(\d{2}\)\s\d{5}-\d{4}$/;
+            return regex.test(tel);
+        },
     });
 });

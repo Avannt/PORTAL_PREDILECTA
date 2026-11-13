@@ -47,9 +47,12 @@ sap.ui.define([
 
 			var modelProduto = new JSONModel();
 			that.setModel(modelProduto, "modelProduto");
-			
+
 			var modelProdutos = new JSONModel();
 			that.setModel(modelProdutos, "modelProdutos");
+
+			var modelNCM = new JSONModel();
+			that.setModel(modelNCM, "modelNCM");
 
 		},
 
@@ -72,14 +75,14 @@ sap.ui.define([
 
 					that.vetorProdutosAux = retorno.results;
 					that.vetorProdutos = [];
-					
+
 					for (var i = 0; i < that.vetorProdutosAux.length; i++) {
-						
-							if (that.vetorProdutosAux[i].Werks == werks) {
-							
-							 that.vetorProdutosAux[i].PathImg = "https://www.predilecta.com.br/images/produtos_portal/" + that.vetorProdutosAux[i].Matnr + ".png";
-						
-						     that.vetorProdutos.push(that.vetorProdutosAux[i]);
+
+						if (that.vetorProdutosAux[i].Werks == werks) {
+
+							that.vetorProdutosAux[i].PathImg = "https://www.predilecta.com.br/images/produtos_portal/" + that.vetorProdutosAux[i].Matnr + ".png";
+
+							that.vetorProdutos.push(that.vetorProdutosAux[i]);
 
 						}
 					}
@@ -87,7 +90,7 @@ sap.ui.define([
 					that.byId("master").setBusy(false);
 					that.getModel("modelProdutos").setData(that.vetorProdutos);
 					that.onFilterCentro(werks);
-					
+
 				},
 				error: function (error) {
 
@@ -125,8 +128,28 @@ sap.ui.define([
 			var Produto = oItem.getBindingContext("modelProdutos").getObject();
 
 			this.getModel("modelProduto").setData(Produto);
-			this.getSplitContObj().toDetail(this.createId("detail"));
+
+			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
+			var werks = that.getModel("modelTela").getProperty("/Werks");
+
+			that.oModel.read("/P_Produto_NcmSet", {
+				urlParameters: {
+					"$filter": "Matnr eq '" + Produto.Matnr + "' and Werks eq '" + werks + "'"
+				},
+				success: function (retorno) {
+
+					that.getModel("modelNCM").setData(retorno.results);
+
+				},
+				error: function (error) {
+
+					that.onMensagemErroODATA(error);
+
+				}
+			});
 			
+			this.getSplitContObj().toDetail(this.createId("detail"));
+
 			// that.byId("detail").setBusy(false);
 		},
 
@@ -144,7 +167,7 @@ sap.ui.define([
 			var sValue = oEvent.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Matnr", sap.ui.model.FilterOperator.StartsWith, sValue),
-				new sap.ui.model.Filter("Maktx", sap.ui.model.FilterOperator.Contains, sValue)
+			new sap.ui.model.Filter("Maktx", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);

@@ -2,12 +2,12 @@
 	controllerName="application.controller.Login">
 	<Page id="idPageLogin" title="Login" showHeader="false"  busyIndicatorDelay="0">
 		<content>
-			<f:Form id="idForm" editable="true" ariaLabelledBy="Title1">
+			<f:Form id="idForm" editable="true" >
 				<f:layout>
 					<f:ResponsiveGridLayout labelSpanXL="4" labelSpanL="3" labelSpanM="2" labelSpanS="1" adjustLabelSpan="false" emptySpanXL="2" emptySpanL="2"
 						emptySpanM="1" emptySpanS="1" columnsXL="12" columnsL="12" columnsM="12"/>
 				</f:layout>
-				<f:FormContainer ariaLabelledBy="Title1">
+				<f:FormContainer >
 					<f:formElements>
 						<f:FormElement label="">
 							<f:fields>
@@ -21,12 +21,12 @@
 					</f:formElements>
 				</f:FormContainer>
 			</f:Form>
-			<f:Form id="idForm2" editable="true" ariaLabelledBy="Title1">
+			<f:Form id="idForm2" editable="true" >
 				<f:layout>
 					<f:ResponsiveGridLayout labelSpanXL="4" labelSpanL="4" labelSpanM="4" labelSpanS="2" adjustLabelSpan="true" emptySpanXL="3" emptySpanL="4"
 						emptySpanM="2" emptySpanS="0" columnsXL="12" columnsL="12" columnsM="12"/>
 				</f:layout>
-				<f:FormContainer ariaLabelledBy="Title1" >
+				<f:FormContainer>
 					<f:formElements>
 						<f:FormElement label="Login" >
 							<f:fields>

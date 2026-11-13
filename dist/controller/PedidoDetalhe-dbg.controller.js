@@ -6,8 +6,10 @@ sap.ui.define([
 	"application/model/formatter",
 	"sap/ui/export/library",
 	"sap/ui/export/Spreadsheet",
+	"application/model/ItemPedidoSupport",
+		"application/model/CampanhaItemSupport",
 
-], function (BaseController, JSONModel, MessageBox, formatter, library, Spreadsheet) {
+], function (BaseController, JSONModel, MessageBox, formatter, library, Spreadsheet, ItemPedidoSupport, CampanhaItemSupport) {
 	"use strict";
 
 	var EdmType = library.EdmType;
@@ -16,7 +18,41 @@ sap.ui.define([
 
 		formatter: formatter,
 
+		_validarCampanhasFinalizacao: function () {
+			var a = this.getModelGlobal("modelItensPedidoGrid").getData() || [], p = this.getModelGlobal("modelPedido").getData(), c = this.getModel("modelCampanhasUI").getData();
+			try {
+				a.forEach(function (o) { if (String(o.IdCorGrid) === "0") { CampanhaItemSupport.validarAplicado(o); } });
+				if (c.AplicacaoItem && (Number(p.ValDescCampInform || 0) > 0 || Number(p.ValDescInformCe || 0) > 0)) { throw new Error("Revise os descontos de campanha do cabeçalho antes de finalizar com aplicação por item."); }
+			} catch (e) { MessageBox.warning(e.message); return false; }
+			return true;
+		},
+
+		_prepararCampanhasGrid: function (aItens) {
+			var c = this._contratoCampanhas;
+			try { c = CampanhaItemSupport.contrato(this.oModel.getMetaModel()); this._contratoCampanhas = c; this.getModel("modelCampanhasUI").setData(c); } catch (e) { c = c || {}; }
+			return (aItens || []).map(function (o) { return CampanhaItemSupport.normalizar(o, c.ConsultaGrade, c.ConsumoGrade); });
+		},
+
+		_atualizarContratoCampanhas: function () {
+			var that = this, oMeta = this.oModel && this.oModel.getMetaModel();
+			if (!oMeta) { return Promise.resolve(); }
+			return oMeta.loaded().then(function () { that._contratoCampanhas = CampanhaItemSupport.contrato(oMeta); that.getModel("modelCampanhasUI").setData(that._contratoCampanhas); }).catch(function () { that.getModel("modelCampanhasUI").setProperty("/Mensagem", "Não foi possível consultar a disponibilidade de campanha."); });
+		},
+
+		formatarCampanhaTooltip: function (v, sVenda, sEscal, bPendente, bSimulada, sErro) { return CampanhaItemSupport.tooltip(v, sVenda, sEscal, bPendente, bSimulada, sErro); },
+
+		formatarSaldoCampanha: function (v, a, bPendente) { return CampanhaItemSupport.formatarSaldo(v, a, bPendente); },
+
+		formatarCampanhaAtiva: function (vVenda, vEscal, sVendas, sEscal, bPendente) { return CampanhaItemSupport.campanhaAtiva(vVenda, vEscal, sVendas, sEscal, bPendente); },
+
+		formatarCodigoCampanha: function (v, bPendente, sLista) { return CampanhaItemSupport.formatarCodigo(v, bPendente, sLista); },
+
+		formatarPrecoUnitarioCampanha: function (v, bPendente) { return CampanhaItemSupport.formatarUnitario(v, bPendente); },
+
+		formatarCampanhaDisponivel: function (v, bPendente) { return CampanhaItemSupport.formatar(v, bPendente); },
+
 		onInit: function () {
+			this.setModel(new JSONModel({ ConsultaItem: false, ConsultaGrade: false, SimulacaoPedido: false, AplicacaoItem: false, Mensagem: "" }), "modelCampanhasUI");
 
 			this.getRouter().getRoute("pedidoDetalhe").attachPatternMatched(this.onLoadFields, this);
 		},
@@ -25,95 +61,283 @@ sap.ui.define([
 
 			var that = this;
 			var NrPedido = that.getModelGlobal("modelAux").getProperty("/NrPedido");
+			var CodRepres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
+			var Cliente = that.getModelGlobal("modelAux").getProperty("/Kunnr");
+
 			that.byId("idPedidoDetalhe").setBusy(true);
 
-			new Promise(function (resolve, reject) {
+			that.onInicializaCampos();
+			that._inicializarModeloCampanha();
+			that.getModelGlobal("modelItensCampanha")._consultaCampanha = (that.getModelGlobal("modelItensCampanha")._consultaCampanha || 0) + 1;
+			that.getModelGlobal("modelItensCampanha").setData([]);
 
-				that.onInicializaCampos(resolve, reject);
+			new Promise(function (resCli, rejCli) {
 
-			}).then(function () {
+				debugger;
+				that.onBuscarCliente(resCli, rejCli, Cliente, CodRepres, that);
 
-				if (NrPedido != "") {
+			}).then(function (cliente) {
 
-					new Promise(function (res, rej) {
+				that.getModel("modelCliente").setData(cliente);
+				that.getModelGlobal("modelPedido").setProperty("/EmailCliente", cliente.EmailComprador);
 
-						that.onBuscarPedido(NrPedido, res, rej, that);
+				new Promise(function (resolve, reject) {
 
-					}).then(function (dataPed) {
+					that.onInicializaModelsIniciais(resolve, reject);
 
-						that.getModelGlobal("modelPedido").setData(dataPed);
+				}).then(function () {
 
-						that.onCarregarCombosMsgPedido(dataPed);
-						that.byId("idPedidoDetalhe").setBusy(false);
+					if (NrPedido != "") {
 
 						new Promise(function (res, rej) {
 
-							that.onBuscarItensPedido(res, rej, that.getModelGlobal("modelAux").getProperty("/NrPedido"));
+							that.onBuscarPedido(NrPedido, res, rej, that);
 
-						}).then(function (dataItens) {
+						}).then(function (dataPed) {
 
-							that.vetorItensPedido = dataItens;
+							that.getModelGlobal("modelPedido").setData(dataPed);
 
-							if (that.vetorItensPedido.length > 0) {
+							that.onCarregarCombosMsgPedido(dataPed);
+							that.byId("idPedidoDetalhe").setBusy(false);
 
-								that.byId("idTopLevelIconTabBar").setSelectedKey("tab3");
-							}
+							new Promise(function (res, rej) {
 
-							if (that.temCorGridUm(that.vetorItensPedido)) {
-
-								that.byId("strip0").setVisible(true);
-							} else {
-
-								that.byId("strip0").setVisible(false);
-							}
-
-							that.getModelGlobal("modelItensPedidoGrid").setData(that.vetorItensPedido);
-							that.getModelGlobal("modelItensPedidoGrid").refresh();
-							that.getModelGlobal("modelAux").setProperty("/ItensPedidoTab", that.vetorItensPedido.length);
-
-							var Pedido = that.getModelGlobal("modelPedido").getData();
-							var Repres = that.Usuario;
-
-							new Promise(function (resTabPreco, rejTabPreco) {
-
-								that.onBuscarTabelaPreco(Pedido, Repres, resTabPreco, rejTabPreco, that);
+								that.onBuscarItensPedido(res, rej, that.getModelGlobal("modelAux").getProperty("/NrPedido"));
 
 							}).then(function (dataItens) {
 
-								new Promise(function (res, rej) {
+								that.vetorItensPedido = dataItens;
 
-									that.byId("idTipoPedido").setBusy(true);
+								if (that.vetorItensPedido.length > 0) {
 
-									var Kunnr = that.getModelGlobal("modelPedido").getProperty("/Kunnr");
-									var Kvgr4 = that.getModelGlobal("modelPedido").getProperty("/Kvgr4");
-									var Kvgr5 = that.getModelGlobal("modelPedido").getProperty("/Kvgr5");
-									var Centro = that.getModelGlobal("modelPedido").getProperty("/Werks");
+									that.byId("idTopLevelIconTabBar").setSelectedKey("tab3");
+								}
 
-									that.onBuscarTipoPedido(that.Usuario, Kunnr, Centro, Kvgr4, Kvgr5, res, rej, that);
+								if (that.temItensLista(that.getModelGlobal("modelItensCampanha") ? that.getModelGlobal("modelItensCampanha").getData() : [])) {
 
-								}).then(function (TipoPedido) {
+									that.byId("strip0").setVisible(true);
+								} else {
 
-									that.byId("idTipoPedido").setBusy(false);
-									that.onCarregarTipoPedido(dataPed, TipoPedido);
-									that.onCarregarLocalEntrega(that.getModelGlobal("modelPedido").getProperty("/Bukrs"));
+									that.byId("strip0").setVisible(false);
+								}
 
-									that.getModelGlobal("modelItensPedidoGrid").setData(that.vetorItensPedido);
-									that.getModelGlobal("modelItensPedidoGrid").refresh();
-									that.getModelGlobal("modelAux").setProperty("/ItensPedidoTab", that.vetorItensPedido.length);
+								that.getModelGlobal("modelItensPedidoGrid").setData(that._prepararCampanhasGrid(that.vetorItensPedido));
+								that.onAtualizarCampanhasPedido();
+								that.getModelGlobal("modelItensPedidoGrid").refresh();
 
-									that.byId("table_pedidos").setBusy(false);
-									that.onBloquearPedido(dataPed.IdStatusPedido);
+								const qtdCorGridInseridos = that.contarItensPedidoDigitados(that.vetorItensPedido);
+								that.getModelGlobal("modelAux").setProperty("/ItensPedidoTab", qtdCorGridInseridos);
+
+								// that.getModelGlobal("modelAux").setProperty("/ItensPedidoTab", that.vetorItensPedido.length);
+
+								var Pedido = that.getModelGlobal("modelPedido").getData();
+								var Repres = that.Usuario;
+
+								new Promise(function (resTabPreco, rejTabPreco) {
+
+									that.onBuscarTabelaPreco(Pedido, Repres, resTabPreco, rejTabPreco, that);
+
+								}).then(function (dataItens) {
+
+									new Promise(function (res, rej) {
+
+										that.byId("idTipoPedido").setBusy(true);
+
+										var Kunnr = that.getModelGlobal("modelPedido").getProperty("/Kunnr");
+										var Kvgr4 = that.getModelGlobal("modelPedido").getProperty("/Kvgr4");
+										var Kvgr5 = that.getModelGlobal("modelPedido").getProperty("/Kvgr5");
+										var Centro = that.getModelGlobal("modelPedido").getProperty("/Werks");
+
+										that.onBuscarTipoPedido(that.Usuario, Kunnr, Centro, Kvgr4, Kvgr5, res, rej, that);
+
+									}).then(function (TipoPedido) {
+
+										that.byId("idTipoPedido").setBusy(false);
+										that.onCarregarTipoPedido(dataPed, TipoPedido);
+
+										// new Promise(function (res, rej) {
+
+										// 	that.oModel.read("/P_Vencimentos", {
+										// 		urlParameters: {
+										// 			"$filter": "RegCliente eq '" + that.getModelGlobal("modelPedido").getProperty("/RegCliente") + "' and RegCentro eq '" + that.getModelGlobal("modelPedido").getProperty("/RegCentro") + "'"
+										// 		},
+										// 		success: function (result) {
+
+										// 			var limiteCred = parseFloat(that.getModel("modelCliente").getProperty("/CreditLimit"));
+
+										// 			if (limiteCred == 1) {
+
+										// 				for (var i = 0; i < result.results.length; i++) {
+
+										// 					if (result.results[i].Zterm == "0000") {
+
+										// 						that.vetorVencimentoTotal.push(result.results[i]);
+										// 					}
+										// 				}
+										// 			} else {
+
+										// 				that.vetorVencimentoTotal = result.results;
+										// 			}
+
+										// 			that.getModel("modelVencimentos1").setData(that.vetorVencimentoTotal);
+										// 			res();
+										// 		},
+										// 		error: function (error) {
+
+										// 			that.onMensagemErroODATA(error);
+										// 		}
+										// 	});
+
+										// }).then(function (data) {
+
+										new Promise(function (res, rej) {
+
+											var oModelPedido = that.getModel("modelPedido");
+											var oModelPedidoGlobal = that.getModelGlobal("modelPedido");
+											var oModelCliente = that.getModel("modelCliente");
+											var oModelVencimentos = that.getModel("modelVencimentos1");
+											var oCampoVencimento = that.byId("idVencimento1");
+
+											function normalizarTexto(value) {
+												return value === undefined || value === null ? "" : String(value).trim();
+											}
+
+											function obterPropriedadePedido(sPath) {
+												var value = oModelPedido ? oModelPedido.getProperty(sPath) : undefined;
+
+												if (value !== undefined && value !== null && value !== "") {
+													return value;
+												}
+
+												return oModelPedidoGlobal ? oModelPedidoGlobal.getProperty(sPath) : undefined;
+											}
+
+											function setPedidoProperty(sPath, value) {
+												if (oModelPedido) {
+													oModelPedido.setProperty(sPath, value);
+												}
+
+												if (oModelPedidoGlobal && oModelPedidoGlobal !== oModelPedido) {
+													oModelPedidoGlobal.setProperty(sPath, value);
+												}
+											}
+
+											function localizarVencimento(aVencimentos, sZterm) {
+												for (var i = 0; i < aVencimentos.length; i++) {
+													if (normalizarTexto(aVencimentos[i].Zterm) === sZterm) {
+														return aVencimentos[i];
+													}
+												}
+
+												return null;
+											}
+
+											function adicionarVencimento(aVencimentos, oVencimento) {
+												var sZterm = normalizarTexto(oVencimento && oVencimento.Zterm);
+
+												if (sZterm === "" || localizarVencimento(aVencimentos, sZterm)) {
+													return;
+												}
+
+												aVencimentos.push(oVencimento);
+											}
+
+											function escaparFiltroOData(value) {
+												return normalizarTexto(value).replace(/'/g, "''");
+											}
+
+											var sRegCliente = escaparFiltroOData(obterPropriedadePedido("/RegCliente"));
+											var sRegCentro = escaparFiltroOData(obterPropriedadePedido("/RegCentro"));
+											var sVencimentoSelecionado = normalizarTexto(obterPropriedadePedido("/Vencimento"));
+											var vIndiceFinal = obterPropriedadePedido("/IndiceFinal");
+											var sLimiteCredito = normalizarTexto(oModelCliente.getProperty("/CreditLimit")).replace(",", ".");
+											var nLimiteCredito = parseFloat(sLimiteCredito);
+
+											that.oModel.read("/P_Vencimentos", {
+												urlParameters: {
+													"$filter": "RegCliente eq '" + sRegCliente + "' and RegCentro eq '" + sRegCentro + "'"
+												},
+
+												success: function (result) {
+													try {
+														var aResultados = result && Array.isArray(result.results) ? result.results : [];
+														var aVencimentosCarregados = [];
+
+														for (var i = 0; i < aResultados.length; i++) {
+															if (nLimiteCredito !== 1 || normalizarTexto(aResultados[i].Zterm) === "0000") {
+																adicionarVencimento(aVencimentosCarregados, aResultados[i]);
+															}
+														}
+
+														if (sVencimentoSelecionado !== "" && !localizarVencimento(aVencimentosCarregados, sVencimentoSelecionado)) {
+															adicionarVencimento(aVencimentosCarregados, {
+																Zterm: sVencimentoSelecionado,
+																IdVencimento: sVencimentoSelecionado,
+																DescCond: sVencimentoSelecionado + " - Condição sem cadastro",
+																Kbetr: vIndiceFinal !== undefined && vIndiceFinal !== null && vIndiceFinal !== "" ? vIndiceFinal : 0,
+																AdicionadoAutomaticamente: true
+															});
+														}
+
+														that.vetorVencimentoTotal = aVencimentosCarregados.slice();
+														oModelVencimentos.setData(aVencimentosCarregados);
+
+														if (sVencimentoSelecionado !== "") {
+															setPedidoProperty("/Vencimento", sVencimentoSelecionado);
+
+															if (oCampoVencimento) {
+																oCampoVencimento.setSelectedKey(sVencimentoSelecionado);
+															}
+														}
+
+														res();
+													} catch (error) {
+														rej(error);
+													}
+												},
+
+												error: function (error) {
+													that.onMensagemErroODATA(error);
+													rej(error);
+												}
+											});
+										}).then(function (data) {
+
+											that.onCarregarLocalEntrega(that.getModelGlobal("modelPedido").getProperty("/Bukrs"));
+
+											that.getModelGlobal("modelItensPedidoGrid").setData(that._prepararCampanhasGrid(that.vetorItensPedido));
+											that.onAtualizarCampanhasPedido();
+											that.getModelGlobal("modelItensPedidoGrid").refresh();
+
+											const qtdCorGridInseridos = that.contarItensPedidoDigitados(that.vetorItensPedido);
+											that.getModelGlobal("modelAux").setProperty("/ItensPedidoTab", qtdCorGridInseridos);
+
+											// that.getModelGlobal("modelAux").setProperty("/ItensPedidoTab", that.vetorItensPedido.length);
+
+											that.byId("table_pedidos").setBusy(false);
+											that.onBloquearPedido(dataPed.IdStatusPedido);
+
+										}).catch(function (error) {
+
+											that.onMensagemErroODATA(error);
+										});
+
+									}).catch(function (error) {
+
+										that.onMensagemErroODATA(error);
+									});
 
 								}).catch(function (error) {
 
 									that.onMensagemErroODATA(error);
 								});
 
+
 							}).catch(function (error) {
 
+								that.byId("table_pedidos").setBusy(false);
 								that.onMensagemErroODATA(error);
 							});
-
 
 						}).catch(function (error) {
 
@@ -121,161 +345,56 @@ sap.ui.define([
 							that.onMensagemErroODATA(error);
 						});
 
-					}).catch(function (error) {
+					} else {
 
-						that.byId("table_pedidos").setBusy(false);
-						that.onMensagemErroODATA(error);
-					});
+						that.onCriarNrPedido();
+						that.onSetValuesDefault();
+						that.onBloquearPedido(that.getModelGlobal("modelPedido").getProperty("IdStatusPedido"));
 
-				} else {
-
-					that.onCriarNrPedido();
-					that.onSetValuesDefault();
-					that.onBloquearPedido(that.getModelGlobal("modelPedido").getProperty("IdStatusPedido"));
-
-					that.byId("idPedidoDetalhe").setBusy(false);
-				}
+						that.byId("idPedidoDetalhe").setBusy(false);
+					}
+				});
 			});
 		},
 
-		onInicializaCampos: function (resolve, reject) {
-
+		onInicializaModelsIniciais: function (resolve, reject) {
 			var that = this;
 
-			that.oModel = this.getModelGlobal("modelAux").getProperty("/DBModel");
 			that.CodRepres = this.getModelGlobal("modelAux").getProperty("/CodRepres");
 			that.Usuario = this.getModelGlobal("modelAux").getProperty("/Usuario");
-
-			//remover o Bloqueio dos campos
-			this.byId("idVencimento1").setEnabled(true);
-
-			//Ocultar os campos iniciais
-			// that.onOcultarCampos(false);
-
-			that.vetorFretes = [];
-			that.vetorCentros = [];
-			that.vetorCampanha = [];
-			that.vetorProdutos = [];
-			that.vetorTabPrecos = [];
-			that.vetorMsgPedido = [];
-			that.vetorContratos = [];
-			that.vetorMsgPedido2 = [];
-			that.vetorMsgPedido3 = [];
-			that.vetorTipoPedidos = [];
-			that.vetorItensPedido = [];
-			that.vetorMotivosNota = [];
-			that.vetorVencimentos1 = [];
-			that.vetorMotivosBoleto = [];
-			that.vetorLocaisEntregas = [];
-			that.vetorLocaisEntregasAux = [];
-			that.vetorMotivosCampanha = [];
-			that.vetorVencimentoTotal = [];
-			that.vetorTipoPedidosTotal = [];
-
-			this.setModel(new sap.ui.model.json.JSONModel({
-				totalValor: 0,
-				totalSaldo: 0
-			}), "modelTotais");
-
-			that.getModelGlobal("modelAux").getProperty("/ObrigaSalvar", false);
-
-			that.getModelGlobal("modelAux").getProperty("/ItensPedidoTab", 0);
-
-			var modelCliente = that.getModelGlobal("Cliente_G");
-			that.setModel(modelCliente, "modelCliente");
-
-			var modelContratos = new JSONModel(that.vetorContratos);
-			that.setModel(modelContratos, "modelContratos");
-
-			var modelVenc1 = new JSONModel(that.vetorVencimentos1);
-			that.setModel(modelVenc1, "modelVencimentos1");
-
-			var oModelCamp = new JSONModel(that.vetorCampanha);
-			that.setModel(oModelCamp, "modelCampanha");
-
-			// var modelVenc2 = new JSONModel(that.vetorVencimentos2);
-			// that.setModel(modelVenc2, "modelVencimentos2");
-
-			// var modelVenc3 = new JSONModel(that.vetorVencimentos3);
-			// that.setModel(modelVenc3, "modelVencimentos3");
-
-			var modelTabprecos = new JSONModel(that.vetorTabPrecos);
-			that.setModel(modelTabprecos, "modelTabPrecos");
-
-			var modelFretes = new JSONModel(that.vetorFretes);
-			that.setModel(modelFretes, "modelFretes");
-
-			var modelCentros = new JSONModel(that.vetorCentros);
-			that.setModel(modelCentros, "modelCentros");
-
-			var modelTipoPedidos = new JSONModel(that.vetorTipoPedidos);
-			that.setModel(modelTipoPedidos, "modelTipoPedidos");
-
-			var modelMsgPedido = new JSONModel(that.vetorMsgPedido);
-			that.setModel(modelMsgPedido, "modelMsgPedido");
-
-			var modelMsgPedido2 = new JSONModel(that.vetorMsgPedido2);
-			that.setModel(modelMsgPedido2, "modelMsgPedido2");
-
-			var modelMsgPedido3 = new JSONModel(that.vetorMsgPedido3);
-			that.setModel(modelMsgPedido3, "modelMsgPedido3");
-
-			var modelLocaisEntregas = new JSONModel(that.vetorLocaisEntregas);
-			that.setModel(modelLocaisEntregas, "modelLocaisEntregas");
-
-			var modelProdutos = new JSONModel(that.vetorProdutos);
-			that.setModelGlobal(modelProdutos, "modelProdutos");
-
-			var modelMotivosCamp = new JSONModel(that.vetorMotivosCampanha);
-			that.setModelGlobal(modelMotivosCamp, "modelMotivosCamp");
-
-			var modelMotivosNota = new JSONModel(that.vetorMotivosNota);
-			that.setModelGlobal(modelMotivosNota, "modelMotivosNota");
-
-			var modelMotivosBoleto = new JSONModel(that.vetorMotivosBoleto);
-			that.setModelGlobal(modelMotivosBoleto, "modelMotivosBoleto");
-
-			var modelItensPedidos = new JSONModel(that.vetorItensPedido);
-			that.setModelGlobal(modelItensPedidos, "modelItensPedidoGrid");
-
-			that.byId("idTopLevelIconTabBar").setSelectedKey("tab1");
-
-
-
-			that.onCriarModelPedido();
-
 			var vetorPromises = [];
 
 			//Vencimentos
-			vetorPromises.push(new Promise(function (res, rej) {
+			// vetorPromises.push(new Promise(function (res, rej) {
 
-				that.oModel.read("/Vencimentos", {
-					success: function (result) {
+			// 	that.oModel.read("/Vencimentos", {
+			// 		success: function (result) {
 
-						var limiteCred = parseFloat(that.getModel("modelCliente").getProperty("/CreditLimit"));
+			// 			var limiteCred = parseFloat(that.getModel("modelCliente").getProperty("/CreditLimit"));
 
-						if (limiteCred == 1) {
+			// 			if (limiteCred == 1) {
 
-							for (var i = 0; i < result.results.length; i++) {
+			// 				for (var i = 0; i < result.results.length; i++) {
 
-								if (result.results[i].Zterm == "0000") {
+			// 					if (result.results[i].Zterm == "0000") {
 
-									that.vetorVencimentoTotal.push(result.results[i]);
-								}
-							}
-						} else {
+			// 						that.vetorVencimentoTotal.push(result.results[i]);
+			// 					}
+			// 				}
+			// 			} else {
 
-							that.vetorVencimentoTotal = result.results;
-						}
+			// 				that.vetorVencimentoTotal = result.results;
+			// 			}
 
-						that.getModel("modelVencimentos1").setData(that.vetorVencimentoTotal);
-						res();
-					},
-					error: function (error) {
-						that.onMensagemErroODATA(error);
-					}
-				});
-			}));
+			// 			that.getModel("modelVencimentos1").setData(that.vetorVencimentoTotal);
+			// 			res();
+			// 		},
+			// 		error: function (error) {
+
+			// 			that.onMensagemErroODATA(error);
+			// 		}
+			// 	});
+			// }));
 
 			// //Tabela de Preço
 			// vetorPromises.push(new Promise(function (res, rej) {
@@ -374,9 +493,7 @@ sap.ui.define([
 					success: function (data) {
 
 						that.vetorCentros = data.results;
-
-						modelCentros = new JSONModel(that.vetorCentros);
-						that.setModel(modelCentros, "modelCentros");
+						that.setModel(new JSONModel(that.vetorCentros), "modelCentros");
 
 						res();
 					},
@@ -478,9 +595,113 @@ sap.ui.define([
 
 			Promise.all(vetorPromises).then(function (values) {
 
-				that.getModelGlobal("modelPedido").setProperty("/EmailCliente", that.getModel("modelCliente").getProperty("/EmailComprador"));
 				resolve();
 			});
+
+		},
+
+		onInicializaCampos: function () {
+
+			var that = this;
+
+			that.oModel = this.getModelGlobal("modelAux").getProperty("/DBModel");
+			this._atualizarContratoCampanhas();
+
+			//remover o Bloqueio dos campos
+			this.byId("idVencimento1").setEnabled(true);
+
+			//Ocultar os campos iniciais
+			// that.onOcultarCampos(false);
+
+			that.vetorFretes = [];
+			that.vetorCentros = [];
+			that.vetorCampanha = [];
+			that.vetorProdutos = [];
+			that.vetorTabPrecos = [];
+			that.vetorMsgPedido = [];
+			that.vetorContratos = [];
+			that.vetorMsgPedido2 = [];
+			that.vetorMsgPedido3 = [];
+			that.vetorTipoPedidos = [];
+			that.vetorItensPedido = [];
+			that.vetorMotivosNota = [];
+			that.vetorVencimentos1 = [];
+			that.vetorMotivosBoleto = [];
+			that.vetorLocaisEntregas = [];
+			that.vetorLocaisEntregasAux = [];
+			that.vetorMotivosCampanha = [];
+			that.vetorVencimentoTotal = [];
+			that.vetorTipoPedidosTotal = [];
+
+			this.setModel(new sap.ui.model.json.JSONModel({
+				totalValor: 0,
+				totalSaldo: 0
+			}), "modelTotais");
+
+			that.getModelGlobal("modelAux").getProperty("/ObrigaSalvar", false);
+
+			that.getModelGlobal("modelAux").getProperty("/ItensPedidoTab", 0);
+
+			var modelCliente = new JSONModel({});
+			that.setModel(modelCliente, "modelCliente");
+
+			var modelContratos = new JSONModel(that.vetorContratos);
+			that.setModel(modelContratos, "modelContratos");
+
+			var modelVenc1 = new JSONModel(that.vetorVencimentos1);
+			that.setModel(modelVenc1, "modelVencimentos1");
+
+			var oModelCamp = new JSONModel(that.vetorCampanha);
+			that.setModel(oModelCamp, "modelCampanha");
+
+			// var modelVenc2 = new JSONModel(that.vetorVencimentos2);
+			// that.setModel(modelVenc2, "modelVencimentos2");
+
+			// var modelVenc3 = new JSONModel(that.vetorVencimentos3);
+			// that.setModel(modelVenc3, "modelVencimentos3");
+
+			var modelTabprecos = new JSONModel(that.vetorTabPrecos);
+			that.setModel(modelTabprecos, "modelTabPrecos");
+
+			var modelFretes = new JSONModel(that.vetorFretes);
+			that.setModel(modelFretes, "modelFretes");
+
+			var modelCentros = new JSONModel(that.vetorCentros);
+			that.setModel(modelCentros, "modelCentros");
+
+			var modelTipoPedidos = new JSONModel(that.vetorTipoPedidos);
+			that.setModel(modelTipoPedidos, "modelTipoPedidos");
+
+			var modelMsgPedido = new JSONModel(that.vetorMsgPedido);
+			that.setModel(modelMsgPedido, "modelMsgPedido");
+
+			var modelMsgPedido2 = new JSONModel(that.vetorMsgPedido2);
+			that.setModel(modelMsgPedido2, "modelMsgPedido2");
+
+			var modelMsgPedido3 = new JSONModel(that.vetorMsgPedido3);
+			that.setModel(modelMsgPedido3, "modelMsgPedido3");
+
+			var modelLocaisEntregas = new JSONModel(that.vetorLocaisEntregas);
+			that.setModel(modelLocaisEntregas, "modelLocaisEntregas");
+
+			var modelProdutos = new JSONModel(that.vetorProdutos);
+			that.setModelGlobal(modelProdutos, "modelProdutos");
+
+			var modelMotivosCamp = new JSONModel(that.vetorMotivosCampanha);
+			that.setModelGlobal(modelMotivosCamp, "modelMotivosCamp");
+
+			var modelMotivosNota = new JSONModel(that.vetorMotivosNota);
+			that.setModelGlobal(modelMotivosNota, "modelMotivosNota");
+
+			var modelMotivosBoleto = new JSONModel(that.vetorMotivosBoleto);
+			that.setModelGlobal(modelMotivosBoleto, "modelMotivosBoleto");
+
+			var modelItensPedidos = new JSONModel(that.vetorItensPedido);
+			that.setModelGlobal(modelItensPedidos, "modelItensPedidoGrid");
+
+			that.byId("idTopLevelIconTabBar").setSelectedKey("tab1");
+
+			that.onCriarModelPedido();
 		},
 
 		onValidaDataMenorAtual: function (data) {
@@ -556,7 +777,7 @@ sap.ui.define([
 
 			//Campos padrões do pedido
 			this.getModelGlobal("modelPedido").setProperty("/SituacaoPedido", "EM DIGITAÇÃO");
-			this.getModelGlobal("modelPedido").setProperty("/IdStatusPedido", 1);
+			this.getModelGlobal("modelPedido").setProperty("/IdStatusPedido", '1');
 			this.getModelGlobal("modelPedido").setProperty("/TipoDispositivo", "PORTALWEB");
 			this.getModelGlobal("modelPedido").setProperty("/Lifnr", this.getModel("modelAux").getProperty("/Lifnr"));
 			this.getModelGlobal("modelPedido").setProperty("/Usuario", this.getModel("modelAux").getProperty("/Usuario"));
@@ -604,7 +825,7 @@ sap.ui.define([
 					that.byId("idTipoTransporte").setEnabled(false);
 				}
 
-				if (status == 3 || status == 2) {
+				if (status == '3' || status == '2' || status == '4') {
 
 					that.byId("idDataLimite").setEnabled(false);
 					that.byId("idDataEntrega").setEnabled(false);
@@ -628,7 +849,7 @@ sap.ui.define([
 
 				}
 
-				if (status != 1) {
+				if (status != '1' && status != '4') {
 
 					that.byId("idDescontoPedido").setEnabled(false);
 					that.byId("idDescontoAplicar").setEnabled(false);
@@ -679,7 +900,7 @@ sap.ui.define([
 
 			var itens = this.getModelGlobal("modelItensPedidoGrid").getData();
 
-			if (itens.length > 0 && statusPedido == 1) {
+			if (itens.length > 0 && statusPedido == '1') {
 
 				campos(false, statusPedido);
 				abas(true);
@@ -689,7 +910,7 @@ sap.ui.define([
 				campos(true, statusPedido);
 				abas(false);
 
-			} else if (statusPedido == 3 || statusPedido == 2) {
+			} else if (statusPedido == '3' || statusPedido == '2' || statusPedido == '4') {
 
 				campos(false, statusPedido);
 				abas(true);
@@ -751,7 +972,7 @@ sap.ui.define([
 
 			var caracSpecRefPedido = this.containsSpecialChars(Pedido.PedidoOrigem);
 
-			if (Pedido.StatusPedido == 3) {
+			if (Pedido.StatusPedido == 3 || Pedido.StatusPedido == 2 || Pedido.StatusPedido == 4) {
 
 				sap.m.MessageBox.show("O pedido " + Pedido.NrPedido + " não pode mais ser alterado", {
 					icon: sap.m.MessageBox.Icon.WARNING,
@@ -968,7 +1189,7 @@ sap.ui.define([
 
 			} else if (Pedido.EmailCliente == "") {
 
-				sap.m.MessageBox.show("Preencher o email do cliente!", {
+				sap.m.MessageBox.show("Preencher o e-mail do cliente!", {
 					icon: sap.m.MessageBox.Icon.ERROR,
 					title: "Preecher campo(s)",
 					actions: [MessageBox.Action.OK],
@@ -1040,12 +1261,15 @@ sap.ui.define([
 							that.byId("idPedidoDetalhe").setBusy(true);
 
 							Pedido = that.onFormatNumberPedido(Pedido);
-
-							delete Pedido.__metadata;
+							Pedido = that.onDeleteProperties(Pedido);
 
 							that.oModel.create("/P_PedidoPR", Pedido, {
 								method: "POST",
 								success: function (data) {
+									var sNrPedidoSalvo = data.NrPedido || Pedido.NrPedido;
+									that.getModelGlobal("modelPedido").setProperty("/NrPedido", sNrPedidoSalvo);
+									that.getModelGlobal("modelAux").setProperty("/NrPedido", sNrPedidoSalvo);
+
 
 									sap.m.MessageToast.show("Pedido salvo com sucesso!", {
 										duration: 5000
@@ -1054,53 +1278,18 @@ sap.ui.define([
 									that.byId("idPedidoDetalhe").setBusy(false);
 									that.onLiberarAbas();
 
-									new Promise(function (res, rej) {
-
-										that.byId("table_pedidos").setBusy(true);
-
-										that.onInserirItensPedidoCampanha(res, rej, that.getModelGlobal("modelAux").getProperty("/NrPedido"));
-
-									}).then(function (dataItens) {
-
-										new Promise(function (res, rej) {
-
-											that.onBuscarItensPedido(res, rej, that.getModelGlobal("modelAux").getProperty("/NrPedido"));
-
-										}).then(function (dataItens) {
-
-											that.vetorItensPedido = dataItens;
-
-											if (that.vetorItensPedido.length > 0) {
-
-												that.byId("idTopLevelIconTabBar").setSelectedKey("tab3");
-											}
-
-											if (that.temCorGridUm(that.vetorItensPedido)) {
-
-												that.byId("strip0").setVisible(true);
-											} else {
-
-												that.byId("strip0").setVisible(false);
-											}
-
-											that.getModelGlobal("modelItensPedidoGrid").setData(that.vetorItensPedido);
-											that.getModelGlobal("modelItensPedidoGrid").refresh();
-											that.getModelGlobal("modelAux").setProperty("/ItensPedidoTab", that.vetorItensPedido.length);
-											that.byId("table_pedidos").setBusy(false);
-
-										}).catch(function (error) {
-
-											that.byId("table_pedidos").setBusy(false);
-											that.byId("idPedidoDetalhe").setBusy(false);
-											that.onMensagemErroODATA(error);
-											sap.ui.core.UIComponent.getRouterFor(that).navTo("pedido");
-										});
-									}).catch(function (error) {
-
-										that.byId("table_pedidos").setBusy(false);
-										that.byId("idPedidoDetalhe").setBusy(false);
-										that.onMensagemErroODATA(error);
-										sap.ui.core.UIComponent.getRouterFor(that).navTo("pedido");
+									that.byId("table_pedidos").setBusy(true);
+									new Promise(function (res, rej) { that.onBuscarItensPedido(res, rej, sNrPedidoSalvo); }).then(function (aItens) {
+										if (String(that.getModelGlobal("modelPedido").getProperty("/NrPedido")) !== String(sNrPedidoSalvo)) { return; }
+										that.vetorItensPedido = aItens;
+										that.getModelGlobal("modelItensPedidoGrid").setData(that._prepararCampanhasGrid(aItens));
+										that.getModelGlobal("modelAux").setProperty("/ItensPedidoTab", that.contarItensPedidoDigitados(aItens));
+										if (aItens.length) { that.byId("idTopLevelIconTabBar").setSelectedKey("tab3"); }
+										return that.onAtualizarCampanhasPedido();
+									}).catch(function (oErro) {
+										if (String(that.getModelGlobal("modelPedido").getProperty("/NrPedido")) === String(sNrPedidoSalvo)) { that.onMensagemErroODATA(oErro); }
+									}).then(function () {
+										if (String(that.getModelGlobal("modelPedido").getProperty("/NrPedido")) === String(sNrPedidoSalvo)) { that.byId("table_pedidos").setBusy(false); }
 									});
 
 								},
@@ -1210,6 +1399,7 @@ sap.ui.define([
 				IdStatusPedido: "",
 				SituacaoPedido: "",
 				Werks: "", //Centro
+				WerksDesc: "", //Centro Descrição
 				Bukrs: "", //Empresa
 				RegCentro: "", //Região Estabelecimento
 				Pltyp: "", // Tab Preço
@@ -1218,6 +1408,7 @@ sap.ui.define([
 				TipoPedido: "",
 				Completo: false,
 				Kunnr: "",
+				KunnrDesc: "",
 				RegCliente: "",
 				DataLimite: dataLimite,
 				DataEntregaSugerida: dataLimite,
@@ -1279,7 +1470,13 @@ sap.ui.define([
 				ValDescDispBolCe: 0,
 				ValDescInformBolCe: 0,
 				ValDescInformBoletoReduzid: 0,
-				PercFatModeradorVerba: 0
+				PercFatModeradorVerba: 0,
+				IsSupervisor: false,
+				IsGerente: false,
+				IsDivisor: false,
+				UsuarioEnvio: "",
+				TextoAprovacao: "",
+				PercFlexBoleto: 0
 			});
 
 			this.setModelGlobal(modelPedido, "modelPedido");
@@ -1305,20 +1502,19 @@ sap.ui.define([
 
 			that.getModelGlobal("modelAux").setProperty("/ObrigaSalvar", true);
 
-
-
 			for (var i = 0; i < that.vetorCentros.length; i++) {
 
 				if (that.vetorCentros[i].Werks == Centro) {
 
 					that.getModelGlobal("modelPedido").setProperty("/Bukrs", that.vetorCentros[i].Bukrs);
 					that.getModelGlobal("modelPedido").setProperty("/RegCentro", that.vetorCentros[i].Regio);
-
 					that.getModelGlobal("modelPedido").setProperty("/RegCliente", that.getModel("modelCliente").getProperty("/Regio"));
+
 					// var regCliente = that.getModel("modelCliente").getProperty("/Txjcd").substring(0, 3).trim();
 					// that.getModel("modelPedido").setProperty("/RegCliente", regCliente);
 
 					that.getModelGlobal("modelPedido").setProperty("/ValMinPed", that.vetorCentros[i].ValMinPed);
+					that.getModelGlobal("modelPedido").setProperty("/PercFlexBoleto", that.vetorCentros[i].PercFlex);
 					that.getModelGlobal("modelPedido").setProperty("/PercAcresc", that.vetorCentros[i].PercAcresc);
 					// that.getModelGlobal("modelPedido").setProperty("/PercCampFlex", that.vetorCentros[i].PercCampFlex);
 					that.getModelGlobal("modelPedido").setProperty("/NrMesina", that.vetorCentros[i].NrMesina);
@@ -1450,232 +1646,268 @@ sap.ui.define([
 
 					that.byId("idTipoPedido").setBusy(false);
 
-					//Vencimentos
 					new Promise(function (res, rej) {
 
-						that.byId("idVencimento1").setEnabled(true);
-						that.byId("idContrato").setBusy(true);
-						that.byId("idVencimento1").setBusy(true);
-
-						that.oModel.read("/P_ContratoR(IvBukrs='" + that.getModel("modelPedido").getProperty("/Bukrs") + "',IvKvgr4='" + that.getModel(
-							"modelPedido").getProperty("/Kvgr4") + "')", {
-							// urlParameters: {
-							// 	"$filter": "IvKvgr4 eq '" + that.getModel("modelPedido").getProperty("/Kvgr4") + "' and IvBukrs eq '" + that.getModel("modelPedido").getProperty("/Bukrs") + "'"
-							// },
+						that.oModel.read("/P_Vencimentos", {
+							urlParameters: {
+								"$filter": "RegCliente eq '" + that.getModelGlobal("modelPedido").getProperty("/RegCliente") + "' and RegCentro eq '" + that.getModelGlobal("modelPedido").getProperty("/RegCentro") + "'"
+							},
 							success: function (result) {
 
-								// that.byId("idContrato").setVisible(false);
-								// that.byId("idLabelContrato").setVisible(true);
+								var limiteCred = parseFloat(that.getModel("modelCliente").getProperty("/CreditLimit"));
 
-								that.byId("idContrato").setBusy(false);
-								that.byId("idVencimento1").setBusy(false);
+								if (limiteCred == 1) {
 
-								var vetorVenc = that.getModel("modelVencimentos1").getData();
-								var vetorVencContrato = [];
+									for (var i = 0; i < result.results.length; i++) {
 
-								if (result.ContratoInterno != "") {
+										if (result.results[i].Zterm == "0000") {
 
-									// that.byId("idLabelContrato").setVisible(true);
-
-									var encontrou = "false";
-									var indiceVec = 0;
-
-									for (var j = 0; j < vetorVenc.length; j++) {
-
-										if (vetorVenc[j].Zterm == result.Zterm) {
-											encontrou = "true";
-
-											if (String(result.AtlOrdem) == "true") {
-
-												that.getModel("modelPedido").setProperty("/IndiceFinal", result.IndiceContrato);
-											} else {
-
-												that.getModel("modelPedido").setProperty("/IndiceFinal", vetorVenc[j].Kbetr);
-											}
-
-											break;
+											that.vetorVencimentoTotal.push(result.results[i]);
 										}
 									}
-
-									if (encontrou == "false" && result.Zterm != "") {
-
-										var aux = {
-											Zterm: result.Zterm,
-											IdVencimento: result.Zterm,
-											DescCond: result.DescCond
-										};
-
-										vetorVencContrato.push(aux);
-										that.getModel("modelVencimentos1").setData(vetorVencContrato);
-
-										if (String(result.AtlOrdem) == "true") {
-
-											that.getModel("modelPedido").setProperty("/IndiceFinal", result.IndiceContrato);
-										} else {
-
-											//Não possui vencimento cadastrado e vinculado para o representante.
-											that.getModel("modelPedido").setProperty("/IndiceFinal", 0);
-										}
-
-									}
-
-									if (result.Zterm == "") {
-										//Setar pagamento avista. Se tiver contrato mas nao tiver forma de pagamento do contrato definida
-
-										that.getModel("modelPedido").setProperty("/Vencimento", vetorVenc[0].Zterm);
-										that.getModel("modelPedido").setProperty("/IndiceFinal", vetorVenc[0].Kbetr);
-										that.getModelGlobal("modelPedido").setProperty("/Contrato", result.ContratoInterno);
-
-									} else {
-
-										that.getModelGlobal("modelPedido").setProperty("/Vencimento", result.Zterm); //Forma de pagamento setada no contrato
-										that.getModelGlobal("modelPedido").setProperty("/Contrato", result.ContratoInterno);
-									}
-
-									if (that.getModel("modelPedido").getProperty("/Vencimento") == "") {
-
-										that.byId("idVencimento1").setEnabled(true);
-
-									} else {
-
-										that.byId("idVencimento1").setEnabled(false);
-									}
-
-									var contrato = that.getModelGlobal("modelPedido").getProperty("/Contrato");
-									var limiteCred = parseFloat(that.getModel("modelCliente").getProperty("/CreditLimit"));
-
-									//Regra para quando tiver contrato e a rede for OUTROS. limpar tudo e deixar o kra setar a cond de pagto
-									// if(contrato != "" && result.Kvgr4 == 1){
-									if (contrato != "" && String(result.AtlOrdem) == "false" && result.Zterm == "") {
-
-										that.byId("idVencimento1").setEnabled(true);
-										that.getModelGlobal("modelPedido").setProperty("/Vencimento", "");
-										that.getModel("modelPedido").setProperty("/IndiceFinal", 0);
-
-									} else if (result.Zterm != "" && contrato != "" && limiteCred == 1) {
-
-										//Regra para limpar forma de pagamento quando o cliente nao
-										//possui limite de credito mas existe contrato ativo com Indice e Forma de pagamento setada
-										that.getModelGlobal("modelPedido").setProperty("/Vencimento", "");
-										that.getModel("modelPedido").setProperty("/IndiceFinal", 0);
-									}
-
-									// that.byId("idVencimento1").setEnabled(false);
-
 								} else {
 
-									that.getModel("modelVencimentos1").setData(that.vetorVencimentoTotal);
+									that.vetorVencimentoTotal = result.results;
 								}
 
+								that.getModel("modelVencimentos1").setData(that.vetorVencimentoTotal);
 								res();
 							},
 							error: function (error) {
 
 								that.onMensagemErroODATA(error);
-								rej();
 							}
 						});
 
 					}).then(function (data) {
 
-						new Promise(function (resLead, rejLead) {
 
-							that.byId("idDataEntregaSugerida").setBusy(true);
+						//Vencimentos
+						// new Promise(function (res, rej) {
 
-							var IvTxjcd = that.getModelGlobal("modelPedido").getProperty("/Txjcd");
+						// 	that.byId("idVencimento1").setEnabled(true);
+						// 	that.byId("idContrato").setBusy(true);
+						// 	that.byId("idVencimento1").setBusy(true);
+
+						// 	that.oModel.read("/P_ContratoR(IvBukrs='" + that.getModel("modelPedido").getProperty("/Bukrs") + "',IvKvgr4='" + that.getModel(
+						// 		"modelPedido").getProperty("/Kvgr4") + "')", {
+						// 		// urlParameters: {
+						// 		// 	"$filter": "IvKvgr4 eq '" + that.getModel("modelPedido").getProperty("/Kvgr4") + "' and IvBukrs eq '" + that.getModel("modelPedido").getProperty("/Bukrs") + "'"
+						// 		// },
+						// 		success: function (result) {
+
+						// 			that.byId("idContrato").setBusy(false);
+						// 			that.byId("idVencimento1").setBusy(false);
+
+						// 			var vetorVenc = that.getModel("modelVencimentos1").getData();
+						// 			var vetorVencContrato = [];
+
+						// 			if (result.ContratoInterno != "") {
+
+						// 				// that.byId("idLabelContrato").setVisible(true);
+
+						// 				var encontrou = "false";
+						// 				var indiceVec = 0;
+
+						// 				for (var j = 0; j < vetorVenc.length; j++) {
+
+						// 					if (vetorVenc[j].Zterm == result.Zterm) {
+						// 						encontrou = "true";
+
+						// 						if (String(result.AtlOrdem) == "true") {
+
+						// 							that.getModel("modelPedido").setProperty("/IndiceFinal", result.IndiceContrato);
+						// 						} else {
+
+						// 							that.getModel("modelPedido").setProperty("/IndiceFinal", vetorVenc[j].Kbetr);
+						// 						}
+
+						// 						break;
+						// 					}
+						// 				}
+
+						// 				if (encontrou == "false" && result.Zterm != "") {
+
+						// 					var aux = {
+						// 						Zterm: result.Zterm,
+						// 						IdVencimento: result.Zterm,
+						// 						DescCond: result.DescCond
+						// 					};
+
+						// 					vetorVencContrato.push(aux);
+						// 					that.getModel("modelVencimentos1").setData(vetorVencContrato);
+
+						// 					if (String(result.AtlOrdem) == "true") {
+
+						// 						that.getModel("modelPedido").setProperty("/IndiceFinal", result.IndiceContrato);
+						// 					} else {
+
+						// 						//Não possui vencimento cadastrado e vinculado para o representante.
+						// 						that.getModel("modelPedido").setProperty("/IndiceFinal", 0);
+						// 					}
+
+						// 				}
+
+						// 				if (result.Zterm == "") {
+						// 					//Setar pagamento avista. Se tiver contrato mas nao tiver forma de pagamento do contrato definida
+
+						// 					that.getModel("modelPedido").setProperty("/Vencimento", vetorVenc[0].Zterm);
+						// 					that.getModel("modelPedido").setProperty("/IndiceFinal", vetorVenc[0].Kbetr);
+						// 					that.getModelGlobal("modelPedido").setProperty("/Contrato", result.ContratoInterno);
+
+						// 				} else {
+
+						// 					that.getModelGlobal("modelPedido").setProperty("/Vencimento", result.Zterm); //Forma de pagamento setada no contrato
+						// 					that.getModelGlobal("modelPedido").setProperty("/Contrato", result.ContratoInterno);
+						// 				}
+
+						// 				if (that.getModel("modelPedido").getProperty("/Vencimento") == "") {
+
+						// 					that.byId("idVencimento1").setEnabled(true);
+
+						// 				} else {
+
+						// 					that.byId("idVencimento1").setEnabled(false);
+						// 				}
+
+						// 				var contrato = that.getModelGlobal("modelPedido").getProperty("/Contrato");
+						// 				var limiteCred = parseFloat(that.getModel("modelCliente").getProperty("/CreditLimit"));
+
+						// 				//Regra para quando tiver contrato e a rede for OUTROS. limpar tudo e deixar o kra setar a cond de pagto
+						// 				// if(contrato != "" && result.Kvgr4 == 1){
+						// 				if (contrato != "" && String(result.AtlOrdem) == "false" && result.Zterm == "") {
+
+						// 					that.byId("idVencimento1").setEnabled(true);
+						// 					that.getModelGlobal("modelPedido").setProperty("/Vencimento", "");
+						// 					that.getModel("modelPedido").setProperty("/IndiceFinal", 0);
+
+						// 				} else if (result.Zterm != "" && contrato != "" && limiteCred == 1) {
+
+						// 					//Regra para limpar forma de pagamento quando o cliente nao
+						// 					//possui limite de credito mas existe contrato ativo com Indice e Forma de pagamento setada
+						// 					that.getModelGlobal("modelPedido").setProperty("/Vencimento", "");
+						// 					that.getModel("modelPedido").setProperty("/IndiceFinal", 0);
+						// 				}
+
+						// 				// that.byId("idVencimento1").setEnabled(false);
+
+						// 			} else {
+
+						// 				that.getModel("modelVencimentos1").setData(that.vetorVencimentoTotal);
+						// 			}
+
+						// 			res();
+						// 		},
+						// 		error: function (error) {
+
+						// 			that.onMensagemErroODATA(error);
+						// 			rej();
+						// 		}
+						// 	});
+
+						// }).then(function (data) {
+
+						that._carregarVencimentosContrato().then(function (data) {
+
+							new Promise(function (resLead, rejLead) {
+
+								that.byId("idDataEntregaSugerida").setBusy(true);
+
+								var IvTxjcd = that.getModelGlobal("modelPedido").getProperty("/Txjcd");
 
 
-							that.oModel.read(
-								"/P_LeadTimeR(IvBukrs='" + that.getModel("modelPedido").getProperty("/Bukrs") +
-								"',IvRegCliente='" + that.getModelGlobal("modelPedido").getProperty("/RegCliente") +
-								"',IvRegCentro='" + that.getModelGlobal("modelPedido").getProperty("/RegCentro") +
-								"',IvTxjcd='" + IvTxjcd + "')",
-								{
-									success: function (result) {
-										var leadTime = Number(result.Kbetr || 0);
-										that.getModel("modelPedido").setProperty("/LeadTime", leadTime);
+								that.oModel.read(
+									"/P_LeadTimeR(IvBukrs='" + that.getModel("modelPedido").getProperty("/Bukrs") +
+									"',IvRegCliente='" + that.getModelGlobal("modelPedido").getProperty("/RegCliente") +
+									"',IvRegCentro='" + that.getModelGlobal("modelPedido").getProperty("/RegCentro") +
+									"',IvTxjcd='" + IvTxjcd + "')",
+									{
+										success: function (result) {
+											var leadTime = Number(result.Kbetr || 0);
+											that.getModel("modelPedido").setProperty("/LeadTime", leadTime);
 
-										// usa Date "limpa" (sem horário) + soma dias
-										var hoje = new Date();
-										hoje.setHours(0, 0, 0, 0);
+											// usa Date "limpa" (sem horário) + soma dias
+											var hoje = new Date();
+											hoje.setHours(0, 0, 0, 0);
 
-										var dtSug = that.addDays(hoje, leadTime);
-										var dataSugerida = that.formatDateBR(dtSug);
+											var dtSug = that.addDays(hoje, leadTime);
+											var dataSugerida = that.formatDateBR(dtSug);
 
-										that.getModel("modelPedido").setProperty("/DataEntregaSugerida", dataSugerida);
+											that.getModel("modelPedido").setProperty("/DataEntregaSugerida", dataSugerida);
 
-										that.byId("idDataEntregaSugerida").setBusy(false);
-										resLead();
-									},
-									error: function (error) {
-										that.byId("idDataEntregaSugerida").setBusy(false);
-										rejLead();
-										that.onMensagemErroODATA(error);
-									}
-								}
-							);
-
-						}).then(function (data) {
-
-							// var CodRepres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
-							// var Usuario = that.getModelGlobal("modelAux").getProperty("/Usuario");
-
-							new Promise(function (resTab, rejTab) {
-
-								that.oModel.read("/TipoIntegraBol", {
-									urlParameters: {
-										"$filter": "IvUsuario eq '" + that.Usuario + "'"
-									},
-									success: function (retoroTipIntegraBol) {
-
-										var vetorTipoIntegraBol = retoroTipIntegraBol.results;
-
-										var Cliente = that.getModel("modelCliente").getProperty("/Kunnr");
-										var Bukrs = that.getModel("modelPedido").getProperty("/Bukrs");
-										var encontrou = "false";
-
-										for (var j = 0; j < vetorTipoIntegraBol.length; j++) {
-
-											if (Cliente == vetorTipoIntegraBol[j].Kunnr && Bukrs == vetorTipoIntegraBol[j].Bukrs) {
-												encontrou = "true";
-												break;
-											}
+											that.byId("idDataEntregaSugerida").setBusy(false);
+											resLead();
+										},
+										error: function (error) {
+											that.byId("idDataEntregaSugerida").setBusy(false);
+											rejLead();
+											that.onMensagemErroODATA(error);
 										}
-
-										if (encontrou == "true") {
-
-											that.getModelGlobal("modelPedido").setProperty("/TipoIntegrBol", "CONTAS A RECEBER");
-
-										} else {
-
-											that.getModelGlobal("modelPedido").setProperty("/TipoIntegrBol", "CONTAS A PAGAR");
-										}
-
-										resTab();
-									},
-									error: function (error) {
-
-										that.onMensagemErroODATA(error);
-										rejTab();
 									}
-								});
+								);
 
 							}).then(function (data) {
 
-								var Cliente = that.getModel("modelCliente").getProperty("/Kunnr");
-								var Bukrs = that.getModel("modelPedido").getProperty("/Bukrs");
+								new Promise(function (resTab, rejTab) {
 
-								that.oModel.read("/P_TabPrecos(IvKunnr='" + Cliente + "',IvBukrs='" + Bukrs + "',IvRepres='" + that.Repres + "')", {
-									success: function (result) {
+									that.oModel.read("/TipoIntegraBol", {
+										urlParameters: {
+											"$filter": "IvUsuario eq '" + that.Usuario + "'"
+										},
+										success: function (retoroTipIntegraBol) {
 
-										that.vetorTabPrecos = [];
+											var vetorTipoIntegraBol = retoroTipIntegraBol.results;
 
-										that.vetorTabPrecos.push(result);
-										that.getModel("modelTabPrecos").setData(that.vetorTabPrecos);
-									},
-									error: function (error) {
-										that.onMensagemErroODATA(error);
-									}
+											var Cliente = that.getModel("modelCliente").getProperty("/Kunnr");
+											var Bukrs = that.getModel("modelPedido").getProperty("/Bukrs");
+											var encontrou = "false";
+
+											for (var j = 0; j < vetorTipoIntegraBol.length; j++) {
+
+												if (Cliente == vetorTipoIntegraBol[j].Kunnr && Bukrs == vetorTipoIntegraBol[j].Bukrs) {
+													encontrou = "true";
+													break;
+												}
+											}
+
+											if (encontrou == "true") {
+
+												that.getModelGlobal("modelPedido").setProperty("/TipoIntegrBol", "CONTAS A RECEBER");
+
+											} else {
+
+												that.getModelGlobal("modelPedido").setProperty("/TipoIntegrBol", "CONTAS A PAGAR");
+											}
+
+											resTab();
+										},
+										error: function (error) {
+
+											that.onMensagemErroODATA(error);
+											rejTab();
+										}
+									});
+
+								}).then(function (data) {
+
+									var Cliente = that.getModel("modelCliente").getProperty("/Kunnr");
+									var Bukrs = that.getModel("modelPedido").getProperty("/Bukrs");
+
+									that.oModel.read("/P_TabPrecos(IvKunnr='" + Cliente + "',IvBukrs='" + Bukrs + "',IvRepres='" + that.Repres + "')", {
+										success: function (result) {
+
+											that.vetorTabPrecos = [];
+
+											that.vetorTabPrecos.push(result);
+											that.getModel("modelTabPrecos").setData(that.vetorTabPrecos);
+										},
+										error: function (error) {
+											that.onMensagemErroODATA(error);
+										}
+									});
+
+								}).catch(function () {
+									that.byId("idDataEntregaSugerida").setBusy(false);
 								});
 
 							}).catch(function () {
@@ -1683,7 +1915,9 @@ sap.ui.define([
 							});
 
 						}).catch(function () {
-							that.byId("idDataEntregaSugerida").setBusy(false);
+
+							that.byId("idContrato").setBusy(false);
+							that.byId("idVencimento1").setBusy(false);
 						});
 
 					}).catch(function () {
@@ -1691,7 +1925,6 @@ sap.ui.define([
 						that.byId("idContrato").setBusy(false);
 						that.byId("idVencimento1").setBusy(false);
 					});
-
 				}).catch(function (error) {
 
 					that.byId("idTipoPedido").setBusy(false);
@@ -1703,7 +1936,209 @@ sap.ui.define([
 				that.onMensagemErroODATA(error);
 			});
 		},
-Entrega: function (Bukrs) {
+
+		_carregarVencimentosContrato: function () {
+			var that = this;
+
+			return new Promise(function (resolve, reject) {
+				var oModelPedido = that.getModel("modelPedido");
+				var oModelPedidoGlobal = typeof that.getModelGlobal === "function" ? that.getModelGlobal("modelPedido") : null;
+				var oModelCliente = that.getModel("modelCliente");
+				var oModelVencimentos = that.getModel("modelVencimentos1");
+				var oCampoContrato = that.byId("idContrato");
+				var oCampoVencimento = that.byId("idVencimento1");
+
+				function normalizarTexto(value) {
+					return value === undefined || value === null ? "" : String(value).trim();
+				}
+
+				function converterBooleano(value) {
+					var sValue = normalizarTexto(value).toUpperCase();
+					return value === true || sValue === "TRUE" || sValue === "X" || sValue === "S" || sValue === "SIM" || sValue === "1";
+				}
+
+				function converterNumero(value) {
+					if (typeof value === "number") {
+						return isNaN(value) ? 0 : value;
+					}
+
+					var sValue = normalizarTexto(value);
+
+					if (sValue.indexOf(",") >= 0) {
+						sValue = sValue.replace(/\./g, "").replace(",", ".");
+					}
+
+					var nValue = parseFloat(sValue);
+					return isNaN(nValue) ? 0 : nValue;
+				}
+
+				function obterVetor(value) {
+					if (Array.isArray(value)) {
+						return value;
+					}
+
+					if (value && Array.isArray(value.results)) {
+						return value.results;
+					}
+
+					return [];
+				}
+
+				function localizarVencimento(aVencimentos, sZterm) {
+					for (var i = 0; i < aVencimentos.length; i++) {
+						if (normalizarTexto(aVencimentos[i].Zterm) === sZterm) {
+							return aVencimentos[i];
+						}
+					}
+
+					return null;
+				}
+
+				function setPedidoProperty(sPath, value) {
+					oModelPedido.setProperty(sPath, value);
+
+					if (oModelPedidoGlobal && oModelPedidoGlobal !== oModelPedido) {
+						oModelPedidoGlobal.setProperty(sPath, value);
+					}
+				}
+
+				function finalizarBusy() {
+					if (oCampoContrato) {
+						oCampoContrato.setBusy(false);
+					}
+
+					if (oCampoVencimento) {
+						oCampoVencimento.setBusy(false);
+					}
+				}
+
+				function escaparParametroOData(value) {
+					return normalizarTexto(value).replace(/'/g, "''");
+				}
+
+				var sBukrs = normalizarTexto(oModelPedido.getProperty("/Bukrs"));
+				var sKvgr4 = normalizarTexto(oModelPedido.getProperty("/Kvgr4"));
+				var sCaminho = "/P_ContratoR(IvBukrs='" + escaparParametroOData(sBukrs) + "',IvKvgr4='" + escaparParametroOData(sKvgr4) + "')";
+
+				if (oCampoVencimento) {
+					oCampoVencimento.setEnabled(true);
+					oCampoVencimento.setBusy(true);
+				}
+
+				if (oCampoContrato) {
+					oCampoContrato.setBusy(true);
+				}
+
+				try {
+					that.oModel.read(sCaminho, {
+						success: function (result) {
+							try {
+								var oResultado = result || {};
+								var sContratoInterno = normalizarTexto(oResultado.ContratoInterno);
+								var sZtermContrato = normalizarTexto(oResultado.Zterm);
+								var bAtualizaOrdem = converterBooleano(oResultado.AtlOrdem);
+								var nLimiteCredito = converterNumero(oModelCliente.getProperty("/CreditLimit"));
+								var aVencimentosAtuais = obterVetor(oModelVencimentos.getData());
+								var aVencimentosTotais = obterVetor(that.vetorVencimentoTotal);
+								var aVencimentosBase = aVencimentosTotais.length > 0 ? aVencimentosTotais.slice() : aVencimentosAtuais.slice();
+
+								if (sContratoInterno !== "") {
+									setPedidoProperty("/Contrato", sContratoInterno);
+
+									if (sZtermContrato !== "") {
+										var oVencimentoEncontrado = localizarVencimento(aVencimentosBase, sZtermContrato);
+										var nIndiceContrato = normalizarTexto(oResultado.IndiceContrato) !== "" ? oResultado.IndiceContrato : 0;
+
+										if (oVencimentoEncontrado) {
+											oModelVencimentos.setData(aVencimentosBase);
+										} else {
+											var aVencimentosComContrato = aVencimentosBase.slice();
+
+											aVencimentosComContrato.push({
+												Zterm: sZtermContrato,
+												IdVencimento: sZtermContrato,
+												DescCond: normalizarTexto(oResultado.DescCond),
+												Kbetr: nIndiceContrato
+											});
+
+											oModelVencimentos.setData(aVencimentosComContrato);
+										}
+
+										setPedidoProperty("/Vencimento", sZtermContrato);
+										setPedidoProperty("/IndiceFinal", nIndiceContrato);
+
+										if (oCampoVencimento) {
+											oCampoVencimento.setEnabled(false);
+										}
+									} else {
+										oModelVencimentos.setData(aVencimentosBase);
+										setPedidoProperty("/Vencimento", "");
+										setPedidoProperty("/IndiceFinal", 0);
+
+										if (oCampoVencimento) {
+											oCampoVencimento.setEnabled(true);
+										}
+									}
+								} else {
+									oModelVencimentos.setData(aVencimentosBase);
+									setPedidoProperty("/Contrato", "");
+									setPedidoProperty("/Vencimento", "");
+									setPedidoProperty("/IndiceFinal", 0);
+
+									if (oCampoVencimento) {
+										oCampoVencimento.setEnabled(true);
+									}
+								}
+
+								resolve();
+
+								if (oCampoVencimento) {
+									oCampoVencimento.setEnabled(normalizarTexto(oModelPedido.getProperty("/Vencimento")) === "");
+								}
+
+								if (!bAtualizaOrdem && sZtermContrato === "") {
+									setPedidoProperty("/Vencimento", "");
+									setPedidoProperty("/IndiceFinal", 0);
+
+									if (oCampoVencimento) {
+										oCampoVencimento.setEnabled(true);
+									}
+								} else if (sZtermContrato !== "" && nLimiteCredito === 1) {
+									setPedidoProperty("/Vencimento", "");
+									setPedidoProperty("/IndiceFinal", 0);
+
+									/*
+									 * Mantido o comportamento original:
+									 * o campo continua desabilitado quando não existe limite de crédito.
+									 */
+								}
+
+								resolve();
+							} catch (error) {
+								reject(error);
+							} finally {
+								finalizarBusy();
+							}
+						},
+
+						error: function (error) {
+							finalizarBusy();
+
+							try {
+								that.onMensagemErroODATA(error);
+							} finally {
+								reject(error);
+							}
+						}
+					});
+				} catch (error) {
+					finalizarBusy();
+					reject(error);
+				}
+			});
+		},
+
+		Entrega: function (Bukrs) {
 
 			var that = this;
 
@@ -1718,102 +2153,95 @@ Entrega: function (Bukrs) {
 			that.getModel("modelLocaisEntregas").setData(that.vetorLocaisEntregasAux);
 			that.getModel("modelLocaisEntregas").refresh();
 
-		onCarregarLocal
+			// onCarregarLocal
 		},
 
 		onCarregarTipoPedido: function (Ped, TipoPedido) {
 
+			var oPedido = Ped || {};
+			var oModelCliente = this.getModel("modelCliente");
+			var sOpTriangular = oModelCliente ? oModelCliente.getProperty("/OpTriangular") : "";
+			var sTipoPedidoAtual = String(oPedido.TipoPedido || "").trim();
+			var sOpTriangularNormalizada = String(sOpTriangular || "").trim().toUpperCase();
+			var bPermiteProposta = sTipoPedidoAtual === "Proposta" || (TipoPedido && TipoPedido.DatFimValid != null);
+			var bPermiteOperacaoTriangular = sOpTriangularNormalizada === "S" || sOpTriangularNormalizada === "SIM";
+			var bOperacaoTriangularHistorica = sTipoPedidoAtual === "Operação Triangular" || sTipoPedidoAtual === "Operacao Triangular";
+
 			this.vetorTipoPedidos = [];
 
-			if (Ped.TipoPedido == "Proposta") {
+			var adicionarTipoPedido = function (sTipoPedido) {
+				var bJaAdicionado = this.vetorTipoPedidos.some(function (oItem) {
+					return oItem.TipoPedido === sTipoPedido;
+				});
 
-				this.vetorTipoPedidos = [];
+				if (!bJaAdicionado) {
+					this.vetorTipoPedidos.push({
+						TipoPedido: sTipoPedido
+					});
+				}
+			}.bind(this);
 
-				var aux = {
-					TipoPedido: "Normal"
-				};
+			adicionarTipoPedido("Normal");
 
-				this.vetorTipoPedidos.push(aux);
+			if (bPermiteProposta) {
+				adicionarTipoPedido("Proposta");
+			}
 
-				aux = {
-					TipoPedido: "Proposta"
-				};
-
-				this.vetorTipoPedidos.push(aux);
-
-			} else if (TipoPedido !== undefined && TipoPedido.DatFimValid !== null) {
-
-				this.vetorTipoPedidos = [];
-
-				var aux = {
-					TipoPedido: "Normal"
-				};
-
-				this.vetorTipoPedidos.push(aux);
-
-				aux = {
-					TipoPedido: "Proposta"
-				};
-
-				this.vetorTipoPedidos.push(aux);
-
-			} else {
-
-				var aux = {
-					TipoPedido: "Normal"
-				};
-
-				this.vetorTipoPedidos.push(aux);
-
+			if (bPermiteOperacaoTriangular || bOperacaoTriangularHistorica) {
+				adicionarTipoPedido("Oper Triangular");
 			}
 
 			this.getModel("modelTipoPedidos").setData(this.vetorTipoPedidos);
-
-			// var encontrou = false;
-
-			// for (var i = 0; i < this.vetorTipoPedidosTotal.length; i++) {
-
-			// 	if (this.vetorTipoPedidosTotal[i].Werks == Centro && this.vetorTipoPedidosTotal[i].Kunnr == Kunnr && this.vetorTipoPedidosTotal[i]
-			// 		.Kvgr4 == Kvgr4 && this.vetorTipoPedidosTotal[i].Kvgr5 == Kvgr5) {
-
-			// 		encontrou = true;
-			// 	} else if (this.vetorTipoPedidosTotal[i].Werks == Centro && this.vetorTipoPedidosTotal[i].Kunnr == Kunnr && this.vetorTipoPedidosTotal[
-			// 			i].Kvgr4 == Kvgr4) {
-			// 		encontrou = true;
-
-			// 	} else if (this.vetorTipoPedidosTotal[i].Werks == Centro && this.vetorTipoPedidosTotal[i].Kunnr == Kunnr && this.vetorTipoPedidosTotal[
-			// 			i].Kvgr5 == Kvgr5) {
-			// 		encontrou = true;
-
-			// 	} else if (this.vetorTipoPedidosTotal[i].Werks == Centro && this.vetorTipoPedidosTotal[i].Kvgr4 == Kvgr4 && this.vetorTipoPedidosTotal[
-			// 			i].Kvgr5 == Kvgr5) {
-			// 		encontrou = true;
-
-			// 	} else if (this.vetorTipoPedidosTotal[i].Werks == Centro && this.vetorTipoPedidosTotal[i].Kvgr5 == Kvgr5) {
-			// 		encontrou = true;
-
-			// 	} else if (this.vetorTipoPedidosTotal[i].Werks == Centro && this.vetorTipoPedidosTotal[i].Kvgr4 == Kvgr4) {
-			// 		encontrou = true;
-
-			// 	} else if (this.vetorTipoPedidosTotal[i].Werks == Centro && this.vetorTipoPedidosTotal[i].Kunnr == Kunnr) {
-			// 		encontrou = true;
-
-			// 	}
-
-			// 	if (encontrou == "true") {
-
-			// 		aux = {
-			// 			TipoPedido: "Proposta"
-			// 		};
-
-			// 		this.vetorTipoPedidos.push(aux);
-
-			// 		break;
-			// 	}
-
-			// }
-
 		},
+
+		// onCarregarTipoPedido: function (Ped, TipoPedido) {
+
+		// 	this.vetorTipoPedidos = [];
+
+		// 	if (Ped.TipoPedido == "Proposta") {
+
+		// 		this.vetorTipoPedidos = [];
+
+		// 		var aux = {
+		// 			TipoPedido: "Normal"
+		// 		};
+
+		// 		this.vetorTipoPedidos.push(aux);
+
+		// 		aux = {
+		// 			TipoPedido: "Proposta"
+		// 		};
+
+		// 		this.vetorTipoPedidos.push(aux);
+
+		// 	} else if (TipoPedido !== undefined && TipoPedido.DatFimValid !== null) {
+
+		// 		this.vetorTipoPedidos = [];
+
+		// 		var aux = {
+		// 			TipoPedido: "Normal"
+		// 		};
+
+		// 		this.vetorTipoPedidos.push(aux);
+
+		// 		aux = {
+		// 			TipoPedido: "Proposta"
+		// 		};
+
+		// 		this.vetorTipoPedidos.push(aux);
+
+		// 	} else {
+
+		// 		var aux = {
+		// 			TipoPedido: "Normal"
+		// 		};
+
+		// 		this.vetorTipoPedidos.push(aux);
+
+		// 	}
+
+		// 	this.getModel("modelTipoPedidos").setData(this.vetorTipoPedidos);
+		// },
 
 		onChangeVencimento1: function (oEvent) {
 
@@ -1955,9 +2383,9 @@ Entrega: function (Bukrs) {
 			var list = oEvent.getParameter("listItem") || oEvent.getSource();
 			var NrPedido = list.getBindingContext("modelItensPedidoGrid").getProperty("NrPedido");
 			var Matnr = list.getBindingContext("modelItensPedidoGrid").getProperty("Matnr");
-			var statusPedido = list.getBindingContext("modelItensPedidoGrid").getProperty("IdStatusPedido");
+			var statusPedido = that.getModelGlobal("modelPedido").getProperty("/IdStatusPedido");
 
-			if (statusPedido == 3) {
+			if (statusPedido == 3 || statusPedido == 4 || statusPedido == 2) {
 
 				var msg = "Não é possível deletar pedidos que já foram integrados!";
 
@@ -1994,6 +2422,7 @@ Entrega: function (Bukrs) {
 								that.onDeletarItemPedido(res, rej, NrPedido, Matnr);
 
 							}).then(function (data) {
+								var oGridCampanhas = that.getModelGlobal("modelItensPedidoGrid"); oGridCampanhas.setData((oGridCampanhas.getData() || []).filter(function (o) { return CampanhaItemSupport.material(o.Matnr) !== CampanhaItemSupport.material(Matnr); }).map(CampanhaItemSupport.pendente));
 
 								new Promise(function (res, rej) {
 
@@ -2008,7 +2437,7 @@ Entrega: function (Bukrs) {
 										that.onBloquearCabecalho(true);
 									}
 
-									if (that.temCorGridUm(that.vetorItensPedido)) {
+									if (that.temItensLista(that.getModelGlobal("modelItensCampanha") ? that.getModelGlobal("modelItensCampanha").getData() : [])) {
 
 										that.byId("strip0").setVisible(true);
 									} else {
@@ -2016,9 +2445,14 @@ Entrega: function (Bukrs) {
 										that.byId("strip0").setVisible(false);
 									}
 
-									that.getModelGlobal("modelItensPedidoGrid").setData(that.vetorItensPedido);
+									that.getModelGlobal("modelItensPedidoGrid").setData(that._prepararCampanhasGrid(that.vetorItensPedido));
+									that.onAtualizarCampanhasPedido();
 									that.getModelGlobal("modelItensPedidoGrid").refresh();
-									that.getModelGlobal("modelAux").setProperty("/ItensPedidoTab", that.vetorItensPedido.length);
+
+									const qtdCorGridInseridos = that.contarItensPedidoDigitados(that.vetorItensPedido);
+									that.getModelGlobal("modelAux").setProperty("/ItensPedidoTab", qtdCorGridInseridos);
+
+									// that.getModelGlobal("modelAux").setProperty("/ItensPedidoTab", that.vetorItensPedido.length);
 									that.byId("table_pedidos").setBusy(false);
 
 									new Promise(function (res, rej) {
@@ -2031,15 +2465,15 @@ Entrega: function (Bukrs) {
 										that.getModelGlobal("modelPedido").refresh();
 
 									}).catch(function (error) {
-										that.byId("idPedidoDetalhe").setBusy(false);
+										that.byId("table_pedidos").setBusy(false);
 										that.onMensagemErroODATA(error);
 									});
 								}).catch(function (error) {
-									that.byId("idPedidoDetalhe").setBusy(false);
+									that.byId("table_pedidos").setBusy(false);
 									that.onMensagemErroODATA(error);
 								});
 							}).catch(function (error) {
-								that.byId("idPedidoDetalhe").setBusy(false);
+								that.byId("table_pedidos").setBusy(false);
 								that.onMensagemErroODATA(error);
 							});
 						}
@@ -2097,7 +2531,7 @@ Entrega: function (Bukrs) {
 			var obrigadoSalvar = that.getModelGlobal("modelAux").getProperty("/ObrigaSalvar");
 			var Pedido = that.getModel("modelPedido").getData();
 
-			if (Pedido.IdStatusPedido == 1) {
+			if (Pedido.IdStatusPedido == '1') {
 
 				if (item.selectedKey == "tab3" || item.selectedKey == "tab4" || item.selectedKey == "tab5") {
 
@@ -2211,12 +2645,16 @@ Entrega: function (Bukrs) {
 
 						} else {
 
-							that.getModelGlobal("modelAux").setProperty("/ItensPedidoTab", that.vetorItensPedido.length);
+							const qtdCorGridInseridos = that.contarItensPedidoDigitados(that.vetorItensPedido);
+							that.getModelGlobal("modelAux").setProperty("/ItensPedidoTab", qtdCorGridInseridos);
+
+							// that.getModelGlobal("modelAux").setProperty("/ItensPedidoTab", that.vetorItensPedido.length);
 
 							that.onValidacoesCampanha();
 							that.onValidacoesCampanhaEscal();
 							that.onCalculaDescBoletoReduzido();
 							that.onCalculaPrecoDebitarVerba();
+							that.onCalculaRentabilidade();
 
 							that.getModel("modelPedido").refresh();
 						}
@@ -2617,6 +3055,54 @@ Entrega: function (Bukrs) {
 
 		},
 
+		onAtualizarCampanhasPedido: function () {
+			var that = this;
+			var NrPedido = this.getModelGlobal("modelPedido").getProperty("/NrPedido");
+			return this.onCarregarItensCampanha(NrPedido).then(function () {
+				var oAviso = that.byId("strip0");
+				if (oAviso) { oAviso.setVisible(that.temItensLista(that.getModelGlobal("modelItensCampanha").getData())); }
+			}).catch(function (oErro) {
+				// var oAviso = that.byId("strip0");
+				// if (oAviso) { oAviso.setVisible(false); }
+				// MessageBox.warning("O pedido foi carregado, mas não foi possível consultar as campanhas: " + (oErro.message || "verifique o serviço SAP."));
+			});
+		},
+
+		formatarDescricaoItem: function (sDescricao) {
+			return ItemPedidoSupport.formatarDescricao(sDescricao);
+		},
+
+		formatarDescontoItem: function (vValorVenda, vLiquidoTabela) {
+			return ItemPedidoSupport.formatarDesconto(vValorVenda, vLiquidoTabela);
+		},
+
+		formatarDataItem: function (vData) { return ItemPedidoSupport.formatarData(vData); },
+
+		onDetalhesItemPress: function (oEvent) {
+			var oContext = oEvent.getSource().getBindingContext("modelItensPedidoGrid");
+			if (oContext) {
+				ItemPedidoSupport.abrirDetalhes(this, oContext.getObject());
+			}
+		},
+
+		onEditarItemGridPress: function (oEvent) {
+			var oSource = oEvent.getSource();
+			var oContext = oSource.getBindingContext("modelItensPedidoGrid");
+			var sStatus = String(this.getModelGlobal("modelPedido").getProperty("/IdStatusPedido"));
+			if (!oContext) {
+				return;
+			}
+			if (sStatus === "2" || sStatus === "3" || sStatus === "4") {
+				MessageBox.warning("Este pedido não pode mais ser alterado.");
+				return;
+			}
+			var oItem = oContext.getObject();
+			var oPedido = this.getModelGlobal("modelPedido").getData();
+			// Modelo exclusivo da navegação; não pertence ao payload do pedido.
+			this.setModelGlobal(new JSONModel({ NrPedido: oPedido.NrPedido, Kunnr: oPedido.Kunnr, Werks: oPedido.Werks, Matnr: oItem.Matnr }), "modelItemParaEdicao");
+			this.getRouter().navTo("pedidoDetalheItens");
+		},
+
 		onNovoItem: function () {
 
 			console.log("onitempress standard");
@@ -2626,7 +3112,8 @@ Entrega: function (Bukrs) {
 			var tipoPedido = this.getModelGlobal("modelPedido").getProperty("/TipoPedido");
 			that.oItemPedido = [];
 
-			if (statusPedido == 3) {
+			if (statusPedido == 3 || statusPedido == 4 || statusPedido == 2) {
+
 				MessageBox.show("Este pedido não pode mais ser alterado", {
 					icon: MessageBox.Icon.WARNING,
 					title: "Não Permitido",
@@ -2643,11 +3130,179 @@ Entrega: function (Bukrs) {
 
 			} else {
 
+				var oEdicaoPendente = this.getModelGlobal("modelItemParaEdicao");
+				if (oEdicaoPendente) { oEdicaoPendente.setData(null); }
 				sap.ui.core.UIComponent.getRouterFor(this).navTo("pedidoDetalheItens");
 			}
 		},
 
+		// onFinalizarPedido: function () {
+
+		// 	var that = this;
+
+		// 	var Pedido = this.getModel("modelPedido").getData();
+
+		// 	var totalItens = that.getModel("modelItensPedidoGrid").getData().length;
+
+		// 	if (totalItens <= 0) {
+
+		// 		sap.m.MessageBox.show("O pedido deve conter no mínimo 1 item.", {
+		// 			icon: sap.m.MessageBox.Icon.ERROR,
+		// 			title: "Falha ao Completar Pedido",
+		// 			actions: [MessageBox.Action.OK]
+		// 		});
+
+		// 	} else if (Pedido.TipoPedido !== "Proposta" && parseFloat(Pedido.ValMinPed) > parseFloat(Pedido.ValorTotal)) {
+
+		// 		sap.m.MessageBox.show("Pedido não atingiu o valor mínimo estipulado pela empresa de R$: " + parseFloat(Pedido.ValMinPed), {
+		// 			icon: sap.m.MessageBox.Icon.ERROR,
+		// 			title: "Falha ao Completar Pedido",
+		// 			actions: [MessageBox.Action.OK]
+		// 		});
+
+		// 	} else if (Pedido.IdStatusPedido == 3 || Pedido.IdStatusPedido == 4 || Pedido.IdStatusPedido == 2) {
+
+		// 		sap.m.MessageBox.show("Este pedido não pode mais ser alterado", {
+		// 			icon: sap.m.MessageBox.Icon.WARNING,
+		// 			title: "Não Permitido",
+		// 			actions: [MessageBox.Action.OK]
+		// 		});
+
+		// 	} else {
+
+		// 		that.byId("idPedidoDetalhe").setBusy(true);
+
+		// 		var data = this.onDataHora();
+
+		// 		Pedido.SituacaoPedido = "PEND";
+		// 		Pedido.IdStatusPedido = 2;
+		// 		Pedido.DataFim = data[0];
+		// 		Pedido.HoraFim = data[1];
+		// 		Pedido.Completo = true;
+		// 		Pedido.UsuarioEnvio = that.getModelGlobal("modelAux").getProperty("/CodRepres");
+
+		// 		that.onLimparValueState("None");
+
+		// 		Pedido = that.onFormatNumberPedido(Pedido);
+		// 		Pedido = that.onDeleteProperties(Pedido);
+
+		// 		that.byId("idPedidoDetalhe").setBusy(true);
+
+		// 		new Promise(function (res, rej) {
+
+		// 			that.onInserirPedido(Pedido, res, rej, that);
+
+		// 		}).then(function (dataPed) {
+
+		// 			if (dataPed.TipoErro == "E") {
+
+		// 				sap.m.MessageBox.show(dataPed.MsgErro, {
+		// 					icon: sap.m.MessageBox.Icon.ERROR,
+		// 					title: "Não Permitido",
+		// 					actions: [MessageBox.Action.OK],
+		// 					onClose: function () {
+
+		// 						Pedido.SituacaoPedido = "EM DIGITAÇÃO";
+		// 						Pedido.IdStatusPedido = '1';
+		// 						Pedido.DataFim = "";
+		// 						Pedido.HoraFim = "";
+		// 						Pedido.Completo = false;
+		// 						that.byId("idPedidoDetalhe").setBusy(false);
+		// 					}
+		// 				});
+
+		// 			} else {
+
+		// 				sap.m.MessageBox.show("Pedido salvo com sucesso !! \n\n Deseja enviar o pedido agora ?", {
+		// 					icon: sap.m.MessageBox.Icon.SUCCESS,
+		// 					title: "Sucesso!",
+		// 					actions: [sap.m.MessageBox.Action.YES, sap.m.MessageBox.Action.NO, 'Exporta Excel'],
+		// 					emphasizedAction: "Exporta Excel",
+
+		// 					onClose: function (oAction) {
+
+		// 						that.onResetarDadosPedido();
+
+		// 						if (oAction == 'Exporta Excel') {
+
+		// 							that.onExportarPedidoExcel();
+		// 							sap.ui.core.UIComponent.getRouterFor(that).navTo("pedido");
+
+		// 						} else if (oAction == sap.m.MessageBox.Action.NO) {
+
+		// 							sap.ui.core.UIComponent.getRouterFor(that).navTo("pedido");
+		// 						} else {
+
+		// 							new Promise(function (res, rej) {
+
+		// 								Pedido.SituacaoPedido = "FIN";
+		// 								Pedido.IdStatusPedido = 3;
+		// 								Pedido.DataFim = data[0];
+		// 								Pedido.HoraFim = data[1];
+		// 								Pedido.Completo = true;
+
+		// 								that.onLimparValueState("None");
+
+		// 								Pedido = that.onFormatNumberPedido(Pedido);
+		// 								Pedido = that.onDeleteProperties(Pedido);
+
+		// 								that.onInserirPedido(Pedido, res, rej, that);
+
+		// 							}).then(function (dataPedSalvo) {
+
+		// 								if (dataPedSalvo.TipoErro == "E") {
+
+		// 									sap.m.MessageBox.show(dataPedSalvo.MsgErro, {
+		// 										icon: sap.m.MessageBox.Icon.ERROR,
+		// 										title: "Não Permitido",
+		// 										actions: [MessageBox.Action.OK],
+		// 										onClose: function () {
+
+		// 											that.byId("idPedidoDetalhe").setBusy(false);
+		// 										}
+		// 									});
+
+		// 								} else {
+
+		// 									sap.m.MessageBox.show("Pedido enviado com sucesso !! \n\n Número Pedido SAP: " + dataPedSalvo.Vbeln, {
+		// 										icon: sap.m.MessageBox.Icon.SUCCESS,
+		// 										title: "Sucesso!",
+		// 										actions: ["OK"],
+		// 										onClose: function (oAction) {
+
+		// 											sap.ui.core.UIComponent.getRouterFor(that).navTo("pedido");
+
+		// 											that.byId("idPedidoDetalhe").setBusy(false);
+		// 											that.onLiberarAbas();
+		// 										},
+		// 									});
+		// 								}
+
+		// 							}).catch(function (error) {
+
+		// 								that.byId("idPedidoDetalhe").setBusy(false);
+		// 								that.onMensagemErroODATA(error);
+		// 							});
+		// 						}
+		// 					}
+		// 				});
+		// 			}
+		// 		}).catch(function (error) {
+
+		// 			Pedido.SituacaoPedido = "EM DIGITAÇÃO";
+		// 			Pedido.IdStatusPedido = '1';
+		// 			Pedido.DataFim = "";
+		// 			Pedido.HoraFim = "";
+		// 			Pedido.Completo = false;
+
+		// 			that.byId("idPedidoDetalhe").setBusy(false);
+		// 			that.onMensagemErroODATA(error);
+		// 		});
+		// 	}
+		// },
+
 		onFinalizarPedido: function () {
+			if (!this._validarCampanhasFinalizacao()) { return; }
 
 			var that = this;
 
@@ -2657,92 +3312,182 @@ Entrega: function (Bukrs) {
 
 			if (totalItens <= 0) {
 
-				sap.m.MessageBox.show("O pedido deve conter no mínimo 1 item.", {
-					icon: sap.m.MessageBox.Icon.ERROR,
-					title: "Falha ao Completar Pedido",
-					actions: [MessageBox.Action.OK]
-				});
+				sap.m.MessageBox.show(
+					"O pedido deve conter no mínimo 1 item.",
+					{
+						icon: sap.m.MessageBox.Icon.ERROR,
+						title: "Falha ao Completar Pedido",
+						actions: [sap.m.MessageBox.Action.OK]
+					}
+				);
 
-			} else if (Pedido.TipoPedido !== "Proposta" && parseFloat(Pedido.ValMinPed) > parseFloat(Pedido.ValorTotal)) {
+				return;
+			}
 
-				sap.m.MessageBox.show("Pedido não atingiu o valor mínimo estipulado pela empresa de R$: " + parseFloat(Pedido.ValMinPed), {
-					icon: sap.m.MessageBox.Icon.ERROR,
-					title: "Falha ao Completar Pedido",
-					actions: [MessageBox.Action.OK]
-				});
+			if (
+				Pedido.TipoPedido !== "Proposta" &&
+				parseFloat(Pedido.ValMinPed) > parseFloat(Pedido.ValorTotal)
+			) {
 
-			} else if (Pedido.IdStatusPedido == 3) {
+				sap.m.MessageBox.show(
+					"Pedido não atingiu o valor mínimo estipulado pela empresa de R$: " +
+					parseFloat(Pedido.ValMinPed),
+					{
+						icon: sap.m.MessageBox.Icon.ERROR,
+						title: "Falha ao Completar Pedido",
+						actions: [sap.m.MessageBox.Action.OK]
+					}
+				);
 
-				sap.m.MessageBox.show("Este pedido não pode mais ser alterado", {
-					icon: sap.m.MessageBox.Icon.WARNING,
-					title: "Não Permitido",
-					actions: [MessageBox.Action.OK]
-				});
+				return;
+			}
 
-			} else {
+			if (
+				// String(Pedido.IdStatusPedido) === "2" ||
+				String(Pedido.IdStatusPedido) === "3"
+				// || String(Pedido.IdStatusPedido) === "4"
+			) {
 
-				that.byId("idPedidoDetalhe").setBusy(true);
+				sap.m.MessageBox.show(
+					"Este pedido não pode mais ser alterado.",
+					{
+						icon: sap.m.MessageBox.Icon.WARNING,
+						title: "Não Permitido",
+						actions: [sap.m.MessageBox.Action.OK]
+					}
+				);
 
-				var data = this.onDataHora();
+				return;
+			}
 
-				Pedido.SituacaoPedido = "PEND";
-				Pedido.IdStatusPedido = 2;
-				Pedido.DataFim = data[0];
-				Pedido.HoraFim = data[1];
-				Pedido.Completo = true;
+			/*
+			 * Abre o popup antes de iniciar o salvamento.
+			 */
+			this._obterTextoAprovacao(Pedido)
+				.then(function (sTextoAprovacao) {
 
-				that.onLimparValueState("None");
+					if (String(Pedido.IdStatusPedido) === "2") {
 
-				Pedido = that.onFormatNumberPedido(Pedido);
+						Pedido.TextoAprovacao = sTextoAprovacao;
 
-				delete Pedido.__metadata;
+						that.getModel("modelPedido").setProperty("/TextoAprovacao", sTextoAprovacao);
+					}
 
-				that.byId("idPedidoDetalhe").setBusy(true);
+					that.byId("idPedidoDetalhe").setBusy(true);
 
-				new Promise(function (res, rej) {
+					var data = that.onDataHora();
 
-					that.onInserirPedido(Pedido, res, rej, that);
+					Pedido.SituacaoPedido = "PEND";
+					Pedido.IdStatusPedido = 2;
+					Pedido.DataFim = data[0];
+					Pedido.HoraFim = data[1];
+					Pedido.Completo = true;
+					Pedido.UsuarioEnvio = that
+						.getModelGlobal("modelAux")
+						.getProperty("/CodRepres");
 
-				}).then(function (dataPed) {
+					that.onLimparValueState("None");
 
-					if (dataPed.TipoErro == "E") {
+					Pedido = that.onFormatNumberPedido(Pedido);
+					Pedido = that.onDeleteProperties(Pedido);
 
-						sap.m.MessageBox.show(dataPed.MsgErro, {
-							icon: sap.m.MessageBox.Icon.ERROR,
-							title: "Não Permitido",
-							actions: [MessageBox.Action.OK],
-							onClose: function () {
+					return new Promise(function (res, rej) {
+						that.onInserirPedido(Pedido, res, rej, that);
+					}).then(function (dataPed) {
 
-								Pedido.SituacaoPedido = "EM DIGITAÇÃO";
-								Pedido.IdStatusPedido = 1;
-								Pedido.DataFim = "";
-								Pedido.HoraFim = "";
-								Pedido.Completo = false;
-								that.byId("idPedidoDetalhe").setBusy(false);
-							}
-						});
+						if (dataPed.TipoErro === "E") {
 
-					} else {
+							sap.m.MessageBox.show(dataPed.MsgErro, {
+								icon: sap.m.MessageBox.Icon.ERROR,
+								title: "Não Permitido",
+								actions: [sap.m.MessageBox.Action.OK],
 
-						sap.m.MessageBox.show("Pedido salvo com sucesso !! \n\n Deseja enviar o pedido agora ?", {
-							icon: sap.m.MessageBox.Icon.SUCCESS,
-							title: "Sucesso!",
-							actions: [sap.m.MessageBox.Action.YES, sap.m.MessageBox.Action.NO, 'Exporta Excel'],
-							emphasizedAction: "Exporta Excel",
+								onClose: function () {
 
-							onClose: function (oAction) {
+									Pedido.SituacaoPedido = "EM DIGITAÇÃO";
+									Pedido.IdStatusPedido = "1";
+									Pedido.DataFim = "";
+									Pedido.HoraFim = "";
+									Pedido.Completo = false;
 
-								that.onResetarDadosPedido();
+									that.getModel("modelPedido").setProperty(
+										"/SituacaoPedido",
+										"EM DIGITAÇÃO"
+									);
 
-								if (oAction == 'Exporta Excel') {
+									that.getModel("modelPedido").setProperty(
+										"/IdStatusPedido",
+										"1"
+									);
 
-									that.onExportarPedidoExcel();
-									sap.ui.core.UIComponent.getRouterFor(that).navTo("pedido");
+									that.getModel("modelPedido").setProperty(
+										"/DataFim",
+										""
+									);
 
-								} else if (oAction == sap.m.MessageBox.Action.NO) {
+									that.getModel("modelPedido").setProperty(
+										"/HoraFim",
+										""
+									);
 
-									sap.ui.core.UIComponent.getRouterFor(that).navTo("pedido");
-								} else {
+									that.getModel("modelPedido").setProperty(
+										"/Completo",
+										false
+									);
+
+									that.byId("idPedidoDetalhe").setBusy(false);
+								}
+							});
+
+							return;
+						}
+
+						sap.m.MessageBox.show(
+							"Pedido salvo com sucesso!\n\nDeseja enviar o pedido agora?",
+							{
+								icon: sap.m.MessageBox.Icon.SUCCESS,
+								title: "Sucesso!",
+								actions: [
+									sap.m.MessageBox.Action.YES,
+									sap.m.MessageBox.Action.NO,
+									"Exporta Excel"
+								],
+								emphasizedAction: "Exporta Excel",
+
+								onClose: function (oAction) {
+
+									that.onResetarDadosPedido();
+
+									if (oAction === "Exporta Excel") {
+
+										that.onExportarPedidoExcel();
+
+										sap.ui.core.UIComponent
+											.getRouterFor(that)
+											.navTo("pedido");
+
+										that.byId("idPedidoDetalhe").setBusy(false);
+
+										return;
+									}
+
+									if (oAction === sap.m.MessageBox.Action.NO) {
+
+										sap.ui.core.UIComponent
+											.getRouterFor(that)
+											.navTo("pedido");
+
+										that.byId("idPedidoDetalhe").setBusy(false);
+
+										return;
+									}
+
+									if (oAction !== sap.m.MessageBox.Action.YES) {
+										that.byId("idPedidoDetalhe").setBusy(false);
+										return;
+									}
+
+									that.byId("idPedidoDetalhe").setBusy(true);
 
 									new Promise(function (res, rej) {
 
@@ -2752,65 +3497,223 @@ Entrega: function (Bukrs) {
 										Pedido.HoraFim = data[1];
 										Pedido.Completo = true;
 
+										/*
+										 * O texto informado continua no objeto
+										 * durante o envio definitivo.
+										 */
+										Pedido.TextoAprovacao = sTextoAprovacao;
+
 										that.onLimparValueState("None");
 
 										Pedido = that.onFormatNumberPedido(Pedido);
+										Pedido = that.onDeleteProperties(Pedido);
 
-										delete Pedido.__metadata;
-
-										that.onInserirPedido(Pedido, res, rej, that);
+										that.onInserirPedido(
+											Pedido,
+											res,
+											rej,
+											that
+										);
 
 									}).then(function (dataPedSalvo) {
 
-										if (dataPedSalvo.TipoErro == "E") {
+										if (dataPedSalvo.TipoErro === "E") {
 
-											sap.m.MessageBox.show(dataPedSalvo.MsgErro, {
-												icon: sap.m.MessageBox.Icon.ERROR,
-												title: "Não Permitido",
-												actions: [MessageBox.Action.OK],
+											sap.m.MessageBox.show(
+												dataPedSalvo.MsgErro,
+												{
+													icon:
+														sap.m.MessageBox.Icon.ERROR,
+													title: "Não Permitido",
+													actions: [
+														sap.m.MessageBox.Action.OK
+													],
+													onClose: function () {
+														that
+															.byId("idPedidoDetalhe")
+															.setBusy(false);
+													}
+												}
+											);
+
+											return;
+										}
+
+										sap.m.MessageBox.show(
+											"Pedido enviado com sucesso!" +
+											"\n\nNúmero Pedido SAP: " +
+											dataPedSalvo.Vbeln,
+											{
+												icon:
+													sap.m.MessageBox.Icon.SUCCESS,
+												title: "Sucesso!",
+												actions: [
+													sap.m.MessageBox.Action.OK
+												],
+
 												onClose: function () {
 
-													that.byId("idPedidoDetalhe").setBusy(false);
-												}
-											});
+													sap.ui.core.UIComponent
+														.getRouterFor(that)
+														.navTo("pedido");
 
-										} else {
+													that
+														.byId("idPedidoDetalhe")
+														.setBusy(false);
 
-											sap.m.MessageBox.show("Pedido enviado com sucesso !! \n\n Número Pedido SAP: " + dataPedSalvo.Vbeln, {
-												icon: sap.m.MessageBox.Icon.SUCCESS,
-												title: "Sucesso!",
-												actions: ["OK"],
-												onClose: function (oAction) {
-
-													sap.ui.core.UIComponent.getRouterFor(that).navTo("pedido");
-
-													that.byId("idPedidoDetalhe").setBusy(false);
 													that.onLiberarAbas();
-												},
-											});
-										}
+												}
+											}
+										);
 
 									}).catch(function (error) {
 
 										that.byId("idPedidoDetalhe").setBusy(false);
 										that.onMensagemErroODATA(error);
+
+										new Promise(function (res, rej) {
+
+											that.onBuscarItensPedido(res, rej, that.getModelGlobal("modelAux").getProperty("/NrPedido"));
+
+										}).then(function (dataItens) {
+
+											that.vetorItensPedido = dataItens;
+											that.getModelGlobal("modelItensPedidoGrid").setData(that._prepararCampanhasGrid(that.vetorItensPedido));
+											that.onAtualizarCampanhasPedido();
+											that.getModelGlobal("modelItensPedidoGrid").refresh();
+										}).catch(function (error) {
+
+											that.byId("idPedidoDetalhe").setBusy(false);
+											that.onMensagemErroODATA(error);
+										});
 									});
 								}
 							}
-						});
-					}
-				}).catch(function (error) {
+						);
+					});
+				})
+				.catch(function (oError) {
 
-					Pedido.SituacaoPedido = "EM DIGITAÇÃO";
-					Pedido.IdStatusPedido = 1;
-					Pedido.DataFim = "";
-					Pedido.HoraFim = "";
-					Pedido.Completo = false;
+					/*
+					 * Cancelamento do popup não é erro de integração.
+					 */
+					if (oError && oError.cancelado) {
+						return;
+					}
 
 					that.byId("idPedidoDetalhe").setBusy(false);
-					that.onMensagemErroODATA(error);
+					that.onMensagemErroODATA(oError);
 				});
+		},
+		_abrirPopupTextoAprovacao: function () {
+
+			return new Promise(function (resolve, reject) {
+
+				var oTextArea = new sap.m.TextArea({
+					width: "100%",
+					rows: 6,
+					maxLength: 500,
+					growing: true,
+					growingMaxLines: 10,
+					placeholder: "Informe o motivo ou observação para aprovação...",
+					showExceededText: true,
+					liveChange: function (oEvent) {
+
+						var sTexto = oEvent.getParameter("value") || "";
+
+						oBtnConfirmar.setEnabled(sTexto.trim().length > 0);
+
+						oTextArea.setValueState(
+							sTexto.trim().length > 0 ? "None" : "Error"
+						);
+
+						oTextArea.setValueStateText(
+							sTexto.trim().length > 0
+								? ""
+								: "Informe o texto de aprovação."
+						);
+					}
+				});
+
+				var oBtnConfirmar = new sap.m.Button({
+					text: "Confirmar",
+					type: "Emphasized",
+					enabled: false,
+					press: function () {
+
+						var sTextoAprovacao = oTextArea.getValue().trim();
+
+						if (!sTextoAprovacao) {
+							oTextArea.setValueState("Error");
+							oTextArea.setValueStateText(
+								"Informe o texto de aprovação."
+							);
+							oTextArea.focus();
+							return;
+						}
+
+						oDialog.close();
+						resolve(sTextoAprovacao);
+					}
+				});
+
+				var oBtnCancelar = new sap.m.Button({
+					text: "Cancelar",
+					press: function () {
+						oDialog.close();
+						reject({
+							cancelado: true
+						});
+					}
+				});
+
+				var oDialog = new sap.m.Dialog({
+					title: "Texto para aprovação",
+					type: "Message",
+					contentWidth: "35rem",
+					draggable: true,
+					resizable: true,
+					content: [
+						new sap.m.VBox({
+							width: "100%",
+							class: "sapUiSmallMargin",
+							items: [
+								new sap.m.Label({
+									text: "Observação para aprovação",
+									required: true,
+									labelFor: oTextArea
+								}),
+								oTextArea
+							]
+						})
+					],
+					beginButton: oBtnConfirmar,
+					endButton: oBtnCancelar,
+					afterOpen: function () {
+						oTextArea.focus();
+					},
+					afterClose: function () {
+						oDialog.destroy();
+					}
+				});
+
+				oDialog.open();
+			});
+		},
+		_obterTextoAprovacao: function (oPedido) {
+
+			var sStatus = String(oPedido.IdStatusPedido || "");
+
+			if (sStatus === "2" || sStatus === "1") {
+				return this._abrirPopupTextoAprovacao();
 			}
+
+			/*
+			 * Para os demais status, não abre o popup.
+			 * Retorna o texto já existente ou vazio para manter
+			 * a sequência de Promises funcionando normalmente.
+			 */
+			return Promise.resolve(oPedido.TextoAprovacao || "");
 		},
 
 		onAbrirTela: function () {
@@ -3052,7 +3955,7 @@ Entrega: function (Bukrs) {
 			}
 
 			oTable = this._oTable;
-			oRowBinding = oTable.getBinding("items");
+			oRowBinding = oTable.getBinding("rows") || oTable.getBinding("items");
 
 			aCols = this.createColumnConfig();
 
@@ -3399,10 +4302,14 @@ Entrega: function (Bukrs) {
 
 			for (var i = 0; i < itens.length; i++) {
 
-				PercPond = (parseFloat(itens[i].AliquotaIcm) + parseFloat(itens[i].PercCofins) + parseFloat(itens[i].PercPis)) / 100;
-				ValPond = PercPond * parseFloat(itens[i].ValPrecoInform * itens[i].QtdPedida);
-				PercTotalPond = Math.abs(PercTotalPond) + Math.abs(ValPond);
-				TotalPed = parseFloat(TotalPed) + parseFloat(itens[i].ValPrecoInform * itens[i].QtdPedida);
+				//Itens inseridos no grid, exclui os itens de campanha ainda nāo inseridos no pedido.
+				if (this.ehItemPedidoDigitado(itens[i])) {
+
+					PercPond = (parseFloat(itens[i].AliquotaIcm) + parseFloat(itens[i].PercCofins) + parseFloat(itens[i].PercPis)) / 100;
+					ValPond = PercPond * parseFloat(itens[i].ValPrecoInform * itens[i].QtdPedida);
+					PercTotalPond = Math.abs(PercTotalPond) + Math.abs(ValPond);
+					TotalPed = parseFloat(TotalPed) + parseFloat(itens[i].ValPrecoInform * itens[i].QtdPedida);
+				}
 			}
 
 			// PercTotalPond = PercTotalPond * 100;
@@ -3413,7 +4320,7 @@ Entrega: function (Bukrs) {
 
 			this.getModel("modelPedido").setProperty("/ValDescInformBoletoReduzid", ValTotalPond);
 		},
-		
+
 		onCarregarLocalEntrega: function (Bukrs) {
 
 			var that = this;
@@ -3433,7 +4340,6 @@ Entrega: function (Bukrs) {
 
 		onCalculaPrecoDebitarVerba: function () {
 
-			;
 			var pedido = this.getModel("modelPedido").getData();
 			var itens = this.getModel("modelItensPedidoGrid").getData();
 
@@ -3459,35 +4365,47 @@ Entrega: function (Bukrs) {
 
 			for (var i = 0; i < itens.length; i++) {
 
-				valTotalDispInvestir += parseFloat((itens[i].ValPrecoTabelaMin - itens[i].ValPrecoMin) * itens[i].QtdPedida);
-				valTotalDispInvestir = Math.round(valTotalDispInvestir * 100) / 100;
+				//Itens inseridos no grid, exclui os itens de campanha ainda nāo inseridos no pedido.
+				if (this.ehItemPedidoDigitado(itens[i])) {
 
-				// if (parseFloat(itens[i].ValPrecoInform - itens[i].ValPrecoTabelaMin) > 0) {
+					valTotalDispInvestir += parseFloat((itens[i].ValPrecoTabelaMin - itens[i].ValPrecoMin) * itens[i].QtdPedida);
+					valTotalDispInvestir = Math.round(valTotalDispInvestir * 100) / 100;
 
-				// 	valTotUtilizadoPreco = 0;
-				// } else {
+					// if (parseFloat(itens[i].ValPrecoInform - itens[i].ValPrecoTabelaMin) > 0) {
 
-				// 	valTotUtilizadoPreco += Math.abs(parseFloat((itens[i].ValPrecoInform - itens[i].ValPrecoTabelaMin) * itens[i].QtdPedida));
-				// 	valTotUtilizadoPreco = Math.round(valTotUtilizadoPreco * 100) / 100;
-				// }
+					// 	valTotUtilizadoPreco = 0;
+					// } else {
 
-				if (parseFloat(itens[i].ValPrecoInform - itens[i].ValPrecoTabelaMin) > 0) {
+					// 	valTotUtilizadoPreco += Math.abs(parseFloat((itens[i].ValPrecoInform - itens[i].ValPrecoTabelaMin) * itens[i].QtdPedida));
+					// 	valTotUtilizadoPreco = Math.round(valTotUtilizadoPreco * 100) / 100;
+					// }
 
-					valTotUtilizadoPreco += parseFloat((itens[i].ValPrecoInform - itens[i].ValPrecoTabelaMin) * itens[i].QtdPedida);
-					valTotUtilizadoPreco = Math.round(valTotUtilizadoPreco * 100) / 100;
-				} else {
+					if (parseFloat(itens[i].ValPrecoInform - itens[i].ValPrecoTabelaMin) > 0) {
 
-					valTotUtilizadoPreco += parseFloat((itens[i].ValPrecoInform - itens[i].ValPrecoTabelaMin) * itens[i].QtdPedida);
-					valTotUtilizadoPreco = Math.round(valTotUtilizadoPreco * 100) / 100;
+						//Se gerar verba, nāo cosiderar no total utilizado em preço.
+						if (parseFloat((itens[i].ValPrecoInform - itens[i].ValPrecoTabelaMin) * itens[i].QtdPedida) > 0) {
+
+							valTotUtilizadoPreco += 0;
+						} else {
+
+							valTotUtilizadoPreco += parseFloat((itens[i].ValPrecoInform - itens[i].ValPrecoTabelaMin) * itens[i].QtdPedida);
+						}
+
+						valTotUtilizadoPreco = Math.round(valTotUtilizadoPreco * 100) / 100;
+					} else {
+
+						valTotUtilizadoPreco += parseFloat((itens[i].ValPrecoInform - itens[i].ValPrecoTabelaMin) * itens[i].QtdPedida);
+						valTotUtilizadoPreco = Math.round(valTotUtilizadoPreco * 100) / 100;
+					}
+
+					valTotLiqTab += parseFloat(itens[i].ValPrecoTabelaMin * itens[i].QtdPedida);
+					valTotLiqTab = Math.round(valTotLiqTab * 100) / 100;
+
+					// valFatModerador += parseFloat(itens[i].ValFatModeradorVerba); //Já tem quantidade
+
+					valFatModeradorTotal += (parseFloat(pedido.PercFatModeradorVerba) / 100) * itens[i].ValPrecoTabelaMin * itens[i].QtdPedida;
+					valFatModeradorTotal = Math.round(valFatModeradorTotal * 100) / 100;
 				}
-
-				valTotLiqTab += parseFloat(itens[i].ValPrecoTabelaMin * itens[i].QtdPedida);
-				valTotLiqTab = Math.round(valTotLiqTab * 100) / 100;
-
-				// valFatModerador += parseFloat(itens[i].ValFatModeradorVerba); //Já tem quantidade
-
-				valFatModeradorTotal += (parseFloat(pedido.PercFatModeradorVerba) / 100) * itens[i].ValPrecoTabelaMin * itens[i].QtdPedida;
-				valFatModeradorTotal = Math.round(valFatModeradorTotal * 100) / 100;
 			}
 
 			if (valTotUtilizadoPreco + descTotalRealizado >= Math.abs(valFatModeradorTotal)) {
@@ -3523,6 +4441,7 @@ Entrega: function (Bukrs) {
 
 			this.getModel("modelPedido").setProperty("/ValFatModeradorVerba", valDebitarVerba);
 		},
+
 		_calcularTotaisPedidos: function () {
 
 			var aData = this.getModel("modelPedidos").getData() || [];
@@ -3543,7 +4462,18 @@ Entrega: function (Bukrs) {
 			});
 
 		},
+		onFormatNumeroPedido: function (sNrPedido, sVbeln) {
+			var aValores = [];
 
+			if (sNrPedido !== undefined && sNrPedido !== null && String(sNrPedido).trim() !== "") {
+				aValores.push(String(sNrPedido).trim());
+			}
 
+			if (sVbeln !== undefined && sVbeln !== null && String(sVbeln).trim() !== "") {
+				aValores.push(String(sVbeln).trim());
+			}
+
+			return aValores.length > 0 ? aValores.join(" - ") : "Não informado";
+		}
 	});
 });

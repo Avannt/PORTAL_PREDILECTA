@@ -36,7 +36,8 @@
             "phone": true
         },
         "supportedThemes": [
-            "sap_fiori_3", "sap_horizon"
+            "sap_fiori_3",
+            "sap_horizon"
         ],
         "icons": {
             "icon": "sap-icon://cart-2"
@@ -56,7 +57,9 @@
             "libs": {
                 "sap.m": {},
                 "sap.ui.core": {},
-                "sap.ui.layout": {}
+                "sap.ui.layout": {},
+                "sap.ui.table": {},
+                "sap.ui.export": {}
             }
         },
         "models": {

@@ -24,8 +24,16 @@
     margin-botton: 0px !important;
 }
 
-li[data-mydataItensEntrega='0'], li[data-mydataItensEntrega='0'] + tr.sapMSelectListItem {	
-  background: red !important;
+.sapMLIB[data-mydataClientes='3'] {
+    background-color: rgba(255, 0, 0, 0.575) !important;
+}
+
+.sapMLIB[data-mydataClientes='2'] {
+    background-color: rgba(255, 166, 0, 0.553) !important;
+}
+
+.sapMLIB[data-mydataClientes='1'] {
+    background-color: rgba(0, 128, 0, 0.342) !important;
 }
 
 tr[data-mydata="1"], tr[data-mydata="1"] + tr.sapMListTblSubRow {	

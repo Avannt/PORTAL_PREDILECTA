@@ -36,406 +36,409 @@
         </footer>
 
         <content>
-                        <f:SimpleForm
-                            minWidth="1024"
-                            maxContainerCols="3"
-                            editable="true"
-                            layout="ResponsiveGridLayout"
-                            labelSpanL="1"
-                            class="editableForm"
-                            columnsXL="3"
-                            emptySpanXL="1"
-                            labelSpanXL="1"
-                            columnsM="3"
-                            columnsL="3"
-                            emptySpanS="1"
-                            emptySpanM="2"
-                            emptySpanL="2"
-                            labelSpanS="1"
-                        >
-                            <f:content>
-                                <f:Form editable="true">
-                                    <!-- <f:title>
+            <f:SimpleForm
+                minWidth="1024"
+                maxContainerCols="3"
+                editable="true"
+                layout="ResponsiveGridLayout"
+                labelSpanL="1"
+                class="editableForm"
+                columnsXL="3"
+                emptySpanXL="1"
+                labelSpanXL="1"
+                columnsM="3"
+                columnsL="3"
+                emptySpanS="1"
+                emptySpanM="2"
+                emptySpanL="2"
+                labelSpanS="1"
+            >
+                <f:content>
+                    <f:Form editable="true">
+                        <!-- <f:title>
                                         <core:Title text="Informação Baisica" />
                                     </f:title> -->
-                                    <f:layout>
-                                        <f:ColumnLayout />
-                                    </f:layout>
-                                    <f:formContainers>
-                                        <f:FormContainer
-                                            title="Endereço"
-                                            expandable="true"
-                                        >
-                                            <f:formElements>
-                                                <f:FormElement label="Nome">
-                                                    <f:fields>
-                                                        <Input
-                                                            value="{modelBP>/NomeRazao}"
-                                                            maxLength="80"
-                                                            required="true"
-                                                            valueState="{modelValidaBP>/NomeRazaoVE}"
-                                                            valueStateText="{modelValidaBP>/NomeRazaoTE}"
-                                                            showTableSuggestionValueHelp="false"
-                                                            enableSuggestionsHighlighting="false"
-                                                        />
-                                                    </f:fields>
-                                                </f:FormElement>
-                                                <f:FormElement label="CNPJ">
-                                                    <f:fields>
-                                                        <Input
-                                                            value="{modelBP>/Cnpj}"
-                                                            type="Number"
-                                                            required="true"
-                                                            valueState="{modelValidaBP>/CnpjVE}"
-                                                            valueStateText="{modelValidaBP>/CnpjTE}"
-                                                        >
-                                                            <layoutData>
-                                                                <f:ColumnElementData
-                                                                    cellsLarge="4"
-                                                                />
-                                                            </layoutData>
-                                                        </Input>
-                                                        <Input
-                                                            value="{modelBP>/Ie}"
-                                                            placeholder="Inscrição Estadual"
-                                                            maxLength="20"
-                                                            required="true"
-                                                            valueState="{modelValidaBP>/IeVE}"
-                                                            valueStateText="{modelValidaBP>/IeTE}"
-                                                        >
-                                                            <layoutData>
-                                                                <f:ColumnElementData
-                                                                    cellsLarge="4"
-                                                                />
-                                                            </layoutData>
-                                                        </Input>
-                                                    </f:fields>
-                                                </f:FormElement>
-                                                <f:FormElement label="CEP">
-                                                    <f:fields>
-                                                        <Input
-                                                            value="{modelBP>/Cep}"
-                                                            maxLength="9"
-                                                            required="true"
-                                                            valueState="{modelValidaBP>/CepVE}"
-                                                            valueStateText="{modelValidaBP>/CepTE}"
-                                                        >
-                                                            <layoutData>
-                                                                <f:ColumnElementData
-                                                                    cellsLarge="2"
-                                                                />
-                                                            </layoutData>
-                                                        </Input>
-                                                        <Input
-                                                            value="{modelBP>/Cidade}"
-                                                            placeholder="Cidade"
-                                                            maxLength="40"
-                                                            required="true"
-                                                            valueState="{modelValidaBP>/CidadeVE}"
-                                                            valueStateText="{modelValidaBP>/CidadeTE}"
-                                                        >
-                                                            <layoutData>
-                                                                <f:ColumnElementData
-                                                                    cellsLarge="4"
-                                                                />
-                                                            </layoutData>
-                                                        </Input>
-                                                        <ComboBox
-                                                            placeholder="UF"
-                                                            required="true"
-                                                            showSecondaryValues="true"
-                                                            items="{/P_Estados}"
-                                                            selectedKey="{modelBP>/Estado}"
-                                                            valueState="{modelValidaBP>/EstadoVE}"
-                                                            valueStateText="{modelValidaBP>/EstadoTE}"
-                                                        >
-                                                            <core:ListItem
-                                                                key="{Estado}"
-                                                                text="{Bezei}"
-                                                                additionalText="{Estado}"
-                                                            />
-                                                            <layoutData>
-                                                                <f:ColumnElementData
-                                                                    cellsLarge="2"
-                                                                />
-                                                            </layoutData>
-                                                        </ComboBox>
-                                                    </f:fields>
-                                                </f:FormElement>
-                                                <f:FormElement label="Endereço">
-                                                    <f:fields>
-                                                        <Input
-                                                            value="{modelBP>/Rua}"
-                                                            maxLength="60"
-                                                            required="true"
-                                                            valueState="{modelValidaBP>/RuaVE}"
-                                                            valueStateText="{modelValidaBP>/RuaTE}"
-                                                        />
+                        <f:layout>
+                            <f:ColumnLayout />
+                        </f:layout>
+                        <f:formContainers>
+                            <f:FormContainer
+                                title="Endereço"
+                                expandable="true"
+                            >
+                                <f:formElements>
+                                    <f:FormElement label="Nome">
+                                        <f:fields>
+                                            <Input
+                                                value="{modelBP>/NomeRazao}"
+                                                maxLength="80"
+                                                required="true"
+                                                valueState="{modelValidaBP>/NomeRazaoVE}"
+                                                valueStateText="{modelValidaBP>/NomeRazaoTE}"
+                                                showTableSuggestionValueHelp="false"
+                                                enableSuggestionsHighlighting="false"
+                                            />
+                                        </f:fields>
+                                    </f:FormElement>
+                                    <f:FormElement label="CNPJ">
+                                        <f:fields>
+                                            <Input
+                                                value="{modelBP>/CpfCpnj}"
+                                                type="Number"
+                                                required="true"
+                                                valueState="{modelValidaBP>/CpfCpnjVE}"
+                                                valueStateText="{modelValidaBP>/CpfCpnjTE}"
+                                            >
+                                                <layoutData>
+                                                    <f:ColumnElementData
+                                                        cellsLarge="4"
+                                                    />
+                                                </layoutData>
+                                            </Input>
+                                            <Input
+                                                value="{modelBP>/Ie}"
+                                                placeholder="Inscrição Estadual"
+                                                maxLength="20"
+                                                required="true"
+                                                valueState="{modelValidaBP>/IeVE}"
+                                                valueStateText="{modelValidaBP>/IeTE}"
+                                            >
+                                                <layoutData>
+                                                    <f:ColumnElementData
+                                                        cellsLarge="4"
+                                                    />
+                                                </layoutData>
+                                            </Input>
+                                        </f:fields>
+                                    </f:FormElement>
+                                    <f:FormElement label="CEP">
+                                        <f:fields>
+                                            <Input
+                                                value="{modelBP>/Cep}"
+                                                maxLength="9"
+                                                required="true"
+                                                valueState="{modelValidaBP>/CepVE}"
+                                                valueStateText="{modelValidaBP>/CepTE}"
+                                            >
+                                                <layoutData>
+                                                    <f:ColumnElementData
+                                                        cellsLarge="2"
+                                                    />
+                                                </layoutData>
+                                            </Input>
+                                            <Input
+                                                value="{modelBP>/Cidade}"
+                                                placeholder="Cidade"
+                                                maxLength="40"
+                                                required="true"
+                                                valueState="{modelValidaBP>/CidadeVE}"
+                                                valueStateText="{modelValidaBP>/CidadeTE}"
+                                            >
+                                                <layoutData>
+                                                    <f:ColumnElementData
+                                                        cellsLarge="4"
+                                                    />
+                                                </layoutData>
+                                            </Input>
+                                            <ComboBox
+                                                placeholder="UF"
+                                                required="true"
+                                                showSecondaryValues="true"
+                                                items="{/P_Estados}"
+                                                selectedKey="{modelBP>/Estado}"
+                                                valueState="{modelValidaBP>/EstadoVE}"
+                                                valueStateText="{modelValidaBP>/EstadoTE}"
+                                            >
+                                                <core:ListItem
+                                                    key="{Estado}"
+                                                    text="{Bezei}"
+                                                    additionalText="{Estado}"
+                                                />
+                                                <layoutData>
+                                                    <f:ColumnElementData
+                                                        cellsLarge="2"
+                                                    />
+                                                </layoutData>
+                                            </ComboBox>
+                                        </f:fields>
+                                    </f:FormElement>
+                                    <f:FormElement label="Endereço">
+                                        <f:fields>
+                                            <Input
+                                                value="{modelBP>/Rua}"
+                                                maxLength="60"
+                                                required="true"
+                                                valueState="{modelValidaBP>/RuaVE}"
+                                                valueStateText="{modelValidaBP>/RuaTE}"
+                                            />
 
-                                                        <!-- maxLength="6" -->
-                                                        <Input
-                                                            value="{modelBP>/Numero}"
-                                                            placeholder="Nº"
-                                                            type="Text"
-                                                            required="true"
-                                                            valueState="{modelValidaBP>/NumeroVE}"
-                                                            valueStateText="{modelValidaBP>/NumeroTE}"
-                                                        >
-                                                            <layoutData>
-                                                                <f:ColumnElementData
-                                                                    cellsLarge="1"
-                                                                />
-                                                            </layoutData>
-                                                        </Input>
-                                                    </f:fields>
-                                                </f:FormElement>
-                                                <f:FormElement label="Bairro">
-                                                    <f:fields>
-                                                        <Input
-                                                            value="{modelBP>/Bairro}"
-                                                            maxLength="40"
-                                                            required="true"
-                                                            valueState="{modelValidaBP>/BairroVE}"
-                                                            valueStateText="{modelValidaBP>/BairroTE}"
-                                                        >
-                                                            <layoutData>
-                                                                <f:ColumnElementData
-                                                                    cellsLarge="4"
-                                                                />
-                                                            </layoutData>
-                                                        </Input>
-                                                        <Input
-                                                            value="{modelBP>/Complemento}"
-                                                            placeholder="Complemento"
-                                                            maxLength="10"
-                                                            required="true"
-                                                            valueState="{modelValidaBP>/ComplementoVE}"
-                                                            valueStateText="{modelValidaBP>/ComplementoTE}"
-                                                        >
-                                                            <layoutData>
-                                                                <f:ColumnElementData
-                                                                    cellsLarge="4"
-                                                                />
-                                                            </layoutData>
-                                                        </Input>
-                                                    </f:fields>
-                                                </f:FormElement>
-                                            </f:formElements>
-                                        </f:FormContainer>
+                                            <!-- maxLength="6" -->
+                                            <Input
+                                                value="{modelBP>/Numero}"
+                                                placeholder="Nº"
+                                                type="Text"
+                                                required="true"
+                                                valueState="{modelValidaBP>/NumeroVE}"
+                                                valueStateText="{modelValidaBP>/NumeroTE}"
+                                            >
+                                                <layoutData>
+                                                    <f:ColumnElementData
+                                                        cellsLarge="1"
+                                                    />
+                                                </layoutData>
+                                            </Input>
+                                        </f:fields>
+                                    </f:FormElement>
+                                    <f:FormElement label="Bairro">
+                                        <f:fields>
+                                            <Input
+                                                value="{modelBP>/Bairro}"
+                                                maxLength="40"
+                                                required="true"
+                                                valueState="{modelValidaBP>/BairroVE}"
+                                                valueStateText="{modelValidaBP>/BairroTE}"
+                                            >
+                                                <layoutData>
+                                                    <f:ColumnElementData
+                                                        cellsLarge="4"
+                                                    />
+                                                </layoutData>
+                                            </Input>
+                                            <Input
+                                                value="{modelBP>/Complemento}"
+                                                placeholder="Complemento"
+                                                maxLength="10"
+                                                required="true"
+                                                valueState="{modelValidaBP>/ComplementoVE}"
+                                                valueStateText="{modelValidaBP>/ComplementoTE}"
+                                            >
+                                                <layoutData>
+                                                    <f:ColumnElementData
+                                                        cellsLarge="4"
+                                                    />
+                                                </layoutData>
+                                            </Input>
+                                        </f:fields>
+                                    </f:FormElement>
+                                </f:formElements>
+                            </f:FormContainer>
 
-                                        <f:FormContainer
-                                            title="Comunicação"
-                                            expandable="true"
+                            <f:FormContainer
+                                title="Comunicação"
+                                expandable="true"
+                            >
+                                <f:formElements>
+                                    <f:FormElement label="E-mail XML">
+                                        <f:fields>
+                                            <Input
+                                                value="{modelBP>/EmailXml}"
+                                                placeholder="E-mail para envio da NF-e"
+                                                maxLength="240"
+                                                required="true"
+                                                valueState="{modelValidaBP>/EmailXmlVE}"
+                                                valueStateText="{modelValidaBP>/EmailXmlTE}"
+                                            >
+                                                <layoutData>
+                                                    <f:ColumnElementData />
+                                                </layoutData>
+                                            </Input>
+                                        </f:fields>
+                                    </f:FormElement>
+                                    <f:FormElement
+                                        label="Telefone/ E-mail (Comprador)"
+                                    >
+                                        <f:fields>
+                                            <Input
+                                                value="{modelBP>/TelComprador}"
+                                                type="Number"
+                                                placeholder="Telefone Comprador"
+                                                required="true"
+                                                valueState="{modelValidaBP>/Telefone1VE}"
+                                                valueStateText="{modelValidaBP>/Telefone1TE}"
+                                            >
+                                                <layoutData>
+                                                    <f:ColumnElementData
+                                                        cellsLarge="3"
+                                                    />
+                                                </layoutData>
+                                            </Input>
+                                            <Input
+                                                value="{modelBP>/EmailComprador}"
+                                                placeholder="E-mail Comprador"
+                                                maxLength="240"
+                                                required="true"
+                                                valueState="{modelValidaBP>/EmailCompradorVE}"
+                                                valueStateText="{modelValidaBP>/EmailCompradorTE}"
+                                            >
+                                                <layoutData>
+                                                    <f:ColumnElementData
+                                                        cellsLarge="5"
+                                                    />
+                                                </layoutData>
+                                            </Input>
+                                        </f:fields>
+                                    </f:FormElement>
+                                    <f:FormElement label="Nome Comprador">
+                                        <f:fields>
+                                            <Input
+                                                value="{modelBP>/NomeComprador}"
+                                                placeholder="Nome Comprador"
+                                                maxLength="100"
+                                                required="true"
+                                                valueState="{modelValidaBP>/NomeCompradorVE}"
+                                                valueStateText="{modelValidaBP>/NomeCompradorTE}"
+                                            >
+                                                <layoutData>
+                                                    <f:ColumnElementData
+                                                        cellsLarge="8"
+                                                    />
+                                                </layoutData>
+                                            </Input>
+                                        </f:fields>
+                                    </f:FormElement>
+                                    <f:FormElement
+                                        label="Telefone/ E-mail (Financeiro)"
+                                    >
+                                        <f:fields>
+                                            <Input
+                                                value="{modelBP>/TelFinanceiro}"
+                                                type="Number"
+                                                placeholder="Telefone Financeiro"
+                                            >
+                                                <layoutData>
+                                                    <f:ColumnElementData
+                                                        cellsLarge="3"
+                                                    />
+                                                </layoutData>
+                                            </Input>
+                                            <Input
+                                                value="{modelBP>/EmailFinanceiro}"
+                                                placeholder="E-mail Financeiro"
+                                                maxLength="240"
+                                                valueState="{modelValidaBP>/EmailFinanceiroVE}"
+                                                valueStateText="{modelValidaBP>/EmailFinanceiroTE}"
+                                            >
+                                                <layoutData>
+                                                    <f:ColumnElementData
+                                                        cellsLarge="5"
+                                                    />
+                                                </layoutData>
+                                            </Input>
+                                        </f:fields>
+                                    </f:FormElement>
+                                    <f:FormElement
+                                        label="Telefone/ E-mail (Contabilidade)"
+                                    >
+                                        <f:fields>
+                                            <Input
+                                                value="{modelBP>/TelContabilidade}"
+                                                type="Number"
+                                                placeholder="Telefone Contabilidade"
+                                            >
+                                                <layoutData>
+                                                    <f:ColumnElementData
+                                                        cellsLarge="3"
+                                                    />
+                                                </layoutData>
+                                            </Input>
+                                            <Input
+                                                value="{modelBP>/EmailContabilidade}"
+                                                placeholder="E-mail Contabilidade"
+                                                maxLength="240"
+                                                valueState="{modelValidaBP>/EmailContabilVE}"
+                                                valueStateText="{modelValidaBP>/EmailContabilTE}"
+                                            >
+                                                <layoutData>
+                                                    <f:ColumnElementData
+                                                        cellsLarge="5"
+                                                    />
+                                                </layoutData>
+                                            </Input>
+                                        </f:fields>
+                                    </f:FormElement>
+                                </f:formElements>
+                            </f:FormContainer>
+                            <f:FormContainer
+                                title="Dados Gerais/ Dados Fiscais"
+                                expandable="true"
+                            >
+                                <f:FormElement
+                                    label="Optante pelo Simples Nacional?"
+                                >
+                                    <f:fields>
+                                        <ComboBox
+                                            placeholder=""
+                                            showSecondaryValues="true"
+                                            items="{modelSN>/}"
+                                            selectedKey="{modelBP>/DeclarImposto}"
                                         >
-                                            <f:formElements>
-                                                <f:FormElement
-                                                    label="E-mail XML"
-                                                >
-                                                    <f:fields>
-                                                        <Input
-                                                            value="{modelBP>/EmailXml}"
-                                                            placeholder="E-mail para envio da NF-e"
-                                                            maxLength="240"
-                                                            required="true"
-                                                            valueState="{modelValidaBP>/EmailXmlVE}"
-                                                            valueStateText="{modelValidaBP>/EmailXmlTE}"
-                                                        >
-                                                            <layoutData>
-                                                                <f:ColumnElementData
-                                                                />
-                                                            </layoutData>
-                                                        </Input>
-                                                    </f:fields>
-                                                </f:FormElement>
-                                                <f:FormElement
-                                                    label="Telefone/ E-mail (Comprador)"
-                                                >
-                                                    <f:fields>
-                                                        <Input
-                                                            value="{modelBP>/TelComprador}"
-                                                            type="Number"
-                                                            placeholder="Telefone Comprador"
-                                                            required="true"
-                                                            valueState="{modelValidaBP>/Telefone1VE}"
-                                                            valueStateText="{modelValidaBP>/Telefone1TE}"
-                                                        >
-                                                            <layoutData>
-                                                                <f:ColumnElementData
-                                                                    cellsLarge="3"
-                                                                />
-                                                            </layoutData>
-                                                        </Input>
-                                                        <Input
-                                                            value="{modelBP>/EmailComprador}"
-                                                            placeholder="E-mail Comprador"                                                            
-                                                            maxLength="240"
-                                                            required="true"
-                                                            valueState="{modelValidaBP>/EmailCompradorVE}"
-                                                            valueStateText="{modelValidaBP>/EmailCompradorTE}"
-                                                        >
-                                                            <layoutData>
-                                                                <f:ColumnElementData
-                                                                    cellsLarge="5"
-                                                                />
-                                                            </layoutData>
-                                                        </Input>
-                                                    </f:fields>
-                                                </f:FormElement>
-                                                <f:FormElement
-                                                    label="Nome Comprador"
-                                                >
-                                                    <f:fields>
-                                                        <Input
-                                                            value="{modelBP>/NomeComprador}"
-                                                            placeholder="Nome Comprador"
-                                                            maxLength="100"
-                                                            required="true"
-                                                        >
-                                                            <layoutData>
-                                                                <f:ColumnElementData
-                                                                    cellsLarge="8"
-                                                                />
-                                                            </layoutData>
-                                                        </Input>
-                                                    </f:fields>
-                                                </f:FormElement>
-                                                <f:FormElement
-                                                    label="Telefone/ E-mail (Financeiro)"
-                                                >
-                                                    <f:fields>
-                                                        <Input
-                                                            value="{modelBP>/TelFinanceiro}"
-                                                            type="Number"
-                                                            placeholder="Telefone Financeiro"
-                                                        >
-                                                            <layoutData>
-                                                                <f:ColumnElementData
-                                                                    cellsLarge="3"
-                                                                />
-                                                            </layoutData>
-                                                        </Input>
-                                                        <Input
-                                                            value="{modelBP>/EmailFinanceiro}"
-                                                            placeholder="E-mail Financeiro"                                                            
-                                                            maxLength="240"
-                                                            valueState="{modelValidaBP>/EmailFinanceiroVE}"
-                                                            valueStateText="{modelValidaBP>/EmailFinanceiroTE}"
-                                                        >
-                                                            <layoutData>
-                                                                <f:ColumnElementData
-                                                                    cellsLarge="5"
-                                                                />
-                                                            </layoutData>
-                                                        </Input>
-                                                    </f:fields>
-                                                </f:FormElement>
-                                                <f:FormElement
-                                                    label="Telefone/ E-mail (Contabilidade)"
-                                                >
-                                                    <f:fields>
-                                                        <Input
-                                                            value="{modelBP>/TelContabilidade}"
-                                                            type="Number"
-                                                            placeholder="Telefone Contabilidade"
-                                                        >
-                                                            <layoutData>
-                                                                <f:ColumnElementData
-                                                                    cellsLarge="3"
-                                                                />
-                                                            </layoutData>
-                                                        </Input>
-                                                        <Input
-                                                            value="{modelBP>/EmailContabilidade}"
-                                                            placeholder="E-mail Contabilidade"
-                                                            maxLength="240"
-                                                            valueState="{modelValidaBP>/EmailContabilVE}"
-                                                            valueStateText="{modelValidaBP>/EmailContabilTE}"
-                                                        >
-                                                            <layoutData>
-                                                                <f:ColumnElementData
-                                                                    cellsLarge="5"
-                                                                />
-                                                            </layoutData>
-                                                        </Input>
-                                                    </f:fields>
-                                                </f:FormElement>
-                                            </f:formElements>
-                                        </f:FormContainer>
-                                        <f:FormContainer
-                                            title="Dados Gerais/ Dados Fiscais"
-                                            expandable="true"
+                                            <core:ListItem
+                                                key="{modelSN>key}"
+                                                text="{modelSN>text}"
+                                            />
+                                            <layoutData>
+                                                <f:ColumnElementData
+                                                    cellsLarge="4"
+                                                />
+                                            </layoutData>
+                                        </ComboBox>
+                                    </f:fields>
+                                </f:FormElement>
+                                <f:FormElement label="Cód Suframa">
+                                    <f:fields>
+                                        <Input
+                                            value="{modelBP>/CodSuframa}"
+                                            placeholder=""
+                                            maxLength="9"
                                         >
-                                        <f:FormElement
-                                                    label="Optante pelo Simples Nacional?"
-                                                >
-                                                    <f:fields>
-                                                    <ComboBox
-                                                            placeholder=""
-                                                            showSecondaryValues="true"
-                                                            items="{modelSN>/}"
-                                                            selectedKey="{modelBP>/DeclarImposto}"
-                                                        >
-                                                            <core:ListItem
-                                                                key="{modelSN>key}"
-                                                                text="{modelSN>text}"
-                                                            />
-                                                            <layoutData>
-                                                                <f:ColumnElementData
-                                                                    cellsLarge="4"
-                                                                />
-                                                            </layoutData>
-                                                        </ComboBox>
-                                                    </f:fields>
-                                                </f:FormElement>
-                                        <f:FormElement label="Cód Suframa">
-                                            <f:fields>
-                                                <Input
-                                                    value="{modelBP>/CodSuframa}"
-                                                    placeholder=""
-                                                    maxLength="9"
-                                                >
-                                                    <layoutData>
-                                                        <f:ColumnElementData
-                                                            cellsLarge="4"
-                                                        />
-                                                    </layoutData>
-                                                </Input>
-                                            </f:fields>
-                                        </f:FormElement>
-                                            <f:formElements>
-                                                <f:FormElement
-                                                    label="Recebimento da mercadoria"
-                                                >
-                                                    <f:fields>
-                                                        <TextArea
-                                                            placeholder="Dias de recebimento"
-                                                            maxLength="100"
-                                                            growing="true"
-                                                            value="{modelBP>/ObsNf1}"
-                                                        >
-                                                            <layoutData>
-                                                                <f:ColumnElementData
-                                                                    cellsLarge="4"
-                                                                />
-                                                            </layoutData>
-                                                        </TextArea>
-                                                        <TextArea
-                                                            placeholder="Horário de recebimento"
-                                                            maxLength="100"
-                                                            growing="true"
-                                                            value="{modelBP>/ObsNf2}"
-                                                        >
-                                                            <layoutData>
-                                                                <f:ColumnElementData                                                                
-                                                                    cellsLarge="4"
-                                                                />
-                                                            </layoutData>
-                                                        </TextArea>
-                                                    </f:fields>
-                                                </f:FormElement>
-                                            </f:formElements>
-                                            <!-- <f:formElements> -->
-                                                <!-- <f:FormElement
+                                            <layoutData>
+                                                <f:ColumnElementData
+                                                    cellsLarge="4"
+                                                />
+                                            </layoutData>
+                                        </Input>
+                                    </f:fields>
+                                </f:FormElement>
+                                <f:formElements>
+                                    <f:FormElement
+                                        label="Recebimento da mercadoria"
+                                    >
+                                        <f:fields>
+                                            <TextArea
+                                                required="true"
+                                                placeholder="Dias de recebimento"
+                                                maxLength="100"
+                                                growing="true"
+                                                value="{modelBP>/ObsNf1}"
+                                                valueState="{modelValidaBP>/ObsNf1VE}"
+                                                valueStateText="{modelValidaBP>/ObsNf1TE}"
+                                            >
+                                                <layoutData>
+                                                    <f:ColumnElementData
+                                                        cellsLarge="4"
+                                                    />
+                                                </layoutData>
+                                            </TextArea>
+                                            <TextArea
+                                                required="true"
+                                                placeholder="Horário de recebimento"
+                                                maxLength="100"
+                                                growing="true"
+                                                value="{modelBP>/ObsNf2}"
+                                                valueState="{modelValidaBP>/ObsNf2VE}"
+                                                valueStateText="{modelValidaBP>/ObsNf2TE}"
+                                            >
+                                                <layoutData>
+                                                    <f:ColumnElementData
+                                                        cellsLarge="4"
+                                                    />
+                                                </layoutData>
+                                            </TextArea>
+                                        </f:fields>
+                                    </f:FormElement>
+                                </f:formElements>
+                                <!-- <f:formElements> -->
+                                <!-- <f:FormElement
                                                     label="Região Nielsen"
                                                 >
                                                     <f:fields>
@@ -458,7 +461,7 @@
                                                         </ComboBox>
                                                     </f:fields>
                                                 </f:FormElement> -->
-                                                <!-- <f:FormElement
+                                <!-- <f:FormElement
                                                     label="Classe de Clientes"
                                                 >
                                                     <f:fields>
@@ -483,7 +486,7 @@
                                                     </f:fields>
                                                 </f:FormElement> -->
 
-                                                <!-- <f:FormElement
+                                <!-- <f:FormElement
                                                     label="Subst. Tributária"
                                                 >
                                                     <f:fields>
@@ -507,7 +510,7 @@
                                                         </ComboBox>
                                                     </f:fields>
                                                 </f:FormElement> -->
-                                                <!-- <f:FormElement label="CFOP">
+                                <!-- <f:FormElement label="CFOP">
                                                     <f:fields>
                                                         <ComboBox
                                                             required="true"
@@ -528,7 +531,7 @@
                                                         </ComboBox>
                                                     </f:fields>
                                                 </f:FormElement> -->
-                                                <!-- <f:FormElement label="CNAE">
+                                <!-- <f:FormElement label="CNAE">
                                                     <f:fields>
                                                         <SearchField
                                                             id="idCnaeSearchField"
@@ -582,9 +585,9 @@
                                                         </SearchField>
                                                     </f:fields>
                                                 </f:FormElement> -->
-                                            <!-- </f:formElements> -->
-                                        </f:FormContainer>
-                                        <!-- <f:FormContainer
+                                <!-- </f:formElements> -->
+                            </f:FormContainer>
+                            <!-- <f:FormContainer
                                             title=" "
                                             expandable="true"
                                         >
@@ -613,7 +616,7 @@
                                                     </f:fields>
                                                 </f:FormElement>
                                                  -->
-                                                <!-- <f:FormElement
+                            <!-- <f:FormElement
                                                     label="Regime declaração"
                                                 >
                                                     <f:fields>
@@ -631,7 +634,7 @@
                                                     </f:fields>
                                                 </f:FormElement> -->
 
-                                                <!-- <f:FormElement
+                            <!-- <f:FormElement
                                                     label="Contr. ICMS"
                                                 >
                                                     <f:fields>
@@ -648,7 +651,7 @@
                                                         </Input>
                                                     </f:fields>
                                                 </f:FormElement> -->
-                                                <!-- <f:FormElement
+                            <!-- <f:FormElement
                                                     label="Declar. de Imposto"
                                                 >
                                                     <f:fields>
@@ -696,9 +699,9 @@
                                                         </ComboBox>
                                                     </f:fields>
                                                 </f:FormElement> -->
-                                            <!-- </f:formElements> -->
-                                        <!-- </f:FormContainer> -->
-                                        <!-- <f:FormContainer title="Textos" expandable="true">
+                            <!-- </f:formElements> -->
+                            <!-- </f:FormContainer> -->
+                            <!-- <f:FormContainer title="Textos" expandable="true">
                                             <f:formElements>
                                                 <f:FormElement
                                                     label="Observações NF-e"
@@ -719,89 +722,88 @@
                                             </f:formElements>
                                         </f:FormContainer> -->
 
-                                        
-                                        <f:FormContainer
-                                            title="Vendas e Distribuição"
-                                            expandable="true"
-                                        >
-                                            <f:formElements>
-                                                <f:FormElement label="Rede">
-                                                    <f:fields>
-                                                        <Input
-                                                            value="{modelBP>/Rede}"
-                                                            placeholder=""
-                                                            maxLength="50"
-                                                        >
-                                                            <layoutData>
-                                                                <f:ColumnElementData
-                                                                    cellsLarge="5"
-                                                                />
-                                                            </layoutData>
-                                                        </Input>
-                                                    </f:fields>
-                                                </f:FormElement>
-                                                <f:FormElement label="Bandeira">
-                                                    <f:fields>
-                                                        <Input
-                                                            value="{modelBP>/Bandeira}"
-                                                            placeholder=""
-                                                            maxLength="50"
-                                                        >
-                                                            <layoutData>
-                                                                <f:ColumnElementData
-                                                                    cellsLarge="5"
-                                                                />
-                                                            </layoutData>
-                                                        </Input>
-                                                    </f:fields>
-                                                </f:FormElement>
-                                                <f:FormElement
-                                                    label="Não aceita pedido parcial"
-                                                >
-                                                    <f:fields>
-                                                        <CheckBox
-                                                            selected="{modelBP>/PedidoParcial}"
-                                                            text="O cliente NÃO aceita receber o pedido parcialmente"
-                                                        />
-                                                    </f:fields>
-                                                </f:FormElement>
-                                                <f:FormElement
-                                                    label="Não aceita receber saldo de pedido"
-                                                >
-                                                    <f:fields>
-                                                        <CheckBox
-                                                            selected="{modelBP>/ReceberSaldo}"
-                                                        />
-                                                    </f:fields>
-                                                </f:FormElement>
-                                                <f:FormElement
-                                                    label="Cliente c/ Regime Espec ou Isenção?"
-                                                >
-                                                    <f:fields>
-                                                    <ComboBox
-                                                            placeholder=""
-                                                            showSecondaryValues="true"
-                                                            items="{modelRegime>/}"
-                                                            selectedKey="{modelBP>/RegimeEspecial}"
-                                                        >
-                                                            <core:ListItem
-                                                                key="{modelRegime>key}"
-                                                                text="{modelRegime>key}"
-                                                            />
-                                                            <layoutData>
-                                                                <f:ColumnElementData
-                                                                    cellsLarge="4"
-                                                                />
-                                                            </layoutData>
-                                                        </ComboBox>
-                                                    </f:fields>
-                                                </f:FormElement>
-                                            </f:formElements>
-                                        </f:FormContainer>
-                                    </f:formContainers>
-                                </f:Form>
-                            </f:content>
-                        </f:SimpleForm>
+                            <f:FormContainer
+                                title="Vendas e Distribuição"
+                                expandable="true"
+                            >
+                                <f:formElements>
+                                    <f:FormElement label="Rede">
+                                        <f:fields>
+                                            <Input
+                                                value="{modelBP>/Rede}"
+                                                placeholder=""
+                                                maxLength="50"
+                                            >
+                                                <layoutData>
+                                                    <f:ColumnElementData
+                                                        cellsLarge="5"
+                                                    />
+                                                </layoutData>
+                                            </Input>
+                                        </f:fields>
+                                    </f:FormElement>
+                                    <f:FormElement label="Bandeira">
+                                        <f:fields>
+                                            <Input
+                                                value="{modelBP>/Bandeira}"
+                                                placeholder=""
+                                                maxLength="50"
+                                            >
+                                                <layoutData>
+                                                    <f:ColumnElementData
+                                                        cellsLarge="5"
+                                                    />
+                                                </layoutData>
+                                            </Input>
+                                        </f:fields>
+                                    </f:FormElement>
+                                    <f:FormElement
+                                        label="Não aceita pedido parcial"
+                                    >
+                                        <f:fields>
+                                            <CheckBox
+                                                selected="{modelBP>/PedidoParcial}"
+                                                text="O cliente NÃO aceita receber o pedido parcialmente"
+                                            />
+                                        </f:fields>
+                                    </f:FormElement>
+                                    <f:FormElement
+                                        label="Não aceita receber saldo de pedido"
+                                    >
+                                        <f:fields>
+                                            <CheckBox
+                                                selected="{modelBP>/ReceberSaldo}"
+                                            />
+                                        </f:fields>
+                                    </f:FormElement>
+                                    <f:FormElement
+                                        label="Cliente c/ Regime Espec ou Isenção?"
+                                    >
+                                        <f:fields>
+                                            <ComboBox
+                                                placeholder=""
+                                                showSecondaryValues="true"
+                                                items="{modelRegime>/}"
+                                                selectedKey="{modelBP>/RegimeEspecial}"
+                                            >
+                                                <core:ListItem
+                                                    key="{modelRegime>key}"
+                                                    text="{modelRegime>key}"
+                                                />
+                                                <layoutData>
+                                                    <f:ColumnElementData
+                                                        cellsLarge="4"
+                                                    />
+                                                </layoutData>
+                                            </ComboBox>
+                                        </f:fields>
+                                    </f:FormElement>
+                                </f:formElements>
+                            </f:FormContainer>
+                        </f:formContainers>
+                    </f:Form>
+                </f:content>
+            </f:SimpleForm>
             <!-- <IconTabBar
                 headerBackgroundDesign="Transparent"
                 tabDensityMode="Compact"

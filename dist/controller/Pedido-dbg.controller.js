@@ -37,6 +37,29 @@ sap.ui.define([
 				var oModelClientes = new JSONModel(dado);
 				that.setModel(oModelClientes, "Clientes");
 
+				var iMesAtual = 0;
+				var iMesAnterior = 0;
+				var i60dias = 0;
+
+				dado.forEach(function (item) {
+
+					if (item.ComprouMesAtual == true) {
+						iMesAtual++;
+					}
+
+					if (item.ComprouMesAnterior == true) {
+						iMesAnterior++;
+					}
+
+					if (item.ComprouHa60Dias == true) {
+						i60dias++;
+					}
+				});
+
+				that.getModel("modelContadores").setProperty("/qntEsseMes", iMesAtual);
+				that.getModel("modelContadores").setProperty("/qntMesPassado", iMesAnterior);
+				that.getModel("modelContadores").setProperty("/qnt60dias", i60dias);
+
 				that.byId("master").setBusy(false);
 
 			}).catch(function (error) {
@@ -44,6 +67,41 @@ sap.ui.define([
 				that.byId("master").setBusy(false);
 				that.onMensagemErroODATA(error);
 			});
+		},
+
+		_applyFiltro: function (campo) {
+
+			var oBinding = this.byId("listClientes").getBinding("items");
+
+			// 🔁 Toggle: se clicar no mesmo, remove filtro
+			if (this._filtroAtual === campo) {
+
+				oBinding.filter([]);
+				this._filtroAtual = null;
+
+			} else {
+
+				var oFilter = new sap.ui.model.Filter(
+					campo,
+					sap.ui.model.FilterOperator.EQ,
+					true
+				);
+
+				oBinding.filter([oFilter], "Application");
+				this._filtroAtual = campo;
+			}
+		},
+
+		onFilterMesAtual: function () {
+			this._applyFiltro("ComprouMesAtual");
+		},
+
+		onFilterMesAnterior: function () {
+			this._applyFiltro("ComprouMesAnterior");
+		},
+
+		onFilter60Dias: function () {
+			this._applyFiltro("ComprouHa60Dias");
 		},
 
 		onEditarPress: function (oEvent) {
@@ -61,7 +119,7 @@ sap.ui.define([
 					actions: [MessageBox.Action.OK]
 				});
 
-			} else if (Ped.IdStatusPedido == 2) {
+			} else if (Ped.IdStatusPedido == 2 || Ped.IdStatusPedido == 4) {
 
 				MessageBox.show("Deseja reabrir o pedido?", {
 					icon: MessageBox.Icon.WARNING,
@@ -132,6 +190,7 @@ sap.ui.define([
 
 							/* Se o usuário escolher Vizualizar, levo o usuário direto para o pedido sem alterar o status */
 							that.getModelGlobal("modelAux").setProperty("/NrPedido", Ped.NrPedido);
+							that.getModelGlobal("modelAux").setProperty("/Kunnr", Ped.Kunnr);
 							sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
 
 						} else {
@@ -145,6 +204,7 @@ sap.ui.define([
 
 				/* Se o usuário escolher Vizualizar, levo o usuário direto para o pedido sem alterar o status */
 				that.getModelGlobal("modelAux").setProperty("/NrPedido", Ped.NrPedido);
+				that.getModelGlobal("modelAux").setProperty("/Kunnr", Ped.Kunnr);
 				sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
 			}
 		},
@@ -172,31 +232,40 @@ sap.ui.define([
 			var modelPedido = new JSONModel();
 			this.setModel(modelPedido, "Pedidos");
 
+			var modelPedido = new JSONModel({
+				qnt60dias: 0,
+				qntMesPassado: 0,
+				qntEsseMes: 0
+			});
+			this.setModel(modelPedido, "modelContadores");
+
 			this.getModelGlobal("modelAux").setProperty("/NrPedido", "");
+
+			this._filtroAtual = null;
 		},
 
 		onNavBack: function () {
 			sap.ui.core.UIComponent.getRouterFor(this).navTo("menu");
 		},
 
-		formatRentabilidade: function (Value) {
+		// formatRentabilidade: function (Value) {
 
-			// if (Value == 0) {
+		// 	// if (Value == 0) {
 
-			// 	this.byId("table_pedidos").getColumns()[7].setVisible(false);
-			// 	return Value;
+		// 	// 	this.byId("table_pedidos").getColumns()[7].setVisible(false);
+		// 	// 	return Value;
 
-			// } else if (Value > -3) {
+		// 	// } else if (Value > -3) {
 
-			// 	this.byId("table_pedidos").getColumns()[7].setVisible(false);
-			// 	return "";
+		// 	// 	this.byId("table_pedidos").getColumns()[7].setVisible(false);
+		// 	// 	return "";
 
-			// } else {
+		// 	// } else {
 
-				this.byId("table_pedidos").getColumns()[7].setVisible(true);
-				return Value + "%";
-			// }
-		},
+		// 	this.byId("table_pedidos").getColumns()[7].setVisible(true);
+		// 	return Value + "%";
+		// 	// }
+		// },
 
 		onAfterRendering: function () {
 
@@ -253,7 +322,7 @@ sap.ui.define([
 		},
 
 		onPressDetailBack: function () {
-			
+
 			this.getSplitContObj().backDetail();
 		},
 
@@ -271,6 +340,9 @@ sap.ui.define([
 
 			//Atualiza o Lifnr para fazer a integração do pedido com o código do fornecedor.
 			this.getModelGlobal("modelAux").setProperty("/Lifnr", Cliente.Lifnr);
+
+			that.getModelGlobal("modelAux").getProperty("/Kunnr");
+
 			this.getSplitContObj().toDetail(this.createId("detail"));
 
 			this.oModel.read("/P_PedidoQ", {
@@ -303,12 +375,12 @@ sap.ui.define([
 			var sValue = oEvent.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("Kunnr", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Name1", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Lifnr", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Ort01", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Regio", sap.ui.model.FilterOperator.StartsWith, sValue),
-				new sap.ui.model.Filter("Stcd1", sap.ui.model.FilterOperator.StartsWith, sValue),
-				new sap.ui.model.Filter("Stcd2", sap.ui.model.FilterOperator.StartsWith, sValue)
+			new sap.ui.model.Filter("Name1", sap.ui.model.FilterOperator.Contains, sValue),
+			new sap.ui.model.Filter("Lifnr", sap.ui.model.FilterOperator.Contains, sValue),
+			new sap.ui.model.Filter("Ort01", sap.ui.model.FilterOperator.Contains, sValue),
+			new sap.ui.model.Filter("Regio", sap.ui.model.FilterOperator.StartsWith, sValue),
+			new sap.ui.model.Filter("Stcd1", sap.ui.model.FilterOperator.StartsWith, sValue),
+			new sap.ui.model.Filter("Stcd2", sap.ui.model.FilterOperator.StartsWith, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
@@ -335,93 +407,72 @@ sap.ui.define([
 
 				this.oModel.read("/P_CheckPedidoR(IvUsuario='" + this.getModelGlobal("modelAux").getProperty("/Usuario") + "',IvKunnr='" +
 					cliente.Kunnr + "')", {
-						success: function (result) {
+					success: function (result) {
 
-							Pedido = result;
+						Pedido = result;
 
-							if (Pedido.TipoErro == "S" && Pedido.MsgErro == "") {
+						if (Pedido.TipoErro == "S" && Pedido.MsgErro == "") {
 
-								sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
+							that.getModelGlobal("modelAux").setProperty("/Kunnr", cliente.Kunnr);
+							sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
+						} else {
+
+							//
+
+							var dataAtual = new Date();
+							var regime = that.getModel("Cliente").getData().RegimeEspecial;
+
+							if (regime !== null && dataAtual > regime) {
+
+								MessageBox.show("Cliente com a Data do Regime expirada. Entre em contato com o comercial e com o cliente! ", {
+									icon: sap.m.MessageBox.Icon.WARNING,
+									title: "Data Regime Expirada!",
+									actions: ["OK"],
+									onClose: function (oAction) { }
+								});
+
+							} else if (Pedido.TipoErro == "S" && Pedido.MsgErro != "") {
+
+								MessageBox.show(Pedido.MsgErro, {
+									icon: sap.m.MessageBox.Icon.WARNING,
+									title: "Alerta de pendências!",
+									actions: ["Continuar", "Ver Título", "Cancelar"],
+									onClose: function (oAction) {
+
+										if (oAction == "Ver Título") {
+
+											// that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
+
+											that.getModelGlobal("modelAux").setProperty("/Kunnr", Pedido.IvKunnr);
+
+
+											sap.ui.core.UIComponent.getRouterFor(that).navTo("relatorioTitulos");
+										} else if (oAction == "Continuar") {
+
+											that.getModelGlobal("modelAux").setProperty("/Kunnr", cliente.Kunnr);
+											sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
+										}
+									}
+								});
+
 							} else {
 
-								//
-
-								var dataAtual = new Date();
-								var regime = that.getModel("Cliente").getData().RegimeEspecial;
-
-								if (regime !== null && dataAtual > regime) {
-
-									MessageBox.show("Cliente com a Data do Regime expirada. Entre em contato com o comercial e com o cliente! ", {
-										icon: sap.m.MessageBox.Icon.WARNING,
-										title: "Data Regime Expirada!",
-										actions: ["OK"],
-										onClose: function (oAction) {}
-									});
-
-								} else if(Pedido.TipoErro == "S" && Pedido.MsgErro != "") {
-
-									MessageBox.show(Pedido.MsgErro, {
-										icon: sap.m.MessageBox.Icon.WARNING,
-										title: "Alerta de pendências!",
-										actions: ["Continuar","Ver Título","Cancelar"],
-										onClose: function (oAction) {
-
-											if (oAction == "Ver Título") {
-
-												// that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
-
-												that.getModelGlobal("modelAux").setProperty("/Kunnr", Pedido.IvKunnr);
-
-												sap.ui.core.UIComponent.getRouterFor(that).navTo("relatorioTitulos");
-											} else if (oAction == "Continuar") {
-
-												sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
-											}
-										}
-									});
-									
-								} else {
-									
-									MessageBox.show(Pedido.MsgErro, {
-										icon: sap.m.MessageBox.Icon.ERROR,
-										title: "Bloqueio de digitação!",
-										actions: ["OK"],
-										onClose: function (oAction) {
-										}
-									});
-								}
+								MessageBox.show(Pedido.MsgErro, {
+									icon: sap.m.MessageBox.Icon.ERROR,
+									title: "Bloqueio de digitação!",
+									actions: ["OK"],
+									onClose: function (oAction) {
+									}
+								});
 							}
-						},
-						error: function (error) {
-
-							that.byId("table_pedidos").setBusy(false);
-							that.onMensagemErroODATA(error);
 						}
-					});
-			}
-		},
+					},
+					error: function (error) {
 
-		onItemPress: function (oEvent) {
-
-			var that = this;
-			var oNumeroPedido = oEvent.getParameter("listItem") || oEvent.getSource();
-			var NrPedido = oNumeroPedido.getBindingContext("Pedidos").getProperty("NrPedido");
-
-			var Ped = oNumeroPedido.getBindingContext("Pedidos").getObject();
-
-			if (Ped.Usuario != that.getModelGlobal("modelAux").getProperty("/CodRepres") && (Ped.IdStatusPedido == 1 || Ped.IdStatusPedido == 2)) {
-
-				MessageBox.show("Não é possível realizar a edição. Usuario criação: " + Ped.Usuario + ", Usuario edição: " + that.getModelGlobal(
-					"modelAux").getProperty("/CodRepres") + ".", {
-					icon: MessageBox.Icon.ERROR,
-					title: "Ação não permitida!",
-					actions: [MessageBox.Action.OK]
+						that.byId("table_pedidos").setBusy(false);
+						that.onMensagemErroODATA(error);
+					}
 				});
-
-			} else {
-
-				that.getModelGlobal("modelAux").setProperty("/NrPedido", NrPedido);
-				sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
 			}
 		},
 
@@ -512,6 +563,32 @@ sap.ui.define([
 			var cliente = this.getOwnerComponent().getModel("modelAux").getProperty("/CodCliente");
 			this.getOwnerComponent().getModel("modelAux").setProperty("/telaPedido", true);
 			sap.ui.core.UIComponent.getRouterFor(this).navTo("relatorioTitulos");
-		}
+		},
+
+		onItemPress: function (oEvent) {
+
+			var that = this;
+			var oNumeroPedido = oEvent.getParameter("listItem") || oEvent.getSource();
+			var NrPedido = oNumeroPedido.getBindingContext("Pedidos").getProperty("NrPedido");
+			var Kunnr = oNumeroPedido.getBindingContext("Pedidos").getProperty("Kunnr");
+
+			var Ped = oNumeroPedido.getBindingContext("Pedidos").getObject();
+
+			if (Ped.Usuario != that.getModelGlobal("modelAux").getProperty("/CodRepres") && (Ped.IdStatusPedido == 1 || Ped.IdStatusPedido == 2)) {
+
+				MessageBox.show("Não é possível realizar a edição. Usuario criação: " + Ped.Usuario + ", Usuario edição: " + that.getModelGlobal(
+					"modelAux").getProperty("/CodRepres") + ".", {
+					icon: MessageBox.Icon.ERROR,
+					title: "Ação não permitida!",
+					actions: [MessageBox.Action.OK]
+				});
+
+			} else {
+
+				that.getModelGlobal("modelAux").setProperty("/NrPedido", NrPedido);
+				that.getModelGlobal("modelAux").setProperty("/Kunnr", Kunnr);
+				sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
+			}
+		},
 	});
 });

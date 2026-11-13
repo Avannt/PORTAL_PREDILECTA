@@ -1,58 +1,62 @@
 sap.ui.define([
-	"sap/ui/model/json/JSONModel",
-	"sap/ui/Device"
+    "sap/ui/model/json/JSONModel",
+    "sap/ui/Device"
 ], function (JSONModel, Device) {
-	"use strict";
+    "use strict";
 
-	return {
+    return {
 
-		createDeviceModel: function () {
-			var oModel = new JSONModel(Device);
-			oModel.setDefaultBindingMode("OneWay");
-			return oModel;
-		},
+        createDeviceModel: function () {
+            var oModel = new JSONModel(Device);
+            oModel.setDefaultBindingMode("OneWay");
+            return oModel;
+        },
 
-		createValidaBPModel: function () {
-			var aux = {
+        createValidaBPModel: function () {
+            var aux = {
                 NomeRazaoVE: "None",
-                NomeRazaoTE: "None",
+                NomeRazaoTE: "",
                 CnpjVE: "None",
-                CnpjTE: "None",
+                CnpjTE: "",
                 IeVE: "None",
-                IeTE: "None",
+                IeTE: "",
                 Telefone1VE: "None",
-                Telefone1TE: "None",
+                Telefone1TE: "",
                 Telefone2VE: "None",
-                Telefone2TE: "None",
+                Telefone2TE: "",
                 Telefone3VE: "None",
-                Telefone3TE: "None",
+                Telefone3TE: "",
                 EmailXmlVE: "None",
-                EmailXmlTE: "None",
+                EmailXmlTE: "",
                 EmailCompradorVE: "None",
-                EmailCompradorTE: "None",
+                EmailCompradorTE: "",
                 EmailFinanceiroVE: "None",
-                EmailFinanceiroTE: "None",
+                EmailFinanceiroTE: "",
                 EmailContabilVE: "None",
-                EmailContabilTE: "None",
+                EmailContabilTE: "",
                 IsProdutorRuralVE: "None",
-                IsProdutorRuralTE: "None",
+                IsProdutorRuralTE: "",
                 CepVE: "None",
-                CepTE: "None",
+                CepTE: "",
                 CidadeVE: "None",
-                CidadeTE: "None",
+                CidadeTE: "",
                 EstadoVE: "None",
-                EstadoTE: "None",
+                EstadoTE: "",
                 RuaVE: "None",
-                RuaTE: "None",
+                RuaTE: "",
                 NumeroVE: "None",
-                NumeroTE: "None",
+                NumeroTE: "",
                 ComplementoVE: "None",
-                ComplementoTE: "None",
+                ComplementoTE: "",
+                ObsNf1VE: "None",
+                ObsNf1TE: "",
+                ObsNf2VE: "None",
+                ObsNf2TE: ""
             };
 
-			var oModel = new JSONModel(aux);
-			return oModel;
-		},
+            var oModel = new JSONModel(aux);
+            return oModel;
+        },
 
-	};
+    };
 });

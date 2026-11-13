@@ -152,7 +152,7 @@
                 id="detail"
                 title="Produtos"
                 class="sapUiStdPage"
-                navButtonPress="onPressDetailBack"                
+                navButtonPress="onPressDetailBack"
                 showNavButton="{device>/system/phone}"
             >
                 <content>
@@ -323,6 +323,19 @@
                                                     value="{modelProduto>/Ean11Dun}"
                                                     enabled="false"
                                                 />
+                                                <Label text="NCM" />
+                                                <Input
+                                                    id="idNCM"
+                                                    value="{modelProduto>/Ncm}"
+                                                    enabled="false"
+                                                />
+
+                                                <Label text="CEST" />
+                                                <Input
+                                                    id="idCEST"
+                                                    value="{modelProduto>/Cest}"
+                                                    enabled="false"
+                                                />
                                             </f:content>
                                         </f:SimpleForm>
                                     </VBox>
@@ -341,6 +354,78 @@
                                         densityAware="false"
                                     />
                                 </VBox>
+                            </IconTabFilter>
+                            <IconTabFilter
+                                text="Dados Fiscais"
+                                icon="sap-icon://table-view"
+                                id="tabNCM"
+                                key="tab3"
+                            >
+                                <content>
+                                    <Table
+                                        id="idTabelaNCM"
+                                        items="{modelNCM>/}"
+                                        inset="false"
+                                        growing="true"
+                                        growingScrollToLoad="true"
+                                    >
+                                        <columns>
+                                            <Column>
+                                                <Text text="Origem" />
+                                            </Column>
+
+                                            <Column>
+                                                <Text text="Destino" />
+                                            </Column>
+
+                                            <Column>
+                                                <Text text="NCM" />
+                                            </Column>
+
+                                            <Column>
+                                                <Text text="CEST" />
+                                            </Column>
+
+                                            <Column>
+                                                <Text text="MVA" />
+                                            </Column>
+
+                                            <Column>
+                                                <Text text="ICMS" />
+                                            </Column>
+                                        </columns>
+
+                                        <items>
+                                            <ColumnListItem>
+                                                <cells>
+                                                    <Text
+                                                        text="{modelNCM>Shipfrom}"
+                                                    />
+
+                                                    <Text
+                                                        text="{modelNCM>Shipto}"
+                                                    />
+
+                                                    <Text
+                                                        text="{modelNCM>Ncm}"
+                                                    />
+
+                                                    <Text
+                                                        text="{modelNCM>Cest}"
+                                                    />
+
+                                                    <Text
+                                                        text="{ path: 'modelNCM>Rate', type: 'sap.ui.model.type.Float', formatOptions: { milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' } }"
+                                                    />
+
+                                                    <Text
+                                                        text="{ path: 'modelNCM>RateIcms', type: 'sap.ui.model.type.Float', formatOptions: { milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' } }"
+                                                    />
+                                                </cells>
+                                            </ColumnListItem>
+                                        </items>
+                                    </Table>
+                                </content>
                             </IconTabFilter>
                         </items>
                     </IconTabBar>

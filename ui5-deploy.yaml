@@ -18,6 +18,6 @@ builder:
         app:
           name: ZPORTAL
           package: Z_SF
-          transport: S4DK949591
+          transport: S4DK953357
         exclude:
           - /test/

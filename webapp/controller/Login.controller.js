@@ -23,17 +23,17 @@ sap.ui.define([
 				this.onInicializaModels();
 				/*
 				Alterar aqui o ambiente:
-				PRD => ReleasePRD = TRUEa
+				PRD => ReleasePRD = TRUE
 				QAS => ReleasePRD = FALSE
 				*/
 				this.getModelGlobal("modelAux").setProperty("/ReleasePRD", false);
-				this.getModelGlobal("modelAux").setProperty("/VersaoApp", "5.0");
+				this.getModelGlobal("modelAux").setProperty("/VersaoApp", "6.8");
 				this.getModelGlobal("modelAux").setProperty("/Werks", "1000");
 				this.getModelGlobal("modelAux").setProperty("/EditarIndexItem", 0);
 				this.getModelGlobal("modelAux").setProperty("/bConectado", false);
 
-				//Tipo de dispositivo:
-				//01 - Android
+				//Tipo de dispositivo
+				//01 - Androidn
 				//02 - Portal
 				//03 - Todos
 
@@ -70,22 +70,24 @@ sap.ui.define([
 			},
 
 			onInicializaModels: function () {
-
+				
 				var oModelAux = new sap.ui.model.json.JSONModel({
 					CodRepres: "",
 					Usuario: "",
 					NomeRepres: "",
 					Imei: "",
 					VersaoApp: "",
-					Login: "",
-					Senha: "",
+					Login: "802202",
+					Senha: "21GC88",
+					// Login: "",
+					// Senha: "",
 					SistemaOper: "02",
 					DataAtualizacao: "",
 					Kunnr: "",
 					NrPedido: "",
 					EditarIndexItem: "",
 					bConectado: false,
-					DBModel: "",
+					DBModel: "", 
 					ReleasePRD: "",
 					Lifnr: "",
 					Email: "",

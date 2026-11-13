@@ -30,92 +30,94 @@ sap.ui.define([
 
 			that.byId("master").setBusy(true);
 
-			new Promise(function (resCentro, rejCentro) {
+			// new Promise(function (resCentro, rejCentro) {
 
-				that.onBuscarCentros(CodRepres, resCentro, rejCentro, that);
+			// 	that.onBuscarCentros(CodRepres, resCentro, rejCentro, that);
 
-			}).then(function (DataCentro) {
+			// }).then(function (DataCentro) {
 
-				var oModelCentro = new JSONModel(DataCentro);
-				that.setModel(oModelCentro, "Centros");
+			// 	var oModelCentro = new JSONModel(DataCentro);
+			// 	that.setModel(oModelCentro, "Centros");
 
-				new Promise(function (resC, rejC) {
+			// 	new Promise(function (resC, rejC) {
 
-					that.onBuscarClientes(CodRepres, resC, rejC, that);
+			// 		that.onBuscarClientes(CodRepres, resC, rejC, that);
 
-				}).then(function (DataCliente) {
+			// 	}).then(function (DataCliente) {
 
-					var oModelClientes = new JSONModel(DataCliente);
-					that.setModel(oModelClientes, "Clientes");
+			// var oModelClientes = new JSONModel(DataCliente);
+			// that.setModel(oModelClientes, "Clientes");
 
-					new Promise(function (res, rej) {
+			new Promise(function (res, rej) {
 
-						var Cliente = "";
-						var Envio = true;
-						that.onBuscarPedidos(Cliente, CodRepres, Envio, res, rej, that);
+				var Cliente = "";
+				var Envio = true;
+				that.onBuscarPedidos(Cliente, CodRepres, Envio, res, rej, that);
 
-					}).then(function (dataPedidos) {
+			}).then(function (dataPedidos) {
 
-						that.vetorPedidos = dataPedidos;
-						var oModel = new JSONModel(that.vetorPedidos);
+				that.vetorPedidos = dataPedidos;
+				var oModel = new JSONModel(that.vetorPedidos);
 
-						var valorTotal = 0;
-						for (var i = 0; i < that.vetorPedidos.length; i++) {
+				var valorTotal = 0;
+				for (var i = 0; i < that.vetorPedidos.length; i++) {
 
-							valorTotal += parseFloat(that.vetorPedidos[i].ValorTotal);
-						}
+					valorTotal += parseFloat(that.vetorPedidos[i].ValorTotal);
+				}
 
-						that.getModelGlobal("modelAux").setProperty("/ValTotPedPend", valorTotal);
-						that.setModel(oModel, "Pedidos");
+				that.getModelGlobal("modelAux").setProperty("/ValTotPedPend", valorTotal);
+				that.setModel(oModel, "Pedidos");
 
-						that.byId("master").setBusy(false);
-
-					}).catch(function (error) {
-
-						that.byId("master").setBusy(false);
-						that.onMensagemErroODATA(error);
-					});
-				}).catch(function (error) {
-
-					that.byId("master").setBusy(false);
-					that.onMensagemErroODATA(error);
-				});
+				that.byId("master").setBusy(false);
 
 			}).catch(function (error) {
 
 				that.byId("master").setBusy(false);
 				that.onMensagemErroODATA(error);
 			});
+
+			// 	}).catch(function (error) {
+
+			// 		that.byId("master").setBusy(false);
+			// 		that.onMensagemErroODATA(error);
+			// 	});
+
+			// }).catch(function (error) {
+
+			// 	that.byId("master").setBusy(false);
+			// 	that.onMensagemErroODATA(error);
+			// });
 		},
 
-		myFormatterCodEmpresa: function (Value) {
+		// myFormatterCodEmpresa: function (Value) {
 
-			var vetorCentros = this.getModel("Centros").getData();
+		// 	var vetorCentros = this.getModel("Centros").getData();
 
-			for (var j = 0; j < vetorCentros.length; j++) {
-				if (Value == vetorCentros[j].Bukrs) {
-					return Value + "-" + vetorCentros[j].NomeCentro;
-				}
-			}
-		},
+		// 	for (var j = 0; j < vetorCentros.length; j++) {
+		// 		if (Value == vetorCentros[j].Bukrs) {
+		// 			return Value + "-" + vetorCentros[j].NomeCentro;
+		// 		}
+		// 	}
+		// },
 
-		myFormatterCliente: function (Value) {
+		// myFormatterCliente: function (Value) {
 
-			var vetorClientes = this.getModel("Clientes").getData();
+		// 	var vetorClientes = this.getModel("Clientes").getData();
 
-			for (var j = 0; j < vetorClientes.length; j++) {
-				if (Value == vetorClientes[j].Kunnr) {
-					return Value + "-" + vetorClientes[j].Name1;
-				}
-			}
-		},
+		// 	for (var j = 0; j < vetorClientes.length; j++) {
+		// 		if (Value == vetorClientes[j].Kunnr) {
+		// 			return Value + "-" + vetorClientes[j].Name1;
+		// 		}
+		// 	}
+		// },
 
-		onItemPressEF: function (oEvent) {
+		onItemPress: function (oEvent) {
 
 			var that = this;
-			var oEvItemPressed = oEvent;
-			var oBd = oEvItemPressed.getParameter("listItem") || oEvent.getSource();
-			var sKunrg = oBd.getBindingContext("EntregasEnviar").getProperty("Kunrg");
+			var Pedido = oEvent.getParameter("listItem") || oEvent.getSource();
+			var NrPedido = Pedido.getBindingContext("Pedidos").getProperty("NrPedido");
+			var Kunnr = Pedido.getBindingContext("Pedidos").getProperty("Kunnr");
+			var Usuario = Pedido.getBindingContext("Pedidos").getProperty("Usuario");
 
 			MessageBox.show("Deseja abrir o item selecionado?", {
 				icon: MessageBox.Icon.WARNING,
@@ -125,10 +127,10 @@ sap.ui.define([
 
 					if (oAction == "Sim") {
 
-						/* Gravo no ModelAux a propriedade Kunrg (Cod cliente) para receber lá na tela de entrega futura e 
-						selecionar o cliente automaticamente. */
-						that.getOwnerComponent().getModel("modelAux").setProperty("/KunrgEntrega", sKunrg);
-						sap.ui.core.UIComponent.getRouterFor(that).navTo("entregaFutura");
+						that.getModelGlobal("modelAux").setProperty("/NrPedido", NrPedido);
+						that.getModelGlobal("modelAux").setProperty("/Kunnr", Kunnr);
+						that.getModelGlobal("modelAux").setProperty("/Usuario", Usuario);
+						sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
 					}
 				}
 			});
@@ -234,7 +236,7 @@ sap.ui.define([
 		// },
 
 		carregaModelCliente: function (db, resolve, reject) {
-			
+
 			var that = this;
 
 			var codCliente = that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
@@ -303,7 +305,7 @@ sap.ui.define([
 			var pedidosError = [];
 
 			for (var i = 0; i < PedidosEnviar.length; i++) {
-				if (PedidosEnviar[i].Usuario != that.getModelGlobal("modelAux").getProperty("/CodRepres")) {
+				if (PedidosEnviar[i].Usuario != that.getModelGlobal("modelAux").getProperty("/CodRepres") && PedidosEnviar[i].IdStatusPedido != 4 ) {
 
 					pedidosError.push({
 						NrPedido: PedidosEnviar[i].NrPedido,
@@ -319,13 +321,13 @@ sap.ui.define([
 					MessageBox.show("Não é possível realizar o envio do Pedido: " + pedidosError[i].NrPedido +
 						".\n Usuario criação: " + pedidosError[i].Usuario + ". Usuário de Envio: " + that.getModelGlobal("modelAux").getProperty(
 							"/CodRepres") + ".", {
-							icon: MessageBox.Icon.ERROR,
-							title: "Ação não permitida!",
-							actions: [MessageBox.Action.OK],
-							onClose: function (Action) {
-								return;
-							}
-						});
+						icon: MessageBox.Icon.ERROR,
+						title: "Ação não permitida!",
+						actions: [MessageBox.Action.OK],
+						onClose: function (Action) {
+							return;
+						}
+					});
 				}
 
 			} else if (PedidosEnviar.length == 0) {
@@ -364,19 +366,22 @@ sap.ui.define([
 
 								Pedido.IdStatusPedido = 3;
 								Pedido.SituacaoPedido = "FIN";
+								Pedido.UsuarioEnvio = that.getModelGlobal("modelAux").getProperty("/CodRepres");
 
-								that.onFormatNumberPedido(Pedido);
+								Pedido = that.onFormatNumberPedido(Pedido);
+								Pedido = that.onDeleteProperties(Pedido);
 
 								oModelPed.create("/P_PedidoPR", Pedido, {
 									method: "POST",
 									success: function (data) {
-										
+
 										MessageToast.show("Pedido " + data.Vbeln + " enviado com sucesso.")
 										console.info("Pedido " + data.NrPedido + " Inserido.");
 									},
 									error: function (error) {
 
-										that.onMensagemErroODATA(error);
+										that.tratarErroIntegracao(error);
+										// that.onMensagemErroODATA(error);
 									}
 								});
 							}
@@ -391,6 +396,51 @@ sap.ui.define([
 					}
 				});
 			}
+		},
+
+		tratarErroIntegracao: function (oError) {
+
+			var sMensagem = "Ocorreu um erro durante a integração com o SAP.";
+
+			try {
+
+				var oResponse = JSON.parse(oError.responseText);
+
+				if (oResponse.error &&
+					oResponse.error.innererror &&
+					oResponse.error.innererror.errordetails &&
+					oResponse.error.innererror.errordetails.length > 0) {
+
+					var aMensagens = [];
+
+					oResponse.error.innererror.errordetails.forEach(function (item) {
+						if (item.message && aMensagens.indexOf(item.message) === -1) {
+							aMensagens.push(item.message);
+						}
+					});
+
+					if (aMensagens.length > 0) {
+						sMensagem = aMensagens.join("\n");
+					}
+
+				} else if (oResponse.error &&
+					oResponse.error.message &&
+					oResponse.error.message.value) {
+
+					sMensagem = oResponse.error.message.value;
+				}
+
+			} catch (e) {
+				if (oError.message) {
+					sMensagem = oError.message;
+				}
+			}
+
+			MessageBox.error(sMensagem, {
+				title: "Erro de Integração",
+				details: oError.responseText
+			});
+
 		},
 
 		onDataAtualizacao: function () {
@@ -448,13 +498,13 @@ sap.ui.define([
 					MessageBox.show("Não é possível realizar a exclusão do Pedido: " + pedidosError[i].NrPedido +
 						".\n Usuario criação: " + pedidosError[i].Usuario + ". Usuário de Exclusão: " + that.getModelGlobal("modelAux").getProperty(
 							"/CodRepres") + ".", {
-							icon: MessageBox.Icon.ERROR,
-							title: "Ação não permitida!",
-							actions: [MessageBox.Action.OK],
-							onClose: function (Action) {
-								return;
-							}
-						});
+						icon: MessageBox.Icon.ERROR,
+						title: "Ação não permitida!",
+						actions: [MessageBox.Action.OK],
+						onClose: function (Action) {
+							return;
+						}
+					});
 				}
 
 			} else if (PedidosEnviar.length == 0) {
@@ -598,93 +648,94 @@ sap.ui.define([
 			if (codigoErro == 0) {
 				sap.m.MessageBox.show(
 					"Verifique a conexão com a internet!", {
-						icon: sap.m.MessageBox.Icon.WARNING,
-						title: "Falha na Conexão!",
-						actions: [sap.m.MessageBox.Action.OK],
-						onClose: function (oAction) {
+					icon: sap.m.MessageBox.Icon.WARNING,
+					title: "Falha na Conexão!",
+					actions: [sap.m.MessageBox.Action.OK],
+					onClose: function (oAction) {
 
-						}
 					}
+				}
 				);
 			} else if (codigoErro == 400) {
 				sap.m.MessageBox.show(
 					"Url mal formada! Contate a consultoria!", {
-						icon: sap.m.MessageBox.Icon.WARNING,
-						title: "Erro no programa Fiori!",
-						actions: [sap.m.MessageBox.Action.OK],
-						onClose: function (oAction) {
+					icon: sap.m.MessageBox.Icon.WARNING,
+					title: "Erro no programa Fiori!",
+					actions: [sap.m.MessageBox.Action.OK],
+					onClose: function (oAction) {
 
-						}
 					}
+				}
 				);
 			} else if (codigoErro == 403) {
 				sap.m.MessageBox.show(
 					"Usuário sem autorização para executar a função (403)! Contate a consultoria!", {
-						icon: sap.m.MessageBox.Icon.WARNING,
-						title: "Erro no programa Abap!",
-						actions: [sap.m.MessageBox.Action.OK],
-						onClose: function (oAction) {
+					icon: sap.m.MessageBox.Icon.WARNING,
+					title: "Erro no programa Abap!",
+					actions: [sap.m.MessageBox.Action.OK],
+					onClose: function (oAction) {
 
-						}
 					}
+				}
 				);
 			} else if (codigoErro == 404) {
 				sap.m.MessageBox.show(
 					"Função não encontrada e/ou Parâmentros inválidos  (404)! Contate a consultoria!", {
-						icon: sap.m.MessageBox.Icon.WARNING,
-						title: "Erro no programa Abap!",
-						actions: [sap.m.MessageBox.Action.OK],
-						onClose: function (oAction) {
+					icon: sap.m.MessageBox.Icon.WARNING,
+					title: "Erro no programa Abap!",
+					actions: [sap.m.MessageBox.Action.OK],
+					onClose: function (oAction) {
 
-						}
 					}
+				}
 				);
 			} else if (codigoErro == 500) {
 				sap.m.MessageBox.show(
 					"Ocorreu um Erro (500)! Contate a consultoria!", {
-						icon: sap.m.MessageBox.Icon.WARNING,
-						title: "Erro no programa Abap!",
-						actions: [sap.m.MessageBox.Action.OK],
-						onClose: function (oAction) {
+					icon: sap.m.MessageBox.Icon.WARNING,
+					title: "Erro no programa Abap!",
+					actions: [sap.m.MessageBox.Action.OK],
+					onClose: function (oAction) {
 
-						}
 					}
+				}
 				);
 			} else if (codigoErro == 501) {
 				sap.m.MessageBox.show(
 					"Função não implementada (501)! Contate a consultoria!", {
-						icon: sap.m.MessageBox.Icon.WARNING,
-						title: "Erro no programa Abap!",
-						actions: [sap.m.MessageBox.Action.OK],
-						onClose: function (oAction) {
+					icon: sap.m.MessageBox.Icon.WARNING,
+					title: "Erro no programa Abap!",
+					actions: [sap.m.MessageBox.Action.OK],
+					onClose: function (oAction) {
 
-						}
 					}
+				}
 				);
 			}
 		},
 		/*FIM onMensagemErroODATA*/
 
 		onVerificarAprovadorUsuario: function (p1res, p1rej) {
-				var oModel = this.getOwnerComponent().getModel("modelAux").getProperty("/DBModel");
-				var CodRepres = this.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 
-				oModel.read("/FluxoAprovacao('" + CodRepres + "')", {
-					success: function (retorno) {
-						var bExisteAprovadores = retorno.ERetorno == "S";
+			var oModel = this.getOwnerComponent().getModel("modelAux").getProperty("/DBModel");
+			var CodRepres = this.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 
-						if (bExisteAprovadores) {
-							p1res();
-						} else {
-							p1rej("Usuário atual não possui aprovadores cadastrados, favor entrar em contato com a administração do sistema.");
-						}
-					},
-					error: function (error) {
-						console.log(error);
-						p1rej("Erro ao verificar aprovadores.");
+			oModel.read("/FluxoAprovacao('" + CodRepres + "')", {
+				success: function (retorno) {
+					var bExisteAprovadores = retorno.ERetorno == "S";
+
+					if (bExisteAprovadores) {
+						p1res();
+					} else {
+						p1rej("Usuário atual não possui aprovadores cadastrados, favor entrar em contato com a administração do sistema.");
 					}
-				});
-			}
-			/*FIM onVerificarAprovadorUsuario*/
+				},
+				error: function (error) {
+					console.log(error);
+					p1rej("Erro ao verificar aprovadores.");
+				}
+			});
+		}
+		/*FIM onVerificarAprovadorUsuario*/
 	});
 });

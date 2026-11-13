@@ -2,12 +2,12 @@
 	xmlns:l="sap.ui.layout" id="idPageAlterar">
 	<Dialog id="idDialogAlterarSenha" title="Alterar Senha" initialFocus="idCodRepres" icon="sap-icon://user-edit" stretch="true" class="customizedDialog">
 		<content>
-			<f:Form id="idForm" editable="true" ariaLabelledBy="Title1">
+			<f:Form id="idForm" editable="true" >
 				<f:layout>
 					<f:ResponsiveGridLayout labelSpanXL="2" labelSpanL="2" labelSpanM="2" labelSpanS="3" adjustLabelSpan="false" emptySpanXL="0" emptySpanL="0"
 						emptySpanM="0" emptySpanS="0" columnsXL="6" columnsL="6" columnsM="12"/>
 				</f:layout>
-				<f:FormContainer ariaLabelledBy="Title1">
+				<f:FormContainer >
 					<f:formElements>
 						<f:FormElement label="Representante">
 							<f:fields>
