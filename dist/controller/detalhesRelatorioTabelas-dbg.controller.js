@@ -1,69 +1,28 @@
 sap.ui.define([
-	"application/controller/BaseController",
-	"sap/ui/model/json/JSONModel",
-	"sap/m/MessageBox",
-	"application/model/formatter",
-	"sap/ui/core/util/MockServer",
-	"sap/ui/export/library",
-	"sap/ui/export/Spreadsheet",
-	"sap/ui/model/odata/v2/ODataModel",
-	"sap/m/MessageBox"
-
-], function (BaseController, JSONModel, MessageBox, formatter, MockServer, exportLibrary, Spreadsheet, ODataModel) {
-	"use strict";
-
-	var oProdutosTemplate = [];
-	var oItemTabPrecoTemplate = [];
-	var oItemContrato = [];
-	var oProdutosTemplateGrid = [];
-	var substItem = [];
-	var filtroGrid = [];
-	var oProdutosTemplateGridAux = [];
-	var EdmType = exportLibrary.EdmType;
-
-	return BaseController.extend("application.controller.detalhesRelatorioTabelas", {
-
-		onInit: function () {
-
-			//FORÇA FAZER O INIT DA PÁGINA .. MESMO QUE JÁ FOI INICIADA.
-			this.getRouter().getRoute("detalhesRelatorioTabelas").attachPatternMatched(this._onLoadFields, this);
-		},
-
-		_handleValueHelpSearch: function (oEvent) {
-			var sValue = oEvent.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Matnr", sap.ui.model.FilterOperator.Contains, sValue), new sap.ui.model.Filter(
-				"Maktx", sap.ui.model.FilterOperator.Contains, sValue)];
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-			aFilters.push(allFilters);
-			this.byId("idtablePrecos").getBinding("items").filter(aFilters);
-			this.byId("idtablePrecos").suggest();
-		},
-
-		onItemChange: function (oEvent) {
-
-			filtroGrid = [];
-			var codItemSelecionado = oEvent.getSource().getValue();
-
-			var oModel = new sap.ui.model.json.JSONModel(filtroGrid);
-			this.getOwnerComponent().setModel(oModel, "detalhesRelatorioTabelas");
-
-			for (var i = 0; i < oProdutosTemplateGrid.length; i++) {
-				if (codItemSelecionado == oProdutosTemplateGrid[i].ProdutoId) {
-					filtroGrid.push(oProdutosTemplateGrid[i]);
-				}
-			}
-			if (codItemSelecionado == "") {
-				oModel = new sap.ui.model.json.JSONModel(oProdutosTemplateGridAux);
-				this.getOwnerComponent().setModel(oModel, "detalhesRelatorioTabelas");
-
-			} else {
-				oModel = new sap.ui.model.json.JSONModel(filtroGrid);
-				this.getOwnerComponent().setModel(oModel, "detalhesRelatorioTabelas");
-
-			}
-		},
-
+    "application/controller/BaseController", "sap/ui/model/json/JSONModel", "sap/m/MessageBox", "sap/ui/model/Filter", "sap/ui/model/FilterOperator", "sap/ui/export/library", "sap/ui/export/Spreadsheet", "sap/ui/core/format/NumberFormat"
+], function (BaseController, JSONModel, MessageBox, Filter, FilterOperator, exportLibrary, Spreadsheet, NumberFormat) {
+    "use strict";
+    var EdmType = exportLibrary.EdmType;
+    var oNumero = NumberFormat.getFloatInstance({ minFractionDigits: 2, maxFractionDigits: 2, groupingEnabled: true, groupingSeparator: ".", decimalSeparator: "," });
+    return BaseController.extend("application.controller.detalhesRelatorioTabelas", {
+        onInit: function () { this.getRouter().getRoute("detalhesRelatorioTabelas").attachPatternMatched(this._onLoadFields, this); },
+        onExit: function () { this._consulta = (this._consulta || 0) + 1; this.getRouter().getRoute("detalhesRelatorioTabelas").detachPatternMatched(this._onLoadFields, this); },
+        _literal: function (vValue) { return "'" + String(vValue === undefined || vValue === null ? "" : vValue).trim().replace(/'/g, "''") + "'"; },
+        _valorAusente: function (vValue) { return vValue === null || vValue === undefined || String(vValue).trim() === "" || !isFinite(Number(vValue)); },
+        formatarValor: function (vValue) { return this._valorAusente(vValue) ? "—" : oNumero.format(Number(vValue)); },
+        formatarStatusST: function (vValue) { return this._valorAusente(vValue) ? "Warning" : "None"; },
+        _filtroProduto: function (sValue) { return new Filter({ filters: [new Filter("Matnr", FilterOperator.Contains, sValue), new Filter("Maktx", FilterOperator.Contains, sValue)], and: false }); },
+        _handleValueHelpSearch: function (oEvent) {
+            var oSource = oEvent.getSource(); var oBinding = oSource.getBinding("suggestionItems");
+            if (oBinding) { oBinding.filter(oSource.getValue() ? [this._filtroProduto(oSource.getValue())] : []); oSource.suggest(); }
+        },
+        onItemChange: function (oEvent) {
+            var oSource = oEvent.getSource(); var oItem = oEvent.getParameter("suggestionItem"); var sValue = oItem ? oItem.getKey() : oSource.getValue();
+            if (oItem) { oSource.setValue(sValue); }
+            var oBinding = this.byId("idtablePrecos").getBinding("items");
+            if (oBinding) { oBinding.filter(sValue ? [this._filtroProduto(sValue)] : []); }
+        },
+        onUpdateFinished: function (oEvent) { var oModel = this.getModel("modelResumo"); if (oModel) { oModel.setProperty("/Visiveis", oEvent.getParameter("total") || 0); } },
 		createColumnConfig: function () {
 			var aCols = [];
 
@@ -168,145 +127,62 @@ sap.ui.define([
 			return aCols;
 		},
 
-		onExport: function () {
-			var aCols, oRowBinding, oSettings, oSheet, oTable;
-
-			if (!this._oTable) {
-				this._oTable = this.byId("idtablePrecos");
-			}
-
-			oTable = this._oTable;
-			oRowBinding = oTable.getBinding("items");
-			aCols = this.createColumnConfig();
-			var parametros = this.getModel("modelParametros").getData();
-			
-			var vFileName = "Lista_" + parametros.Centro + "_" + parametros.Cliente + "_Orig_" + parametros.UFOrigem + "_Dest_" + parametros.UFDestino + "_" + parametros.Frete;
-			var dataAtual = this.onDataHora();
-
-			var data = dataAtual[0].substring(0, 2) + "/" + dataAtual[0].substring(3, 5) + "/" + dataAtual[0].substring(6, 11);
-			var horario = dataAtual[1].substring(0, 2) + ":" + dataAtual[1].substring(3, 5) + ":" + dataAtual[1].substring(6, 8);
-			
-			oSettings = {
-				workbook: {
-					columns: aCols,
-					hierarchyLevel: "Level",
-					context: {
-					application: 'Portal Predilecta',
-					version: '1.00.00',
-					title: 'Relatório de Tabela de Preço',
-					sheetName: 'Lista de Preço',
-					modifiedBy: 'Administrador',
-					metaSheetName: 'Parâmetros',
-					metainfo: [{
-						name: 'Parâmetros de Seleção',
-						items: [{
-							key: 'Centro',
-							value: parametros.DescCentro
-						}, {
-							key: 'UF Origem',
-							value: parametros.UFOrigem
-						}, {
-							key: 'Cliente',
-							value: parametros.NomeCliente
-						}, {
-							key: 'UF Destino',
-							value: parametros.UFDestino
-						}, {
-							key: 'Canal Atuação',
-							value: parametros.CanalAtuacao
-						}, {
-							key: 'Tabela de Preço',
-							value: parametros.DescTabelaPreco
-						}, {
-							key: 'Vencimento',
-							value: parametros.DescVencto
-						}, {
-							key: 'Índice',
-							value: parametros.Indice + "%"
-						}, {
-							key: 'Tipo Transporte',
-							value: parametros.DescTipoFrete
-						}, {
-							key: 'Exibicao',
-							value: parametros.Exibicao
-						}, {	
-							key: 'RCA',
-							value: parametros.CodRepres
-						}, {	
-							key: 'Data Emissão Tabela',
-							value: data + " - " + horario
-						}
-						]
-					}]
-				}},
-				dataSource: oRowBinding,
-				fileName: vFileName,
-				worker: false // We need to disable worker because we are using a MockServer as OData Service
-			};
-
-			oSheet = new Spreadsheet(oSettings);
-			oSheet.build().finally(function () {
-				oSheet.destroy();
-			});
-		},
-
-		_onLoadFields: function () {
-
-			var that = this;
-
-			var repres = that.getModelGlobal("modelAux").getProperty("/CodRepres");
-			that.oModel = that.getModelGlobal("modelAux").getProperty("/DBModel");
-
-			var vAux = {
-				CodRepres: that.getModelGlobal("modelTela").getProperty("/CodRepres"),
-				Centro: that.getModelGlobal("modelTela").getProperty("/Werks"),
-				DescCentro: that.getModelGlobal("modelTela").getProperty("/DescCentro"),
-				UFOrigem: that.getModelGlobal("modelTela").getProperty("/UFOrigem"),
-				Cliente: that.getModelGlobal("modelTela").getProperty("/Kunnr"),
-				NomeCliente: that.getModelGlobal("modelTela").getProperty("/NomeCliente"),
-				UFDestino: that.getModelGlobal("modelTela").getProperty("/UFDestino"),
-				CanalAtuacao: that.getModelGlobal("modelTela").getProperty("/DescKvgr2"),
-				TabPreco: that.getModelGlobal("modelTela").getProperty("/Pltyp"),
-				DescTabelaPreco: that.getModelGlobal("modelTela").getProperty("/DescTabelaPreco"),
-				Vencimento: that.getModelGlobal("modelTela").getProperty("/Vencimento"),
-				DescVencto: that.getModelGlobal("modelTela").getProperty("/DescVencto"),
-				Indice: that.getModelGlobal("modelTela").getProperty("/Indice"),
-				Frete: that.getModelGlobal("modelTela").getProperty("/Inco1"),
-				DescTipoFrete: that.getModelGlobal("modelTela").getProperty("/DescTipoFrete"),
-				Exibicao: that.getModelGlobal("modelTela").getProperty("/Exibicao")
-			};
-
-			var omodelParametros = new JSONModel(vAux);
-			that.setModel(omodelParametros, "modelParametros");
-
-			var parametros = that.getModel("modelParametros").getData();
-
-			that.byId("master").setBusy(true);
-
-			that.oModel.read("/P_RelTabPreco", {
-				urlParameters: {
-
-					"$filter": "Usuario eq '" + repres +
-						"' and Centro eq '" + parametros.Centro +
-						"' and Cliente eq '" + parametros.Cliente +
-						"' and TabPreco eq '" + parametros.TabPreco +
-						"' and Indice eq " + parametros.Indice +
-						" and Frete eq '" + parametros.Frete +
-						"' and Exibicao eq '" + parametros.Exibicao + "'"
-				},
-				success: function (retorno) {
-
-					that.vetorTabPreco = retorno.results;
-					that.byId("master").setBusy(false);
-					var oModelTabPreco = new JSONModel(that.vetorTabPreco);
-					that.setModel(oModelTabPreco, "modelTabPreco");
-
-				},
-				error: function (error) {
-					that.byId("master").setBusy(false);
-					that.onMensagemErroODATA(error);
-				}
-			});
-		}
-	});
+        onExport: function () {
+            var that = this; var oResumo = this.getModel("modelResumo");
+            if (oResumo.getProperty("/Carregando") || oResumo.getProperty("/Exportando")) { return; }
+            var oBinding = this.byId("idtablePrecos").getBinding("items");
+            var aRows = oBinding ? oBinding.getContexts(0, oBinding.getLength()).map(function (oContext) { return Object.assign({}, oContext.getObject()); }) : [];
+            if (!aRows.length) { MessageBox.information("Não há itens para exportar com a pesquisa atual."); return; }
+            var p = this.getModel("modelParametros").getData();
+            var aInfos = [["Centro", p.DescCentro], ["UF Origem", p.UFOrigem], ["Cliente", p.NomeCliente], ["UF Destino", p.UFDestino], ["Canal", p.CanalAtuacao], ["Tabela de preço", p.DescTabelaPreco], ["Vencimento", p.DescVencto], ["Índice (%)", p.Indice], ["Frete", p.DescTipoFrete], ["Exibição", p.Exibicao], ["RCA", p.CodRepres], ["Emitido em", new Date().toLocaleString("pt-BR")]];
+            var sNome = ["Lista", p.Centro, p.Cliente, p.UFOrigem, p.UFDestino, p.Frete].join("_").replace(/[\\/:*?"<>|]/g, "_") + ".xlsx";
+            var oSheet;
+            oResumo.setProperty("/Exportando", true);
+            try {
+                oSheet = new Spreadsheet({ workbook: { columns: this.createColumnConfig(), context: { application: "Portal Predilecta", title: "Relatório de Tabelas de Preço", sheetName: "Lista de Preço", metaSheetName: "Parâmetros", metainfo: [{ name: "Parâmetros de seleção", items: aInfos.map(function (aInfo) { return { key: aInfo[0], value: aInfo[1] === undefined || aInfo[1] === null ? "" : String(aInfo[1]) }; }) }] } }, dataSource: aRows, fileName: sNome, worker: false });
+                return oSheet.build().then(function () { oSheet.destroy(); oResumo.setProperty("/Exportando", false); }, function (oError) { oSheet.destroy(); oResumo.setProperty("/Exportando", false); that.onMensagemErroODATA(oError); });
+            } catch (oError) { if (oSheet) { oSheet.destroy(); } oResumo.setProperty("/Exportando", false); MessageBox.error(oError.message || "Não foi possível exportar o relatório."); }
+        },
+        _onLoadFields: function () {
+            var that = this; var nConsulta = this._consulta = (this._consulta || 0) + 1;
+            this.oModel = this.getModelGlobal("modelAux").getProperty("/DBModel");
+            var oOrigem = this.getModelGlobal("modelTela");
+            if (!oOrigem) { this.getRouter().navTo("relatorioTabelas"); return Promise.resolve(); }
+            var oTela = oOrigem.getData();
+            var p = { CodRepres: this.getModelGlobal("modelAux").getProperty("/CodRepres"), Centro: oTela.Werks, DescCentro: oTela.DescCentro, UFOrigem: oTela.UFOrigem, Cliente: oTela.Kunnr, NomeCliente: oTela.NomeCliente, UFDestino: oTela.UFDestino, CanalAtuacao: oTela.DescKvgr2, TabPreco: oTela.Pltyp, DescTabelaPreco: oTela.DescTabelaPreco, Vencimento: oTela.Vencimento, DescVencto: oTela.DescVencto, Indice: oTela.Indice, Frete: oTela.Inco1, DescTipoFrete: oTela.DescTipoFrete, Exibicao: oTela.Exibicao };
+            this.setModel(new JSONModel(p), "modelParametros");
+            var oRows = new JSONModel([]); oRows.setSizeLimit(100000); this.setModel(oRows, "modelTabPreco");
+            this.setModel(new JSONModel({ Carregando: true, Exportando: false, Total: 0, Visiveis: 0, SemPrecoST: 0, Erro: false }), "modelResumo");
+            this.byId("idProdutoRelatorio").setValue("");
+            if (!p.Centro || !p.Cliente || !p.TabPreco || !p.Frete || String(p.Indice).trim() === "" || p.Indice === null || !isFinite(Number(p.Indice))) {
+                this.getModel("modelResumo").setProperty("/Carregando", false); MessageBox.error("Os parâmetros da consulta estão incompletos. Volte e revise os filtros."); return Promise.resolve();
+            }
+            var sFiltro = "Usuario eq " + this._literal(p.CodRepres) + " and Centro eq " + this._literal(p.Centro) + " and Cliente eq " + this._literal(p.Cliente) + " and TabPreco eq " + this._literal(p.TabPreco) + " and Indice eq " + Number(p.Indice) + " and Frete eq " + this._literal(p.Frete) + " and Exibicao eq " + this._literal(p.Exibicao);
+            var mVistos = {}; var aTodos = [];
+            function ler(mParametros) {
+                return new Promise(function (resolve, reject) { that.oModel.read("/P_RelTabPreco", { urlParameters: mParametros, success: resolve, error: reject }); }).then(function (oRetorno) {
+                    if (that._consulta !== nConsulta) { return null; }
+                    if (!Array.isArray(oRetorno.results)) { throw new Error("O serviço não retornou uma coleção válida de preços."); }
+                    aTodos = aTodos.concat(oRetorno.results);
+                    if (!oRetorno.__next) { return aTodos; }
+                    var sNext = String(oRetorno.__next); var sQuery = sNext.split("?")[1];
+                    if (mVistos[sNext] || !sQuery) { throw new Error("Não foi possível concluir a paginação dos preços. Refaça a consulta."); }
+                    mVistos[sNext] = true; var mProximos = {};
+                    sQuery.split("&").forEach(function (sParte) { var i = sParte.indexOf("="); if (i > 0) { mProximos[decodeURIComponent(sParte.slice(0, i))] = decodeURIComponent(sParte.slice(i + 1).replace(/\+/g, " ")); } });
+                    return ler(mProximos);
+                });
+            }
+            return ler({ "$filter": sFiltro }).then(function (aRows) {
+                if (that._consulta !== nConsulta || aRows === null) { return; }
+                oRows.setSizeLimit(Math.max(1000, aRows.length)); oRows.setData(aRows);
+                var oResumo = that.getModel("modelResumo"); oResumo.setProperty("/Total", aRows.length); oResumo.setProperty("/Visiveis", aRows.length);
+                oResumo.setProperty("/SemPrecoST", aRows.filter(function (oItem) { return that._valorAusente(oItem.ValPrecoUnitSt); }).length);
+                oResumo.setProperty("/Carregando", false);
+            }).catch(function (oError) {
+                if (that._consulta !== nConsulta) { return; }
+                var oResumo = that.getModel("modelResumo"); oResumo.setProperty("/Carregando", false); oResumo.setProperty("/Erro", true);
+                if (oError.message && !oError.responseText) { MessageBox.error(oError.message); } else { that.onMensagemErroODATA(oError); }
+            });
+        }
+    });
 });

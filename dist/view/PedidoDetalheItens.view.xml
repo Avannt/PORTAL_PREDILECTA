@@ -78,7 +78,7 @@
                                     <VBox>
                                         <Label text="Valor venda" />
                                         <Text
-                                            text="{path: 'modelItem>/ValPrecoInform', type: 'sap.ui.model.type.Float', formatOptions: {groupingSeparator: '.', decimalSeparator: ',', minFractionDigits: 2, maxFractionDigits: 3}}"
+                                            text="{path: 'modelItem>/ValPrecoInform', type: 'sap.ui.model.type.Float', formatOptions: {groupingSeparator: '.', decimalSeparator: ',', minFractionDigits: 2, maxFractionDigits: 2}}"
                                             wrapping="true"
                                             class="sapMTextBold"
                                         />
@@ -86,7 +86,7 @@
                                     <VBox>
                                         <Label text="Desconto (%)" />
                                         <Text
-                                            text="{path: 'modelItem>/PercPromo', type: 'sap.ui.model.type.Float', formatOptions: {minFractionDigits: 2, maxFractionDigits: 2, groupingSeparator: '.', decimalSeparator: ','}}"
+                                            text="{path: 'modelItem>/PercPromo', type: 'sap.ui.model.type.Float', formatOptions: {minFractionDigits: 2, maxFractionDigits: 2, groupingSeparator: '.', decimalSeparator: ','}}"                                        
                                             class="sapMTextBold"
                                         />
                                     </VBox>
@@ -543,8 +543,7 @@
                                                 growFactor="0"
                                             />
                                         </layoutData>
-                                        <Label
-                                            design="Bold"
+                                        <Label design="Bold"
                                             labelFor="IdItemPedido"
                                             text="Item"
                                         />
@@ -601,8 +600,7 @@
                                                 growFactor="0"
                                             />
                                         </layoutData>
-                                        <Label
-                                            design="Bold"
+                                        <Label design="Bold"
                                             labelFor="idQuantidade"
                                             text="Qnt (CX)"
                                         />
@@ -627,14 +625,13 @@
                                                 growFactor="0"
                                             />
                                         </layoutData>
-                                        <Label
-                                            design="Bold"
+                                        <Label design="Bold"
                                             labelFor="idPrecoVenda"
                                             text="Valor Venda"
                                         />
                                         <Input
                                             id="idPrecoVenda"
-                                            value="{path: 'modelItem>/ValPrecoInform', type: 'sap.ui.model.type.Float', formatOptions: {minFractionDigits: 2, maxFractionDigits: 3, groupingEnabled: false, decimalSeparator: ','}}"
+                                            value="{path: 'modelItem>/ValPrecoInform', type: 'sap.ui.model.type.Float', formatOptions: {minFractionDigits: 2, maxFractionDigits: 2, groupingEnabled: false, decimalSeparator: ','}}"
                                             class="camposDialog"
                                             editable="true"
                                             change="onPrecoVendaChange"
@@ -654,8 +651,7 @@
                                                 growFactor="0"
                                             />
                                         </layoutData>
-                                        <Label
-                                            design="Bold"
+                                        <Label design="Bold"
                                             text="Promo (%)"
                                             labelFor="idPromocaoDigitacao"
                                         />
@@ -670,7 +666,7 @@
                                             type="Number"
                                         />
                                     </VBox>
-
+                                    
                                     <VBox
                                         width="7rem"
                                         class="sapUiSmallMarginEnd"
@@ -917,93 +913,17 @@
                                     </VBox>
                                 </HBox>
                             </ScrollContainer>
-                            <MessageStrip
-                                id="idAvisoCampanhaItem"
-                                text="{modelCampanhasUI>/Mensagem}"
-                                visible="{= !!${modelCampanhasUI>/Mensagem} }"
-                                type="Information"
-                                showIcon="true"
-                                class="sapUiTinyMarginTop"
-                            />
-                            <HBox
-                                wrap="Wrap"
-                                alignItems="Start"
-                                class="sapUiTinyMarginTop sapUiTinyMarginBottom"
-                            >
-                                <VBox
-                                    width="9rem"
-                                    class="sapUiSmallMarginEnd"
-                                >
-                                    <Label
-                                        text="Liberado (R$/item)"
-                                        labelFor="idCampanhaDisponivelDigitacao"
-                                    />
-                                    <Input
-                                        id="idCampanhaDisponivelDigitacao"
-                                        editable="false"
-                                        textAlign="End"
-                                        value="{parts: [{path: 'modelItem>/DescCampAdicional'}, {path: 'modelItem>/_CampanhaConsultaPendente'}], formatter: '.formatarCampanhaDisponivel'}"
-                                        tooltip="{parts: [{path: 'modelItem>/DescCampAdicional'}, {path: 'modelItem>/IdCamp'}, {path: 'modelItem>/IdCampEscal'}, {path: 'modelItem>/_CampanhaConsultaPendente'}, {path: 'modelItem>/_CampanhaSimulada'}, {path: 'modelItem>/_CampanhaErroRetorno'}], formatter: '.formatarCampanhaTooltip'}"
-                                    />
-                                </VBox>
-                                <VBox
-                                    width="12rem"
-                                    class="sapUiSmallMarginEnd"
-                                >
-                                    <Label text="Campanha de venda" />
-                                    <Text
-                                        text="{parts: [{path: 'modelItem>/IdCamp'}, {path: 'modelItem>/_CampanhaConsultaPendente'}, {path: 'modelItem>/CampanhasVenda'}], formatter: '.formatarCodigoCampanha'}"
-                                        wrapping="false"
-                                    />
-                                </VBox>
-                                <VBox
-                                    width="12rem"
-                                    class="sapUiSmallMarginEnd"
-                                >
-                                    <Label text="Campanha escalonada" />
-                                    <Text
-                                        text="{parts: [{path: 'modelItem>/IdCampEscal'}, {path: 'modelItem>/_CampanhaConsultaPendente'}, {path: 'modelItem>/CampanhasEscal'}], formatter: '.formatarCodigoCampanha'}"
-                                        wrapping="false"
-                                    />
-                                </VBox>
-                                <VBox
-                                    width="10rem"
-                                    class="sapUiSmallMarginEnd"
-                                >
-                                    <Label text="Aplicado (R$/item)" />
-                                    <Text
-                                        text="{parts: [{path: 'modelItem>/DescCampAplicado'}, {path: 'modelItem>/_CampanhaConsultaPendente'}], formatter: '.formatarCampanhaDisponivel'}"
-                                        wrapping="false"
-                                    />
-                                </VBox>
-                                <VBox
-                                    width="12rem"
-                                    class="sapUiSmallMarginEnd"
-                                >
-                                    <Label text="Mín. sem campanha (R$/CX)" />
-                                    <Text
-                                        text="{parts: [{path: 'modelItem>/ValPrecoMinSemCamp'}, {path: 'modelItem>/_CampanhaConsultaPendente'}], formatter: '.formatarPrecoUnitarioCampanha'}"
-                                        wrapping="false"
-                                    />
-                                </VBox>
-                                <VBox
-                                    width="12rem"
-                                    class="sapUiSmallMarginEnd"
-                                >
-                                    <Label text="Mín. c/ campanha (R$/CX)" />
-                                    <Text
-                                        text="{parts: [{path: 'modelItem>/ValPrecoMinCamp'}, {path: 'modelItem>/_CampanhaConsultaPendente'}], formatter: '.formatarPrecoUnitarioCampanha'}"
-                                        wrapping="false"
-                                    />
-                                </VBox>
-                                <VBox width="100%">
-                                    <ObjectStatus
-                                        text="{modelItem>/CampMsg}"
-                                        state="Error"
-                                        visible="{= !!${modelItem>/CampInconsistente} }"
-                                    />
-                                </VBox>
+                            <!-- Campos de campanha na digitacao mantidos para referencia.
+                            <HBox wrap="Wrap" alignItems="Start" class="sapUiTinyMarginTop sapUiTinyMarginBottom">
+                                <VBox width="9rem" class="sapUiSmallMarginEnd"><Label text="Liberado (R$/CX)" labelFor="idCampanhaDisponivelDigitacao" /><Input id="idCampanhaDisponivelDigitacao" editable="false" textAlign="End" value="{parts: [{path: 'modelItem>/DescCampAdicional'}, {path: 'modelItem>/QtdPedida'}, {path: 'modelItem>/_CampanhaConsultaPendente'}], formatter: '.formatarCampanhaPorCaixa'}" tooltip="{parts: [{path: 'modelItem>/DescCampAdicional'}, {path: 'modelItem>/IdCamp'}, {path: 'modelItem>/IdCampEscal'}, {path: 'modelItem>/_CampanhaConsultaPendente'}, {path: 'modelItem>/_CampanhaSimulada'}, {path: 'modelItem>/_CampanhaErroRetorno'}], formatter: '.formatarCampanhaTooltip'}" /></VBox>
+                                <VBox width="12rem" class="sapUiSmallMarginEnd"><Label text="Campanha de venda" /><Text text="{parts: [{path: 'modelItem>/IdCamp'}, {path: 'modelItem>/_CampanhaConsultaPendente'}, {path: 'modelItem>/CampanhasVenda'}], formatter: '.formatarCodigoCampanha'}" wrapping="false" /></VBox>
+                                <VBox width="12rem" class="sapUiSmallMarginEnd"><Label text="Campanha escalonada" /><Text text="{parts: [{path: 'modelItem>/IdCampEscal'}, {path: 'modelItem>/_CampanhaConsultaPendente'}, {path: 'modelItem>/CampanhasEscal'}], formatter: '.formatarCodigoCampanha'}" wrapping="false" /></VBox>
+                                <VBox width="10rem" class="sapUiSmallMarginEnd"><Label text="Aplicado (R$/CX)" /><Text text="{parts: [{path: 'modelItem>/DescCampAplicado'}, {path: 'modelItem>/QtdPedida'}, {path: 'modelItem>/_CampanhaConsultaPendente'}], formatter: '.formatarCampanhaPorCaixa'}" wrapping="false" /></VBox>
+                                <VBox width="12rem" class="sapUiSmallMarginEnd"><Label text="Mín. sem campanha (R$/CX)" /><Text text="{parts: [{path: 'modelItem>/ValPrecoMinSemCamp'}, {path: 'modelItem>/_CampanhaConsultaPendente'}], formatter: '.formatarPrecoUnitarioCampanha'}" wrapping="false" /></VBox>
+                                <VBox width="12rem" class="sapUiSmallMarginEnd"><Label text="Preço mínimo (R$/CX)" /><Text text="{parts: [{path: 'modelItem>/ValPrecoMinCamp'}, {path: 'modelItem>/_CampanhaConsultaPendente'}], formatter: '.formatarPrecoUnitarioCampanha'}" wrapping="false" /></VBox>
                             </HBox>
+                            -->
+                                <VBox width="100%"><ObjectStatus text="{modelItem>/CampMsg}" state="Error" visible="{= !!${modelItem>/CampInconsistente} }" /></VBox>
                         </content>
                     </Panel>
                     <Title
@@ -1031,19 +951,11 @@
                             >
                                 <Label text="Item" />
                                 <table:template>
-                                    <HBox alignItems="Center">
-                                        <ObjectStatus
-                                            text="$"
-                                            state="Success"
-                                            tooltip="Campanha ativa"
-                                            class="sapUiTinyMarginEnd"
-                                            visible="{parts: [{path: 'modelItensPedidoGrid>IdCamp'}, {path: 'modelItensPedidoGrid>IdCampEscal'}, {path: 'modelItensPedidoGrid>CampanhasVenda'}, {path: 'modelItensPedidoGrid>CampanhasEscal'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}], formatter: '.formatarCampanhaAtiva'}"
-                                        />
-                                        <Text
-                                            text="{modelItensPedidoGrid>Matnr}"
-                                            wrapping="false"
-                                        />
-                                    </HBox>
+                                    <HBox alignItems="Center" width="100%" class="campanhaItemCell">
+                                            <customData><core:CustomData key="campanhaestado" value="{parts: [{path: 'modelItensPedidoGrid>IdCamp'}, {path: 'modelItensPedidoGrid>IdCampEscal'}, {path: 'modelItensPedidoGrid>CampanhasVenda'}, {path: 'modelItensPedidoGrid>CampanhasEscal'}, {path: 'modelItensPedidoGrid>DescCampAplicado'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}], formatter: '.formatarEstadoCampanha'}" writeToDom="true" /></customData>
+                                            <Button class="campanhaItemAplicar sapUiTinyMarginEnd" type="Transparent" icon="{parts: [{path: 'modelItensPedidoGrid>IdCamp'}, {path: 'modelItensPedidoGrid>IdCampEscal'}, {path: 'modelItensPedidoGrid>CampanhasVenda'}, {path: 'modelItensPedidoGrid>CampanhasEscal'}, {path: 'modelItensPedidoGrid>DescCampAplicado'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}], formatter: '.formatarIconeCampanha'}" press="onAplicarCampanhaItemGrid" visible="{parts: [{path: 'modelItensPedidoGrid>IdCamp'}, {path: 'modelItensPedidoGrid>IdCampEscal'}, {path: 'modelItensPedidoGrid>CampanhasVenda'}, {path: 'modelItensPedidoGrid>CampanhasEscal'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}], formatter: '.formatarCampanhaAtiva'}" enabled="{parts: [{path: 'modelItensPedidoGrid>DescCampAdicional'}, {path: 'modelItensPedidoGrid>DescCampAplicado'}, {path: 'modelItensPedidoGrid>QtdPedida'}, {path: 'modelItensPedidoGrid>ValPrecoInform'}, {path: 'modelItensPedidoGrid>ValPrecoMinCamp'}, {path: 'modelItensPedidoGrid>_CampanhaConfirmada'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}, {path: 'modelCampanhasUI>/EscalaPrecoCampanha'}, {path: 'modelItensUI>/Processando'}, {path: 'modelVar>/Editar'}, {path: 'modelCampanhasUI>/ConsumoAutomatico'}, {path: 'modelCampanhasUI>/ConsumoGrade'}, {path: 'modelPedido>/IdStatusPedido'}], formatter: '.podeAcionarCampanha'}" tooltip="{parts: [{path: 'modelItensPedidoGrid>DescCampAdicional'}, {path: 'modelItensPedidoGrid>DescCampAplicado'}, {path: 'modelItensPedidoGrid>QtdPedida'}, {path: 'modelItensPedidoGrid>ValPrecoInform'}, {path: 'modelItensPedidoGrid>ValPrecoMinCamp'}, {path: 'modelItensPedidoGrid>_CampanhaConfirmada'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}, {path: 'modelCampanhasUI>/EscalaPrecoCampanha'}], formatter: '.formatarTooltipAplicacaoCampanha'}" />
+                                            <Text text="{modelItensPedidoGrid>Matnr}" wrapping="false" />
+                                        </HBox>
                                 </table:template>
                             </table:Column>
                             <table:Column
@@ -1074,21 +986,7 @@
                                     />
                                 </table:template>
                             </table:Column>
-                            <table:Column
-                                width="8rem"
-                                hAlign="End"
-                            >
-                                <Label text="Promoção (%)" />
-                                <table:template>
-                                    <Input
-                                        value="{path: 'modelItensPedidoGrid>PercPromo', mode: 'OneWay', type: 'sap.ui.model.type.Float', formatOptions: {minFractionDigits: 2, maxFractionDigits: 2}}"
-                                        type="Text"
-                                        textAlign="End"
-                                        change="onPromocaoItemGridChange"
-                                        enabled="{= !${modelItensUI>/Processando} &amp;&amp; !${modelVar>/Editar} &amp;&amp; ${modelPedido>/IdStatusPedido} !== '2' &amp;&amp; ${modelPedido>/IdStatusPedido} !== '3' &amp;&amp; ${modelPedido>/IdStatusPedido} !== '4' }"
-                                    />
-                                </table:template>
-                            </table:Column>
+                                            <table:Column width="8rem" hAlign="End"><Label text="Promoção (%)"/><table:template><Input value="{path: 'modelItensPedidoGrid>PercPromo', mode: 'OneWay', type: 'sap.ui.model.type.Float', formatOptions: {minFractionDigits: 2, maxFractionDigits: 2}}" type="Text" textAlign="End" change="onPromocaoItemGridChange" enabled="{= !${modelItensUI>/Processando} &amp;&amp; !${modelVar>/Editar} &amp;&amp; ${modelPedido>/IdStatusPedido} !== '2' &amp;&amp; ${modelPedido>/IdStatusPedido} !== '3' &amp;&amp; ${modelPedido>/IdStatusPedido} !== '4' }"/></table:template></table:Column>
                             <table:Column
                                 width="8rem"
                                 hAlign="End"
@@ -1107,7 +1005,7 @@
                                 <Label text="Valor venda" />
                                 <table:template>
                                     <Input
-                                        value="{path: 'modelItensPedidoGrid>ValPrecoInform', mode: 'OneWay', type: 'sap.ui.model.type.Float', formatOptions: {minFractionDigits: 2, maxFractionDigits: 3}}"
+                                        value="{path: 'modelItensPedidoGrid>ValPrecoInform', mode: 'OneWay', type: 'sap.ui.model.type.Float', formatOptions: {minFractionDigits: 2, maxFractionDigits: 2}}"
                                         change="onPrecoVendaItemGridChange"
                                         enabled="{= !${modelItensUI>/Processando} &amp;&amp; !${modelVar>/Editar} &amp;&amp; ${modelPedido>/IdStatusPedido} !== '2' &amp;&amp; ${modelPedido>/IdStatusPedido} !== '3' &amp;&amp; ${modelPedido>/IdStatusPedido} !== '4' }"
                                         textAlign="End"
@@ -1249,106 +1147,23 @@
                                             press="onDeletarItem"
                                             enabled="{= !${modelItensUI>/Processando} &amp;&amp; !${modelVar>/Editar} &amp;&amp; ${modelPedido>/IdStatusPedido} !== '2' &amp;&amp; ${modelPedido>/IdStatusPedido} !== '3' &amp;&amp; ${modelPedido>/IdStatusPedido} !== '4' }"
                                         />
-                                        <Button
-                                            text="Aplicar desconto"
-                                            tooltip="Aplica o menor preço permitido pela campanha do item"
-                                            type="Transparent"
-                                            press="onAplicarCampanhaItemGrid"
+                                        <Button text="Aplicar desconto" tooltip="Aplica o menor preço permitido pela campanha do item"
+                                            type="Transparent" press="onAplicarCampanhaItemGrid"
                                             visible="{parts: [{path: 'modelItensPedidoGrid>DescCampAdicional'}, {path: 'modelItensPedidoGrid>DescCampAplicado'}, {path: 'modelItensPedidoGrid>QtdPedida'}, {path: 'modelItensPedidoGrid>ValPrecoInform'}, {path: 'modelItensPedidoGrid>ValPrecoMinCamp'}, {path: 'modelItensPedidoGrid>_CampanhaConfirmada'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}, {path: 'modelCampanhasUI>/EscalaPrecoCampanha'}], formatter: '.podeExibirAplicarCampanha'}"
-                                            enabled="{= !${modelItensUI>/Processando} &amp;&amp; !${modelVar>/Editar} &amp;&amp; ${modelCampanhasUI>/ConsumoAutomatico} &amp;&amp; ${modelCampanhasUI>/ConsumoGrade} &amp;&amp; ${modelPedido>/IdStatusPedido} !== '2' &amp;&amp; ${modelPedido>/IdStatusPedido} !== '3' &amp;&amp; ${modelPedido>/IdStatusPedido} !== '4' }"
-                                        />
+                                            enabled="{parts: [{path: 'modelItensPedidoGrid>DescCampAdicional'}, {path: 'modelItensPedidoGrid>DescCampAplicado'}, {path: 'modelItensPedidoGrid>QtdPedida'}, {path: 'modelItensPedidoGrid>ValPrecoInform'}, {path: 'modelItensPedidoGrid>ValPrecoMinCamp'}, {path: 'modelItensPedidoGrid>_CampanhaConfirmada'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}, {path: 'modelCampanhasUI>/EscalaPrecoCampanha'}, {path: 'modelItensUI>/Processando'}, {path: 'modelVar>/Editar'}, {path: 'modelCampanhasUI>/ConsumoAutomatico'}, {path: 'modelCampanhasUI>/ConsumoGrade'}, {path: 'modelPedido>/IdStatusPedido'}], formatter: '.podeAcionarCampanha'}" />
                                     </HBox>
                                 </table:template>
                             </table:Column>
-
-                            <table:Column
-                                width="9rem"
-                                hAlign="Begin"
-                            >
-                                <Label text="Campanha venda" />
-                                <table:template>
-                                    <Text
-                                        text="{parts: [{path: 'modelItensPedidoGrid>IdCamp'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}, {path: 'modelItensPedidoGrid>CampanhasVenda'}], formatter: '.formatarCodigoCampanha'}"
-                                        wrapping="false"
-                                    />
-                                </table:template>
-                            </table:Column>
-                            <table:Column
-                                width="9rem"
-                                hAlign="Begin"
-                            >
-                                <Label text="Campanha escal." />
-                                <table:template>
-                                    <Text
-                                        text="{parts: [{path: 'modelItensPedidoGrid>IdCampEscal'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}, {path: 'modelItensPedidoGrid>CampanhasEscal'}], formatter: '.formatarCodigoCampanha'}"
-                                        wrapping="false"
-                                    />
-                                </table:template>
-                            </table:Column>
-                            <table:Column
-                                width="9rem"
-                                hAlign="End"
-                            >
-                                <Label text="Liberado (R$/item)" />
-                                <table:template>
-                                    <Text
-                                        text="{parts: [{path: 'modelItensPedidoGrid>DescCampAdicional'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}], formatter: '.formatarCampanhaDisponivel'}"
-                                        tooltip="{parts: [{path: 'modelItensPedidoGrid>DescCampAdicional'}, {path: 'modelItensPedidoGrid>IdCamp'}, {path: 'modelItensPedidoGrid>IdCampEscal'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}, {path: 'modelItensPedidoGrid>_CampanhaSimulada'}, {path: 'modelItensPedidoGrid>_CampanhaErroRetorno'}], formatter: '.formatarCampanhaTooltip'}"
-                                        wrapping="false"
-                                    />
-                                </table:template>
-                            </table:Column>
-                            <table:Column
-                                width="10rem"
-                                hAlign="End"
-                            >
-                                <Label text="Aplicado (R$/item)" />
-                                <table:template>
-                                    <ObjectStatus
-                                        text="{parts: [{path: 'modelItensPedidoGrid>DescCampAplicado'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}], formatter: '.formatarCampanhaDisponivel'}"
-                                        state="{= ${modelItensPedidoGrid>CampInconsistente} === true ? 'Error' : 'None' }"
-                                        tooltip="{modelItensPedidoGrid>CampMsg}"
-                                    />
-                                </table:template>
-                            </table:Column>
-                            <table:Column
-                                width="11rem"
-                                hAlign="End"
-                            >
-                                <Label text="Base campanha (R$/CX)" />
-                                <table:template>
-                                    <Text
-                                        text="{parts: [{path: 'modelItensPedidoGrid>ValBaseCamp'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}], formatter: '.formatarPrecoUnitarioCampanha'}"
-                                        wrapping="false"
-                                    />
-                                </table:template>
-                            </table:Column>
-                            <table:Column
-                                width="11rem"
-                                hAlign="End"
-                            >
-                                <Label text="Mín. s/ campanha (R$/CX)" />
-                                <table:template>
-                                    <Text
-                                        text="{parts: [{path: 'modelItensPedidoGrid>ValPrecoMinSemCamp'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}], formatter: '.formatarPrecoUnitarioCampanha'}"
-                                        wrapping="false"
-                                    />
-                                </table:template>
-                            </table:Column>
-                            <table:Column
-                                width="11rem"
-                                hAlign="End"
-                            >
-                                <Label text="Mín. c/ campanha (R$/CX)" />
-                                <table:template>
-                                    <Text
-                                        text="{parts: [{path: 'modelItensPedidoGrid>ValPrecoMinCamp'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}], formatter: '.formatarPrecoUnitarioCampanha'}"
-                                        tooltip="{modelItensPedidoGrid>_CampanhaErroRetorno}"
-                                        wrapping="false"
-                                    />
-                                </table:template>
-                            </table:Column>
-                        </table:columns>
+                        
+                            <table:Column width="15rem" hAlign="Begin"><Label text="Campanha" /><table:template><Text text="{parts: [{path: 'modelItensPedidoGrid>IdCamp'}, {path: 'modelItensPedidoGrid>IdCampEscal'}, {path: 'modelItensPedidoGrid>CampanhasVenda'}, {path: 'modelItensPedidoGrid>CampanhasEscal'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}], formatter: '.formatarIdentificacaoCampanha'}" wrapping="true" /></table:template></table:Column>
+                            <!-- <table:Column width="9rem" hAlign="Begin"><Label text="Campanha venda" /><table:template><Text text="{parts: [{path: 'modelItensPedidoGrid>IdCamp'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}, {path: 'modelItensPedidoGrid>CampanhasVenda'}], formatter: '.formatarCodigoCampanha'}" wrapping="false" /></table:template></table:Column> -->
+                            <!-- <table:Column width="9rem" hAlign="Begin"><Label text="Campanha escal." /><table:template><Text text="{parts: [{path: 'modelItensPedidoGrid>IdCampEscal'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}, {path: 'modelItensPedidoGrid>CampanhasEscal'}], formatter: '.formatarCodigoCampanha'}" wrapping="false" /></table:template></table:Column> -->
+                            <!-- <table:Column width="9rem" hAlign="End"><Label text="Liberado (R$/CX)" /><table:template><Text text="{parts: [{path: 'modelItensPedidoGrid>DescCampAdicional'}, {path: 'modelItensPedidoGrid>QtdPedida'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}], formatter: '.formatarCampanhaPorCaixa'}" tooltip="{parts: [{path: 'modelItensPedidoGrid>DescCampAdicional'}, {path: 'modelItensPedidoGrid>IdCamp'}, {path: 'modelItensPedidoGrid>IdCampEscal'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}, {path: 'modelItensPedidoGrid>_CampanhaSimulada'}, {path: 'modelItensPedidoGrid>_CampanhaErroRetorno'}], formatter: '.formatarCampanhaTooltip'}" wrapping="false" /></table:template></table:Column> -->
+                            <!-- <table:Column width="10rem" hAlign="End"><Label text="Aplicado (R$/CX)" /><table:template><ObjectStatus text="{parts: [{path: 'modelItensPedidoGrid>DescCampAplicado'}, {path: 'modelItensPedidoGrid>QtdPedida'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}], formatter: '.formatarCampanhaPorCaixa'}" state="{= ${modelItensPedidoGrid>CampInconsistente} === true ? 'Error' : 'None' }" tooltip="{modelItensPedidoGrid>CampMsg}" /></table:template></table:Column> -->
+                            <!-- <table:Column width="11rem" hAlign="End"><Label text="Base campanha (R$/CX)" /><table:template><Text text="{parts: [{path: 'modelItensPedidoGrid>ValBaseCamp'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}], formatter: '.formatarPrecoUnitarioCampanha'}" wrapping="false" /></table:template></table:Column> -->
+                            <!-- <table:Column width="11rem" hAlign="End"><Label text="Mín. s/ campanha (R$/CX)" /><table:template><Text text="{parts: [{path: 'modelItensPedidoGrid>ValPrecoMinSemCamp'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}], formatter: '.formatarPrecoUnitarioCampanha'}" wrapping="false" /></table:template></table:Column> -->
+                            <table:Column width="11rem" hAlign="End"><Label text="Preço mínimo (R$/CX)" /><table:template><Text text="{parts: [{path: 'modelItensPedidoGrid>ValPrecoMinCamp'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}], formatter: '.formatarPrecoUnitarioCampanha'}" tooltip="{modelItensPedidoGrid>_CampanhaErroRetorno}" wrapping="false" /></table:template></table:Column>
+</table:columns>
                     </table:Table>
                     <layout:Grid
                         width="100%"

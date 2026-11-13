@@ -39,11 +39,9 @@ sap.ui.define(["sap/ui/core/format/NumberFormat"], function (NumberFormat) {
             && oPreco.returnType === oSet.entityType && !parametros(oPreco).some(function (p) { return p.name === "DescCampAplicado" && (!p.mode || p.mode === "In"); })
             && CAMPOS_CONSUMO.every(function (s) { return possui(oMeta, oTipo, s); }));
         var bConsumo = bAutomatico || bPrecoIndividual;
-        return {
-            ConsultaItem: bCampos, ConsultaGrade: bConsultaGrade, SimulacaoPedido: bAutomatico, AplicacaoItem: bConsumo,
+        return { ConsultaItem: bCampos, ConsultaGrade: bConsultaGrade, SimulacaoPedido: bAutomatico, AplicacaoItem: bConsumo,
             EscalaPrecoCampanha: escalaPrecoCampanha(oMeta, oTipo, bAutomatico ? oSim : oPreco), ConsumoAutomatico: bConsumo, ConsumoIndividual: bPrecoIndividual, ConsumoGrade: bConsumoGrade, Funcao: bAutomatico ? "P_Simular_CampanhasItem" : "P_Get_PrecoItem",
-            Mensagem: !bCampos ? "A disponibilidade de campanha por item ainda não pode ser consultada." : bAutomatico ? "Reduza o preço de venda para utilizar a campanha. Liberado e aplicado são valores totais deste item." : bPrecoIndividual ? "O consumo é calculado para o item consultado. Após salvar, os valores dos demais itens serão consultados novamente." : "A consulta atualiza o item em digitação. O consumo pelo preço e a atualização dos demais itens aguardam integração do serviço."
-        };
+            Mensagem: !bCampos ? "A disponibilidade de campanha por item ainda não pode ser consultada." : bAutomatico ? "Reduza o preço de venda para utilizar a campanha. Liberado e aplicado são exibidos por caixa." : bPrecoIndividual ? "O consumo é calculado para o item consultado. Após salvar, os valores dos demais itens serão consultados novamente." : "A consulta atualiza o item em digitação. O consumo pelo preço e a atualização dos demais itens aguardam integração do serviço." };
     }
     function normalizar(oItem, bContrato, bConsumo) {
         var o = copiar(oItem), n = numero(o.DescCampAdicional);
@@ -55,6 +53,14 @@ sap.ui.define(["sap/ui/core/format/NumberFormat"], function (NumberFormat) {
         o._CampanhaConfirmada = bConfirmada;
         o._CampanhaSimulada = false;
         delete o._CampanhaErroRetorno;
+        if (bConfirmada && n === 0) {
+            var nMinimoPolitica = numero(o.ValPrecoMinSemCamp);
+            var nMinimoCampanha = numero(o.ValPrecoMinCamp);
+            if (nMinimoPolitica !== null && nMinimoPolitica >= 0 && nMinimoCampanha !== null && nMinimoCampanha >= 0) {
+                // Sem saldo de campanha, a unica referencia de preco e o piso da politica recebido do SAP.
+                o.ValPrecoMinCamp = o.ValPrecoMinSemCamp;
+            }
+        }
         if (bConsumo && bConfirmada) {
             var sErro = inconsistenciaRetorno(o);
             if (sErro) { o._CampanhaErroRetorno = sErro; o._CampanhaConfirmada = false; o._CampanhaConsultaPendente = true; }
@@ -98,11 +104,6 @@ sap.ui.define(["sap/ui/core/format/NumberFormat"], function (NumberFormat) {
             if (numero(o[a[i]]) === null || numero(o[a[i]]) < 0) { return "A consulta não retornou " + a[i] + " válido para o item."; }
         }
         if (CAMPOS_CONSUMO.some(function (s) { return o[s] === undefined || o[s] === null; })) { return "O retorno de consumo da campanha está incompleto."; }
-        var nMinimo = numero(o.ValPrecoMinSemCamp), nMinimoCamp = numero(o.ValPrecoMinCamp), nLiberado = numero(o.DescCampAdicional);
-        if (nMinimoCamp > nMinimo + 0.00000001) { return "O serviço retornou o mínimo com campanha maior que o mínimo da flex."; }
-        if (numero(o.QtdPedida) > 0 && nLiberado === 0 && Math.abs(nMinimoCamp - nMinimo) > 0.00000001) {
-            return "O serviço retornou mínimo com campanha diferente do mínimo da flex, embora o valor liberado seja zero. Confira cálculo e mapeamento da leitura.";
-        }
         return "";
     }
     function validarRetornoConsumo(o) {
@@ -160,22 +161,66 @@ sap.ui.define(["sap/ui/core/format/NumberFormat"], function (NumberFormat) {
         if (d !== null && Math.round(a * 100) > Math.round(d * 100)) { throw new Error("O desconto aplicado excede a disponibilidade deste item."); }
     }
     function formatar(v, bPendente) { var n = numero(v); return bPendente || n === null ? "—" : "R$ " + NumberFormat.getFloatInstance({ minFractionDigits: 2, maxFractionDigits: 2 }).format(n); }
+    // Os campos OData permanecem totais por linha; converter somente na exibicao.
+    function formatarPorCaixa(vTotal, vQuantidade, bPendente) {
+        var nTotal = numero(vTotal), nQuantidade = numero(vQuantidade);
+        if (bPendente || nTotal === null || nTotal < 0 || nQuantidade === null || nQuantidade <= 0) { return "—"; }
+        return formatar(nTotal / nQuantidade, false);
+    }
     function formatarUnitario(v, bPendente) { var n = numero(v); return bPendente || n === null ? "—" : "R$ " + NumberFormat.getFloatInstance({ minFractionDigits: 2, maxFractionDigits: 3 }).format(n); }
+    function formatarMinimoPermitido(vPolitica, vCampanha, bPendente) {
+        var nPolitica = numero(vPolitica), nCampanha = numero(vCampanha);
+        if (nPolitica === null || nCampanha === null) { return "—"; }
+        return formatarUnitario(Math.min(nPolitica, nCampanha), bPendente);
+    }
     function codigoAtivo(v) {
         return String(v === null || v === undefined ? "" : v).split(",").some(function (s) { s = s.trim(); return !!s && !/^0+$/.test(s); });
     }
     function campanhaAtiva(vVenda, vEscal, sVendas, sEscal, bPendente) {
         return !bPendente && [vVenda, vEscal, sVendas, sEscal].some(codigoAtivo);
     }
+    function estadoCampanha(vVenda, vEscal, sVendas, sEscal, vAplicado, bPendente) {
+        if (!campanhaAtiva(vVenda, vEscal, sVendas, sEscal, bPendente)) { return "sem-campanha"; }
+        var nAplicado = numero(vAplicado);
+        if (nAplicado === null || nAplicado < 0) { return "consulta-pendente"; }
+        return nAplicado > 0 ? "aplicada" : "pendente";
+    }
+    function iconeCampanha(vVenda, vEscal, sVendas, sEscal, vAplicado, bPendente) {
+        return estadoCampanha(vVenda, vEscal, sVendas, sEscal, vAplicado, bPendente) === "aplicada" ? "sap-icon://paid-leave" : "sap-icon://unpaid-leave";
+    }
+    function tooltipAplicacao(vLiberado, vAplicado, vQuantidade, vPreco, vPiso, bConfirmada, bPendente, iCasas) {
+        if (bPendente || !bConfirmada) { return "Atualize o pedido para confirmar a campanha."; }
+        if (podeAplicarSaldo(vLiberado, vAplicado, vQuantidade, vPreco, vPiso, bConfirmada, bPendente, iCasas)) { return "Aplicar desconto: usar o preço mínimo permitido pela campanha."; }
+        if (numero(vAplicado) > 0) { return "Desconto de campanha aplicado ao item."; }
+        return "Item participante de campanha, sem desconto disponível para aplicar.";
+    }
+    function podeAcionarCampanha(vLiberado, vAplicado, vQuantidade, vPreco, vPiso, bConfirmada, bPendente, iCasas, bProcessando, bEditando, bAutomatico, bGrade, vStatus) {
+        return !bProcessando && !bEditando && !!bAutomatico && !!bGrade && ["2", "3", "4"].indexOf(String(vStatus)) < 0
+            && podeAplicarSaldo(vLiberado, vAplicado, vQuantidade, vPreco, vPiso, bConfirmada, bPendente, iCasas);
+    }
     function formatarCodigo(v, bPendente, sLista) {
         if (bPendente) { return "—"; }
         return codigoAtivo(sLista) ? String(sLista).trim() : codigoAtivo(v) ? String(v).trim() : "—";
     }
+    function formatarIdentificacao(vVenda, vEscal, sVendas, sEscal, bPendente) {
+        if (bPendente) { return "—"; }
+        var aResultado = [];
+        function adicionar(vCodigo, sLista, sTipo) {
+            var aCodigos = [], sOrigem = codigoAtivo(sLista) ? sLista : vCodigo;
+            String(sOrigem === null || sOrigem === undefined ? "" : sOrigem).split(",").forEach(function (s) {
+                s = s.trim();
+                if (!s || /^0+$/.test(s)) { return; }
+                if (/^\d+$/.test(s)) { s = s.replace(/^0+(?=\d)/, ""); }
+                if (aCodigos.indexOf(s) < 0) { aCodigos.push(s); aResultado.push(sTipo + " - " + s); }
+            });
+        }
+        adicionar(vVenda, sVendas, "Combo");
+        adicionar(vEscal, sEscal, "Escala");
+        return aResultado.length ? aResultado.join(" / ") : "—";
+    }
     function podeAplicarSaldo(vLiberado, vAplicado, vQuantidade, vPreco, vPiso, bConfirmada, bPendente, iCasas) {
-        return precoComSaldoCampanha({
-            DescCampAdicional: vLiberado, DescCampAplicado: vAplicado, QtdPedida: vQuantidade,
-            ValPrecoInform: vPreco, ValPrecoMinCamp: vPiso, _CampanhaConfirmada: bConfirmada, _CampanhaConsultaPendente: bPendente
-        }, iCasas) !== null;
+        return precoComSaldoCampanha({ DescCampAdicional: vLiberado, DescCampAplicado: vAplicado, QtdPedida: vQuantidade,
+            ValPrecoInform: vPreco, ValPrecoMinCamp: vPiso, _CampanhaConfirmada: bConfirmada, _CampanhaConsultaPendente: bPendente }, iCasas) !== null;
     }
     function precoComSaldoCampanha(o, iCasas) {
         var l = numero(o.DescCampAdicional), a = numero(o.DescCampAplicado), q = numero(o.QtdPedida);
@@ -187,6 +232,25 @@ sap.ui.define(["sap/ui/core/format/NumberFormat"], function (NumberFormat) {
         var nNovo = Math.ceil(m * nFator - 0.00000001) / nFator;
         return nNovo < p ? nNovo : null;
     }
+    function lerItensPedido(oModel, sNrPedido, fnNormalizarCor) {
+        return new Promise(function (res, rej) {
+            if (!sNrPedido) { rej(new Error("Informe o pedido para atualizar os itens.")); return; }
+            oModel.read("/P_ItensPedidoQ", {
+                headers: { "Cache-Control": "no-cache" },
+                urlParameters: { "$filter": "IvNrPedido eq '" + String(sNrPedido).replace(/'/g, "''") + "'" },
+                success: function (oData) {
+                    if (!oData || !Array.isArray(oData.results) || oData.__next) {
+                        rej(new Error("A leitura dos itens não retornou a coleção completa do pedido.")); return;
+                    }
+                    res(oData.results.map(function (o) {
+                        var n = copiar(o);
+                        n.IdCorGrid = fnNormalizarCor(n.IdCorGrid);
+                        return n;
+                    }));
+                }, error: rej
+            });
+        });
+    }
     function formatarSaldo(vLiberado, vAplicado, bPendente) { var d = numero(vLiberado), a = numero(vAplicado); return bPendente || d === null || a === null ? "—" : formatar(d - a, false); }
     function tooltip(v, sVenda, sEscal, bPendente, bSimulada, sErro) {
         if (sErro) { return sErro; }
@@ -196,9 +260,7 @@ sap.ui.define(["sap/ui/core/format/NumberFormat"], function (NumberFormat) {
         if (sEscal && !/^0+$/.test(String(sEscal).trim())) { a.push("Campanha escalonada: " + sEscal + "."); }
         return a.join(" ");
     }
-    return {
-        CAMPOS: CAMPOS, CAMPOS_RETORNO: CAMPOS_RETORNO, numero: numero, aplicadoNuloOuZero: aplicadoNuloOuZero, material: material, chave: chave, contrato: contrato, normalizar: normalizar,
+    return { CAMPOS: CAMPOS, CAMPOS_RETORNO: CAMPOS_RETORNO, numero: numero, aplicadoNuloOuZero: aplicadoNuloOuZero, material: material, chave: chave, contrato: contrato, normalizar: normalizar,
         selecionar: selecionar, filtrarParametros: filtrarParametros, atualizarGrade: atualizarGrade, pendente: pendente,
-        inconsistenciaRetorno: inconsistenciaRetorno, validarRetornoConsumo: validarRetornoConsumo, mesclarRetornoGravacao: mesclarRetornoGravacao, validarAplicado: validarAplicado, formatar: formatar, formatarUnitario: formatarUnitario, campanhaAtiva: campanhaAtiva, podeAplicarSaldo: podeAplicarSaldo, precoComSaldoCampanha: precoComSaldoCampanha, formatarCodigo: formatarCodigo, formatarSaldo: formatarSaldo, tooltip: tooltip
-    };
+        lerItensPedido: lerItensPedido, inconsistenciaRetorno: inconsistenciaRetorno, validarRetornoConsumo: validarRetornoConsumo, mesclarRetornoGravacao: mesclarRetornoGravacao, validarAplicado: validarAplicado, formatar: formatar, formatarPorCaixa: formatarPorCaixa, formatarUnitario: formatarUnitario, formatarMinimoPermitido: formatarMinimoPermitido, campanhaAtiva: campanhaAtiva, estadoCampanha: estadoCampanha, iconeCampanha: iconeCampanha, tooltipAplicacao: tooltipAplicacao, podeAcionarCampanha: podeAcionarCampanha, podeAplicarSaldo: podeAplicarSaldo, precoComSaldoCampanha: precoComSaldoCampanha, formatarCodigo: formatarCodigo, formatarIdentificacao: formatarIdentificacao, formatarSaldo: formatarSaldo, tooltip: tooltip };
 });

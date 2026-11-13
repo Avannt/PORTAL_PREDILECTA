@@ -1045,10 +1045,11 @@
                                             >
                                                 <Label text="Item" />
                                                 <table:template>
-                                                    <HBox alignItems="Center">
-                                                        <ObjectStatus text="$" state="Success" tooltip="Campanha ativa" class="sapUiTinyMarginEnd" visible="{parts: [{path: 'modelItensPedidoGrid>IdCamp'}, {path: 'modelItensPedidoGrid>IdCampEscal'}, {path: 'modelItensPedidoGrid>CampanhasVenda'}, {path: 'modelItensPedidoGrid>CampanhasEscal'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}], formatter: '.formatarCampanhaAtiva'}" />
-                                                        <Text text="{modelItensPedidoGrid>Matnr}" wrapping="false" />
-                                                    </HBox>
+                                                    <HBox alignItems="Center" width="100%" class="campanhaItemCell">
+                                            <customData><core:CustomData key="campanhaestado" value="{parts: [{path: 'modelItensPedidoGrid>IdCamp'}, {path: 'modelItensPedidoGrid>IdCampEscal'}, {path: 'modelItensPedidoGrid>CampanhasVenda'}, {path: 'modelItensPedidoGrid>CampanhasEscal'}, {path: 'modelItensPedidoGrid>DescCampAplicado'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}], formatter: '.formatarEstadoCampanha'}" writeToDom="true" /></customData>
+                                            <Button class="campanhaItemAplicar sapUiTinyMarginEnd" type="Transparent" icon="{parts: [{path: 'modelItensPedidoGrid>IdCamp'}, {path: 'modelItensPedidoGrid>IdCampEscal'}, {path: 'modelItensPedidoGrid>CampanhasVenda'}, {path: 'modelItensPedidoGrid>CampanhasEscal'}, {path: 'modelItensPedidoGrid>DescCampAplicado'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}], formatter: '.formatarIconeCampanha'}" press="onAplicarCampanhaItemGrid" visible="{parts: [{path: 'modelItensPedidoGrid>IdCamp'}, {path: 'modelItensPedidoGrid>IdCampEscal'}, {path: 'modelItensPedidoGrid>CampanhasVenda'}, {path: 'modelItensPedidoGrid>CampanhasEscal'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}], formatter: '.formatarCampanhaAtiva'}" enabled="{parts: [{path: 'modelItensPedidoGrid>DescCampAdicional'}, {path: 'modelItensPedidoGrid>DescCampAplicado'}, {path: 'modelItensPedidoGrid>QtdPedida'}, {path: 'modelItensPedidoGrid>ValPrecoInform'}, {path: 'modelItensPedidoGrid>ValPrecoMinCamp'}, {path: 'modelItensPedidoGrid>_CampanhaConfirmada'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}, {path: 'modelCampanhasUI>/EscalaPrecoCampanha'}, {path: 'modelItensUI>/Processando'}, {path: 'modelVar>/Editar'}, {path: 'modelCampanhasUI>/ConsumoAutomatico'}, {path: 'modelCampanhasUI>/ConsumoGrade'}, {path: 'modelPedido>/IdStatusPedido'}], formatter: '.podeAcionarCampanha'}" tooltip="{parts: [{path: 'modelItensPedidoGrid>DescCampAdicional'}, {path: 'modelItensPedidoGrid>DescCampAplicado'}, {path: 'modelItensPedidoGrid>QtdPedida'}, {path: 'modelItensPedidoGrid>ValPrecoInform'}, {path: 'modelItensPedidoGrid>ValPrecoMinCamp'}, {path: 'modelItensPedidoGrid>_CampanhaConfirmada'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}, {path: 'modelCampanhasUI>/EscalaPrecoCampanha'}], formatter: '.formatarTooltipAplicacaoCampanha'}" />
+                                            <Text text="{modelItensPedidoGrid>Matnr}" wrapping="false" />
+                                        </HBox>
                                                 </table:template>
                                             </table:Column>
                                             <table:Column
@@ -1083,7 +1084,7 @@
                                                 <Label text="Valor Venda" />
                                                 <table:template>
                                                     <Text
-                                                        text="{path: 'modelItensPedidoGrid>ValPrecoInform', mode: 'OneWay', type: 'sap.ui.model.type.Float', formatOptions: {minFractionDigits: 2, maxFractionDigits: 3}}"
+                                                        text="{path: 'modelItensPedidoGrid>ValPrecoInform', mode: 'OneWay', type: 'sap.ui.model.type.Float', formatOptions: {minFractionDigits: 2, maxFractionDigits: 2}}"
                                                         wrapping="false"
                                                     />
                                                 </table:template>
@@ -1306,13 +1307,14 @@
                                                 </table:template>
                                             </table:Column>
                                         
-                            <table:Column width="9rem" hAlign="Begin"><Label text="Campanha venda" /><table:template><Text text="{parts: [{path: 'modelItensPedidoGrid>IdCamp'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}, {path: 'modelItensPedidoGrid>CampanhasVenda'}], formatter: '.formatarCodigoCampanha'}" wrapping="false" /></table:template></table:Column>
-                            <table:Column width="9rem" hAlign="Begin"><Label text="Campanha escal." /><table:template><Text text="{parts: [{path: 'modelItensPedidoGrid>IdCampEscal'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}, {path: 'modelItensPedidoGrid>CampanhasEscal'}], formatter: '.formatarCodigoCampanha'}" wrapping="false" /></table:template></table:Column>
-                            <table:Column width="9rem" hAlign="End"><Label text="Liberado (R$/item)" /><table:template><Text text="{parts: [{path: 'modelItensPedidoGrid>DescCampAdicional'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}], formatter: '.formatarCampanhaDisponivel'}" tooltip="{parts: [{path: 'modelItensPedidoGrid>DescCampAdicional'}, {path: 'modelItensPedidoGrid>IdCamp'}, {path: 'modelItensPedidoGrid>IdCampEscal'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}, {path: 'modelItensPedidoGrid>_CampanhaSimulada'}, {path: 'modelItensPedidoGrid>_CampanhaErroRetorno'}], formatter: '.formatarCampanhaTooltip'}" wrapping="false" /></table:template></table:Column>
-                            <table:Column width="10rem" hAlign="End"><Label text="Aplicado (R$/item)" /><table:template><ObjectStatus text="{parts: [{path: 'modelItensPedidoGrid>DescCampAplicado'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}], formatter: '.formatarCampanhaDisponivel'}" state="{= ${modelItensPedidoGrid>CampInconsistente} === true ? 'Error' : 'None' }" tooltip="{modelItensPedidoGrid>CampMsg}" /></table:template></table:Column>
-                            <table:Column width="11rem" hAlign="End"><Label text="Base campanha (R$/CX)" /><table:template><Text text="{parts: [{path: 'modelItensPedidoGrid>ValBaseCamp'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}], formatter: '.formatarPrecoUnitarioCampanha'}" wrapping="false" /></table:template></table:Column>
-                            <table:Column width="11rem" hAlign="End"><Label text="Mín. s/ campanha (R$/CX)" /><table:template><Text text="{parts: [{path: 'modelItensPedidoGrid>ValPrecoMinSemCamp'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}], formatter: '.formatarPrecoUnitarioCampanha'}" wrapping="false" /></table:template></table:Column>
-                            <table:Column width="11rem" hAlign="End"><Label text="Mín. c/ campanha (R$/CX)" /><table:template><Text text="{parts: [{path: 'modelItensPedidoGrid>ValPrecoMinCamp'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}], formatter: '.formatarPrecoUnitarioCampanha'}" tooltip="{modelItensPedidoGrid>_CampanhaErroRetorno}" wrapping="false" /></table:template></table:Column>
+                            <table:Column width="15rem" hAlign="Begin"><Label text="Campanha" /><table:template><Text text="{parts: [{path: 'modelItensPedidoGrid>IdCamp'}, {path: 'modelItensPedidoGrid>IdCampEscal'}, {path: 'modelItensPedidoGrid>CampanhasVenda'}, {path: 'modelItensPedidoGrid>CampanhasEscal'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}], formatter: '.formatarIdentificacaoCampanha'}" wrapping="true" /></table:template></table:Column>
+                            <!-- <table:Column width="9rem" hAlign="Begin"><Label text="Campanha venda" /><table:template><Text text="{parts: [{path: 'modelItensPedidoGrid>IdCamp'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}, {path: 'modelItensPedidoGrid>CampanhasVenda'}], formatter: '.formatarCodigoCampanha'}" wrapping="false" /></table:template></table:Column> -->
+                            <!-- <table:Column width="9rem" hAlign="Begin"><Label text="Campanha escal." /><table:template><Text text="{parts: [{path: 'modelItensPedidoGrid>IdCampEscal'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}, {path: 'modelItensPedidoGrid>CampanhasEscal'}], formatter: '.formatarCodigoCampanha'}" wrapping="false" /></table:template></table:Column> -->
+                            <!-- <table:Column width="9rem" hAlign="End"><Label text="Liberado (R$/CX)" /><table:template><Text text="{parts: [{path: 'modelItensPedidoGrid>DescCampAdicional'}, {path: 'modelItensPedidoGrid>QtdPedida'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}], formatter: '.formatarCampanhaPorCaixa'}" tooltip="{parts: [{path: 'modelItensPedidoGrid>DescCampAdicional'}, {path: 'modelItensPedidoGrid>IdCamp'}, {path: 'modelItensPedidoGrid>IdCampEscal'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}, {path: 'modelItensPedidoGrid>_CampanhaSimulada'}, {path: 'modelItensPedidoGrid>_CampanhaErroRetorno'}], formatter: '.formatarCampanhaTooltip'}" wrapping="false" /></table:template></table:Column> -->
+                            <!-- <table:Column width="10rem" hAlign="End"><Label text="Aplicado (R$/CX)" /><table:template><ObjectStatus text="{parts: [{path: 'modelItensPedidoGrid>DescCampAplicado'}, {path: 'modelItensPedidoGrid>QtdPedida'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}], formatter: '.formatarCampanhaPorCaixa'}" state="{= ${modelItensPedidoGrid>CampInconsistente} === true ? 'Error' : 'None' }" tooltip="{modelItensPedidoGrid>CampMsg}" /></table:template></table:Column> -->
+                            <!-- <table:Column width="11rem" hAlign="End"><Label text="Base campanha (R$/CX)" /><table:template><Text text="{parts: [{path: 'modelItensPedidoGrid>ValBaseCamp'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}], formatter: '.formatarPrecoUnitarioCampanha'}" wrapping="false" /></table:template></table:Column> -->
+                            <!-- <table:Column width="11rem" hAlign="End"><Label text="Mín. s/ campanha (R$/CX)" /><table:template><Text text="{parts: [{path: 'modelItensPedidoGrid>ValPrecoMinSemCamp'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}], formatter: '.formatarPrecoUnitarioCampanha'}" wrapping="false" /></table:template></table:Column> -->
+                            <table:Column width="11rem" hAlign="End"><Label text="Preço mínimo (R$/CX)" /><table:template><Text text="{parts: [{path: 'modelItensPedidoGrid>ValPrecoMinCamp'}, {path: 'modelItensPedidoGrid>_CampanhaConsultaPendente'}], formatter: '.formatarPrecoUnitarioCampanha'}" tooltip="{modelItensPedidoGrid>_CampanhaErroRetorno}" wrapping="false" /></table:template></table:Column>
 </table:columns>
                                     </table:Table>
 
@@ -1615,21 +1617,25 @@
                                                                 <Input
                                                                     id="idDescontoAplicarBoleto"
                                                                     enabled="true"
-                                                                    type="Number"
-                                                                    value="{modelPedido>/ValDescAplicarBol}"
-                                                                    liveChange="onCalculaDescBoletoReduzido"
-                                                                    change="onCalculaPrecoDebitarVerba"
-                                                                    placeholder="Valor informado"
+                                                                    editable="false"
+                                                                    type="Text"
+                                                                    value="{path: 'modelPedido>/ValDescAplicarBol', mode: 'OneWay', type: 'sap.ui.model.type.Float', formatOptions: { groupingEnabled: true, groupingSeparator: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits: 2 }}"
+                                                                    placeholder="Valor calculado"
+                                                                    tooltip="Valor antes da redução ponderada, calculado a partir do valor à direita"
                                                                     width="50%"
                                                                     class="sapUiTinyMarginEnd"
                                                                 />
 
                                                                 <Input
                                                                     id="idDescontoAplicarBoletoReduz"
-                                                                    editable="false"
+                                                                    editable="true"
+                                                                    enabled="true"
                                                                     type="Text"
                                                                     value="{path: 'modelPedido>/ValDescInformBoletoReduzid', type: 'sap.ui.model.type.Float', formatOptions: { groupingEnabled: true, groupingSeparator: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits: 2 }}"
-                                                                    placeholder="Valor reduzido"
+                                                                    liveChange="onLiveChangeDescBoletoLiquido"
+                                                                    change="onChangeDescBoletoLiquido"
+                                                                    placeholder="Informe o valor desejado"
+                                                                    tooltip="Informe o desconto desejado; o valor da esquerda será calculado pela taxa ponderada do pedido"
                                                                     width="50%"
                                                                 />
                                                             </HBox>
@@ -1653,7 +1659,7 @@
                                             <!-- DESCONTO CAMPANHA PEDIDO                           -->
                                             <!-- ================================================== -->
 
-                                            <Panel
+                                            <Panel visible="false"
                                                 expandable="true"
                                                 expanded="true"
                                                 width="100%"
@@ -1754,7 +1760,7 @@
                                             <!-- DESCONTO CAMPANHA BOLETO                           -->
                                             <!-- ================================================== -->
 
-                                            <Panel
+                                            <Panel visible="false"
                                                 headerText="Desconto Campanha Boleto"
                                                 expandable="true"
                                                 expanded="true"
@@ -1831,7 +1837,7 @@
                                             <!-- DESCONTO ESCALONADA PEDIDO                         -->
                                             <!-- ================================================== -->
 
-                                            <Panel
+                                            <Panel visible="false"
                                                 expandable="true"
                                                 expanded="true"
                                                 width="100%"
@@ -1931,7 +1937,7 @@
                                             <!-- DESCONTO ESCALONADA BOLETO                         -->
                                             <!-- ================================================== -->
 
-                                            <Panel
+                                            <Panel visible="false"
                                                 headerText="Desconto Escalonada Boleto"
                                                 expandable="true"
                                                 expanded="true"

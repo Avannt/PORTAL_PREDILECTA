@@ -1,0 +1,28 @@
+.campanhaItemCell {
+    min-height: 2rem;
+    padding: 0 0.25rem;
+    box-sizing: border-box;
+    border-radius: 0.25rem;
+}
+
+.campanhaItemCell[data-campanhaestado="pendente"] {
+    background-color: var(--sapWarningBackground, #fff3b8);
+    box-shadow: inset 0.2rem 0 var(--sapWarningColor, #b26a00);
+}
+
+.campanhaItemCell .sapMText {
+    color: var(--sapTextColor, #32363a);
+}
+
+.campanhaItemAplicar .sapMBtnIcon {
+    font-size: 1.5rem;
+    color: var(--sapPositiveColor, #107e3e);
+}
+
+.campanhaItemAplicar .sapMBtnInner {
+    min-width: 2.25rem;
+}
+
+.campanhaItemAplicar.sapMBtnDisabled .sapMBtnIcon {
+    opacity: 0.7;
+}

@@ -1,72 +1,50 @@
-<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic" height="100%" controllerName="application.controller.detalhesRelatorioTabelas">
-	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Relatório de Tabelas de Preço">
-		<subHeader><Toolbar>
-				<SearchField class="camposDialog" id="idProdutoRelatorio" placeholder="Digite código ou descrição do produto" tooltip="Pesquisar Itens pelo Código/Descrição" enableSuggestions="true" search="onItemChange" suggest="_handleValueHelpSearch" width="100%" suggestionItems="{ path: 'detalhesRelatorioTabelas>/', sorter: { path: 'Matnr' } }">
-					<suggestionItems>
-						<SuggestionItem text="{modelTabPreco>Matnr}" description="{modelTabPreco>Maktx}" key="{modelTabPreco>Matnr}"/>
-					</suggestionItems>
-				</SearchField>
-				<Button xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:layout="sap.ui.layout" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" xmlns:semantic="sap.m.semantic" xmlns="sap.m" icon="sap-icon://excel-attachment" press="onExport" type="Emphasized" text="Exportar" tooltip="Exportar Dados" id="button0"/>
-			<content/>
-			</Toolbar>
-		</subHeader>
-		<semantic:FullscreenPage id="page">
-			<semantic:content>
-				<Table id="idtablePrecos" busyIndicatorDelay="2000" growing="true" growingScrollToLoad="false" growingThreshold="10" noDataText="Não possui itens na tabela de preço" updateFinished="onUpdateFinished" width="100%" items="{ path: 'modelTabPreco>/', sorter: { path: 'Matnr', ascending: true}}">
-					<columns>
-						<Column demandPopin="false" minScreenWidth="280px">
-							<Text text="Código"/>
-						</Column>
-						<Column demandPopin="false" minScreenWidth="960px">
-							<Text text="Descrição"/>
-						</Column>
-						<Column demandPopin="true" minScreenWidth="220px">
-							<Text text="Pallet"/>
-						</Column>
-						<Column demandPopin="true" minScreenWidth="220px">
-							<Text text="CXs"/>
-						</Column>
-						<Column demandPopin="true" minScreenWidth="380px">
-							<Text text="Preço Bruto"/>
-						</Column>
-						<Column demandPopin="true" minScreenWidth="220px">
-							<Text text="Canal"/>
-						</Column>
-						<Column demandPopin="true" minScreenWidth="220px">
-							<Text text="Promocional"/>
-						</Column>
-							<Column demandPopin="true" minScreenWidth="220px">
-							<Text text="Preço Líquido"/>
-						</Column>
-						<Column demandPopin="false" minScreenWidth="320px">
-							<Text text="Preço c/ST"/>
-						</Column>
-						<Column demandPopin="true" minScreenWidth="220px">
-							<Text text="ST"/>
-						</Column>
-						<Column demandPopin="true" minScreenWidth="220px">
-							<Text text="Contrato"/>
-						</Column>
-					</columns>
-					<items>
-						<ColumnListItem>
-							<cells>
-								<Text text="{modelTabPreco>Matnr}"/>
-								<Text text="{modelTabPreco>Maktx}"/>
-								<Text text="{modelTabPreco>QntPallet}" textAlign="Right"/>
-								<Text text="{modelTabPreco>QntCaixa}"  textAlign="Right"/>
-								<Text text="R$ {path: 'modelTabPreco>ValPrecoOrig', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" wrapping="false"/>
-								<Text text="{path: 'modelTabPreco>PercCanal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} %" wrapping="false"/>
-								<Text text="{path: 'modelTabPreco>PercPromoMax', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} %" wrapping="false"/>
-								<Text text="R$ {path: 'modelTabPreco>ValPrecoInform', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" wrapping="false"/>
-								<Text text="R$ {path: 'modelTabPreco>ValPrecoUnitSt', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" wrapping="false"/>
-								<Text text="{path: 'modelTabPreco>PerSubTri', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} %" wrapping="false"/>
-								<Text text="{path: 'modelTabPreco>PctDescContrato', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} %" wrapping="false"/>
-							</cells>
-						</ColumnListItem>
-					</items>
-				</Table>
-			</semantic:content>
-		</semantic:FullscreenPage>
-	</Page>
+<mvc:View height="100%" xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:form="sap.ui.layout.form" controllerName="application.controller.detalhesRelatorioTabelas">
+    <Page id="master" title="Resultado da tabela de preço" showNavButton="true" navButtonPress="onNavBack" class="sapUiSizeCompact">
+        <content>
+            <VBox id="page" class="sapUiResponsiveMargin">
+                <Panel headerText="Condições da consulta" expandable="true" expanded="true" backgroundDesign="Solid" class="sapUiSmallMarginBottom">
+                    <content>
+                        <form:SimpleForm editable="false" layout="ResponsiveGridLayout" columnsXL="3" columnsL="3" columnsM="2" labelSpanXL="4" labelSpanL="4" labelSpanM="4" emptySpanXL="0" emptySpanL="0" emptySpanM="0" singleContainerFullSize="false">
+                            <form:content>
+                                <core:Title text="Cliente e centro"/><Label text="Cliente"/><Text text="{modelParametros>/NomeCliente}"/><Label text="Centro"/><Text text="{modelParametros>/DescCentro}"/><Label text="Origem / destino"/><Text text="{modelParametros>/UFOrigem} → {modelParametros>/UFDestino}"/>
+                                <core:Title text="Condições comerciais"/><Label text="Tabela"/><Text text="{modelParametros>/DescTabelaPreco}"/><Label text="Vencimento"/><Text text="{modelParametros>/DescVencto}"/><Label text="Canal"/><Text text="{modelParametros>/CanalAtuacao}"/>
+                                <core:Title text="Entrega e exibição"/><Label text="Frete"/><Text text="{modelParametros>/DescTipoFrete}"/><Label text="Preços por"/><Text text="{modelParametros>/Exibicao}"/><Label text="Índice"/><Text text="{path: 'modelParametros>/Indice', formatter: '.formatarValor'} %"/>
+                            </form:content>
+                        </form:SimpleForm>
+                    </content>
+                </Panel>
+                <MessageStrip text="{= ${modelResumo>/SemPrecoST} + ' item(ns) retornaram sem preço com ST. Consulte o responsável pela tabela.' }" type="Warning" showIcon="true" visible="{= ${modelResumo>/SemPrecoST} > 0 }" class="sapUiSmallMarginBottom"/>
+                <MessageStrip text="Não foi possível carregar os preços. Volte para revisar os filtros ou refaça a consulta." type="Error" showIcon="true" visible="{modelResumo>/Erro}" class="sapUiSmallMarginBottom"/>
+                <Table id="idtablePrecos" width="100%" fixedLayout="true" busy="{modelResumo>/Carregando}" busyIndicatorDelay="0" growing="true" growingThreshold="30" growingScrollToLoad="false" noDataText="Nenhum produto encontrado para esta consulta ou pesquisa." updateFinished="onUpdateFinished" items="{path: 'modelTabPreco>/', sorter: {path: 'Matnr', descending: false}}">
+                    <headerToolbar><OverflowToolbar><Title text="Produtos" level="H3"/><ObjectStatus text="{= ${modelResumo>/Visiveis} + ' / ' + ${modelResumo>/Total} }"/><ToolbarSpacer/><SearchField id="idProdutoRelatorio" width="18rem" placeholder="Código ou descrição" tooltip="Pesquisar por código ou descrição" enableSuggestions="true" search="onItemChange" liveChange="onItemChange" suggest="_handleValueHelpSearch" suggestionItems="{path: 'modelTabPreco>/', sorter: {path: 'Matnr'}}"><suggestionItems><SuggestionItem key="{modelTabPreco>Matnr}" text="{modelTabPreco>Matnr}" description="{modelTabPreco>Maktx}"/></suggestionItems></SearchField><Button id="button0" text="Exportar" icon="sap-icon://excel-attachment" press="onExport" tooltip="Exportar os produtos da pesquisa atual" enabled="{= !${modelResumo>/Carregando} &amp;&amp; !${modelResumo>/Exportando} &amp;&amp; ${modelResumo>/Visiveis} > 0 }"/></OverflowToolbar></headerToolbar>
+                    <columns>
+                        <Column width="7rem" hAlign="Begin" demandPopin="false" popinDisplay="Inline"><Text text="Código"/></Column>
+                        <Column width="auto" hAlign="Begin" demandPopin="false" popinDisplay="Inline"><Text text="Descrição"/></Column>
+                        <Column width="5rem" hAlign="End" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline"><Text text="Pallet"/></Column>
+                        <Column width="5rem" hAlign="End" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline"><Text text="CXs"/></Column>
+                        <Column width="8rem" hAlign="End" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline"><Text text="Preço bruto"/></Column>
+                        <Column width="6rem" hAlign="End" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline"><Text text="Canal (%)"/></Column>
+                        <Column width="8rem" hAlign="End" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline"><Text text="Promocional (%)"/></Column>
+                        <Column width="8rem" hAlign="End" demandPopin="true" minScreenWidth="Tablet" popinDisplay="Inline"><Text text="Preço líquido"/></Column>
+                        <Column width="8rem" hAlign="End" demandPopin="true" minScreenWidth="Tablet" popinDisplay="Inline"><Text text="Preço c/ ST"/></Column>
+                        <Column width="6rem" hAlign="End" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline"><Text text="ST (%)"/></Column>
+                        <Column width="7rem" hAlign="End" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline"><Text text="Contrato (%)"/></Column>
+                    </columns>
+                    <items><ColumnListItem vAlign="Middle"><cells>
+                        <Text text="{modelTabPreco>Matnr}"/>
+                        <Text text="{modelTabPreco>Maktx}" tooltip="{modelTabPreco>Maktx}" wrapping="true"/>
+                        <Text text="{modelTabPreco>QntPallet}"/>
+                        <Text text="{modelTabPreco>QntCaixa}"/>
+                        <Text text="R$ {path: 'modelTabPreco>ValPrecoOrig', formatter: '.formatarValor'}" wrapping="false"/>
+                        <Text text="{path: 'modelTabPreco>PercCanal', formatter: '.formatarValor'} %" wrapping="false"/>
+                        <Text text="{path: 'modelTabPreco>PercPromoMax', formatter: '.formatarValor'} %" wrapping="false"/>
+                        <Text text="R$ {path: 'modelTabPreco>ValPrecoInform', formatter: '.formatarValor'}" wrapping="false"/>
+                        <Text text="R$ {path: 'modelTabPreco>ValPrecoUnitSt', formatter: '.formatarValor'}" wrapping="false"/>
+                        <Text text="{path: 'modelTabPreco>PerSubTri', formatter: '.formatarValor'} %" wrapping="false"/>
+                        <Text text="{path: 'modelTabPreco>PctDescContrato', formatter: '.formatarValor'} %" wrapping="false"/>
+                    </cells></ColumnListItem></items>
+                </Table>
+            </VBox>
+        </content>
+    </Page>
 </mvc:View>

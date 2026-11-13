@@ -8,8 +8,10 @@ sap.ui.define([
 	"sap/ui/export/Spreadsheet",
 	"application/model/ItemPedidoSupport",
 		"application/model/CampanhaItemSupport",
+	"sap/ui/dom/includeStylesheet",
+	"application/model/BoletoDescontoSupport",
 
-], function (BaseController, JSONModel, MessageBox, formatter, library, Spreadsheet, ItemPedidoSupport, CampanhaItemSupport) {
+], function (BaseController, JSONModel, MessageBox, formatter, library, Spreadsheet, ItemPedidoSupport, CampanhaItemSupport, includeStylesheet, BoletoDescontoSupport) {
 	"use strict";
 
 	var EdmType = library.EdmType;
@@ -26,6 +28,10 @@ sap.ui.define([
 			} catch (e) { MessageBox.warning(e.message); return false; }
 			return true;
 		},
+
+        onBuscarItensPedido: function (res, rej, sNrPedido) {
+            return CampanhaItemSupport.lerItensPedido(this.oModel, sNrPedido, this._normalizarIdCorGrid.bind(this)).then(res, rej);
+        },
 
 		_prepararCampanhasGrid: function (aItens) {
 			var c = this._contratoCampanhas;
@@ -47,17 +53,37 @@ sap.ui.define([
 
 		formatarCodigoCampanha: function (v, bPendente, sLista) { return CampanhaItemSupport.formatarCodigo(v, bPendente, sLista); },
 
+		formatarIdentificacaoCampanha: function (vVenda, vEscal, sVendas, sEscal, bPendente) { return CampanhaItemSupport.formatarIdentificacao(vVenda, vEscal, sVendas, sEscal, bPendente); },
+
 		formatarPrecoUnitarioCampanha: function (v, bPendente) { return CampanhaItemSupport.formatarUnitario(v, bPendente); },
+
+		formatarPrecoMinimoPermitido: function (vPolitica, vCampanha, bPendente) { return CampanhaItemSupport.formatarMinimoPermitido(vPolitica, vCampanha, bPendente); },
 
 		formatarCampanhaDisponivel: function (v, bPendente) { return CampanhaItemSupport.formatar(v, bPendente); },
 
+		formatarCampanhaPorCaixa: function (vTotal, vQuantidade, bPendente) { return CampanhaItemSupport.formatarPorCaixa(vTotal, vQuantidade, bPendente); },
+
+
+        formatarEstadoCampanha: function () { return CampanhaItemSupport.estadoCampanha.apply(null, arguments); },
+        formatarIconeCampanha: function () { return CampanhaItemSupport.iconeCampanha.apply(null, arguments); },
+        formatarTooltipAplicacaoCampanha: function () { return CampanhaItemSupport.tooltipAplicacao.apply(null, arguments); },
+        podeAcionarCampanha: function () { return CampanhaItemSupport.podeAcionarCampanha.apply(null, arguments); },
+
 		onInit: function () {
+            this.setModel(new JSONModel({ Processando: false }), "modelItensUI");
+            includeStylesheet(sap.ui.require.toUrl("application/css/CampanhaItem.css"), "predilecta-campanha-item-css");
 			this.setModel(new JSONModel({ ConsultaItem: false, ConsultaGrade: false, SimulacaoPedido: false, AplicacaoItem: false, Mensagem: "" }), "modelCampanhasUI");
 
 			this.getRouter().getRoute("pedidoDetalhe").attachPatternMatched(this.onLoadFields, this);
 		},
 
 		onLoadFields: function () {
+            this._navegacaoCampanhaEmAndamento = false;
+            this._boletoDigitacaoAtiva = false;
+            this._boletoEntradaInvalida = false;
+            this._erroDescontoBoleto = "";
+            this._boletoLiquidoDigitado = null;
+            this.getModel("modelItensUI").setProperty("/Processando", false);
 
 			var that = this;
 			var NrPedido = that.getModelGlobal("modelAux").getProperty("/NrPedido");
@@ -854,6 +880,7 @@ sap.ui.define([
 					that.byId("idDescontoPedido").setEnabled(false);
 					that.byId("idDescontoAplicar").setEnabled(false);
 					that.byId("idDescontoAplicarBoleto").setEnabled(false);
+                    that.byId("idDescontoAplicarBoletoReduz").setEnabled(false);
 					that.byId("idDescontoPedidoCamp").setEnabled(false);
 					that.byId("idDescontoAplicarCamp").setEnabled(false);
 					that.byId("idDescontoPedidoBoleto").setEnabled(false);
@@ -874,6 +901,7 @@ sap.ui.define([
 					that.byId("idDescontoPedido").setEnabled(true);
 					that.byId("idDescontoAplicar").setEnabled(true);
 					that.byId("idDescontoAplicarBoleto").setEnabled(true);
+                    that.byId("idDescontoAplicarBoletoReduz").setEnabled(true);
 					that.byId("idDescontoPedidoCamp").setEnabled(true);
 					that.byId("idDescontoAplicarCamp").setEnabled(true);
 					that.byId("idDescontoPedidoBoleto").setEnabled(true);
@@ -943,6 +971,7 @@ sap.ui.define([
 		},
 
 		onLiberarItensPedido: function () {
+            if (!this._validarBoletoAntesGravar()) { return; }
 			var that = this;
 
 			var Pedido = that.getModelGlobal("modelPedido").getData();
@@ -2650,9 +2679,9 @@ sap.ui.define([
 
 							// that.getModelGlobal("modelAux").setProperty("/ItensPedidoTab", that.vetorItensPedido.length);
 
-							that.onValidacoesCampanha();
+							if (!that.onCalculaDescBoletoReduzido()) { return; }
+                            that.onValidacoesCampanha();
 							that.onValidacoesCampanhaEscal();
-							that.onCalculaDescBoletoReduzido();
 							that.onCalculaPrecoDebitarVerba();
 							that.onCalculaRentabilidade();
 
@@ -2680,12 +2709,15 @@ sap.ui.define([
 			}
 
 			var ValDescDisp = parseFloat(pedido.ValDescDisp);
-			var ValDescTrader = parseFloat(pedido.ValDescTrader);
-			var ValDescDispTotal = parseFloat(ValDescTrader) + parseFloat(ValDescDisp);
 			var MotivoDescNota = pedido.MotivoDescNota;
 			var ValDescAplicar = parseFloat(pedido.ValDescAplicar);
 			var MotivoDescBoleto1 = pedido.MotivoDescBoleto1;
-			var ValDescAplicarBol = parseFloat(pedido.ValDescAplicarBol);
+            var valoresBoleto;
+            try { valoresBoleto = this._valoresLimiteBoleto(); }
+            catch (e) { this._estadoDescontoBoleto(e.message); return; }
+            // O limite incide sobre o liquido digitado; o bruto calculado continua no modelo.
+            var ValDescAplicarBol = valoresBoleto.digitado;
+            var ValDescDispTotal = valoresBoleto.disponivel;
 
 			if (ValDescDisp < 0) {
 
@@ -2693,40 +2725,37 @@ sap.ui.define([
 				console.log("Valor Desconto Disp foi zerado por estar negativo.");
 			}
 
-			var ValDescBoletoPerm = ((ValDescDisp + ValDescTrader) * pedido.PercFlexBoleto) / 100;
-			ValDescBoletoPerm = parseFloat(ValDescBoletoPerm).toFixed(2);
+            var ValDescBoletoPerm = valoresBoleto.limite;
 
-			var Maior = Math.max(ValDescBoletoPerm, ValDescAplicarBol);
-
-			if (Maior == ValDescAplicarBol && ValDescAplicarBol != ValDescBoletoPerm) {
+            if (valoresBoleto.centavosDigitado > valoresBoleto.centavosLimite) {
 
 				this.byId("idTopLevelIconTabBar").setSelectedKey("tab4");
-				this.byId("idDescontoAplicarBoleto").focus();
+				this.byId("idDescontoAplicarBoletoReduz").focus();
 
-				this.byId("idDescontoAplicarBoleto").setValueState("Error");
+				this.byId("idDescontoAplicarBoletoReduz").setValueState("Error");
 
 				var valor = this.onFormatNumberController(ValDescBoletoPerm);
-				this.byId("idDescontoAplicarBoleto").setValueStateText("O valor permitido para desconto Boleto é de R$ " + valor);
+				this.byId("idDescontoAplicarBoletoReduz").setValueStateText("O valor permitido para desconto Boleto é de R$ " + valor);
 
-			} else if ((ValDescAplicarBol + ValDescAplicar) > (ValDescDisp + ValDescTrader)) {
+			} else if ((valoresBoleto.centavosDigitado + valoresBoleto.centavosNota) > valoresBoleto.centavosDisponivel) {
 
 				this.byId("idTopLevelIconTabBar").setSelectedKey("tab4");
 				this.byId("idDescontoAplicar").focus();
 
 				this.byId("idDescontoAplicar").setValueState("Error");
-				this.byId("idDescontoAplicarBoleto").setValueState("Error");
+				this.byId("idDescontoAplicarBoletoReduz").setValueState("Error");
 
 				var valor = this.onFormatNumberController(ValDescDispTotal);
-				this.byId("idDescontoAplicar").setValueStateText("A soma dos descontos é maior que o permitido de R$ " + ValDescDispTotal);
-				this.byId("idDescontoAplicarBoleto").setValueStateText("A soma dos descontos é maior que o permitido de R$ " + ValDescDispTotal);
+				this.byId("idDescontoAplicar").setValueStateText("A soma de NF e boleto digitado excede trade + desconto disponível de R$ " + valor);
+				this.byId("idDescontoAplicarBoletoReduz").setValueStateText("A soma de NF e boleto digitado excede trade + desconto disponível de R$ " + valor);
 
 			} else {
 
 				this.byId("idDescontoAplicar").setValueState("None");
-				this.byId("idDescontoAplicarBoleto").setValueState("None");
+				this.byId("idDescontoAplicarBoletoReduz").setValueState("None");
 
 				this.byId("idDescontoAplicar").setValueStateText("");
-				this.byId("idDescontoAplicarBoleto").setValueStateText("");
+				this.byId("idDescontoAplicarBoletoReduz").setValueStateText("");
 
 				if ((ValDescAplicarBol > 0) && MotivoDescBoleto1 == "") {
 
@@ -3085,6 +3114,20 @@ sap.ui.define([
 			}
 		},
 
+        onAplicarCampanhaItemGrid: function (oEvent) {
+            if (this._navegacaoCampanhaEmAndamento) { return; }
+            var oContexto = oEvent.getSource().getBindingContext("modelItensPedidoGrid");
+            var oPedido = this.getModelGlobal("modelPedido").getData();
+            if (!oContexto || ["2", "3", "4"].indexOf(String(oPedido.IdStatusPedido)) >= 0) { return; }
+            var oItem = oContexto.getObject(), c = CampanhaItemSupport.contrato(this.oModel.getMetaModel());
+            if (!c.ConsumoAutomatico || !c.ConsumoGrade || CampanhaItemSupport.precoComSaldoCampanha(oItem, c.EscalaPrecoCampanha) === null) { return; }
+            // A tela de itens executa a mesma rotina do botao apos reler o pedido.
+            this.setModelGlobal(new JSONModel({ NrPedido: oPedido.NrPedido, Kunnr: oPedido.Kunnr, Werks: oPedido.Werks, Matnr: oItem.Matnr, AplicarCampanha: true }), "modelItemParaEdicao");
+            this._navegacaoCampanhaEmAndamento = true;
+            this.getModel("modelItensUI").setProperty("/Processando", true);
+            this.getRouter().navTo("pedidoDetalheItens");
+        },
+
 		onEditarItemGridPress: function (oEvent) {
 			var oSource = oEvent.getSource();
 			var oContext = oSource.getBindingContext("modelItensPedidoGrid");
@@ -3302,6 +3345,7 @@ sap.ui.define([
 		// },
 
 		onFinalizarPedido: function () {
+            if (!this._validarBoletoAntesGravar()) { return; }
 			if (!this._validarCampanhasFinalizacao()) { return; }
 
 			var that = this;
@@ -4282,44 +4326,93 @@ sap.ui.define([
 			}
 		},
 
-		onCalculaDescBoletoReduzido: function (oEvent) {
+        _itensCalculoBoleto: function () {
+            var that = this, oModelo = this.getModel("modelItensPedidoGrid"), aItens = oModelo ? oModelo.getData() || [] : [];
+            return aItens.filter(function (oItem) { return that.ehItemPedidoDigitado(oItem); });
+        },
 
-			try {
+        _estadoDescontoBoleto: function (sErro) {
+            this._erroDescontoBoleto = sErro || "";
+            var oCampo = this.byId("idDescontoAplicarBoletoReduz");
+            if (oCampo) { oCampo.setValueState(sErro ? "Error" : "None"); oCampo.setValueStateText(sErro || ""); }
+        },
 
-				var DescBoletoAplicado = oEvent.getSource().getValue();
-			} catch (error) {
+        _recalcularBoletoPeloLiquido: function (vEntrada, bAtualizarCampo) {
+            try {
+                var nLiquido = BoletoDescontoSupport.numeroEntrada(vEntrada);
+                this._boletoLiquidoDigitado = nLiquido;
+                var r = BoletoDescontoSupport.brutoDoLiquido(nLiquido, this._itensCalculoBoleto());
+                this.getModel("modelPedido").setProperty("/ValDescAplicarBol", r.bruto);
+                if (bAtualizarCampo) { this.getModel("modelPedido").setProperty("/ValDescInformBoletoReduzid", r.liquido); }
+                this._boletoEntradaInvalida = false;
+                this._estadoDescontoBoleto("");
+                return true;
+            } catch (e) { this._boletoEntradaInvalida = true; this._estadoDescontoBoleto(e.message); return false; }
+        },
 
-				DescBoletoAplicado = this.getModel("modelPedido").getProperty("/ValDescAplicarBol");
-			}
+        onLiveChangeDescBoletoLiquido: function (oEvent) {
+            this._boletoDigitacaoAtiva = true;
+            // Durante a digitacao, atualizar somente o calculado para nao reposicionar o cursor.
+            return this._recalcularBoletoPeloLiquido(oEvent.getSource().getValue(), false);
+        },
 
-			var itens = this.getModel("modelItensPedidoGrid").getData();
+        onChangeDescBoletoLiquido: function (oEvent) {
+            this._boletoDigitacaoAtiva = true;
+            if (!this._recalcularBoletoPeloLiquido(oEvent.getSource().getValue(), true)) { return false; }
+            if (!this._validarLimitesBoleto()) { return false; }
+            this.onValidacoesCampanha();
+            this.onCalculaPrecoDebitarVerba();
+            this.onCalculaRentabilidade();
+            return true;
+        },
 
-			var PercPond = 0;
-			var ValPond = 0;
-			var ValTotalPond = 0;
-			var PercTotalPond = 0;
-			var TotalPed = 0;
+        onCalculaDescBoletoReduzido: function () {
+            // Apos o usuario informar a direita, essa entrada continua sendo a referencia.
+            if (this._boletoDigitacaoAtiva) {
+                if (this._boletoEntradaInvalida) { return false; }
+                return this._recalcularBoletoPeloLiquido(this._boletoLiquidoDigitado, true);
+            }
+            // Ao abrir um pedido existente, apenas apresentar o liquido do valor ja gravado.
+            // Nao alterar o valor bruto historico nem aplicar acrescimos sucessivos.
+            try {
+                var r = BoletoDescontoSupport.liquidoDoBruto(this.getModel("modelPedido").getProperty("/ValDescAplicarBol"), this._itensCalculoBoleto());
+                this.getModel("modelPedido").setProperty("/ValDescInformBoletoReduzid", r.liquido);
+                this._estadoDescontoBoleto("");
+                return true;
+            } catch (e) { this._estadoDescontoBoleto(e.message); return false; }
+        },
 
-			for (var i = 0; i < itens.length; i++) {
+        _valoresLimiteBoleto: function () {
+            var p = this.getModel("modelPedido").getData();
+            if (this._boletoEntradaInvalida) { throw new Error("Corrija o valor informado no desconto de boleto."); }
+            var nDigitado = this._boletoDigitacaoAtiva ? BoletoDescontoSupport.numeroEntrada(this._boletoLiquidoDigitado) : BoletoDescontoSupport.liquidoDoBruto(p.ValDescAplicarBol, this._itensCalculoBoleto()).liquido;
+            var nDisponivel = BoletoDescontoSupport.arredondar(Math.max(0, BoletoDescontoSupport.numeroModelo(p.ValDescDisp)) + BoletoDescontoSupport.numeroModelo(p.ValDescTrader));
+            var nLimite = BoletoDescontoSupport.arredondar(nDisponivel * BoletoDescontoSupport.numeroModelo(p.PercFlexBoleto) / 100);
+            var nNota = BoletoDescontoSupport.numeroModelo(p.ValDescAplicar);
+            if (nNota < 0) { throw new Error("Informe um desconto de nota fiscal maior ou igual a zero."); }
+            nNota = BoletoDescontoSupport.arredondar(nNota);
+            return { digitado: nDigitado, disponivel: nDisponivel, limite: nLimite, nota: nNota, centavosDigitado: Math.round(nDigitado * 100), centavosDisponivel: Math.round(nDisponivel * 100), centavosLimite: Math.round(nLimite * 100), centavosNota: Math.round(nNota * 100) };
+        },
 
-				//Itens inseridos no grid, exclui os itens de campanha ainda nāo inseridos no pedido.
-				if (this.ehItemPedidoDigitado(itens[i])) {
+        _validarLimitesBoleto: function () {
+            try {
+                var p = this.getModel("modelPedido").getData();
+                var v = this._valoresLimiteBoleto();
+                if (v.centavosDigitado > 0 && v.centavosDigitado > v.centavosLimite) { throw new Error("O valor digitado para desconto Boleto excede o permitido de R$ " + this.onFormatNumberController(v.limite) + "."); }
+                if (v.centavosDigitado + v.centavosNota > v.centavosDisponivel) { throw new Error("A soma do desconto de nota com o boleto digitado excede o disponível de R$ " + this.onFormatNumberController(v.disponivel) + "."); }
+                if (v.centavosDigitado > 0 && !String(p.MotivoDescBoleto1 || "").trim()) { throw new Error("Preencha o motivo do desconto de boleto."); }
+                this._estadoDescontoBoleto("");
+                return true;
+            } catch (e) { this._estadoDescontoBoleto(e.message); return false; }
+        },
 
-					PercPond = (parseFloat(itens[i].AliquotaIcm) + parseFloat(itens[i].PercCofins) + parseFloat(itens[i].PercPis)) / 100;
-					ValPond = PercPond * parseFloat(itens[i].ValPrecoInform * itens[i].QtdPedida);
-					PercTotalPond = Math.abs(PercTotalPond) + Math.abs(ValPond);
-					TotalPed = parseFloat(TotalPed) + parseFloat(itens[i].ValPrecoInform * itens[i].QtdPedida);
-				}
-			}
-
-			// PercTotalPond = PercTotalPond * 100;
-			var PercFinal = PercTotalPond / TotalPed;
-
-			ValTotalPond = DescBoletoAplicado - (PercFinal * DescBoletoAplicado);
-			ValTotalPond = parseFloat(Math.round((ValTotalPond + Number.EPSILON) * 100) / 100);
-
-			this.getModel("modelPedido").setProperty("/ValDescInformBoletoReduzid", ValTotalPond);
-		},
+        _validarBoletoAntesGravar: function () {
+            if (!this.onCalculaDescBoletoReduzido() || !this._validarLimitesBoleto()) {
+                MessageBox.warning(this._erroDescontoBoleto || "Confira o desconto de boleto antes de salvar.");
+                return false;
+            }
+            return true;
+        },
 
 		onCarregarLocalEntrega: function (Bukrs) {
 

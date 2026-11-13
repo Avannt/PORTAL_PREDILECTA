@@ -27,7 +27,7 @@ sap.ui.define([
 				QAS => ReleasePRD = FALSE
 				*/
 				this.getModelGlobal("modelAux").setProperty("/ReleasePRD", false);
-				this.getModelGlobal("modelAux").setProperty("/VersaoApp", "6.8");
+				this.getModelGlobal("modelAux").setProperty("/VersaoApp", "7.2");
 				this.getModelGlobal("modelAux").setProperty("/Werks", "1000");
 				this.getModelGlobal("modelAux").setProperty("/EditarIndexItem", 0);
 				this.getModelGlobal("modelAux").setProperty("/bConectado", false);
@@ -77,10 +77,10 @@ sap.ui.define([
 					NomeRepres: "",
 					Imei: "",
 					VersaoApp: "",
-					Login: "802202",
-					Senha: "21GC88",
-					// Login: "",
-					// Senha: "",
+					Login: "802265",
+					Senha: "43LC95",
+					// Login: "802317",
+					// Senha: "82JB11",
 					SistemaOper: "02",
 					DataAtualizacao: "",
 					Kunnr: "",
